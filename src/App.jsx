@@ -24,6 +24,13 @@ function App() {
   const [page, setPage] = useState(() => {
     return localStorage.getItem("crm-vista-actual") || "comisiones";
   });
+
+  // Guardar la vista actual en localStorage cada vez que cambia
+  useEffect(() => {
+    if (page) {
+      localStorage.setItem("crm-vista-actual", page);
+    }
+  }, [page]);
   const [meta, setMeta] = useState(35000);
   const [comisionObtenida, setComisionObtenida] = useState(0);
   const [ventaPorCliente, setVentaPorCliente] = useState(0);
