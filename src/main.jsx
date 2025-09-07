@@ -3,14 +3,10 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 
-// Registrar el service worker de vite-plugin-pwa si está disponible
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    import('vite-plugin-pwa/register').then(({ registerSW }) => {
-      registerSW({ immediate: true });
-    });
-  });
-}
+
+// Registrar el service worker de vite-plugin-pwa (método oficial)
+import { registerSW } from 'virtual:pwa-register';
+registerSW({ immediate: true });
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
