@@ -1,8 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import "./Login.css";
 
 export default function Login({ onLogin }) {
+  // Estado y lógica para el prompt de instalación PWA
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstall, setShowInstall] = useState(false);
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstall(true);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') setShowInstall(false);
+    }
+  };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -81,6 +102,26 @@ export default function Login({ onLogin }) {
                 </span>
               )}
             </div>
+            {/* Botón para instalar la app como PWA */}
+            {showInstall && (
+              <button
+                type="button"
+                style={{
+                  marginTop: 16,
+                  background: '#4f46e5',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 8,
+                  padding: '10px 18px',
+                  fontSize: '1rem',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.13)',
+                  cursor: 'pointer',
+                }}
+                onClick={handleInstallClick}
+              >
+                Instalar aplicación
+              </button>
+            )}
           </form>
         </div>
       </div>
