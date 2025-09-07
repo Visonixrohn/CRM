@@ -36,10 +36,20 @@
 }
 
 .close-button {
-  background: none;
-  border: none;
+  background: #2563eb;
+  color: #fff;
+  border: 2px solid #1e40af;
+  border-radius: 8px;
   font-size: 1.5rem;
+  font-weight: bold;
+  padding: 0.25em 0.9em;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+.close-button:hover {
+  background: #1e40af;
+  color: #fff;
 }
 
 .pdf-modal-body {

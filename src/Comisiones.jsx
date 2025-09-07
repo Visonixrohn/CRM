@@ -1,29 +1,28 @@
 import React, { useState, useEffect } from "react";
 import "./Comisiones.css";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+// import { Line } from "react-chartjs-2";
+// import {
+//   Chart as ChartJS,
+//   CategoryScale,
+//   LinearScale,
+//   PointElement,
+//   LineElement,
+//   Title,
+//   Tooltip,
+//   Legend,
+// } from "chart.js";
 import { supabase } from "./supabaseClient";
 import Modal from "react-modal";
 
-// Register Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+// ChartJS.register(
+//   CategoryScale,
+//   LinearScale,
+//   PointElement,
+//   LineElement,
+//   Title,
+//   Tooltip,
+//   Legend
+// );
 
 // Set app element for react-modal
 Modal.setAppElement("#root");
@@ -98,55 +97,7 @@ const Comisiones = () => {
   const diferenciaMeta = meta - comisionObtenida;
   const metaHoy = diasRestantes > 0 ? diferenciaMeta / diasRestantes : 0;
 
-  const chartData = {
-    labels: ["Meta", "Comisión Obtenida", "Proyección"],
-    datasets: [
-      {
-        label: "Meta",
-        data: [meta],
-        backgroundColor: "rgba(99, 102, 241, 0.5)",
-        borderColor: "rgba(99, 102, 241, 1)",
-        borderWidth: 1,
-      },
-      {
-        label: "Comisión Obtenida",
-        data: [comisionObtenida],
-        backgroundColor: "rgba(34, 197, 94, 0.5)",
-        borderColor: "rgba(34, 197, 94, 1)",
-        borderWidth: 1,
-      },
-      {
-        label: "Proyección",
-        data: [meta - comisionObtenida],
-        type: "line",
-        borderColor: "rgba(255, 99, 132, 1)",
-        borderWidth: 2,
-        fill: false,
-      },
-    ],
-  };
 
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: { position: "top", labels: { font: { size: 14 } } },
-      title: {
-        display: true,
-        text: "Comparación: Meta vs Comisión Obtenida",
-        font: { size: 18 },
-      },
-      tooltip: { enabled: true },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        title: { display: true, text: "Monto (L)", font: { size: 14 } },
-      },
-      x: {
-        title: { display: true, text: "Categorías", font: { size: 14 } },
-      },
-    },
-  };
 
   const upsertMetaInSupabase = async (metaValue) => {
     try {
@@ -284,9 +235,7 @@ const Comisiones = () => {
         />
       </div>
 
-      <div className="comisiones-chart">
-        <Line data={chartData} options={chartOptions} />
-      </div>
+
 
       <Modal
         isOpen={isModalOpen}

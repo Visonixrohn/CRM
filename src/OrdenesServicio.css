@@ -1,7 +1,28 @@
+/* Reset básico para consistencia en navegadores */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Variables CSS para colores reutilizables */
+:root {
+  --primary-dark: #0a2342;
+  --primary-dark-hover: #16335a;
+  --primary-blue: #007bff;
+  --primary-blue-dark: #0056b3;
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-medium: rgba(0, 0, 0, 0.2);
+  --estado-pendiente-visita: #1976d2;
+  --estado-pendiente-repuesto: #ff9800;
+  --estado-reparado: #388e3c;
+  --estado-sugerencia-cambio: #7b1fa2;
+  --estado-rechazado: #d32f2f;
+}
+
 /* Estilos generales */
 body {
   background: #f5f7fa;
-  margin: 0;
   font-family: "Segoe UI", Tahoma, sans-serif;
   color: #222;
 }
@@ -26,11 +47,11 @@ body {
   margin-top: 20px;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 10px var(--shadow-light);
 }
 
 .ordenes-table th {
-  background: linear-gradient(90deg, #007bff, #0056b3);
+  background: linear-gradient(90deg, var(--primary-blue), var(--primary-blue-dark));
   color: #fff;
   padding: 14px;
   text-align: left;
@@ -59,7 +80,7 @@ body {
   position: fixed;
   bottom: 25px;
   right: 25px;
-  background: #007bff;
+  background: var(--primary-dark);
   color: #fff;
   border: none;
   border-radius: 50%;
@@ -67,12 +88,12 @@ body {
   height: 65px;
   font-size: 28px;
   cursor: pointer;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 12px var(--shadow-medium);
   transition: transform 0.2s ease-in-out, background 0.3s;
 }
 
 .floating-btn:hover {
-  background: #0056b3;
+  background: var(--primary-dark-hover);
   transform: scale(1.1);
 }
 
@@ -95,14 +116,10 @@ body {
   background: #fefefe;
   padding: 40px;
   border-radius: 16px;
-  max-width: 1200px; /* Más ancho */
+  max-width: 1200px;
   width: 95%;
   animation: fadeIn 0.3s ease-in-out;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-}
-
-.fade-in {
-  animation: fadeIn 0.4s ease-in-out;
+  box-shadow: 0 12px 30px var(--shadow-medium);
 }
 
 @keyframes fadeIn {
@@ -123,7 +140,7 @@ body {
   border-radius: 14px;
   width: 600px;
   max-width: 100%;
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 22px var(--shadow-light);
   margin: 0 auto;
 }
 
@@ -149,7 +166,7 @@ body {
 
 .AddOrderForm input:focus,
 .AddOrderForm select:focus {
-  border: 1px solid #007bff;
+  border: 1px solid var(--primary-blue);
   outline: none;
   box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
 }
@@ -158,41 +175,31 @@ body {
   color: #555;
 }
 
-/* Botones */
+/* Botones de AddOrderForm */
+.AddOrderForm button,
+.form-actions button {
+  background: var(--primary-dark);
+  color: #fff;
+  border: 2px solid var(--primary-dark-hover);
+  border-radius: 10px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(10, 35, 66, 0.1);
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  padding: 14px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.AddOrderForm button:hover,
+.form-actions button:hover {
+  background: var(--primary-dark-hover);
+  transform: translateY(-2px);
+}
+
 .form-actions {
   display: flex;
   justify-content: space-between;
   gap: 10px;
-}
-
-.form-actions button {
-  flex: 1;
-  padding: 14px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background 0.3s, transform 0.2s;
-  font-weight: bold;
-}
-
-.form-actions button[type="submit"] {
-  background: #007bff;
-  color: #fff;
-}
-
-.form-actions button[type="submit"]:hover {
-  background: #0056b3;
-  transform: translateY(-2px);
-}
-
-.form-actions button[type="button"] {
-  background: #ddd;
-  color: #333;
-}
-
-.form-actions button[type="button"]:hover {
-  background: #bbb;
 }
 
 /* Contenedor de detalles de la orden */
@@ -200,7 +207,7 @@ body {
   padding: 25px;
   background-color: #fff;
   border-radius: 14px;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 14px var(--shadow-light);
   margin: 25px 0;
   font-size: 18px;
   line-height: 1.6;
@@ -211,27 +218,27 @@ body {
 }
 
 .order-details a {
-  color: #007bff;
+  color: var(--primary-blue);
   text-decoration: none;
   font-weight: 700;
 }
 
 .order-details a:hover {
   text-decoration: underline;
-  color: #0056b3;
+  color: var(--primary-blue-dark);
 }
 
 /* Modal de detalles de la orden */
 .order-details-modal {
   max-width: 1200px;
-  width: 1200px; /* Ancho amplio */
-  height: 800px; /* Altura amplia */
+  width: 95%;
+  height: 800px;
   margin: 50px auto;
   padding: 30px;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow-y: auto; /* Permitir scroll si el contenido excede la altura */
+  box-shadow: 0 4px 6px var(--shadow-light);
+  overflow-y: auto;
 }
 
 .order-details-modal h2 {
@@ -255,18 +262,19 @@ body {
 .order-details-modal button {
   margin-top: 25px;
   padding: 15px 26px;
-  background-color: #007bff;
+  background-color: var(--primary-dark);
   color: #fff;
-  border: none;
+  border: 2px solid var(--primary-dark-hover);
   border-radius: 12px;
   cursor: pointer;
   font-size: 18px;
   font-weight: 700;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(10, 35, 66, 0.15);
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s;
 }
 
 .order-details-modal button:hover {
-  background-color: #0056b3;
+  background-color: var(--primary-dark-hover);
   transform: translateY(-2px);
 }
 
@@ -277,7 +285,24 @@ body {
   padding: 20px;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow-light);
+}
+
+.update-state-modal button:not(.estado-button) {
+  background: var(--primary-dark);
+  color: #fff;
+  border: 2px solid var(--primary-dark-hover);
+  border-radius: 10px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(10, 35, 66, 0.1);
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  margin: 0 5px;
+  padding: 10px 15px;
+}
+
+.update-state-modal button:not(.estado-button):hover {
+  background: var(--primary-dark-hover);
+  transform: translateY(-2px);
 }
 
 /* Botones de estado */
@@ -298,10 +323,17 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
-.estado-button.active {
-  background-color: #4caf50;
-  color: white;
-}
+.estado-button.pendiente-de-visita { background: var(--estado-pendiente-visita); color: #fff; }
+.estado-button.pendiente-de-repuesto { background: var(--estado-pendiente-repuesto); color: #fff; }
+.estado-button.reparado { background: var(--estado-reparado); color: #fff; }
+.estado-button.sugerencia-de-cambio { background: var(--estado-sugerencia-cambio); color: #fff; }
+.estado-button.rechazado { background: var(--estado-rechazado); color: #fff; }
+
+.estado-button.active.pendiente-de-visita { background: #0d47a1; border: 2.5px solid var(--estado-pendiente-visita); }
+.estado-button.active.pendiente-de-repuesto { background: #ef6c00; border: 2.5px solid var(--estado-pendiente-repuesto); }
+.estado-button.active.reparado { background: #1b5e20; border: 2.5px solid var(--estado-reparado); }
+.estado-button.active.sugerencia-de-cambio { background: #4a148c; border: 2.5px solid var(--estado-sugerencia-cambio); }
+.estado-button.active.rechazado { background: #b71c1c; border: 2.5px solid var(--estado-rechazado); }
 
 .estado-button:not(.active) {
   background-color: #f0f0f0;
@@ -312,6 +344,7 @@ body {
   background-color: #ddd;
 }
 
+/* Barra de búsqueda */
 .search-bar {
   width: 100%;
   padding: 12px 20px;
@@ -330,6 +363,7 @@ body {
   box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
 }
 
+/* Botones de filtro */
 .filter-buttons {
   display: flex;
   gap: 10px;
@@ -343,44 +377,43 @@ body {
   cursor: pointer;
   font-size: 14px;
   font-weight: bold;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s, filter 0.3s, opacity 0.3s;
 }
+
+.filter-button.pendiente-de-visita { background: var(--estado-pendiente-visita); color: #fff; }
+.filter-button.pendiente-de-repuesto { background: var(--estado-pendiente-repuesto); color: #fff; }
+.filter-button.reparado { background: var(--estado-reparado); color: #fff; }
+.filter-button.sugerencia-de-cambio { background: var(--estado-sugerencia-cambio); color: #fff; }
+.filter-button.rechazado { background: var(--estado-rechazado); color: #fff; }
 
 .filter-button.active {
-  background-color: #4caf50;
-  color: white;
+  box-shadow: 0 0 0 2px #fff, 0 2px 8px rgba(10, 35, 66, 0.15);
+  filter: brightness(1.1);
+  border: 2.5px solid #222;
 }
 
+.filter-button.active.pendiente-de-visita { background: #0d47a1; border-color: var(--estado-pendiente-visita); }
+.filter-button.active.pendiente-de-repuesto { background: #ef6c00; border-color: var(--estado-pendiente-repuesto); }
+.filter-button.active.reparado { background: #1b5e20; border-color: var(--estado-reparado); }
+.filter-button.active.sugerencia-de-cambio { background: #4a148c; border-color: var(--estado-sugerencia-cambio); }
+.filter-button.active.rechazado { background: #b71c1c; border-color: var(--estado-rechazado); }
+
 .filter-button:not(.active) {
-  background-color: #f0f0f0;
-  color: #333;
+  opacity: 0.85;
 }
 
 .filter-button:hover:not(.active) {
-  background-color: #ddd;
+  filter: brightness(1.08);
+  opacity: 1;
 }
 
-.estado-pendiente-de-visita {
-  color: #ff9800;
-  font-weight: bold;
-}
-
-.estado-pendiente-de-repuesto {
-  color: #2196f3;
-  font-weight: bold;
-}
-
-.estado-reparado {
-  color: #4caf50;
-  font-weight: bold;
-}
-
+/* Estados específicos */
 .estado-sugerencia-de-cambio {
-  color: #9c27b0;
+  color: var(--estado-sugerencia-cambio);
   font-weight: bold;
 }
 
 .estado-rechazado {
-  color: #f44336;
+  color: var(--estado-rechazado);
   font-weight: bold;
 }

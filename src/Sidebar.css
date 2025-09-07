@@ -21,12 +21,12 @@
   background: var(--background-white);
   height: 100vh;
   position: fixed;
-  top: 5vh;
+  top: 7.9vh;
   left: -80px;
   transition: var(--transition);
   box-shadow: var(--shadow-light);
-  z-index: 1000;
   overflow: hidden;
+  z-index: 1000;
 }
 
 .sidebar.open {
@@ -155,8 +155,8 @@
   .sidebar {
     width: 60px;
     left: -60px;
+    height: 100vh;
   }
-
   .sidebar.open {
     left: 0;
   }

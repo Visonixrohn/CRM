@@ -218,19 +218,24 @@ const OrdenesServicio = () => {
           className="search-bar"
         />
         <div className="filter-buttons">
-          {estados.map((estado) => (
-            <button
-              key={estado}
-              className={`filter-button ${
-                filterState === estado ? "active" : ""
-              }`}
-              onClick={() =>
-                setFilterState(filterState === estado ? "" : estado)
-              }
-            >
-              {estado}
-            </button>
-          ))}
+          {estados.map((estado) => {
+            // Generar clase para color
+            const estadoClass = estado
+              .toLowerCase()
+              .replace(/\s+/g, "-")
+              .replace(/[áéíóú]/g, (m) => ({á:'a',é:'e',í:'i',ó:'o',ú:'u'}[m]));
+            return (
+              <button
+                key={estado}
+                className={`filter-button ${estadoClass} ${filterState === estado ? "active" : ""}`}
+                onClick={() =>
+                  setFilterState(filterState === estado ? "" : estado)
+                }
+              >
+                {estado}
+              </button>
+            );
+          })}
         </div>
       </header>
 

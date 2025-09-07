@@ -1,10 +1,8 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import Login from "./Login";
 import ModalInput from "./ModalInput";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-
 import Header from "./Header";
 import ChoferModal from "./ChoferModal";
 import Sidebar from "./Sidebar";
@@ -16,30 +14,47 @@ import Razones from "./Razones";
 import Tiendas from "./Tiendas";
 import Documentos from "./Documentos";
 import ClientesNuevos from "./ClientesNuevos";
-import Actualizaciones from "./Actualizaciones"; // Importar la nueva vista
-import { useRef } from "react";
+import Actualizaciones from "./Actualizaciones";
 import LoadingScreen from "./LoadingScreen";
 
 function App() {
-  const [count, setCount] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [page, setPage] = useState("comisiones"); // Página inicial predeterminada
+  // Cerrar sidebar al hacer click fuera (en móvil/tablet)
+  useEffect(() => {
+    if (!sidebarOpen || window.innerWidth > 768) return;
+    const handleClick = (e) => {
+      const sidebar = document.querySelector('.sidebar');
+      if (sidebar && !sidebar.contains(e.target)) {
+        setSidebarOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [sidebarOpen]);
+  // Cierra el sidebar al hacer click fuera (overlay)
+  const handleOverlayClick = () => setSidebarOpen(false);
+  const [page, setPage] = useState("comisiones");
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [meta, setMeta] = useState(35000);
+  const [comisionObtenida, setComisionObtenida] = useState(0);
+  const [ventaPorCliente, setVentaPorCliente] = useState(0);
+  const [metaHoy, setMetaHoy] = useState(0);
+  const [comisionHoy, setComisionHoy] = useState(0);
+  const [choferModal, setChoferModal] = useState(false);
+  const [chofer, setChofer] = useState({ nombre: "", contacto: "" });
+  const [modal, setModal] = useState({ open: false, label: "", value: "", setter: null, isMoney: false });
 
-  // Cambiar el título de la pestaña
   useEffect(() => {
     document.title = "CRM-MIGUEL";
   }, []);
 
-  // Mantener sesión activa
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data?.user || null);
     };
     getUser();
-    // Escuchar cambios de sesión
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user || null);
@@ -50,197 +65,91 @@ function App() {
     };
   }, []);
 
-  // Estados para comisiones
-  const [meta, setMeta] = useState(35000);
-  const [comisionObtenida, setComisionObtenida] = useState(0);
-  const [ventaPorCliente, setVentaPorCliente] = useState(0);
-  const [metaHoy, setMetaHoy] = useState(0);
-  const [comisionHoy, setComisionHoy] = useState(0);
-
-  // Función para alternar el sidebar
   const toggleSidebar = () => setSidebarOpen((open) => !open);
-
-  const handleComisionesClick = () => {
-    setPage("comisiones");
-    setSidebarOpen(false);
-  };
-
-  const handleEntregasClick = () => {
-    setPage("entregas");
-    setSidebarOpen(false);
-  };
-
-  const handleOrdenesClick = () => {
-    setPage("ordenes");
-    setSidebarOpen(false);
-  };
-
-  const handleCalculadoraClick = () => {
-    setPage("calculadoras");
-    setSidebarOpen(false);
-  };
-
-  const handleRazonesClick = () => {
-    setPage("razones");
-    setSidebarOpen(false);
-  };
-
-  const handleTiendasClick = () => {
-    setPage("tiendas");
-    setSidebarOpen(false);
-  };
-
-  const handleDocumentosClick = () => {
-    setPage("documentos");
-    setSidebarOpen(false);
-  };
-
-  const handleClientesNuevosClick = () => {
-    setPage("clientes-nuevos");
-    setSidebarOpen(false);
-  };
-
-  const handleActualizacionesClick = () => {
-    setPage("actualizaciones");
-    setSidebarOpen(false);
-  };
-
-  // Estado para modal
-  const [modal, setModal] = useState({
-    open: false,
-    label: "",
-    value: 0,
-    setter: null,
-    isMoney: false,
-  });
-
-  const handleUpdate = (label, value, setter, isMoney = false) => {
-    setModal({ open: true, label, value, setter, isMoney });
-  };
+  // Cerrar sidebar siempre al seleccionar una vista
+  const closeSidebar = () => setSidebarOpen(false);
+  const handleComisionesClick = () => { setPage("comisiones"); closeSidebar(); };
+  const handleEntregasClick = () => { setPage("entregas"); closeSidebar(); };
+  const handleOrdenesClick = () => { setPage("ordenes"); closeSidebar(); };
+  const handleCalculadoraClick = () => { setPage("calculadoras"); closeSidebar(); };
+  const handleRazonesClick = () => { setPage("razones"); closeSidebar(); };
+  const handleTiendasClick = () => { setPage("tiendas"); closeSidebar(); };
+  const handleDocumentosClick = () => { setPage("documentos"); closeSidebar(); };
+  const handleClientesNuevosClick = () => { setPage("clientes-nuevos"); closeSidebar(); };
+  const handleActualizacionesClick = () => { setPage("actualizaciones"); closeSidebar(); };
 
   const handleModalSave = async (newValue) => {
     if (modal.setter) {
       modal.setter(newValue);
-
-      // Mapear los nombres de las columnas
-      const columnMap = {
-        Meta: "meta",
-        "Comisión obtenida": "comision_obtenida",
-      };
-
+      const columnMap = { Meta: "meta", "Comisión obtenida": "comision_obtenida" };
       const column = columnMap[modal.label];
-
-      if (!column) {
-        console.error("Columna no válida para actualizar en Supabase.");
-        return;
-      }
-
-      // Actualizar en Supabase
-      const { error } = await supabase
-        .from("comisiones")
-        .update({ [column]: newValue })
-        .eq("id", 1); // Asegúrate de usar el ID correcto
-
-      if (error) {
-        console.error("Error al actualizar en Supabase:", error);
-      } else {
-        console.log(`${modal.label} actualizado en Supabase.`);
-      }
+      if (!column) return;
+      await supabase.from("comisiones").update({ [column]: newValue }).eq("id", 1);
     }
     setModal({ ...modal, open: false });
   };
-
   const handleModalClose = () => setModal({ ...modal, open: false });
 
-  const handleReset = () => {
-    setMeta(0);
-    setComisionObtenida(0);
-    setVentaPorCliente(0);
-    setMetaHoy(0);
-    setComisionHoy(0);
-  };
-
-  // Estado para modal de chofer
-  const [choferModal, setChoferModal] = useState(false);
-  const [chofer, setChofer] = useState({ nombre: "", contacto: "" });
-
-  // Eliminar los botones del header relacionados con comisiones
-  const comisionesActions = null;
-
-  // Agregar estado para controlar el modal de agregar órdenes
-  const [isAddOrderModalOpen, setIsAddOrderModal] = useState(false);
-  const [newOrder, setNewOrder] = useState({
-    fecha: "",
-    cliente: "",
-    numero_orden: "",
-    articulo: "",
-    dias_trascurridos: 0,
-    estado: "",
-  });
-
-  const handleAddOrder = async () => {
-    const { error } = await supabase
-      .from("ordenes_servicio")
-      .insert([newOrder]);
-    if (error) {
-      console.error("Error al guardar la orden:", error);
-    } else {
-      console.log("Orden guardada exitosamente");
-      setIsAddOrderModalOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    setPage("comisiones"); // Asegura que siempre se cargue 'comisiones' al recargar
-  }, []);
-
-  if (loading) {
-    return <LoadingScreen onComplete={() => setLoading(false)} />;
-  }
-
-  if (!user) {
-    return <Login onLogin={setUser} />;
-  }
+  if (loading) return <LoadingScreen onComplete={() => setLoading(false)} />;
+  if (!user) return <Login onLogin={setUser} />;
 
   return (
-    <>
-      <Header onMenuClick={toggleSidebar} actions={comisionesActions} />
-      <Sidebar
-        open={sidebarOpen}
-        onComisionesClick={handleComisionesClick}
-        onEntregasClick={handleEntregasClick}
-        onOrdenesClick={handleOrdenesClick}
-        onCalculadoraClick={handleCalculadoraClick}
-        onRazonesClick={handleRazonesClick}
-        onTiendasClick={handleTiendasClick}
-        onDocumentosClick={handleDocumentosClick}
-        onClientesNuevosClick={handleClientesNuevosClick}
-        onActualizacionesClick={handleActualizacionesClick} // Agregar el manejador para Actualizaciones
-      />
-      {page === "comisiones" && (
-        <Comisiones
-          meta={meta}
-          setMeta={setMeta}
-          comisionObtenida={comisionObtenida}
-          setComisionObtenida={setComisionObtenida}
-          ventaPorCliente={ventaPorCliente}
-          setVentaPorCliente={setVentaPorCliente}
-          metaHoy={metaHoy}
-          setMetaHoy={setMetaHoy}
-          comisionHoy={comisionHoy}
-          setComisionHoy={setComisionHoy}
-          handleUpdate={handleUpdate} // Pasar la función correctamente
+    <div id="app-layout">
+      <Header onMenuClick={toggleSidebar} actions={[]} />
+      {/* Overlay para cerrar sidebar en móvil/tablet */}
+      {sidebarOpen && window.innerWidth <= 768 && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.2)",
+            zIndex: 999,
+          }}
+          onClick={handleOverlayClick}
         />
       )}
-      {page === "entregas" && <Entregas />}
-      {page === "ordenes" && <OrdenesServicio />}
-      {page === "calculadoras" && <Calculadoras />}
-      {page === "razones" && <Razones />}
-      {page === "tiendas" && <Tiendas />}
-      {page === "documentos" && <Documentos />}
-      {page === "clientes-nuevos" && <ClientesNuevos />}
-      {page === "actualizaciones" && <Actualizaciones />}{" "}
-      {/* Agregar la nueva vista */}
+      <div id="main-content-layout">
+        <Sidebar
+          open={sidebarOpen}
+          onComisionesClick={handleComisionesClick}
+          onEntregasClick={handleEntregasClick}
+          onOrdenesClick={handleOrdenesClick}
+          onCalculadoraClick={handleCalculadoraClick}
+          onRazonesClick={handleRazonesClick}
+          onTiendasClick={handleTiendasClick}
+          onDocumentosClick={handleDocumentosClick}
+          onClientesNuevosClick={handleClientesNuevosClick}
+          onActualizacionesClick={handleActualizacionesClick}
+        />
+        <div id="main-content">
+          {page === "comisiones" && (
+            <Comisiones
+              meta={meta}
+              setMeta={setMeta}
+              comisionObtenida={comisionObtenida}
+              setComisionObtenida={setComisionObtenida}
+              ventaPorCliente={ventaPorCliente}
+              setVentaPorCliente={setVentaPorCliente}
+              metaHoy={metaHoy}
+              setMetaHoy={setMetaHoy}
+              comisionHoy={comisionHoy}
+              setComisionHoy={setComisionHoy}
+              handleUpdate={() => {}}
+            />
+          )}
+          {page === "entregas" && <Entregas />}
+          {page === "ordenes" && <OrdenesServicio />}
+          {page === "calculadoras" && <Calculadoras />}
+          {page === "razones" && <Razones />}
+          {page === "tiendas" && <Tiendas />}
+          {page === "documentos" && <Documentos />}
+          {page === "clientes-nuevos" && <ClientesNuevos />}
+          {page === "actualizaciones" && <Actualizaciones />}
+        </div>
+      </div>
       <ModalInput
         open={modal.open}
         label={modal.label}
@@ -257,7 +166,7 @@ function App() {
           setChoferModal(false);
         }}
       />
-    </>
+    </div>
   );
 }
 
