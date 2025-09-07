@@ -3,6 +3,7 @@
   gap: 0.5rem;
   margin-left: 2rem;
 }
+
 .header-actions button {
   background: #fff;
   color: #0a2342;
@@ -13,10 +14,12 @@
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
+
 .header-actions button:hover {
   background: #0a2342;
   color: #fff;
 }
+
 .header {
   display: flex;
   align-items: center;
@@ -49,15 +52,27 @@
   letter-spacing: 1px;
 }
 
+/* 🆕 Espacio para que el header no tape el contenido */
+.main-content {
+  margin-top: 56px; /* mismo valor que min-height del header */
+}
+
 @media (max-width: 600px) {
   .header {
     padding: 0.5rem 0.75rem;
   }
+
   .header-title {
     font-size: 1rem;
   }
+
   .menu-btn svg {
     width: 24px;
     height: 24px;
+  }
+
+  /* Ajustar margen si cambia altura en móviles */
+  .main-content {
+    margin-top: 64px; /* Ajusta si el header crece con más padding */
   }
 }
