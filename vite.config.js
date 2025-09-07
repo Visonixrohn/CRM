@@ -8,23 +8,23 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'CRM Miguel',
-        short_name: 'CRM',
+        name: 'CRM-MIGUEL',
+        short_name: 'CRM-MIGUEL',
         start_url: '.',
         display: 'standalone',
         background_color: '#ffffff',
-        theme_color: '#4f46e5',
+        theme_color: '#000000',
         description: 'CRM para Miguel, versión web adaptable e instalable.',
         icons: [
           {
-            src: '/vite.svg',
+            src: '/icon-mr-black.png',
             sizes: '192x192',
-            type: 'image/svg+xml',
+            type: 'image/png',
           },
           {
-            src: '/vite.svg',
+            src: '/icon-mr-black.png',
             sizes: '512x512',
-            type: 'image/svg+xml',
+            type: 'image/png',
           },
         ],
       },
