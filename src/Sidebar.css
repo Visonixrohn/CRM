@@ -1,0 +1,186 @@
+/* Variables (same as previous design for consistency) */
+:root {
+  --neon-blue: #00b7ff;
+  --neon-blue-dark: #0088cc;
+  --background-white: #ffffff;
+  --background-light: #f0f5ff;
+  --text-dark: #1a1a1a;
+  --text-blue: #005577;
+  --shadow-blue: 0 0 12px rgba(0, 183, 255, 0.5),
+    0 0 24px rgba(0, 183, 255, 0.2);
+  --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.1);
+  --border-blue: 1px solid rgba(0, 183, 255, 0.4);
+  --border-radius: 10px;
+  --transition: all 0.2s ease-out;
+  --font-family: "Chakra Petch", "Segoe UI", Roboto, monospace;
+}
+
+/* Sidebar container */
+.sidebar {
+  width: 80px;
+  background: var(--background-white);
+  height: 100vh;
+  position: fixed;
+  top: 5vh;
+  left: -80px;
+  transition: var(--transition);
+  box-shadow: var(--shadow-light);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+/* Sidebar icons container */
+.sidebar-icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1rem;
+}
+
+/* Individual icon */
+.sidebar-icon {
+  width: 100%;
+  padding: 1.25rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  transition: var(--transition);
+  border-left: 3px solid transparent;
+}
+
+.sidebar-icon:hover {
+  background: rgba(0, 183, 255, 0.1);
+  border-left: 3px solid var(--neon-blue);
+  transform: scale(1.1);
+  box-shadow: var(--shadow-blue);
+  animation: glitch-icon 0.3s;
+}
+
+@keyframes glitch-icon {
+  0% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(2px, -2px);
+  }
+  40% {
+    transform: translate(-2px, 2px);
+  }
+  60% {
+    transform: translate(1px, -1px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* Icon styling */
+.icon-text {
+  font-size: 1.5rem;
+  color: var(--neon-blue);
+  text-shadow: 0 0 5px var(--neon-blue);
+  transition: var(--transition);
+}
+
+.sidebar-icon:hover .icon-text {
+  color: var(--neon-blue-dark);
+  text-shadow: 0 0 8px var(--neon-blue-dark);
+}
+
+/* Tooltip styling */
+.sidebar-tooltip {
+  visibility: hidden;
+  width: 150px;
+  background: var(--neon-blue);
+  color: var(--background-white);
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 6px;
+  position: absolute;
+  left: 90px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.9rem;
+  font-family: var(--font-family);
+  box-shadow: var(--shadow-blue);
+  z-index: 1;
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.sidebar-icon:hover .sidebar-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Cerrar Sesión button */
+.cerrar-sesion {
+  background: transparent;
+  border: none;
+  width: 100%;
+  padding: 1.25rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: var(--transition);
+  border-left: 3px solid transparent;
+}
+
+.cerrar-sesion:hover {
+  background: rgba(255, 77, 77, 0.1);
+  border-left: 3px solid #ff4d4d;
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(255, 77, 77, 0.5);
+}
+
+.cerrar-sesion .icon-text {
+  color: #ff4d4d;
+  text-shadow: 0 0 5px #ff4d4d;
+}
+
+.cerrar-sesion:hover .icon-text {
+  color: #cc3333;
+  text-shadow: 0 0 8px #cc3333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+    left: -60px;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .icon-text {
+    font-size: 1.25rem;
+  }
+
+  .sidebar-tooltip {
+    width: 120px;
+    font-size: 0.8rem;
+    left: 70px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .sidebar-icon,
+  .sidebar-icon:hover,
+  .cerrar-sesion,
+  .sidebar-tooltip {
+    transition: none;
+    transform: none;
+    animation: none;
+  }
+}

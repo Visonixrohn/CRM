@@ -1,0 +1,185 @@
+/* Contenedor principal del login */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: radial-gradient(circle at top, #0a0a0a, #1c284d 80%);
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Glow animado de fondo (opcional futurista) */
+.login-container::before {
+  content: '';
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(0, 130, 255, 0.2), transparent 70%);
+  animation: rotateGlow 20s linear infinite;
+  top: -25%;
+  left: -25%;
+  z-index: 0;
+}
+
+@keyframes rotateGlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Card del login con sombra futurista y animación */
+.login-card {
+  background: linear-gradient(145deg, #0f0f0f, #1c1c1c);
+  padding: 40px 35px;
+  border-radius: 25px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7),
+              0 0 25px rgba(20, 43, 173, 0.5) inset,
+              0 0 15px rgba(20, 43, 173, 0.3);
+  width: 400px;
+  max-width: 90%;
+  transform: translateY(-50px);
+  opacity: 0;
+  animation: fadeInUp 0.7s forwards;
+  position: relative;
+  transition: all 0.4s ease;
+  z-index: 1;
+}
+
+/* Animación de aparición */
+@keyframes fadeInUp {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Título del formulario con glow */
+.login-form h2 {
+  margin-bottom: 25px;
+  color: #1e3e96;
+  text-align: center;
+  font-size: 2.4rem;
+  font-weight: 700;
+  text-shadow: 0 0 8px #142bad, 0 0 1px #142bad44;
+  position: relative;
+}
+
+/* Línea decorativa debajo del título */
+.login-form h2::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #0b0f47, #2e5172);
+  margin: 12px auto 0 auto;
+  border-radius: 2px;
+  box-shadow: 0 0 8px #2e5172;
+}
+
+/* Grupo de inputs */
+.input-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/* Estilos de los inputs */
+.input-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #333;
+  border-radius: 12px;
+  font-size: 16px;
+  outline: none;
+  background: #1c1c1c;
+  color: #fff;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+/* Placeholder elegante */
+.input-group input::placeholder {
+  color: #999;
+  font-weight: 500;
+}
+
+/* Focus en inputs con borde brillante y glow */
+.input-group input:focus {
+  border-color: #142bad;
+  box-shadow: 0 0 12px rgba(20, 43, 173, 0.7);
+  background: #111;
+}
+
+/* Botón principal con efecto neón */
+.login-button {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #2e312e, #040e6d);
+  color: #fff;
+  border: none;
+  border-radius: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6),
+              0 0 12px #142bad;
+}
+
+.login-button:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7),
+              0 0 25px #142bad, 0 0 35px #1e3e96;
+  background: linear-gradient(90deg, #1c0a5e, #0a2a5c);
+}
+
+/* Mensajes de error con animación */
+.login-error {
+  color: #ff5252;
+  background: #330000;
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  font-size: 0.95rem;
+  text-align: center;
+  animation: shake 0.3s;
+  box-shadow: 0 0 10px #ff5252;
+}
+
+/* Animación shake para errores */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-6px); }
+  100% { transform: translateX(0); }
+}
+
+/* Toggle para cambiar login/registro */
+.login-toggle {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.95rem;
+}
+
+.login-toggle button {
+  background: none;
+  border: none;
+  color: #110f8a;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0;
+  transition: all 0.3s;
+}
+
+.login-toggle button:hover {
+  color: #2406a8;
+  text-decoration: underline;
+}
+
+/* Efecto hover sobre el card */
+.login-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 30px 60px rgba(4, 5, 78, 0.8),
+              0 0 40px rgba(6, 29, 92, 0.4) inset,
+              0 0 20px rgba(20, 43, 173, 0.6);
+}

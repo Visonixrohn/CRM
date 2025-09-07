@@ -1,0 +1,386 @@
+/* Estilos generales */
+body {
+  background: #f5f7fa;
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  color: #222;
+}
+
+.ordenes-container {
+  padding: 30px;
+}
+
+/* Header */
+.ordenes-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Tabla */
+.ordenes-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.ordenes-table th {
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  color: #fff;
+  padding: 14px;
+  text-align: left;
+  font-size: 16px;
+}
+
+.ordenes-table td {
+  padding: 14px;
+  border-bottom: 1px solid #eee;
+  background: #fff;
+  color: #000;
+  font-size: 15px;
+}
+
+.ordenes-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+.ordenes-table tr:hover {
+  background: #eef6ff;
+  cursor: pointer;
+}
+
+/* Botón flotante */
+.floating-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 65px;
+  height: 65px;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out, background 0.3s;
+}
+
+.floating-btn:hover {
+  background: #0056b3;
+  transform: scale(1.1);
+}
+
+/* Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Modal */
+.modal {
+  background: #fefefe;
+  padding: 40px;
+  border-radius: 16px;
+  max-width: 1200px; /* Más ancho */
+  width: 95%;
+  animation: fadeIn 0.3s ease-in-out;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Formulario */
+.AddOrderForm {
+  background: #fff;
+  padding: 35px;
+  border-radius: 14px;
+  width: 600px;
+  max-width: 100%;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+}
+
+.AddOrderForm h2 {
+  text-align: center;
+  color: #222;
+  font-size: 24px;
+  margin-bottom: 25px;
+}
+
+.AddOrderForm input,
+.AddOrderForm select {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 18px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  background: #fff;
+  color: #000;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+.AddOrderForm input:focus,
+.AddOrderForm select:focus {
+  border: 1px solid #007bff;
+  outline: none;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
+}
+
+.AddOrderForm input::placeholder {
+  color: #555;
+}
+
+/* Botones */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.form-actions button {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s, transform 0.2s;
+  font-weight: bold;
+}
+
+.form-actions button[type="submit"] {
+  background: #007bff;
+  color: #fff;
+}
+
+.form-actions button[type="submit"]:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+}
+
+.form-actions button[type="button"] {
+  background: #ddd;
+  color: #333;
+}
+
+.form-actions button[type="button"]:hover {
+  background: #bbb;
+}
+
+/* Contenedor de detalles de la orden */
+.order-details {
+  padding: 25px;
+  background-color: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+  margin: 25px 0;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.order-details p strong {
+  color: #000;
+}
+
+.order-details a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.order-details a:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+/* Modal de detalles de la orden */
+.order-details-modal {
+  max-width: 1200px;
+  width: 1200px; /* Ancho amplio */
+  height: 800px; /* Altura amplia */
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Permitir scroll si el contenido excede la altura */
+}
+
+.order-details-modal h2 {
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #111;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 12px;
+  text-align: center;
+}
+
+.order-details-modal iframe {
+  width: 95%;
+  height: 600px;
+  display: block;
+  margin: 20px auto;
+  border: none;
+  border-radius: 12px;
+}
+
+.order-details-modal button {
+  margin-top: 25px;
+  padding: 15px 26px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 700;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.order-details-modal button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+/* Modal de actualización de estado */
+.update-state-modal {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Botones de estado */
+.estado-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.estado-button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.estado-button.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+.estado-button:not(.active) {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.estado-button:hover:not(.active) {
+  background-color: #ddd;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 10px 0;
+  border: 2px solid #4caf50;
+  border-radius: 25px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  color: #333;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-bar:focus {
+  outline: none;
+  border-color: #45a049;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.filter-button.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+.filter-button:not(.active) {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.filter-button:hover:not(.active) {
+  background-color: #ddd;
+}
+
+.estado-pendiente-de-visita {
+  color: #ff9800;
+  font-weight: bold;
+}
+
+.estado-pendiente-de-repuesto {
+  color: #2196f3;
+  font-weight: bold;
+}
+
+.estado-reparado {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.estado-sugerencia-de-cambio {
+  color: #9c27b0;
+  font-weight: bold;
+}
+
+.estado-rechazado {
+  color: #f44336;
+  font-weight: bold;
+}

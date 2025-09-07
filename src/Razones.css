@@ -1,0 +1,168 @@
+.razones-container {
+  padding: 20px;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  height: 100vh; /* Altura completa de la ventana */
+  display: flex;
+  flex-direction: column;
+  background: #f4f6f9;
+  overflow-x: hidden;
+}
+
+/* Barra de búsqueda */
+.search-bar {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 14px 18px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.search-bar:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.search-bar input {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #333;
+  background-color: #fdfdfd;
+  transition: all 0.3s ease;
+}
+
+.search-bar input:focus {
+  border-color: #007bff;
+  background-color: #ffffff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}
+
+.search-bar button {
+  padding: 12px 22px;
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+.search-bar button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 91, 187, 0.3);
+}
+
+.search-bar button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 91, 187, 0.2);
+}
+
+/* Tabla moderna */
+.table-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 70vh; /* Limita altura máxima */
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  scroll-behavior: smooth; /* Scroll suave */
+}
+
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0; /* Eliminar márgenes */
+  font-size: 18px;
+  text-align: left;
+  height: 100%; /* Altura completa */
+  overflow-y: auto; /* Habilitar desplazamiento vertical */
+  display: block; /* Asegurar que el scroll funcione */
+}
+
+.styled-table thead {
+  position: sticky;
+  top: 0;
+  background-color: #009879;
+  color: #ffffff;
+  z-index: 1;
+  display: table; /* Asegurar que las cabeceras se alineen con las columnas */
+  width: 100%; /* Ajustar al ancho de la tabla */
+  table-layout: fixed; /* Mantener el tamaño de las columnas */
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+}
+
+.styled-table tbody {
+  display: block; /* Asegurar que el scroll no afecte el diseño */
+  max-height: calc(100vh - 150px); /* Ajustar altura del cuerpo de la tabla */
+  overflow-y: auto; /* Habilitar desplazamiento vertical */
+}
+
+.styled-table tbody tr {
+  display: table; /* Mantener el diseño de las filas */
+  width: 100%;
+  table-layout: fixed; /* Asegurar que las columnas mantengan su tamaño */
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .styled-table,
+  .styled-table thead,
+  .styled-table tbody,
+  .styled-table th,
+  .styled-table td,
+  .styled-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  .styled-table thead {
+    display: none;
+  }
+
+  .styled-table tr {
+    margin-bottom: 12px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .styled-table td {
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 10px;
+    font-size: 13px;
+    align-items: center;
+  }
+
+  .styled-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #444;
+    flex: 1;
+    padding-right: 10px;
+  }
+
+  .styled-table td:last-child {
+    border-bottom: none;
+  }
+}

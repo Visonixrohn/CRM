@@ -1,0 +1,321 @@
+/* CSS Variables for consistent theming */
+:root {
+  --primary-color: #4f46e5; /* Indigo */
+  --success-color: #10b981; /* Emerald */
+  --danger-color: #ef4444; /* Red */
+  --neutral-color: #6b7280; /* Gray */
+  --background-color: #f8fafc; /* Slate-50 */
+  --text-color: #1f2937; /* Gray-800 */
+  --card-shadow: 0 4px 12px rgba(39, 36, 36, 0.1);
+  --border-radius: 12px;
+  --transition: all 0.3s ease;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
+}
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+.comisiones-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+}
+
+.comisiones-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.comisiones-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Card Grid */
+.comisiones-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 2rem;
+}
+
+.com-card {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+}
+
+.com-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.com-card.meta {
+  background: linear-gradient(135deg, var(--primary-color), #a5b4fc);
+  color: white;
+}
+.com-card.success {
+  background: linear-gradient(135deg, var(--success-color), #6ee7b7);
+  color: white;
+}
+.com-card.danger {
+  background: linear-gradient(135deg, var(--danger-color), #f87171);
+  color: white;
+}
+.com-card.primary {
+  background: linear-gradient(135deg, #3b82f6, #93c5fd);
+  color: white;
+}
+.com-card.neutral {
+  background: linear-gradient(135deg, var(--neutral-color), #d1d5db);
+  color: white;
+}
+
+.com-card-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.com-card-title {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.com-card-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Actions Header */
+.comisiones-actions-header {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.header-round-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-round-btn:hover {
+  background: #4338ca;
+  transform: translateY(-2px);
+}
+
+/* Chart */
+.comisiones-chart {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* Modal */
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--card-shadow);
+}
+
+.modal-content h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.modal-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  transition: var(--transition);
+}
+
+input {
+  color: black;
+}
+
+.modal-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+.modal-error {
+  color: var(--danger-color);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.modal-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.modal-button.save {
+  background: var(--primary-color);
+  color: white;
+}
+
+.modal-button.save:hover {
+  background: #4338ca;
+}
+
+.modal-button.cancel {
+  background: var(--danger-color);
+  color: white;
+}
+
+.modal-button.cancel:hover {
+  background: #dc2626;
+}
+
+/* React Modal Styles */
+.ReactModal__Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.ReactModal__Content {
+  color: var(--text-color);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  max-width: 90%;
+  z-index: 1001;
+}
+
+/* Loading and Error States */
+.loading,
+.error {
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-color);
+}
+
+.error {
+  color: var(--danger-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .comisiones-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comisiones-title {
+    font-size: 1.5rem;
+  }
+
+  .com-card {
+    padding: 1rem;
+  }
+
+  .com-card-value {
+    font-size: 1.2rem;
+  }
+
+  .header-round-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .comisiones-container {
+    padding: 1rem;
+  }
+
+  .modal-content {
+    width: 90%;
+    padding: 1.5rem;
+  }
+}

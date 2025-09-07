@@ -1,0 +1,63 @@
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: 2rem;
+}
+.header-actions button {
+  background: #fff;
+  color: #0a2342;
+  border: 1px solid #0a2342;
+  border-radius: 6px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.header-actions button:hover {
+  background: #0a2342;
+  color: #fff;
+}
+.header {
+  display: flex;
+  align-items: center;
+  background: #0a2342;
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  min-height: 56px;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2000;
+  box-sizing: border-box;
+  justify-content: flex-start;
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  margin-right: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0.25rem;
+}
+
+.header-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 600px) {
+  .header {
+    padding: 0.5rem 0.75rem;
+  }
+  .header-title {
+    font-size: 1rem;
+  }
+  .menu-btn svg {
+    width: 24px;
+    height: 24px;
+  }
+}
