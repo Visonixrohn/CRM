@@ -19,27 +19,6 @@ import Actualizaciones from "./Actualizaciones";
 import LoadingScreen from "./LoadingScreen";
 
 function App() {
-  // Estado y lógica para el prompt de instalación PWA
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showInstall, setShowInstall] = useState(false);
-
-  useEffect(() => {
-    const handler = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setShowInstall(true);
-    };
-    window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') setShowInstall(false);
-    }
-  };
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [page, setPage] = useState(() => {
@@ -203,28 +182,6 @@ function App() {
           setChoferModal(false);
         }}
       />
-      {/* Botón flotante para instalar la app como PWA */}
-      {showInstall && (
-        <button
-          style={{
-            position: 'fixed',
-            bottom: 24,
-            right: 24,
-            zIndex: 3000,
-            background: '#4f46e5',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 12,
-            padding: '12px 20px',
-            fontSize: '1.1rem',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
-            cursor: 'pointer',
-          }}
-          onClick={handleInstallClick}
-        >
-          Instalar app
-        </button>
-      )}
     </div>
   );
 }

@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&display=swap");
-
 @media (max-width: 480px) {
   .clientes-nuevos-container {
     padding: 0.5rem;
@@ -32,6 +30,9 @@
   --transition: all 0.2s ease-out;
   --font-family: "Chakra Petch", "Segoe UI", Roboto, monospace;
 }
+
+/* Cargar fuente futurista */
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&display=swap");
 
 /* Reset para consistencia */
 * {
