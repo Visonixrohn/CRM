@@ -32,7 +32,7 @@ function App() {
   const [choferModal, setChoferModal] = useState(false);
   const [chofer, setChofer] = useState({ nombre: "", contacto: "" });
   const [modal, setModal] = useState({ open: false, label: "", value: "", setter: null, isMoney: false });
-  // Handlers y helpers para navegación y sidebar
+  // Handlers y helpers para navegación y sidebar (forzar redeploy)
   const toggleSidebar = () => setSidebarOpen((open) => !open);
   const closeSidebar = () => setSidebarOpen(false);
   const handleOverlayClick = () => closeSidebar();
