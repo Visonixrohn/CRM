@@ -1,3 +1,22 @@
+@media (max-width: 480px) {
+  .comisiones-container {
+    padding: 0.5rem;
+  }
+  .comisiones-title {
+    font-size: 1.1rem;
+  }
+  .com-card {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .com-card-value {
+    font-size: 1rem;
+  }
+  .comisiones-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}
 /* CSS Variables for consistent theming */
 :root {
   --primary-color: #4f46e5; /* Indigo */

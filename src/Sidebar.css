@@ -1,3 +1,8 @@
+@media (max-width: 700px) {
+  .sidebar {
+    display: none !important;
+  }
+}
 /* Variables (same as previous design for consistency) */
 :root {
   --neon-blue: #00b7ff;

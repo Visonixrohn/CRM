@@ -1,3 +1,31 @@
+@media (max-width: 480px) {
+  .ordenes-container {
+    padding: 0.5rem;
+  }
+  .ordenes-header h1 {
+    font-size: 1.1rem;
+  }
+  .ordenes-table th, .ordenes-table td {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+  }
+  .ordenes-table {
+    min-width: 600px;
+    font-size: 0.85rem;
+  }
+  .order-details, .order-details-modal, .update-state-modal {
+    padding: 0.5rem;
+    font-size: 0.95rem;
+    max-width: 98vw;
+  }
+  .order-details-modal h2 {
+    font-size: 1rem;
+  }
+  .order-details-modal iframe {
+    height: 180px;
+    min-width: 100% !important;
+  }
+}
 /* Reset básico para consistencia en navegadores */
 * {
   margin: 0;

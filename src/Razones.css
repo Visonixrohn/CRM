@@ -1,3 +1,19 @@
+@media (max-width: 480px) {
+  .razones-container {
+    padding: 0.5rem;
+  }
+  .styled-table tr {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .styled-table td {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.85rem;
+  }
+  .styled-table td::before {
+    font-size: 0.8rem;
+  }
+}
 .razones-container {
   padding: 20px;
   font-family: "Segoe UI", Roboto, Arial, sans-serif;

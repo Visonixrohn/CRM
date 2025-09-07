@@ -15,7 +15,7 @@ export const fetchEntregas = async (userId) => {
 
 export const updateEstatus = async (entregaId, nuevoEstatus) => {
   try {
-    console.log("Actualizando en Supabase:", entregaId, nuevoEstatus);
+
     const { error } = await supabase
       .from("entregas_pendientes")
       .update({ estatus: nuevoEstatus })

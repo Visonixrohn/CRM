@@ -1,3 +1,19 @@
+@media (max-width: 480px) {
+  .clientes-nuevos-container {
+    padding: 0.5rem;
+  }
+  .clientes-nuevos-tabla tr {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .clientes-nuevos-tabla td {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.85rem;
+  }
+  .clientes-nuevos-tabla td::before {
+    font-size: 0.8rem;
+  }
+}
 /* Variables globales para un tema blanco con azul */
 :root {
   --neon-blue: #00b7ff;

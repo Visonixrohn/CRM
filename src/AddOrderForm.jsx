@@ -17,7 +17,7 @@ const AddOrderFormF = ({ supabase }) => {
     if (error) {
       console.error("Error al guardar la orden:", error);
     } else {
-      console.log("Orden guardada exitosamente");
+
       setIsAddOrderModalOpen(false);
       setNewOrder({
         fecha: "",

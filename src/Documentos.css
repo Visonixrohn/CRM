@@ -1,3 +1,21 @@
+@media (max-width: 480px) {
+  .documentos-container {
+    padding: 0.5rem;
+  }
+  .documentos-container h1 {
+    font-size: 1.1rem;
+  }
+  .modal-content {
+    width: 98vw;
+    padding: 0.5rem;
+  }
+  .btn {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.8rem 0;
+    margin-bottom: 0.5rem;
+  }
+}
 /* Reset básico para consistencia en navegadores */
 * {
   margin: 0;

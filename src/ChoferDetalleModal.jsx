@@ -3,7 +3,7 @@ import React from "react";
 const ChoferDetalleModal = ({ open, chofer, onClose, onEdit }) => {
   if (!open) return null;
 
-  console.log("Datos recibidos en ChoferDetalleModal:", chofer); // Verificar los datos recibidos
+
 
   return (
     <div

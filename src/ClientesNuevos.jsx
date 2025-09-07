@@ -8,7 +8,7 @@ const actualizarStatus = async (identidad, nuevoStatus) => {
   try {
     const response = await fetch(url, { method: "GET" });
     const data = await response.json();
-    console.log(data);
+
   } catch (error) {
     console.error("Error al actualizar status:", error);
   }
@@ -29,7 +29,7 @@ const ClientesNuevos = () => {
       Papa.parse(csvData, {
         header: true,
         complete: (result) => {
-          console.log("Primer objeto del CSV:", result.data[0]); // Depuración detallada
+
           setClientes(result.data);
         },
       });
@@ -70,9 +70,7 @@ const ClientesNuevos = () => {
     return true;
   });
 
-  console.log("Clientes filtrados:", clientesFiltrados); // Depuración
-  console.log("Datos originales:", clientes); // Depuración de los datos originales
-  console.log("Primer cliente:", clientes[0]); // Depuración del primer objeto
+
 
   return (
     <div className="clientes-nuevos-container">

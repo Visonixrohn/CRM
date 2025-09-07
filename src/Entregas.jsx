@@ -588,7 +588,7 @@ const Entregas = () => {
       ])
       .select();
     if (error) {
-      console.log("Supabase insert error:", error);
+
     }
     if (!error && data && data.length > 0) {
       // Recargar lista desde supabase para evitar inconsistencias
@@ -635,7 +635,7 @@ const Entregas = () => {
   };
 
   const handleChoferButtonClick = () => {
-    console.log("Datos del chofer:", chofer); // Verificar el contenido del estado `chofer`
+
     if (chofer) {
       setChoferModal("detalle"); // Abrir modal de detalles si ya hay chofer
     } else {

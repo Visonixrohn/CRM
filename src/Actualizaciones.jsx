@@ -30,7 +30,7 @@ const Actualizaciones = () => {
             return obj;
           });
 
-          console.log("Datos cargados para Actualizaciones:", formattedData); // Depuración
+
           setClientes(formattedData);
         } else {
           console.error("No se encontraron datos en la hoja ACT.");
@@ -84,7 +84,7 @@ const Actualizaciones = () => {
     try {
       const response = await fetch(url);
       const data = await response.json();
-      console.log(data);
+
       alert(data.message);
       setDetalle(null); // Cerrar el modal de detalle
     } catch (error) {
@@ -95,7 +95,7 @@ const Actualizaciones = () => {
     }
   };
 
-  console.log("Clientes filtrados para Actualizaciones:", clientesFiltrados); // Depuración de los datos filtrados
+
 
   return (
     <div className="clientes-nuevos-container">

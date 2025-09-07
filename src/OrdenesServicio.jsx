@@ -103,7 +103,7 @@ const OrdenesServicio = () => {
     if (error) {
       console.error("Error al guardar la orden:", error);
     } else {
-      console.log("Orden guardada exitosamente");
+
       setIsSuccessModalOpen(true);
     }
 
@@ -136,7 +136,7 @@ const OrdenesServicio = () => {
     if (error) {
       console.error("Error al actualizar el estado:", error);
     } else {
-      console.log("Estado actualizado exitosamente");
+
       setSelectedOrden({ ...selectedOrden, estado: selectedState });
       setIsUpdateStateModalOpen(false);
     }
