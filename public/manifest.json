@@ -2,7 +2,7 @@
   "name": "CRM Miguel",
   "short_name": "CRM",
   "description": "Gestión de clientes y operaciones para Miguel.",
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4f46e5",
