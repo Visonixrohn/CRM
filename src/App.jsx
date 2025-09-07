@@ -33,9 +33,17 @@ function App() {
   }, [sidebarOpen]);
   // Cierra el sidebar al hacer click fuera (overlay)
   const handleOverlayClick = () => setSidebarOpen(false);
-  const [page, setPage] = useState("comisiones");
+  // Guardar/restaurar la vista actual
+  const [page, setPage] = useState(() => {
+    return localStorage.getItem("crm-vista-actual") || "comisiones";
+  });
+
+  // Guardar la vista cada vez que cambie
+  useEffect(() => {
+    localStorage.setItem("crm-vista-actual", page);
+  }, [page]);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Eliminar loading, ya no se usará para recarga
   const [meta, setMeta] = useState(35000);
   const [comisionObtenida, setComisionObtenida] = useState(0);
   const [ventaPorCliente, setVentaPorCliente] = useState(0);
@@ -90,7 +98,7 @@ function App() {
   };
   const handleModalClose = () => setModal({ ...modal, open: false });
 
-  if (loading) return <LoadingScreen onComplete={() => setLoading(false)} />;
+  // Ya no mostrar LoadingScreen al recargar
   if (!user) return <Login onLogin={setUser} />;
 
   return (

@@ -57,7 +57,7 @@ const ModalEstatus = ({ open, onClose, onSelect }) => {
   );
 };
 
-const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus }) => {
+const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer }) => {
   const [showEstatus, setShowEstatus] = useState(false);
   if (!open || !entrega) return null;
 
@@ -72,17 +72,38 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus }) => {
     }
   }
 
-  const handleEnviarDatos = () => {
-    const mensaje = `Entrega para: ${entrega.cliente}\nFactura: ${entrega.factura}\nTeléfono: ${entrega.cel}\nUbicación: https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const baseUrl = isMobile
-      ? "https://wa.me/"
-      : "https://web.whatsapp.com/send";
-    const url = `${baseUrl}?phone=504${
-      entrega.chofer?.telefono || "NUMERO"
-    }&text=${encodeURIComponent(mensaje)}`;
-    window.open(url, "_blank");
-  };
+ const handleEnviarDatos = () => {
+  // Construcción del mensaje de entrega
+  const mensaje = `Entrega para: ${entrega.cliente}\nFactura: ${entrega.factura}\nTeléfono: ${entrega.cel}\nUbicación: https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+
+  // Verifica si el dispositivo es móvil o no
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const baseUrl = isMobile
+    ? "https://wa.me/"
+    : "https://web.whatsapp.com/send";
+
+  // Usar el número del chofer de la entrega, o si no existe, el chofer global (React state)
+  // Usar SIEMPRE el número del chofer global si existe
+  let telefono = (typeof chofer !== 'undefined' && (chofer.telefono || chofer.contacto)) || "";
+
+  // Limpiar el teléfono, eliminando caracteres no numéricos
+  telefono = String(telefono).replace(/[^\d]/g, "");
+  // Si el número comienza con '504' (código de país de Honduras), eliminarlo
+  if (telefono.startsWith("504")) {
+    telefono = telefono.slice(3);
+  }
+
+  // Verifica que el número tenga una longitud válida (8 dígitos)
+  if (telefono.length !== 8) {
+    alert("No hay un número de teléfono válido para WhatsApp del chofer");
+    return;
+  }
+
+  // Construcción de la URL para abrir WhatsApp
+  const url = `${baseUrl}?phone=504${telefono}&text=${encodeURIComponent(mensaje)}`;
+  window.open(url, "_blank");
+};
+
 
   return (
     <div className="modern-modal-bg">
@@ -766,6 +787,7 @@ const Entregas = () => {
         entrega={detalle}
         onClose={() => setDetalle(null)}
         onUpdateEstatus={handleUpdateEstatus}
+        chofer={chofer}
       />
       <ModalAgregar
         open={showAgregar}
