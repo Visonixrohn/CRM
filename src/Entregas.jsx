@@ -1,10 +1,13 @@
+import ModalEstatus from "./components/ModalEstatus";
 import "./EntregasBusqueda.css";
 import React, { useState, useEffect } from "react";
+import EntregaCard from "./components/EntregaCard";
 import { createPortal } from "react-dom";
 import { supabase } from "./supabaseClient";
 import ChoferModal from "./ChoferModal";
 import ChoferDetalleModal from "./ChoferDetalleModal";
 import "./BotonesBar.css";
+import "./FiltrosBar.css";
 import "./AgregarEntregaForm.css";
 import "./AgregarEntregaMultiStep.css";
 import "./TablaEntregas.css";
@@ -15,67 +18,17 @@ const estados = ["Pendiente", "Entregado", "Rechazado", "Reprogramado"];
 
 function tiempoTranscurrido(fecha) {
   if (!fecha) return "-";
-  const inicio = new Date(fecha);
+  const fechaEntrega = new Date(fecha);
   const ahora = new Date();
-  const diff = Math.floor((ahora - inicio) / (1000 * 60 * 60 * 24));
-  if (diff === 0) return "Hoy";
-  if (diff === 1) return "Ayer";
-  return `${diff} días`;
+  const diffMs = ahora - fechaEntrega;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHrs = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHrs / 24);
+  if (diffDays > 0) return `${diffDays}d`;
+  if (diffHrs > 0) return `${diffHrs}h`;
+  if (diffMins > 0) return `${diffMins}min`;
+  return "ahora";
 }
-
-const ModalEstatus = ({ open, onClose, onSave, entrega }) => {
-  const [estatus, setEstatus] = useState(entrega?.estatus || "Pendiente");
-  const [tipoEntrega, setTipoEntrega] = useState(entrega?.tipo_entrega || "TIENDA");
-  const [gestionada, setGestionada] = useState(entrega?.gestionada || "NO GESTIONADA");
-  if (!open) return null;
-  return createPortal(
-    <div
-      className="actualizar-estatus-modal-bg"
-      onClick={onClose}
-      style={{ zIndex: 3000 }}
-    >
-      <div
-        className="actualizar-estatus-modal"
-        onClick={e => e.stopPropagation()}
-      >
-        <div className="actualizar-estatus-titulo">Actualizar entrega</div>
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            onSave(estatus, tipoEntrega, gestionada);
-          }}
-          style={{ display: 'flex', flexDirection: 'column', gap: 18 }}
-        >
-          <label style={{ fontWeight: 600, marginBottom: 4 }}>Estatus
-            <select value={estatus} onChange={e => setEstatus(e.target.value)} style={{ width: '100%', marginTop: 4 }}>
-              <option value="Pendiente">Pendiente</option>
-              <option value="Entregado">Entregado</option>
-              <option value="Rechazado">Rechazado</option>
-              <option value="Reprogramado">Reprogramado</option>
-            </select>
-          </label>
-          <label style={{ fontWeight: 600, marginBottom: 4 }}>Tipo de entrega
-            <select value={tipoEntrega} onChange={e => setTipoEntrega(e.target.value)} style={{ width: '100%', marginTop: 4 }}>
-              <option value="TIENDA">TIENDA</option>
-              <option value="BODEGA SPS">BODEGA SPS</option>
-              <option value="BODEGA TG">BODEGA TG</option>
-              <option value="DOMICILIO">DOMICILIO</option>
-            </select>
-          </label>
-          <label style={{ fontWeight: 600, marginBottom: 4 }}>Gestionada
-            <select value={gestionada} onChange={e => setGestionada(e.target.value)} style={{ width: '100%', marginTop: 4 }}>
-              <option value="GESTIONADA">GESTIONADA</option>
-              <option value="NO GESTIONADA">NO GESTIONADA</option>
-            </select>
-          </label>
-          <button type="submit" className="actualizar-estatus-btn" style={{ marginTop: 10, background: '#4f46e5' }}>Guardar</button>
-          <button type="button" className="actualizar-estatus-cerrar" onClick={onClose} style={{ marginTop: 6 }}>Cancelar</button>
-        </form>
-      </div>
-    </div>,
-    document.body
-  );
-};
 
 const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer }) => {
   const [showEstatus, setShowEstatus] = useState(false);
@@ -430,6 +383,8 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
 };
 
 const Entregas = () => {
+
+  // --- Declarar todos los useState ANTES de cualquier useEffect ---
   const [entregas, setEntregas] = useState([]);
   const [detalle, setDetalle] = useState(null);
   const [showAgregar, setShowAgregar] = useState(false);
@@ -439,6 +394,36 @@ const Entregas = () => {
   const [user, setUser] = useState(null);
   const [filtroEstatus, setFiltroEstatus] = useState("");
   const [busqueda, setBusqueda] = useState("");
+
+  // Handler para el botón Chofer
+  const handleChoferButtonClick = () => {
+    setChoferModal(true);
+    setChoferModalType(chofer ? "detalle" : "formulario");
+  };
+
+  // Cargar chofer del usuario al iniciar y al cerrar el modal
+  const fetchChofer = async () => {
+    if (!user) return;
+    try {
+      const { data, error } = await supabase
+        .from("choferes")
+        .select("*")
+        .eq("usuario_id", user.id)
+        .single();
+      if (error && error.code !== 'PGRST116') throw error;
+      setChofer(data || null);
+    } catch (e) {
+      setChofer(null);
+    }
+  };
+  useEffect(() => {
+    fetchChofer();
+    // eslint-disable-next-line
+  }, [user]);
+
+  // Handlers requeridos por EntregaCard
+  const handleEdit = (entrega) => setDetalle(entrega);
+  const handleDelete = () => alert('Función eliminar aún no implementada');
 
   // Obtener usuario autenticado
   useEffect(() => {
@@ -519,56 +504,53 @@ const Entregas = () => {
         .select();
       if (error) throw error;
       if (data && data.length > 0) {
-        const { data: nuevas, error: err2 } = await supabase
-          .from("entregas_pendientes")
-          .select("*")
-          .eq("usuario_id", user.id)
-          .order("created_at", { ascending: false });
-        if (err2) throw err2;
-        setEntregas(nuevas || []);
         return true;
       }
+      return false;
     } catch (e) {
-      console.error("Error al agregar entrega:", e.message);
-      alert("No se pudo guardar la entrega. Intenta de nuevo.");
       return false;
     }
-  };
+  }
 
-  // Guardar datos del chofer
-  const handleSaveChofer = async ({ nombre, contacto }) => {
+  // Guardar o actualizar chofer en Supabase
+  async function handleSaveChofer({ nombre, contacto }) {
     if (!user) return;
     try {
-      const { data, error } = chofer
-        ? await supabase
-            .from("choferes")
-            .update({ nombre, telefono: contacto })
-            .eq("usuario_id", user.id)
-            .select()
-        : await supabase
-            .from("choferes")
-            .insert({ nombre, telefono: contacto, usuario_id: user.id })
-            .select();
-      if (error) throw error;
-      if (data && data.length > 0) {
-        setChofer(data[0]);
-        alert("Datos del chofer guardados correctamente.");
-        setChoferModal(false);
+      let result;
+      if (chofer) {
+        // Actualizar
+        result = await supabase
+          .from("choferes")
+          .update({ nombre, telefono: contacto })
+          .eq("usuario_id", user.id);
+      } else {
+        // Insertar
+        result = await supabase
+          .from("choferes")
+          .insert([{ nombre, telefono: contacto, usuario_id: user.id }]);
       }
+      if (result.error) throw result.error;
+      // Volver a cargar chofer
+      const { data } = await supabase
+        .from("choferes")
+        .select("*")
+        .eq("usuario_id", user.id)
+        .single();
+      setChofer(data || null);
+      setChoferModalType("detalle");
     } catch (e) {
-      console.error("Error al guardar los datos del chofer:", e.message);
-      alert("Hubo un error al guardar los datos del chofer.");
+      alert("Error al guardar chofer: " + (e.message || e));
     }
-  };
+  }
 
-  const handleChoferButtonClick = () => {
-    setChoferModal(true);
-    setChoferModalType(chofer ? "detalle" : "formulario");
-  };
-
+  // Return principal del componente
   return (
     <div className="entregas-modern-bg">
-      <div className="botones-bar-container">
+      {/* Mostrar datos del chofer arriba de la tabla */}
+      <h3 style={{margin: '1rem 0 0.5rem 0', color: '#374151', fontWeight: 600, fontSize: '1.1rem'}}>
+        Chofer: {chofer ? `${chofer.nombre || 'Sin nombre'} (${chofer.telefono || 'Sin número'})` : 'No registrado'}
+      </h3>
+  <div className="botones-bar-container">
         <div className="entregas-busqueda-barra-container">
           <input
             type="text"
@@ -582,21 +564,23 @@ const Entregas = () => {
         <button className="btn-agregar" onClick={() => setShowAgregar(true)}>
           Agregar entrega
         </button>
-        {estados.map((e) => (
+        <div className="filtros-bar">
+          {estados.map((e) => (
+            <button
+              key={e}
+              className={`btn-filtro${filtroEstatus === e ? " selected" : ""}`}
+              onClick={() => setFiltroEstatus(e === filtroEstatus ? "" : e)}
+            >
+              {e}
+            </button>
+          ))}
           <button
-            key={e}
-            className={`btn-filtro${filtroEstatus === e ? " selected" : ""}`}
-            onClick={() => setFiltroEstatus(e === filtroEstatus ? "" : e)}
+            className={`btn-filtro${filtroEstatus === "" ? " selected" : ""}`}
+            onClick={() => setFiltroEstatus("")}
           >
-            {e}
+            Todos
           </button>
-        ))}
-        <button
-          className={`btn-filtro${filtroEstatus === "" ? " selected" : ""}`}
-          onClick={() => setFiltroEstatus("")}
-        >
-          Todos
-        </button>
+        </div>
         <button className="btn-chofer" title="Chofer" onClick={handleChoferButtonClick}>
           <svg
             width="22"
@@ -615,7 +599,21 @@ const Entregas = () => {
           Chofer
         </button>
       </div>
-      <div className="tabla-entregas-container">
+
+      {/* Cards solo en móvil */}
+      <div className="entregas-cards-mobile">
+        {entregasFiltradas.map((entrega) => (
+          <EntregaCard
+            key={entrega.id}
+            entrega={entrega}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        ))}
+      </div>
+
+      {/* Tabla solo en escritorio */}
+      <div className="tabla-entregas-wrapper">
         <table className="tabla-entregas">
           <thead>
             <tr>
@@ -648,15 +646,14 @@ const Entregas = () => {
                 </td>
                 <td data-label="Tiempo">{tiempoTranscurrido(e.fecha)}</td>
                 <td data-label="Estatus">
-                  <span className={`modern-status modern-${e.estatus?.toLowerCase?.()}`}>
-                    {e.estatus}
-                  </span>
+                  <span className={`modern-status modern-${e.estatus?.toLowerCase?.()}`}>{e.estatus}</span>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
       <ModalDetalle
         open={!!detalle}
         entrega={detalle}
@@ -692,20 +689,28 @@ const Entregas = () => {
         <ChoferDetalleModal
           open={choferModal}
           chofer={chofer}
-          onClose={() => setChoferModal(false)}
+          onClose={() => {
+            setChoferModal(false);
+            fetchChofer();
+          }}
           onEdit={() => setChoferModalType("formulario")}
         />
       )}
       {choferModal && choferModalType === "formulario" && (
         <ChoferModal
           open={choferModal}
-          onClose={() => setChoferModal(false)}
+          onClose={() => {
+            setChoferModal(false);
+            fetchChofer();
+          }}
           onSave={handleSaveChofer}
           chofer={chofer}
         />
       )}
     </div>
   );
-};
+  // --- FIX: Definir handleSaveChofer para evitar error de referencia ---
+}
+
 
 export default Entregas;

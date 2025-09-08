@@ -1,0 +1,93 @@
+.chofer-detalle-modal-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chofer-detalle-modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  min-width: 300px;
+  max-width: 95vw;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+}
+.chofer-detalle-titulo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+.chofer-detalle-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.chofer-detalle-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  color: #374151;
+}
+.chofer-detalle-label {
+  font-weight: 600;
+  color: #6366f1;
+}
+.chofer-detalle-valor {
+  font-weight: 400;
+  color: #374151;
+}
+.chofer-detalle-cerrar {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+.chofer-detalle-cerrar:hover {
+  background: #4f46e5;
+}
+.chofer-detalle-editar {
+  background: #f59e42;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+.chofer-detalle-editar:hover {
+  background: #d97706;
+}
+@media (max-width: 600px) {
+  .chofer-detalle-modal {
+    min-width: 0;
+    width: 98vw;
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
+    max-width: 99vw;
+  }
+  .chofer-detalle-titulo {
+    font-size: 1.1rem;
+  }
+  .chofer-detalle-item {
+    font-size: 0.98rem;
+  }
+}

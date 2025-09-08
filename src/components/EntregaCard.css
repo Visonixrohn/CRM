@@ -1,0 +1,108 @@
+.entrega-card {
+  background: #f9fafb;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(99,102,241,0.10);
+  border: 1.5px solid #e0e7ff;
+  padding: 1.1rem 1rem 1.2rem 1rem;
+  margin-bottom: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 1.01rem;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.entrega-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.45rem 0;
+}
+.entrega-card-row:last-child {
+  border-bottom: none;
+}
+.entrega-card-label {
+  font-weight: 700;
+  color: #6366f1;
+  width: 48%;
+  flex-shrink: 0;
+  font-size: 0.98rem;
+  letter-spacing: 0.01em;
+}
+.entrega-card-value {
+  color: #22223b;
+  font-weight: 500;
+  word-break: break-word;
+}
+.entrega-card-badge {
+  font-size: 0.97rem;
+  padding: 0.22rem 0.7rem;
+  border-radius: 10px;
+  min-width: 90px;
+  text-align: center;
+  display: inline-block;
+  font-weight: 600;
+}
+.entrega-card-badge.tipo {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+.entrega-card-badge.gestionada {
+  background: #fef9c3;
+  color: #b45309;
+}
+.entrega-card-badge.status {
+  background: #e0e7ff;
+  color: #6366f1;
+}
+.entrega-card-badge.status-Entregado {
+  background: #d1fae5;
+  color: #059669;
+}
+.entrega-card-badge.status-Pendiente {
+  background: #fef3c7;
+  color: #b45309;
+}
+.entrega-card-badge.status-Cancelado {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.entrega-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.entrega-card-btn {
+  font-size: 1.1rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 10px;
+  border: none;
+  background: #e0e7ff;
+  color: #6366f1;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.entrega-card-btn.edit:hover {
+  background: #c7d2fe;
+}
+.entrega-card-btn.delete {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.entrega-card-btn.delete:hover {
+  background: #fecaca;
+}
+
+@media (min-width: 701px) {
+  .entrega-card {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .entrega-card {
+    display: flex;
+  }
+}
