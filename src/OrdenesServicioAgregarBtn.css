@@ -1,0 +1,70 @@
+/* =============================
+   BOTÓN FLOTANTE (+) AJUSTADO
+   ============================= */
+.btn-agregar-orden {
+  position: fixed;
+  bottom: 4rem;   /* 🔹 Más arriba */
+  right: 2rem;    /* 🔹 Más hacia adentro */
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f46e5, #06b6d4);
+  color: #fff;
+  font-size: 2rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.btn-agregar-orden:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+}
+
+.btn-agregar-orden:active {
+  transform: scale(0.95);
+}
+
+/* Tooltip opcional en escritorio */
+.btn-agregar-orden::after {
+  content: "Agregar orden";
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  background: #1f2937;
+  color: #fff;
+  font-size: 0.8rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  opacity: 0;
+  transform: translateY(5px);
+  pointer-events: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-agregar-orden:hover::after {
+    color: #000;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsivo */
+@media (max-width: 700px) {
+  .btn-agregar-orden {
+    width: 55px;
+    height: 50px;
+    font-size: 1.6rem;
+    bottom: 5rem;  /* 🔹 En móviles también un poco arriba */
+    right: 1.5rem; /* 🔹 Más cómodo para el pulgar */
+  }
+  .btn-agregar-orden::after {
+    display: none; /* Sin tooltip en móviles */
+  }
+}

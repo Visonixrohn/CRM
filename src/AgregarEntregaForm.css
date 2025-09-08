@@ -1,0 +1,188 @@
+/* =============================
+   FONDO OSCURO DEL MODAL
+   ============================= */
+.agregar-entrega-modal-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(30, 41, 59, 0.5);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  overflow-y: auto; /* Permite scroll en móviles */
+}
+
+/* =============================
+   MODAL RESPONSIVO
+   ============================= */
+.agregar-entrega-modal {
+  width: 80vw;   /* 80% del ancho de pantalla en móviles */
+  height: 80vh;  /* 80% del alto de pantalla en móviles */
+  max-width: 500px; /* Límite para móviles grandes */
+  max-height: 90vh; /* Evita overflow */
+  padding: 1rem;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  position: relative;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+  animation: modalFadeIn 0.5s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+/* Animación de entrada */
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* =============================
+   GRID DEL FORMULARIO
+   ============================= */
+.agregar-entrega-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.agregar-entrega-form-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+/* =============================
+   INPUTS FLOTANTES
+   ============================= */
+.input-group-float {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.input-group-float input[type="text"],
+.input-group-float input[type="date"] {
+  width: 100%;
+  padding: 0.85rem 1rem 0.85rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  color: #1e293b;
+  background: #fff;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.input-group-float input:hover {
+  border-color: #4f46e5;
+  background: #f1f5f9;
+}
+
+.input-group-float input:focus {
+  border-color: #06b6d4;
+  box-shadow: 0 0 0 3px rgba(6,182,212,0.2), 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.input-group-float label {
+  position: absolute;
+  left: 2.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 0.95rem;
+  font-weight: 500;
+  background: transparent;
+  padding: 0 0.25rem;
+  z-index: 3;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+.input-group-float input:focus + label,
+.input-group-float input:not(:placeholder-shown):not([value=""]) + label,
+.input-group-float label.active {
+  top: -0.75rem;
+  left: 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4f46e5;
+  background: #fff;
+  padding: 0 0.5rem;
+  border-radius: 6px;
+}
+
+.input-group-float .input-icon {
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #4f46e5;
+  pointer-events: none;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+/* =============================
+   BOTONES
+   ============================= */
+.agregar-entrega-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.agregar-entrega-nav button {
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: none;
+  background: #4f46e5;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.agregar-entrega-nav button:hover {
+  background: #06b6d4;
+  transform: translateY(-2px);
+}
+
+/* =============================
+   AJUSTES PARA DESKTOP
+   ============================= */
+@media (min-width: 701px) {
+  .agregar-entrega-modal {
+    width: 50vw;
+    height: auto;
+    max-width: 600px;
+    max-height: none;
+    padding: 2rem;
+    border-radius: 16px;
+  }
+  .input-group-float input[type="text"],
+  .input-group-float input[type="date"] {
+    font-size: 1.1rem;
+    padding: 0.9rem 1.2rem 0.9rem 3rem;
+  }
+  .input-group-float label {
+    font-size: 1.05rem;
+    left: 3rem;
+  }
+  .input-group-float .input-icon {
+    font-size: 1.3rem;
+    left: 1rem;
+  }
+  .input-group-float input:focus + label,
+  .input-group-float input:not(:placeholder-shown):not([value=""]) + label,
+  .input-group-float label.active {
+    font-size: 0.9rem;
+    left: 1.5rem;
+  }
+}

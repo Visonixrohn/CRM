@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import Modal from "react-modal";
 import { CSVLink } from "react-csv";
-import "./OrdenesServicio.css";
+import "./OrdenesServicioTabla.css";
+import "./OrdenesServicioAgregarBtn.css";
+import "./OrdenesServicioFiltroBtn.css";
+import "./OrdenesServicioForm.css";
+import "./OrdenesServicioDetalle.css";
+import "./OrdenesServicioActualizarEstado.css";
+import "./OrdenesServicioBusqueda.css";
 
 const OrdenesServicio = () => {
   const [ordenes, setOrdenes] = useState([]);
@@ -280,7 +286,7 @@ const OrdenesServicio = () => {
       </div>
 
       <button
-        className="floating-btn"
+        className="btn-agregar-orden"
         onClick={() => setIsAddOrderModalOpen(true)}
       >
         +
@@ -382,20 +388,35 @@ const OrdenesServicio = () => {
             <h3>Actualizar Estado</h3>
             <div className="estado-buttons">
               {estados.map((estado) => {
-                const estadoClass = estado
-                  .toLowerCase()
-                  .replace(/\s+/g, "-")
-                  .replace(
-                    /[áéíóú]/g,
-                    (m) => ({ á: "a", é: "e", í: "i", ó: "o", ú: "u" }[m])
-                  );
+                // Normalizar nombre para clase exclusiva
+                let clase = "";
+                if (
+                  estado.toLowerCase().includes("pendiente") &&
+                  estado.toLowerCase().includes("visita")
+                )
+                  clase = "pendiente";
+                else if (estado.toLowerCase().includes("reparado"))
+                  clase = "reparado";
+                else if (
+                  estado.toLowerCase().includes("pendiente") &&
+                  estado.toLowerCase().includes("repuesto")
+                )
+                  clase = "repuesto";
+                else if (estado.toLowerCase().includes("cambio"))
+                  clase = "cambio";
+                else clase = "otro";
+
                 return (
                   <button
                     key={estado}
-                    className={`estado-button ${estadoClass} ${
-                      selectedState === estado ? "active" : ""
+                    className={`estado-button ${clase}${
+                      selectedState === estado ? " active" : ""
                     }`}
-                    onClick={() => setSelectedState(estado)}
+                    onClick={() => {
+                      setSelectedState(estado);
+                      setIsUpdateStateModalOpen(false);
+                      setTimeout(() => window.location.reload(), 200);
+                    }}
                   >
                     {estado}
                   </button>

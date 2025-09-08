@@ -1,0 +1,177 @@
+/* =============================
+   MODALES GENERALES
+   ============================= */
+
+/* Fondo oscuro */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(17, 24, 39, 0.55); /* gris oscuro translúcido */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+/* Estilos base para todos los modales */
+.modal,
+.update-state-modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Encabezados */
+.modal h2 {
+  color: #16a34a;
+  margin-bottom: 1.5rem;
+  font-size: 1.4rem;
+}
+
+.update-state-modal h3 {
+  color: #374151;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+/* Botón de cerrar éxito */
+.modal button {
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.modal button:hover {
+  background: #3730a3;
+}
+
+/* =============================
+   MODAL: ACTUALIZAR ESTADO
+   ============================= */
+
+.estado-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 1rem 0 1.5rem;
+  justify-content: center;
+}
+
+.estado-button {
+  flex: 1 1 calc(50% - 0.6rem);
+  padding: 0.6rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  color: #fff;
+}
+
+/* Colores por estado */
+.estado-button.pendiente {
+  background: #f59e0b;
+}
+.estado-button.entregado {
+  background: #16a34a;
+}
+.estado-button.rechazado {
+  background: #dc2626;
+}
+.estado-button.reprogramado {
+  background: #2563eb;
+}
+
+.estado-button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.estado-button.active {
+  outline: 3px solid rgba(23, 150, 29, 0.15);
+}
+
+/* Botones de acciones dentro del modal de estado */
+.update-state-modal .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+}
+
+.update-state-modal .form-actions button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* Guardar */
+.update-state-modal .form-actions button:first-child {
+  background: #4f46e5;
+  color: #fff;
+}
+
+.update-state-modal .form-actions button:first-child:hover {
+  background: #3730a3;
+}
+
+/* Cancelar */
+.update-state-modal .form-actions button:last-child {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.update-state-modal .form-actions button:last-child:hover {
+  background: #e5e7eb;
+}
+
+/* =============================
+   RESPONSIVO
+   ============================= */
+@media (max-width: 700px) {
+  .modal,
+  .update-state-modal {
+    width: 85vw;
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+  }
+  .estado-button {
+    flex: 1 1 100%;
+  }
+  .update-state-modal .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .update-state-modal .form-actions button {
+    width: 100%;
+  }
+}

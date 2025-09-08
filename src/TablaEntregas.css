@@ -1,0 +1,141 @@
+/* =============================
+   TABLA / CARDS DE ENTREGAS RESPONSIVA
+   ============================= */
+
+/* Contenedor */
+.tabla-entregas-container {
+  width: 100%;
+  overflow-x: auto; /* Scroll horizontal si es necesario */
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+/* Tabla base para desktop */
+.tabla-entregas {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  background: #fff;
+}
+
+/* Encabezados */
+.tabla-entregas th {
+  padding: 0.8rem 0.5rem;
+  text-align: left;
+  background: #f3f4f6;
+  color: #374151;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* Filas */
+.tabla-entregas td {
+  padding: 0.7rem 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover efecto */
+.tabla-entregas tr:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Última fila */
+.tabla-entregas tr:last-child td {
+  border-bottom: none;
+}
+
+/* Estatus con colores */
+.estatus {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #fff;
+}
+
+.estatus.pendiente {
+  background: #f59e0b;
+} /* Naranja */
+.estatus.entregado {
+  background: #10b981;
+} /* Verde */
+.estatus.rechazado {
+  background: #ef4444;
+} /* Rojo */
+.estatus.reprogramado {
+  background: #3b82f6;
+} /* Azul */
+
+/* Botones / iconos */
+.tabla-entregas td .btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  background: #4f46e5;
+  color: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.tabla-entregas td .btn-icon:hover {
+  background: #06b6d4;
+  transform: translateY(-2px);
+}
+
+/* =============================
+   RESPONSIVE PARA MÓVILES
+   ============================= */
+@media (max-width: 700px) {
+  .tabla-entregas {
+    display: block;
+    width: 100%;
+  }
+
+  .tabla-entregas thead {
+    display: none;
+  } /* Ocultar encabezados */
+
+  .tabla-entregas tr {
+    display: block;
+    margin-bottom: 1rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .tabla-entregas tr:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .tabla-entregas td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .tabla-entregas td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #374151;
+    width: 40%;
+  }
+
+  .tabla-entregas td:last-child {
+    border-bottom: none;
+  }
+}

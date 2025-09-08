@@ -1,0 +1,61 @@
+/* =============================
+   BARRA DE BÚSQUEDA ORDENES
+   ============================= */
+.search-bar-container {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  margin-bottom: 1.5rem;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 10px 14px 10px 42px; /* espacio para el ícono */
+  border: 1.5px solid #c7d2fe; /* violeta claro */
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #1e293b;
+  background: #f9fafb;
+  outline: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 1px 5px rgba(79, 70, 229, 0.08);
+}
+
+.search-bar::placeholder {
+  color: #9ca3af;
+  font-size: 0.95rem;
+}
+
+.search-bar:focus {
+  border: 2px solid #4f46e5;
+  box-shadow: 0 3px 10px rgba(79, 70, 229, 0.18);
+  background: #fff;
+}
+
+/* Ícono dentro del input */
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: #6366f1;
+  pointer-events: none;
+}
+
+/* =============================
+   RESPONSIVO
+   ============================= */
+@media (max-width: 600px) {
+  .search-bar-container {
+    max-width: 100%;
+  }
+  .search-bar {
+    font-size: 0.95rem;
+    padding: 9px 12px 9px 38px;
+  }
+  .search-icon {
+    font-size: 1rem;
+    left: 12px;
+  }
+}

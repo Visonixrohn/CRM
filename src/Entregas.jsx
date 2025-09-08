@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import ChoferModal from "./ChoferModal";
 import ChoferDetalleModal from "./ChoferDetalleModal";
-import "./EntregasModern.css";
-import Modals from "./ModalInput";
-import "./Entregas.css";
+import "./BotonesBar.css";
+import "./AgregarEntregaForm.css";
+import "./TablaEntregas.css";
+import "./ActualizarEstatusModal.css";
+import "./DetalleEntregaModal.css";
 
 const estados = ["Pendiente", "Entregado", "Rechazado", "Reprogramado"];
 
@@ -21,55 +23,36 @@ function tiempoTranscurrido(fecha) {
 const ModalEstatus = ({ open, onClose, onSelect }) => {
   if (!open) return null;
   return (
-    <div className="modern-modal-bg">
-      <div className="modern-modal">
-        <h4>Actualizar estatus</h4>
-        <div className="modern-modal-btns">
-          <button
-            className="btn-pendiente"
-            onClick={() => onSelect("Pendiente")}
-          >
-            Pendiente
-          </button>
-          <button
-            className="btn-entregado"
-            onClick={() => onSelect("Entregado")}
-          >
-            Entregado
-          </button>
-          <button
-            className="btn-rechazado"
-            onClick={() => onSelect("Rechazado")}
-          >
-            Rechazado
-          </button>
-          <button
-            className="btn-reprogramado"
-            onClick={() => onSelect("Reprogramado")}
-          >
-            Reprogramado
-          </button>
+    <div className="actualizar-estatus-modal-bg">
+      <div className="actualizar-estatus-modal">
+        <div className="actualizar-estatus-titulo">Actualizar estatus</div>
+        <div className="actualizar-estatus-btns">
+          <button className="actualizar-estatus-btn" onClick={() => onSelect("Pendiente")}>Pendiente</button>
+          <button className="actualizar-estatus-btn" onClick={() => onSelect("Entregado")}>Entregado</button>
+          <button className="actualizar-estatus-btn" onClick={() => onSelect("Rechazado")}>Rechazado</button>
+          <button className="actualizar-estatus-btn" onClick={() => onSelect("Reprogramado")}>Reprogramado</button>
         </div>
-        <button className="modern-modal-close" onClick={onClose}>
-          Cerrar
-        </button>
+        <button className="actualizar-estatus-cerrar" onClick={onClose}>Cerrar</button>
       </div>
     </div>
   );
-};
+}; // Cierre faltante añadido
 
 const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer }) => {
   const [showEstatus, setShowEstatus] = useState(false);
+
   if (!open || !entrega) return null;
 
-  // Extraer lat/lng de la ubicación si existe
-  let lat = null,
-    lng = null;
+  // Extraer lat/lng de la ubicación si existe (eliminada duplicación)
+  let urlMaps = null;
+  let lat = null;
+  let lng = null;
   if (entrega.ubicacion) {
     const match = entrega.ubicacion.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
     if (match) {
       lat = parseFloat(match[1]);
       lng = parseFloat(match[2]);
+      urlMaps = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
     }
   }
 
@@ -79,157 +62,64 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer }) => {
 
     // Verifica si el dispositivo es móvil o no
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const baseUrl = isMobile
-      ? "https://wa.me/"
-      : "https://web.whatsapp.com/send";
+    const baseUrl = isMobile ? "https://wa.me/" : "https://web.whatsapp.com/send";
 
-    // Usar el número del chofer de la entrega, o si no existe, el chofer global (React state)
-    // Usar SIEMPRE el número del chofer global si existe
-    let telefono =
-      (typeof chofer !== "undefined" && (chofer.telefono || chofer.contacto)) ||
-      "";
-
-    // Limpiar el teléfono, eliminando caracteres no numéricos
-    telefono = String(telefono).replace(/[^\d]/g, "");
-    // Si el número comienza con '504' (código de país de Honduras), eliminarlo
+    // Usar el número del chofer
+    let telefono = (chofer?.telefono || chofer?.contacto || "").replace(/[^\d]/g, "");
     if (telefono.startsWith("504")) {
       telefono = telefono.slice(3);
     }
 
-    // Verifica que el número tenga una longitud válida (8 dígitos)
     if (telefono.length !== 8) {
       alert("No hay un número de teléfono válido para WhatsApp del chofer");
       return;
     }
 
-    // Construcción de la URL para abrir WhatsApp
-    const url = `${baseUrl}?phone=504${telefono}&text=${encodeURIComponent(
-      mensaje
-    )}`;
+    const url = `${baseUrl}?phone=504${telefono}&text=${encodeURIComponent(mensaje)}`;
     window.open(url, "_blank");
   };
 
   return (
-    <div className="modern-modal-bg">
-      <div
-        className="modern-modal modern-modal-detalle"
-        style={{
-          padding: "2rem",
-          borderRadius: "12px",
-          maxWidth: "600px",
-          backgroundColor: "#fff",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-        }}
-      >
-        <h2 style={{ color: "#4f46e5", marginBottom: "1rem" }}>
-          Detalle de Entrega
-        </h2>
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "1rem",
-            color: "#000",
-          }}
-        >
-          <p>
-            <strong>Cliente:</strong> {entrega.cliente}
-          </p>
-          <p>
-            <strong>Factura:</strong> {entrega.factura}
-          </p>
-          <p>
-            <strong>Teléfono:</strong> {entrega.cel}
-          </p>
-          <p>
-            <strong>Artículo:</strong> {entrega.articulo}
-          </p>
-          <p>
-            <strong>Fecha:</strong> {entrega.fecha}
-          </p>
-          <p>
-            <strong>Fecha de Entrega:</strong> {entrega.fecha_entrega}
-          </p>
-          <p>
-            <strong>Estatus:</strong>{" "}
-            <span
-              style={{
-                color:
-                  entrega.estatus === "Pendiente"
-                    ? "#f59e0b"
-                    : entrega.estatus === "Entregado"
-                    ? "#10b981"
-                    : "#ef4444",
-              }}
-            >
-              {entrega.estatus}
-            </span>
-          </p>
+    <div className="detalle-entrega-modal-bg">
+      <div className="detalle-entrega-modal">
+        <div className="detalle-entrega-titulo">Detalle de Entrega</div>
+        <div className="detalle-entrega-lista">
+          <div className="detalle-entrega-item"><span className="detalle-entrega-label">Cliente:</span> <span className="detalle-entrega-valor">{entrega.cliente}</span></div>
+          <div className="detalle-entrega-item"><span className="detalle-entrega-label">Factura:</span> <span className="detalle-entrega-valor">{entrega.factura}</span></div>
+          <div className="detalle-entrega-item"><span className="detalle-entrega-label">Teléfono:</span> <span className="detalle-entrega-valor">{entrega.cel}</span></div>
+          <div className="detalle-entrega-item"><span className="detalle-entrega-label">Artículo:</span> <span className="detalle-entrega-valor">{entrega.articulo}</span></div>
+          <div className="detalle-entrega-item"><span className="detalle-entrega-label">Fecha:</span> <span className="detalle-entrega-valor">{entrega.fecha}</span></div>
+          <div className="detalle-entrega-item"><span className="detalle-entrega-label">Fecha entrega:</span> <span className="detalle-entrega-valor">{entrega.fecha_entrega}</span></div>
+          <div className="detalle-entrega-item"><span className="detalle-entrega-label">Estatus:</span> <span className="detalle-entrega-valor">{entrega.estatus}</span></div>
+          {urlMaps && (
+            <div className="detalle-entrega-item">
+              <span className="detalle-entrega-label">Ubicación:</span>
+              <a className="detalle-entrega-valor" href={urlMaps} target="_blank" rel="noopener noreferrer">Ver en Google Maps</a>
+            </div>
+          )}
         </div>
-        {lat && lng && (
-          <iframe
-            title="Ubicación"
-            width="100%"
-            height="300"
-            style={{ border: 0, borderRadius: 12, marginTop: "1rem" }}
-            loading="lazy"
-            allowFullScreen
-            referrerPolicy="no-referrer-when-downgrade"
-            src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyA4SuJGczpIN1YzyRVc0AFAo1nZ7ruhLaY&center=${lat},${lng}&zoom=16&maptype=satellite`}
-          ></iframe>
+        <button className="detalle-entrega-cerrar" onClick={onClose}>Cerrar</button>
+        <button
+          className="detalle-entrega-cerrar"
+          style={{ background: "#4f46e5", marginTop: "0.5rem" }}
+          onClick={() => setShowEstatus(true)}
+        >
+          Actualizar estatus
+        </button>
+        <button
+          className="detalle-entrega-cerrar"
+          style={{ background: "#25D366", marginTop: "0.5rem" }}
+          onClick={handleEnviarDatos}
+        >
+          Enviar por WhatsApp
+        </button>
+        {showEstatus && (
+          <ModalEstatus
+            open={showEstatus}
+            onClose={() => setShowEstatus(false)}
+            onSelect={onUpdateEstatus}
+          />
         )}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: "1.5rem",
-          }}
-        >
-          <button
-            onClick={() => setShowEstatus(true)}
-            style={{
-              padding: "0.5rem 1rem",
-              backgroundColor: "#f59e0b",
-              color: "#fff",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-            }}
-          >
-            Actualizar Estatus
-          </button>
-          <button
-            onClick={handleEnviarDatos}
-            style={{
-              padding: "0.5rem 1rem",
-              backgroundColor: "#4f46e5",
-              color: "#fff",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-            }}
-          >
-            Enviar Datos
-          </button>
-          <button
-            onClick={onClose}
-            style={{
-              padding: "0.5rem 1rem",
-              backgroundColor: "#ef4444",
-              color: "#fff",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-            }}
-          >
-            Cerrar
-          </button>
-        </div>
-        <ModalEstatus
-          open={showEstatus}
-          onClose={() => setShowEstatus(false)}
-          onSelect={onUpdateEstatus}
-        />
       </div>
     </div>
   );
@@ -246,53 +136,71 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
     fecha: "",
     fecha_entrega: "",
     ubicacion: "",
-    lat: 16.3832884, // Coordenadas iniciales de Islas de la Bahía, Honduras
-    lng: -86.4460626, // Coordenadas iniciales de Islas de la Bahía, Honduras
+    lat: 16.3832884,
+    lng: -86.4460626,
   });
   const [mapCenter, setMapCenter] = useState({
     lat: 16.3832884,
     lng: -86.4460626,
-  }); // Coordenadas iniciales actualizadas
+  });
   const [mapLoaded, setMapLoaded] = useState(false);
   const [marker, setMarker] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const mapRef = React.useRef(null);
 
-  React.useEffect(() => {
-    if (
-      open &&
-      window.google &&
-      window.google.maps &&
-      mapRef.current &&
-      !mapLoaded
-    ) {
-      const map = new window.google.maps.Map(mapRef.current, {
-        center: mapCenter,
-        zoom: 11.37, // Nivel de zoom inicial actualizado
-        mapTypeId: "satellite", // Vista satélite
+  useEffect(() => {
+    if (!open || !window.google?.maps || !mapRef.current || mapLoaded) return;
+
+    const map = new window.google.maps.Map(mapRef.current, {
+      center: mapCenter,
+      zoom: 11.37,
+      mapTypeId: "satellite",
+    });
+
+    let localMarker = null;
+    const clickListener = map.addListener("click", (e) => {
+      if (localMarker) localMarker.setMap(null);
+      localMarker = new window.google.maps.Marker({
+        position: e.latLng,
+        map,
       });
-      let localMarker = null;
-      map.addListener("click", (e) => {
-        if (localMarker) localMarker.setMap(null);
-        localMarker = new window.google.maps.Marker({
-          position: e.latLng,
-          map,
-        });
-        setForm((f) => ({
-          ...f,
-          lat: e.latLng.lat(),
-          lng: e.latLng.lng(),
-          ubicacion: `https://www.google.com/maps/@${e.latLng.lat()},${e.latLng.lng()},18z`,
-        }));
-        setMarker(localMarker);
-      });
-      setMapLoaded(true);
-    }
+      setForm((f) => ({
+        ...f,
+        lat: e.latLng.lat(),
+        lng: e.latLng.lng(),
+        ubicacion: `https://www.google.com/maps/@${e.latLng.lat()},${e.latLng.lng()},18z`,
+      }));
+      setMarker(localMarker);
+    });
+
+    setMapLoaded(true);
+
+    // Limpiar listener al desmontar
+    return () => {
+      window.google.maps.event.removeListener(clickListener);
+      if (localMarker) localMarker.setMap(null);
+    };
   }, [open, mapLoaded, mapCenter]);
 
-  React.useEffect(() => {
-    if (!open) setMapLoaded(false);
+  useEffect(() => {
+    if (!open) {
+      setMapLoaded(false);
+      setMarker(null);
+      setForm({
+        cliente: "",
+        factura: "",
+        cel: "",
+        articulo: "",
+        estatus: "Pendiente",
+        fecha: "",
+        fecha_entrega: "",
+        ubicacion: "",
+        lat: 16.3832884,
+        lng: -86.4460626,
+      });
+      setTouched({});
+    }
   }, [open]);
 
   const handleAgregar = async () => {
@@ -313,9 +221,7 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
         ...prev,
         ...Object.fromEntries(vacios.map((c) => [c, true])),
       }));
-      setError(
-        "Todos los campos son obligatorios y debes seleccionar ubicación en el mapa."
-      );
+      setError("Todos los campos son obligatorios y debes seleccionar ubicación en el mapa.");
       return;
     }
     setLoading(true);
@@ -331,8 +237,8 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
           fecha: "",
           fecha_entrega: "",
           ubicacion: "",
-          lat: 16.3832884, // Restaurar coordenadas iniciales
-          lng: -86.4460626, // Restaurar coordenadas iniciales
+          lat: 16.3832884,
+          lng: -86.4460626,
         });
         setTouched({});
         onClose();
@@ -347,11 +253,11 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
 
   if (!open) return null;
   return (
-    <div className="modern-modal-bg">
-      <div className="modern-modal modern-modal-agregar">
+    <div className="agregar-entrega-modal-bg">
+      <div className="agregar-entrega-modal">
         <h4>Agregar entrega</h4>
-        <div className="modern-detalle-list agregar-form-grid">
-          <div className="agregar-form-col">
+        <div className="agregar-entrega-form-grid">
+          <div className="agregar-entrega-form-col">
             <div className="input-group-float">
               <span className="input-icon"></span>
               <input
@@ -360,11 +266,7 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
                 onChange={(e) => setForm({ ...form, cliente: e.target.value })}
                 onBlur={() => setTouched((t) => ({ ...t, cliente: true }))}
                 required
-                style={
-                  touched.cliente && !form.cliente
-                    ? { borderColor: "#ef4444" }
-                    : {}
-                }
+                style={touched.cliente && !form.cliente ? { borderColor: "#ef4444" } : {}}
               />
               <label className={form.cliente ? "active" : ""}>Cliente</label>
             </div>
@@ -376,11 +278,7 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
                 onChange={(e) => setForm({ ...form, factura: e.target.value })}
                 onBlur={() => setTouched((t) => ({ ...t, factura: true }))}
                 required
-                style={
-                  touched.factura && !form.factura
-                    ? { borderColor: "#ef4444" }
-                    : {}
-                }
+                style={touched.factura && !form.factura ? { borderColor: "#ef4444" } : {}}
               />
               <label className={form.factura ? "active" : ""}>Factura</label>
             </div>
@@ -392,9 +290,7 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
                 onChange={(e) => setForm({ ...form, cel: e.target.value })}
                 onBlur={() => setTouched((t) => ({ ...t, cel: true }))}
                 required
-                style={
-                  touched.cel && !form.cel ? { borderColor: "#ef4444" } : {}
-                }
+                style={touched.cel && !form.cel ? { borderColor: "#ef4444" } : {}}
               />
               <label className={form.cel ? "active" : ""}>Cel</label>
             </div>
@@ -406,11 +302,7 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
                 onChange={(e) => setForm({ ...form, articulo: e.target.value })}
                 onBlur={() => setTouched((t) => ({ ...t, articulo: true }))}
                 required
-                style={
-                  touched.articulo && !form.articulo
-                    ? { borderColor: "#ef4444" }
-                    : {}
-                }
+                style={touched.articulo && !form.articulo ? { borderColor: "#ef4444" } : {}}
               />
               <label className={form.articulo ? "active" : ""}>Artículo</label>
             </div>
@@ -422,9 +314,7 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
                 onChange={(e) => setForm({ ...form, fecha: e.target.value })}
                 onBlur={() => setTouched((t) => ({ ...t, fecha: true }))}
                 required
-                style={
-                  touched.fecha && !form.fecha ? { borderColor: "#ef4444" } : {}
-                }
+                style={touched.fecha && !form.fecha ? { borderColor: "#ef4444" } : {}}
               />
               <label className={form.fecha ? "active" : ""}>Fecha</label>
             </div>
@@ -433,22 +323,12 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
               <input
                 type="date"
                 value={form.fecha_entrega}
-                onChange={(e) =>
-                  setForm({ ...form, fecha_entrega: e.target.value })
-                }
-                onBlur={() =>
-                  setTouched((t) => ({ ...t, fecha_entrega: true }))
-                }
+                onChange={(e) => setForm({ ...form, fecha_entrega: e.target.value })}
+                onBlur={() => setTouched((t) => ({ ...t, fecha_entrega: true }))}
                 required
-                style={
-                  touched.fecha_entrega && !form.fecha_entrega
-                    ? { borderColor: "#ef4444" }
-                    : {}
-                }
+                style={touched.fecha_entrega && !form.fecha_entrega ? { borderColor: "#ef4444" } : {}}
               />
-              <label className={form.fecha_entrega ? "active" : ""}>
-                Fecha de entrega
-              </label>
+              <label className={form.fecha_entrega ? "active" : ""}>Fecha de entrega</label>
             </div>
             <div className="input-group-float">
               <span className="input-icon"></span>
@@ -457,21 +337,13 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
                 value={form.ubicacion}
                 readOnly
                 required
-                style={
-                  touched.lat && touched.lng && (!form.lat || !form.lng)
-                    ? { borderColor: "#ef4444" }
-                    : {}
-                }
+                style={touched.lat && touched.lng && (!form.lat || !form.lng) ? { borderColor: "#ef4444" } : {}}
               />
-              <label className={form.ubicacion ? "active" : ""}>
-                Ubicación (se selecciona en el mapa)
-              </label>
+              <label className={form.ubicacion ? "active" : ""}>Ubicación (se selecciona en el mapa)</label>
             </div>
-            {error && (
-              <div style={{ color: "#ef4444", marginTop: 8 }}>{error}</div>
-            )}
+            {error && <div style={{ color: "#ef4444", marginTop: 8 }}>{error}</div>}
           </div>
-          <div className="agregar-form-col">
+          <div className="agregar-entrega-form-col">
             <div
               style={{
                 width: 250,
@@ -497,11 +369,7 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
           >
             {loading ? "Guardando..." : "Agregar"}
           </button>
-          <button
-            className="modern-cerrar"
-            onClick={onClose}
-            disabled={loading}
-          >
+          <button className="modern-cerrar" onClick={onClose} disabled={loading}>
             Cerrar
           </button>
         </div>
@@ -514,7 +382,8 @@ const Entregas = () => {
   const [entregas, setEntregas] = useState([]);
   const [detalle, setDetalle] = useState(null);
   const [showAgregar, setShowAgregar] = useState(false);
-  const [choferModal, setChoferModal] = useState(false);
+  const [choferModal, setChoferModal] = useState(false); // Simplificado a booleano
+  const [choferModalType, setChoferModalType] = useState("formulario"); // "formulario" o "detalle"
   const [chofer, setChofer] = useState(null);
   const [user, setUser] = useState(null);
   const [filtroEstatus, setFiltroEstatus] = useState("");
@@ -523,87 +392,94 @@ const Entregas = () => {
   // Obtener usuario autenticado
   useEffect(() => {
     const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data?.user || null);
+      try {
+        const { data, error } = await supabase.auth.getUser();
+        if (error) throw error;
+        setUser(data?.user || null);
+      } catch (e) {
+        console.error("Error al obtener usuario:", e.message);
+        alert("No se pudo obtener el usuario autenticado.");
+      }
     };
     getUser();
   }, []);
 
   // Obtener entregas del usuario
   useEffect(() => {
-    if (!user) return;
     const fetchEntregas = async () => {
-      const { data, error } = await supabase
-        .from("entregas_pendientes")
-        .select("*")
-        .eq("usuario_id", user.id)
-        .order("created_at", { ascending: false });
-      if (!error) setEntregas(data || []);
+      if (!user) return;
+      try {
+        const { data, error } = await supabase
+          .from("entregas_pendientes")
+          .select("*")
+          .eq("usuario_id", user.id)
+          .order("created_at", { ascending: false });
+        if (error) throw error;
+        setEntregas(data || []);
+      } catch (e) {
+        console.error("Error al obtener entregas:", e.message);
+        alert("No se pudieron cargar las entregas.");
+      }
     };
     fetchEntregas();
   }, [user]);
 
-  // Obtener datos del chofer
-  useEffect(() => {
-    if (!user) return;
-    const fetchChofer = async () => {
-      const { data, error } = await supabase
-        .from("choferes")
-        .select("*")
-        .eq("usuario_id", user.id)
-        .single();
-      if (!error) setChofer(data);
-    };
-    fetchChofer();
-  }, [user]);
-
-  // Filtrar entregas por estatus y búsqueda
+  // Filtrar entregas según estatus y búsqueda
   const entregasFiltradas = entregas.filter((e) => {
-    const coincideEstatus = filtroEstatus ? e.estatus === filtroEstatus : true;
-    const coincideBusqueda =
-      e.cliente.toLowerCase().includes(busqueda.toLowerCase()) ||
-      e.factura.toLowerCase().includes(busqueda.toLowerCase());
-    return coincideEstatus && coincideBusqueda;
+    const matchesEstatus = filtroEstatus ? e.estatus === filtroEstatus : true;
+    const matchesBusqueda = busqueda
+      ? e.cliente.toLowerCase().includes(busqueda.toLowerCase()) ||
+        e.factura.toLowerCase().includes(busqueda.toLowerCase())
+      : true;
+    return matchesEstatus && matchesBusqueda;
   });
 
   // Actualizar estatus en Supabase
   const handleUpdateEstatus = async (nuevo) => {
     if (!detalle) return;
-    await supabase
-      .from("entregas_pendientes")
-      .update({ estatus: nuevo })
-      .eq("id", detalle.id);
-    setEntregas(
-      entregas.map((e) => (e.id === detalle.id ? { ...e, estatus: nuevo } : e))
-    );
-    setDetalle({ ...detalle, estatus: nuevo });
+    try {
+      const { error } = await supabase
+        .from("entregas_pendientes")
+        .update({ estatus: nuevo })
+        .eq("id", detalle.id);
+      if (error) throw error;
+      setEntregas(
+        entregas.map((e) => (e.id === detalle.id ? { ...e, estatus: nuevo } : e))
+      );
+      setDetalle(null);
+      setTimeout(() => {
+        window.location.reload();
+      }, 200);
+    } catch (e) {
+      console.error("Error al actualizar estatus:", e.message);
+      alert("No se pudo actualizar el estatus.");
+    }
   };
 
   // Agregar nueva entrega a Supabase
   const handleAdd = async (nuevo) => {
     if (!user) return false;
-    const { data, error } = await supabase
-      .from("entregas_pendientes")
-      .insert([
-        {
-          ...nuevo,
-          usuario_id: user.id,
-        },
-      ])
-      .select();
-    if (error) {
-    }
-    if (!error && data && data.length > 0) {
-      // Recargar lista desde supabase para evitar inconsistencias
-      const { data: nuevas, error: err2 } = await supabase
+    try {
+      const { data, error } = await supabase
         .from("entregas_pendientes")
-        .select("*")
-        .eq("usuario_id", user.id)
-        .order("created_at", { ascending: false });
-      if (!err2) setEntregas(nuevas || []);
-      return true;
+        .insert([{ ...nuevo, usuario_id: user.id }])
+        .select();
+      if (error) throw error;
+      if (data && data.length > 0) {
+        const { data: nuevas, error: err2 } = await supabase
+          .from("entregas_pendientes")
+          .select("*")
+          .eq("usuario_id", user.id)
+          .order("created_at", { ascending: false });
+        if (err2) throw err2;
+        setEntregas(nuevas || []);
+        return true;
+      }
+    } catch (e) {
+      console.error("Error al agregar entrega:", e.message);
+      alert("No se pudo guardar la entrega. Intenta de nuevo.");
+      return false;
     }
-    return error?.message || "No se pudo guardar la entrega. Intenta de nuevo.";
   };
 
   // Guardar datos del chofer
@@ -618,18 +494,13 @@ const Entregas = () => {
             .select()
         : await supabase
             .from("choferes")
-            .insert({
-              nombre,
-              telefono: contacto,
-
-              usuario_id: user.id,
-            })
+            .insert({ nombre, telefono: contacto, usuario_id: user.id })
             .select();
       if (error) throw error;
       if (data && data.length > 0) {
-        setChofer(data[0]); // Actualizar el estado del chofer con los datos guardados
-        alert("Datos del chofer guardados correctamente."); // Mostrar mensaje de confirmación
-        setChoferModal(false); // Cerrar el modal
+        setChofer(data[0]);
+        alert("Datos del chofer guardados correctamente.");
+        setChoferModal(false);
       }
     } catch (e) {
       console.error("Error al guardar los datos del chofer:", e.message);
@@ -638,114 +509,58 @@ const Entregas = () => {
   };
 
   const handleChoferButtonClick = () => {
-    if (chofer) {
-      setChoferModal("detalle"); // Abrir modal de detalles si ya hay chofer
-    } else {
-      setChoferModal("formulario"); // Abrir formulario si no hay chofer
-    }
+    setChoferModal(true);
+    setChoferModalType(chofer ? "detalle" : "formulario");
   };
 
   return (
     <div className="entregas-modern-bg">
-      <div className="entregas-modern-bar">
-        <h2>Entregas pendientes</h2>
-        <button className="modern-agregar" onClick={() => setShowAgregar(true)}>
-          Agregar
+      <div className="botones-bar-container">
+        <input
+          type="text"
+          placeholder="Buscar por cliente o factura..."
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          style={{ padding: "8px", marginRight: "1rem" }}
+        />
+        <button className="btn-agregar" onClick={() => setShowAgregar(true)}>
+          Agregar entrega
+        </button>
+        {estados.map((e) => (
+          <button
+            key={e}
+            className={`btn-filtro${filtroEstatus === e ? " selected" : ""}`}
+            onClick={() => setFiltroEstatus(e === filtroEstatus ? "" : e)}
+          >
+            {e}
+          </button>
+        ))}
+        <button
+          className={`btn-filtro${filtroEstatus === "" ? " selected" : ""}`}
+          onClick={() => setFiltroEstatus("")}
+        >
+          Todos
+        </button>
+        <button className="btn-chofer" title="Chofer" onClick={handleChoferButtonClick}>
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#fff"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ verticalAlign: "middle", marginRight: 6 }}
+          >
+            <circle cx="12" cy="7" r="4" />
+            <path d="M5.5 21a7.5 7.5 0 0 1 13 0" />
+          </svg>
+          Chofer
         </button>
       </div>
-      <div
-        className="entregas-modern-filtros"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "1rem",
-        }}
-      >
-        <div
-          className="filtros-estatus"
-          style={{ display: "flex", gap: "0.5rem" }}
-        >
-          {estados.map((estatus) => (
-            <button
-              key={estatus}
-              className={`filtro-boton ${
-                filtroEstatus === estatus ? "activo" : ""
-              }`}
-              style={{
-                padding: "0.5rem 1rem",
-                borderRadius: "8px",
-                border:
-                  filtroEstatus === estatus
-                    ? "2px solid #6366f1"
-                    : "1px solid #d1d5db",
-                backgroundColor:
-                  filtroEstatus === estatus ? "#e0e7ff" : "#f9fafb",
-                color: filtroEstatus === estatus ? "#4f46e5" : "#374151",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-              }}
-              onClick={() =>
-                setFiltroEstatus(filtroEstatus === estatus ? "" : estatus)
-              }
-            >
-              {estatus}
-            </button>
-          ))}
-        </div>
-        <div className="barra-busqueda" style={{ width: "50%" }}>
-          <div style={{ position: "relative", width: "100%" }}>
-            {/* Icono de búsqueda */}
-            <span
-              style={{
-                position: "absolute",
-                left: "12px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                fontSize: "1.1rem",
-                color: "#9ca3af",
-                pointerEvents: "none",
-              }}
-            >
-              🔍
-            </span>
-
-            {/* Input */}
-            <input
-              type="text"
-              placeholder="Buscar por cliente o factura"
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "0.65rem 1rem 0.65rem 2.5rem", // más espacio por el ícono
-                borderRadius: "12px",
-                border: "1.8px solid #e5e7eb",
-                outline: "none",
-                fontSize: "1rem",
-                color: "#1e293b",
-                background: "#f9fafb",
-                boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.05)",
-                transition: "all 0.25s ease",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = "#6366f1";
-                e.target.style.boxShadow =
-                  "0 0 0 3px rgba(99, 102, 241, 0.25), inset 0 1px 3px rgba(0, 0, 0, 0.05)";
-                e.target.style.background = "#fff";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#e5e7eb";
-                e.target.style.boxShadow =
-                  "inset 0 1px 3px rgba(0, 0, 0, 0.05)";
-                e.target.style.background = "#f9fafb";
-              }}
-            />
-          </div>
-        </div>
-      </div>
-      <div className="entregas-modern-table-wrap">
-        <table className="entregas-modern-table">
+      <div className="tabla-entregas-container">
+        <table className="tabla-entregas">
           <thead>
             <tr>
               <th>Cliente</th>
@@ -759,8 +574,8 @@ const Entregas = () => {
             </tr>
           </thead>
           <tbody>
-            {entregasFiltradas.map((e, i) => (
-              <tr key={e.id || i} onClick={() => setDetalle(e)}>
+            {entregasFiltradas.map((e) => (
+              <tr key={e.id} onClick={() => setDetalle(e)}>
                 <td data-label="Cliente">{e.cliente}</td>
                 <td data-label="Factura">{e.factura}</td>
                 <td data-label="Cel">{e.cel}</td>
@@ -769,9 +584,7 @@ const Entregas = () => {
                 <td data-label="Fecha entrega">{e.fecha_entrega}</td>
                 <td data-label="Tiempo">{tiempoTranscurrido(e.fecha)}</td>
                 <td data-label="Estatus">
-                  <span
-                    className={`modern-status modern-${e.estatus?.toLowerCase?.()}`}
-                  >
+                  <span className={`modern-status modern-${e.estatus?.toLowerCase?.()}`}>
                     {e.estatus}
                   </span>
                 </td>
@@ -792,11 +605,10 @@ const Entregas = () => {
         onClose={() => setShowAgregar(false)}
         onAdd={handleAdd}
       />
-      {/* Botón flotante chofer */}
       <button
         className="chofer-fab"
         title="Datos de chofer"
-        onClick={handleChoferButtonClick} // Usar la función correcta
+        onClick={handleChoferButtonClick}
       >
         <svg
           width="28"
@@ -812,17 +624,17 @@ const Entregas = () => {
           <path d="M5.5 21a7.5 7.5 0 0 1 13 0" />
         </svg>
       </button>
-      {choferModal === "detalle" && (
+      {choferModal && choferModalType === "detalle" && (
         <ChoferDetalleModal
-          open={choferModal === "detalle"}
+          open={choferModal}
           chofer={chofer}
           onClose={() => setChoferModal(false)}
-          onEdit={() => setChoferModal("formulario")}
+          onEdit={() => setChoferModalType("formulario")}
         />
       )}
-      {choferModal === "formulario" && (
+      {choferModal && choferModalType === "formulario" && (
         <ChoferModal
-          open={choferModal === "formulario"}
+          open={choferModal}
           onClose={() => setChoferModal(false)}
           onSave={handleSaveChofer}
           chofer={chofer}
