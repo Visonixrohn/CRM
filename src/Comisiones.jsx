@@ -75,9 +75,14 @@ const Comisiones = () => {
           .eq("id", 1)
           .single();
 
-        if (error) {
+        if (error && error.code !== "PGRST116") {
           setError("Error al obtener datos de Supabase");
           console.error("Error al obtener datos de Supabase:", error);
+        } else if (!data) {
+          // Si no existe el registro, lo crea con valores por defecto
+          await supabase.from("comisiones").insert({ id: 1, meta: 0, comision_obtenida: 0 });
+          setMeta(0);
+          setComisionObtenida(0);
         } else {
           setMeta(data.meta);
           setComisionObtenida(data.comision_obtenida);

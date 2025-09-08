@@ -82,7 +82,7 @@ h1 {
   margin-top: 5px;
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 999px !important; /* Bordes completamente redondos */
   font-size: 1rem;
   background: #fafafa;
   color: #000;
