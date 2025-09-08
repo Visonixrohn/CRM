@@ -34,12 +34,14 @@ function getDiasRestantesMes() {
 }
 
 // Reusable Card Component
-const ComCard = ({ title, value, colorClass, icon }) => (
+const ComCard = ({ title, value, colorClass, icon, isNumberOnly }) => (
   <div className={`com-card ${colorClass}`}>
     <span className="com-card-icon">{icon}</span>
     <span className="com-card-title">{title}</span>
     <strong className="com-card-value">
-      {typeof value === "number"
+      {isNumberOnly
+        ? value
+        : typeof value === "number"
         ? `L${value.toLocaleString("en-US", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
@@ -214,10 +216,11 @@ const Comisiones = () => {
           icon="📊"
         />
         <ComCard
-          title="Días Restantes"
+          title="Días Restantes  del Mes   "
           value={diasRestantes}
           colorClass="primary"
           icon="📆"
+          isNumberOnly={true}
         />
         <ComCard
           title="Meta Diaria"
