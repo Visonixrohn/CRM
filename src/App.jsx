@@ -198,6 +198,10 @@ function App() {
           active={page}
           expanded={bottomBarExpanded}
           onCloseExpand={() => setBottomBarExpanded(false)}
+          onLogout={async () => {
+            await supabase.auth.signOut();
+            setUser(null);
+          }}
         />
       )}
     </div>
