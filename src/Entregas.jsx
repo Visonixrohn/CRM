@@ -1,10 +1,12 @@
 import "./EntregasBusqueda.css";
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { supabase } from "./supabaseClient";
 import ChoferModal from "./ChoferModal";
 import ChoferDetalleModal from "./ChoferDetalleModal";
 import "./BotonesBar.css";
 import "./AgregarEntregaForm.css";
+import "./AgregarEntregaMultiStep.css";
 import "./TablaEntregas.css";
 import "./ActualizarEstatusModal.css";
 import "./DetalleEntregaModal.css";
@@ -21,23 +23,59 @@ function tiempoTranscurrido(fecha) {
   return `${diff} días`;
 }
 
-const ModalEstatus = ({ open, onClose, onSelect }) => {
+const ModalEstatus = ({ open, onClose, onSave, entrega }) => {
+  const [estatus, setEstatus] = useState(entrega?.estatus || "Pendiente");
+  const [tipoEntrega, setTipoEntrega] = useState(entrega?.tipo_entrega || "TIENDA");
+  const [gestionada, setGestionada] = useState(entrega?.gestionada || "NO GESTIONADA");
   if (!open) return null;
-  return (
-    <div className="actualizar-estatus-modal-bg">
-      <div className="actualizar-estatus-modal">
-        <div className="actualizar-estatus-titulo">Actualizar estatus</div>
-        <div className="actualizar-estatus-btns">
-          <button className="actualizar-estatus-btn" onClick={() => onSelect("Pendiente")}>Pendiente</button>
-          <button className="actualizar-estatus-btn" onClick={() => onSelect("Entregado")}>Entregado</button>
-          <button className="actualizar-estatus-btn" onClick={() => onSelect("Rechazado")}>Rechazado</button>
-          <button className="actualizar-estatus-btn" onClick={() => onSelect("Reprogramado")}>Reprogramado</button>
-        </div>
-        <button className="actualizar-estatus-cerrar" onClick={onClose}>Cerrar</button>
+  return createPortal(
+    <div
+      className="actualizar-estatus-modal-bg"
+      onClick={onClose}
+      style={{ zIndex: 3000 }}
+    >
+      <div
+        className="actualizar-estatus-modal"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="actualizar-estatus-titulo">Actualizar entrega</div>
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            onSave(estatus, tipoEntrega, gestionada);
+          }}
+          style={{ display: 'flex', flexDirection: 'column', gap: 18 }}
+        >
+          <label style={{ fontWeight: 600, marginBottom: 4 }}>Estatus
+            <select value={estatus} onChange={e => setEstatus(e.target.value)} style={{ width: '100%', marginTop: 4 }}>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Entregado">Entregado</option>
+              <option value="Rechazado">Rechazado</option>
+              <option value="Reprogramado">Reprogramado</option>
+            </select>
+          </label>
+          <label style={{ fontWeight: 600, marginBottom: 4 }}>Tipo de entrega
+            <select value={tipoEntrega} onChange={e => setTipoEntrega(e.target.value)} style={{ width: '100%', marginTop: 4 }}>
+              <option value="TIENDA">TIENDA</option>
+              <option value="BODEGA SPS">BODEGA SPS</option>
+              <option value="BODEGA TG">BODEGA TG</option>
+              <option value="DOMICILIO">DOMICILIO</option>
+            </select>
+          </label>
+          <label style={{ fontWeight: 600, marginBottom: 4 }}>Gestionada
+            <select value={gestionada} onChange={e => setGestionada(e.target.value)} style={{ width: '100%', marginTop: 4 }}>
+              <option value="GESTIONADA">GESTIONADA</option>
+              <option value="NO GESTIONADA">NO GESTIONADA</option>
+            </select>
+          </label>
+          <button type="submit" className="actualizar-estatus-btn" style={{ marginTop: 10, background: '#4f46e5' }}>Guardar</button>
+          <button type="button" className="actualizar-estatus-cerrar" onClick={onClose} style={{ marginTop: 6 }}>Cancelar</button>
+        </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
-}; // Cierre faltante añadido
+};
 
 const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer }) => {
   const [showEstatus, setShowEstatus] = useState(false);
@@ -118,7 +156,11 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer }) => {
           <ModalEstatus
             open={showEstatus}
             onClose={() => setShowEstatus(false)}
-            onSelect={onUpdateEstatus}
+            entrega={entrega}
+            onSave={async (nuevoEstatus, nuevoTipo, nuevaGestionada) => {
+              await onUpdateEstatus(nuevoEstatus, nuevoTipo, nuevaGestionada);
+              setShowEstatus(false);
+            }}
           />
         )}
       </div>
@@ -128,17 +170,30 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer }) => {
 
 const ModalAgregar = ({ open, onClose, onAdd }) => {
   const [touched, setTouched] = useState({});
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  const todayStr = `${yyyy}-${mm}-${dd}`;
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  const yyyy2 = tomorrow.getFullYear();
+  const mm2 = String(tomorrow.getMonth() + 1).padStart(2, '0');
+  const dd2 = String(tomorrow.getDate()).padStart(2, '0');
+  const tomorrowStr = `${yyyy2}-${mm2}-${dd2}`;
   const [form, setForm] = useState({
     cliente: "",
     factura: "",
     cel: "",
     articulo: "",
     estatus: "Pendiente",
-    fecha: "",
-    fecha_entrega: "",
+    fecha: todayStr,
+    fecha_entrega: tomorrowStr,
     ubicacion: "",
     lat: 16.3832884,
     lng: -86.4460626,
+    tipo_entrega: "TIENDA",
+    gestionada: "NO GESTIONADA",
   });
   const [mapCenter, setMapCenter] = useState({
     lat: 16.3832884,
@@ -148,41 +203,58 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
   const [marker, setMarker] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [step, setStep] = useState(0);
   const mapRef = React.useRef(null);
 
   useEffect(() => {
-    if (!open || !window.google?.maps || !mapRef.current || mapLoaded) return;
-
-    const map = new window.google.maps.Map(mapRef.current, {
-      center: mapCenter,
-      zoom: 11.37,
-      mapTypeId: "satellite",
-    });
-
+    if (!open || !window.google?.maps || !mapRef.current || step !== 2) return;
+    let map = null;
     let localMarker = null;
+    // Inicializar mapa
+    map = new window.google.maps.Map(mapRef.current, {
+      center: { lat: form.lat, lng: form.lng },
+      zoom: 13,
+      mapTypeId: "satellite",
+      gestureHandling: "greedy"
+    });
+    // Crear marcador arrastrable
+    localMarker = new window.google.maps.Marker({
+      position: { lat: form.lat, lng: form.lng },
+      map,
+      draggable: true,
+      icon: {
+        url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+        scaledSize: new window.google.maps.Size(40, 40),
+      },
+    });
+    setMarker(localMarker);
+    // Al hacer click/tap en el mapa, mover el marcador
     const clickListener = map.addListener("click", (e) => {
-      if (localMarker) localMarker.setMap(null);
-      localMarker = new window.google.maps.Marker({
-        position: e.latLng,
-        map,
-      });
+      localMarker.setPosition(e.latLng);
       setForm((f) => ({
         ...f,
         lat: e.latLng.lat(),
         lng: e.latLng.lng(),
         ubicacion: `https://www.google.com/maps/@${e.latLng.lat()},${e.latLng.lng()},18z`,
       }));
-      setMarker(localMarker);
     });
-
+    // Al arrastrar el marcador
+    const dragListener = localMarker.addListener("dragend", (e) => {
+      setForm((f) => ({
+        ...f,
+        lat: e.latLng.lat(),
+        lng: e.latLng.lng(),
+        ubicacion: `https://www.google.com/maps/@${e.latLng.lat()},${e.latLng.lng()},18z`,
+      }));
+    });
     setMapLoaded(true);
-
-    // Limpiar listener al desmontar
     return () => {
       window.google.maps.event.removeListener(clickListener);
+      window.google.maps.event.removeListener(dragListener);
       if (localMarker) localMarker.setMap(null);
     };
-  }, [open, mapLoaded, mapCenter]);
+    // eslint-disable-next-line
+  }, [open, step]);
 
   useEffect(() => {
     if (!open) {
@@ -199,8 +271,11 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
         ubicacion: "",
         lat: 16.3832884,
         lng: -86.4460626,
+        tipo_entrega: "TIENDA",
+        gestionada: "NO GESTIONADA",
       });
       setTouched({});
+      setStep(0);
     }
   }, [open]);
 
@@ -240,8 +315,11 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
           ubicacion: "",
           lat: 16.3832884,
           lng: -86.4460626,
+          tipo_entrega: "TIENDA",
+          gestionada: "NO GESTIONADA",
         });
         setTouched({});
+        setStep(0);
         onClose();
       } else {
         setError("No se pudo guardar la entrega. Intenta de nuevo.");
@@ -253,126 +331,98 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
   };
 
   if (!open) return null;
+  // Pasos: 0 = datos básicos, 1 = fechas y tipo, 2 = ubicación
   return (
     <div className="agregar-entrega-modal-bg">
-      <div className="agregar-entrega-modal">
-        <h4>Agregar entrega</h4>
-        <div className="agregar-entrega-form-grid">
-          <div className="agregar-entrega-form-col">
-            <div className="input-group-float">
-              <span className="input-icon"></span>
-              <input
-                type="text"
-                value={form.cliente}
-                onChange={(e) => setForm({ ...form, cliente: e.target.value })}
-                onBlur={() => setTouched((t) => ({ ...t, cliente: true }))}
-                required
-                style={touched.cliente && !form.cliente ? { borderColor: "#ef4444" } : {}}
-              />
-              <label className={form.cliente ? "active" : ""}>Cliente</label>
-            </div>
-            <div className="input-group-float">
-              <span className="input-icon"></span>
-              <input
-                type="text"
-                value={form.factura}
-                onChange={(e) => setForm({ ...form, factura: e.target.value })}
-                onBlur={() => setTouched((t) => ({ ...t, factura: true }))}
-                required
-                style={touched.factura && !form.factura ? { borderColor: "#ef4444" } : {}}
-              />
-              <label className={form.factura ? "active" : ""}>Factura</label>
-            </div>
-            <div className="input-group-float">
-              <span className="input-icon"></span>
-              <input
-                type="text"
-                value={form.cel}
-                onChange={(e) => setForm({ ...form, cel: e.target.value })}
-                onBlur={() => setTouched((t) => ({ ...t, cel: true }))}
-                required
-                style={touched.cel && !form.cel ? { borderColor: "#ef4444" } : {}}
-              />
-              <label className={form.cel ? "active" : ""}>Cel</label>
-            </div>
-            <div className="input-group-float">
-              <span className="input-icon"></span>
-              <input
-                type="text"
-                value={form.articulo}
-                onChange={(e) => setForm({ ...form, articulo: e.target.value })}
-                onBlur={() => setTouched((t) => ({ ...t, articulo: true }))}
-                required
-                style={touched.articulo && !form.articulo ? { borderColor: "#ef4444" } : {}}
-              />
-              <label className={form.articulo ? "active" : ""}>Artículo</label>
-            </div>
-            <div className="input-group-float">
-              <span className="input-icon"></span>
-              <input
-                type="date"
-                value={form.fecha}
-                onChange={(e) => setForm({ ...form, fecha: e.target.value })}
-                onBlur={() => setTouched((t) => ({ ...t, fecha: true }))}
-                required
-                style={touched.fecha && !form.fecha ? { borderColor: "#ef4444" } : {}}
-              />
-              <label className={form.fecha ? "active" : ""}>Fecha</label>
-            </div>
-            <div className="input-group-float">
-              <span className="input-icon"></span>
-              <input
-                type="date"
-                value={form.fecha_entrega}
-                onChange={(e) => setForm({ ...form, fecha_entrega: e.target.value })}
-                onBlur={() => setTouched((t) => ({ ...t, fecha_entrega: true }))}
-                required
-                style={touched.fecha_entrega && !form.fecha_entrega ? { borderColor: "#ef4444" } : {}}
-              />
-              <label className={form.fecha_entrega ? "active" : ""}>Fecha de entrega</label>
-            </div>
-            <div className="input-group-float">
-              <span className="input-icon"></span>
-              <input
-                type="text"
-                value={form.ubicacion}
-                readOnly
-                required
-                style={touched.lat && touched.lng && (!form.lat || !form.lng) ? { borderColor: "#ef4444" } : {}}
-              />
-              <label className={form.ubicacion ? "active" : ""}>Ubicación (se selecciona en el mapa)</label>
-            </div>
+      <div className="agregar-entrega-modal" style={{ maxWidth: 400, minWidth: 0 }}>
+        <div className="agregar-entrega-multistep">
+          <div className="agregar-entrega-steps">
+            {["1", "2", "3"].map((n, i) => (
+              <div key={i} className={`agregar-entrega-step${step === i ? " active" : step > i ? " done" : ""}`}>{n}</div>
+            ))}
+          </div>
+          <div className="agregar-entrega-multistep-content">
+            {step === 0 && (
+              <>
+                <div className="input-group-float">
+                  <input type="text" value={form.cliente} onChange={e => setForm({ ...form, cliente: e.target.value })} onBlur={() => setTouched(t => ({ ...t, cliente: true }))} required style={touched.cliente && !form.cliente ? { borderColor: "#ef4444" } : {}} />
+                  <label className={form.cliente ? "active" : ""}>Nombre del cliente *</label>
+                </div>
+                <div className="input-group-float">
+                  <input type="number" value={form.factura} onChange={e => setForm({ ...form, factura: e.target.value })} onBlur={() => setTouched(t => ({ ...t, factura: true }))} required style={touched.factura && !form.factura ? { borderColor: "#ef4444" } : {}} />
+                  <label className={form.factura ? "active" : ""}>Factura *</label>
+                </div>
+                <div className="input-group-float">
+                  <input type="tel" value={form.cel} onChange={e => setForm({ ...form, cel: e.target.value })} onBlur={() => setTouched(t => ({ ...t, cel: true }))} required style={touched.cel && !form.cel ? { borderColor: "#ef4444" } : {}} pattern="[0-9]{8,15}" maxLength={15} />
+                  <label className={form.cel ? "active" : ""}>Celular *</label>
+                </div>
+                <div className="input-group-float">
+                  <input type="text" value={form.articulo} onChange={e => setForm({ ...form, articulo: e.target.value })} onBlur={() => setTouched(t => ({ ...t, articulo: true }))} required style={touched.articulo && !form.articulo ? { borderColor: "#ef4444" } : {}} />
+                  <label className={form.articulo ? "active" : ""}>Artículo</label>
+                </div>
+              </>
+            )}
+            {step === 1 && (
+              <>
+                <div className="input-group-float">
+                  <input type="date" value={form.fecha} onChange={e => setForm({ ...form, fecha: e.target.value })} onBlur={() => setTouched(t => ({ ...t, fecha: true }))} required style={touched.fecha && !form.fecha ? { borderColor: "#ef4444" } : {}} />
+                  <label className={form.fecha ? "active" : ""}>Fecha</label>
+                </div>
+                <div className="input-group-float">
+                  <input type="date" value={form.fecha_entrega} onChange={e => setForm({ ...form, fecha_entrega: e.target.value })} onBlur={() => setTouched(t => ({ ...t, fecha_entrega: true }))} required style={touched.fecha_entrega && !form.fecha_entrega ? { borderColor: "#ef4444" } : {}} />
+                  <label className={form.fecha_entrega ? "active" : ""}>Fecha de entrega</label>
+                </div>
+                <div className="input-group-float">
+                  <label style={{ fontWeight: 600, marginBottom: 4, display: 'block' }}>Tipo de entrega</label>
+                  <select value={form.tipo_entrega} onChange={e => setForm({ ...form, tipo_entrega: e.target.value })} style={{ width: '100%', marginTop: 4, borderRadius: 8, padding: '0.5rem' }}>
+                    <option value="TIENDA">Tienda</option>
+                    <option value="BODEGA SPS">Bodega SPS</option>
+                    <option value="BODEGA TG">Bodega TG</option>
+                    <option value="DOMICILIO">Domicilio</option>
+                  </select>
+                </div>
+              </>
+            )}
+            {step === 2 && (
+              <>
+                <div className="input-group-float">
+                  <input type="text" value={form.ubicacion} readOnly required style={touched.lat && touched.lng && (!form.lat || !form.lng) ? { borderColor: "#ef4444" } : {}} />
+                  <label className={form.ubicacion ? "active" : ""}>Ubicación (se selecciona en el mapa)</label>
+                </div>
+                <div className="mapa-entrega">
+                  <div ref={mapRef} style={{ width: "100%", height: "100%" }}></div>
+                </div>
+                <div style={{ fontSize: 12, color: "#6366f1", marginTop: 4, textAlign: "center" }}>
+                  Haz click en el mapa para seleccionar ubicación
+                </div>
+              </>
+            )}
             {error && <div style={{ color: "#ef4444", marginTop: 8 }}>{error}</div>}
           </div>
-          <div className="agregar-entrega-form-col">
-            <div
-              style={{
-                width: 250,
-                height: 180,
-                borderRadius: 12,
-                overflow: "hidden",
-                border: "1.5px solid #6366f1",
-                background: "#e0e7ff",
-              }}
-            >
-              <div ref={mapRef} style={{ width: "100%", height: "100%" }}></div>
-            </div>
-            <div style={{ fontSize: 12, color: "#6366f1", marginTop: 4 }}>
-              Haz click en el mapa para seleccionar ubicación
-            </div>
+          <div className="agregar-entrega-multistep-nav">
+            <button className="modern-cerrar" type="button" onClick={onClose} disabled={loading}>Cancelar</button>
+            {step > 0 && <button className="modern-agregar" type="button" onClick={() => setStep(step - 1)} disabled={loading}>Atrás</button>}
+            {step < 2 && (
+              <button
+                className="modern-agregar"
+                type="button"
+                onClick={() => {
+                  // Validar antes de avanzar
+                  if (step === 0) {
+                    const campos = ["cliente", "factura", "cel"];
+                    const vacios = campos.filter((c) => !form[c]);
+                    setTouched((prev) => ({ ...prev, ...Object.fromEntries(campos.map((c) => [c, true])) }));
+                    if (vacios.length > 0) return;
+                  }
+                  setStep(step + 1);
+                }}
+                disabled={loading}
+              >
+                Siguiente
+              </button>
+            )}
+            {step === 2 && <button className="modern-agregar" type="button" onClick={handleAgregar} disabled={loading || !form.lat || !form.lng}>{loading ? "Guardando..." : "Agregar"}</button>}
           </div>
-        </div>
-        <div style={{ display: "flex", gap: "1rem", marginTop: 16 }}>
-          <button
-            className="modern-agregar"
-            onClick={handleAgregar}
-            disabled={loading || !form.lat || !form.lng}
-          >
-            {loading ? "Guardando..." : "Agregar"}
-          </button>
-          <button className="modern-cerrar" onClick={onClose} disabled={loading}>
-            Cerrar
-          </button>
         </div>
       </div>
     </div>
@@ -436,21 +486,23 @@ const Entregas = () => {
   });
 
   // Actualizar estatus en Supabase
-  const handleUpdateEstatus = async (nuevo) => {
+  const handleUpdateEstatus = async (nuevo, tipoEntrega, gestionada) => {
     if (!detalle) return;
     try {
       const { error } = await supabase
         .from("entregas_pendientes")
-        .update({ estatus: nuevo })
+        .update({ estatus: nuevo, tipo_entrega: tipoEntrega, gestionada })
         .eq("id", detalle.id);
       if (error) throw error;
       setEntregas(
-        entregas.map((e) => (e.id === detalle.id ? { ...e, estatus: nuevo } : e))
+        entregas.map((e) =>
+          e.id === detalle.id
+            ? { ...e, estatus: nuevo, tipo_entrega: tipoEntrega, gestionada }
+            : e
+        )
       );
       setDetalle(null);
-      setTimeout(() => {
-        window.location.reload();
-      }, 200);
+    window.location.reload();
     } catch (e) {
       console.error("Error al actualizar estatus:", e.message);
       alert("No se pudo actualizar el estatus.");
@@ -573,6 +625,8 @@ const Entregas = () => {
               <th>Artículo</th>
               <th>Fecha</th>
               <th>Fecha de entrega</th>
+              <th>Tipo de entrega</th>
+              <th>Gestionada</th>
               <th>Tiempo</th>
               <th>Estatus</th>
             </tr>
@@ -586,6 +640,12 @@ const Entregas = () => {
                 <td data-label="Artículo">{e.articulo}</td>
                 <td data-label="Fecha">{e.fecha}</td>
                 <td data-label="Fecha entrega">{e.fecha_entrega}</td>
+                <td data-label="Tipo de entrega">
+                  <span className={`modern-tipoentrega modern-tipoentrega-${(e.tipo_entrega || '').toLowerCase().replace(/\s/g, '-')}`}>{e.tipo_entrega}</span>
+                </td>
+                <td data-label="Gestionada">
+                  <span className={`modern-gestionada modern-gestionada-${(e.gestionada || '').toLowerCase().replace(/\s/g, '-')}`}>{e.gestionada}</span>
+                </td>
                 <td data-label="Tiempo">{tiempoTranscurrido(e.fecha)}</td>
                 <td data-label="Estatus">
                   <span className={`modern-status modern-${e.estatus?.toLowerCase?.()}`}>

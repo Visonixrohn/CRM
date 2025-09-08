@@ -1,4 +1,55 @@
 /* =============================
+   AJUSTES EXTRA PARA MÓVILES
+   ============================= */
+@media (max-width: 500px) {
+  .agregar-entrega-modal {
+    width: 98vw;
+    height: auto;
+    max-width: 99vw;
+    max-height: 99vh;
+    padding: 0.5rem 0.3rem;
+    border-radius: 10px;
+  }
+  .agregar-entrega-form-grid {
+    gap: 0.5rem;
+  }
+  .agregar-entrega-form-col {
+    gap: 0.5rem;
+  }
+  .input-group-float input[type="text"],
+  .input-group-float input[type="date"],
+  .input-group-float select {
+    font-size: 0.95rem;
+    padding: 0.7rem 0.7rem 0.7rem 2rem;
+    border-radius: 8px;
+  }
+  .input-group-float label {
+    font-size: 0.85rem;
+    left: 2rem;
+  }
+  .input-group-float .input-icon {
+    font-size: 1rem;
+    left: 0.6rem;
+  }
+  .input-group-float input:focus + label,
+  .input-group-float input:not(:placeholder-shown):not([value=""]) + label,
+  .input-group-float label.active {
+    font-size: 0.8rem;
+    left: 1rem;
+  }
+  .agregar-entrega-form-col > div[style*="width: 250px"] {
+    width: 180px !important;
+    height: 120px !important;
+    min-width: 120px;
+    min-height: 80px;
+  }
+  .modern-agregar, .modern-cerrar {
+    font-size: 0.95rem;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+  }
+}
+/* =============================
    FONDO OSCURO DEL MODAL
    ============================= */
 .agregar-entrega-modal-bg {

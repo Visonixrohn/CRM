@@ -1,38 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./Calculadoras.css"; // Importamos estilos
 
 const Calculadoras = () => {
-  const [activeCalculator, setActiveCalculator] = useState(() => {
-    return localStorage.getItem("activeCalculator") || null;
-  });
-  const [inputs, setInputs] = useState(() => {
-    const saved = localStorage.getItem("calculadoraInputs");
-    return saved
-      ? JSON.parse(saved)
-      : {
-          precioNormal: "",
-          precioConDescuento: "",
-          totalACobrar: "",
-          precioDeseado: "",
-          precioNuestro: "",
-          precioCompetencia: "",
-        };
+  const [activeCalculator, setActiveCalculator] = useState(null);
+  const [inputs, setInputs] = useState({
+    precioNormal: "",
+    precioConDescuento: "",
+    totalACobrar: "",
+    precioDeseado: "",
+    precioNuestro: "",
+    precioCompetencia: "",
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setInputs((prev) => {
-      const updated = { ...prev, [name]: value };
-      localStorage.setItem("calculadoraInputs", JSON.stringify(updated));
-      return updated;
-    });
+    setInputs({ ...inputs, [name]: value });
   };
-
-  useEffect(() => {
-    if (activeCalculator) {
-      localStorage.setItem("activeCalculator", activeCalculator);
-    }
-  }, [activeCalculator]);
 
   const renderCalculator = () => {
     if (activeCalculator === "extrafinanciamiento") {

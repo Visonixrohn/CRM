@@ -1,0 +1,179 @@
+/* =============================
+   FORMULARIO MULTIPASO MODERNO
+   ============================= */
+
+.agregar-entrega-multistep {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.agregar-entrega-steps {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.agregar-entrega-step {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #6366f1;
+  font-weight: 700;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2.5px solid #c7d2fe;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+}
+.agregar-entrega-step.active {
+  background: #6366f1;
+  color: #fff;
+  border-color: #6366f1;
+  box-shadow: 0 4px 16px rgba(99,102,241,0.13);
+}
+.agregar-entrega-step.done {
+  background: #10b981;
+  color: #fff;
+  border-color: #10b981;
+  box-shadow: 0 4px 16px rgba(16,185,129,0.13);
+}
+
+/* El modal multipaso será más ancho en el paso del mapa */
+.agregar-entrega-multistep-content {
+  width: 100%;
+  max-width: 420px;
+  background: #f9fafb;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(99,102,241,0.08);
+  padding: 1.5rem 1.2rem 1.7rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  border: 1.5px solid #e0e7ff;
+}
+
+/* Contenedor del mapa más grande en el paso 3 */
+.agregar-entrega-multistep-content .mapa-entrega {
+  width: 320px !important;
+  height: 180px !important;
+  min-width: 200px;
+  min-height: 120px;
+  margin: 0 auto 0.5rem auto;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 2px solid #6366f1;
+  background: #e0e7ff;
+}
+
+@media (max-width: 500px) {
+  .agregar-entrega-multistep-content {
+    max-width: 99vw;
+    padding: 0.8rem 0.2rem 1.1rem 0.2rem;
+    border-radius: 10px;
+  }
+  .agregar-entrega-multistep-content .mapa-entrega {
+    width: 98vw !important;
+    min-width: 0;
+    height: 160px !important;
+    min-height: 90px;
+    border-radius: 10px;
+  }
+}
+
+.input-group-float input,
+.input-group-float select {
+  background: #fff !important;
+  border: 1.5px solid #c7d2fe !important;
+  font-size: 1.08rem !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 4px rgba(99,102,241,0.04);
+  margin-bottom: 0.2rem;
+  width: 100%;
+  padding: 1.1rem 1.1rem 1.1rem 1.1rem;
+  font-family: inherit;
+  appearance: none;
+  min-height: 48px;
+  box-sizing: border-box;
+}
+.input-group-float input[type="number"],
+.input-group-float input[type="tel"] {
+  font-size: 1.08rem !important;
+  padding: 1.1rem 1.1rem 1.1rem 1.1rem;
+  border-radius: 10px !important;
+  width: 100%;
+  min-height: 48px;
+  box-sizing: border-box;
+  background: #fff !important;
+  border: 1.5px solid #c7d2fe !important;
+  font-family: inherit;
+  appearance: none;
+}
+.input-group-float input:focus,
+.input-group-float select:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 2px #6366f133;
+}
+.input-group-float label {
+  color: #6366f1 !important;
+  font-weight: 600 !important;
+  position: static !important; /* Remove floating animation */
+  transform: none !important; /* Remove transform effects */
+  font-size: 1rem !important; /* Consistent font size */
+  margin-bottom: 0.5rem !important; /* Add spacing below label */
+  display: block !important; /* Ensure label is block-level */
+}
+
+.agregar-entrega-multistep-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin-top: 1.5rem;
+}
+.modern-agregar, .modern-cerrar {
+  padding: 0.85rem 1.3rem;
+  border-radius: 10px;
+  border: none;
+  background: #6366f1;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.08rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+}
+.modern-agregar:hover, .modern-cerrar:hover {
+  background: #818cf8;
+}
+.modern-cerrar {
+  background: #e5e7eb;
+  color: #374151;
+  box-shadow: none;
+  border: 1.5px solid #cbd5e1;
+}
+.modern-cerrar:hover {
+  background: #f3f4f6;
+  color: #6366f1;
+}
+
+@media (max-width: 500px) {
+  .agregar-entrega-multistep-content {
+    max-width: 99vw;
+    padding: 0.8rem 0.2rem 1.1rem 0.2rem;
+    border-radius: 10px;
+  }
+  .agregar-entrega-step {
+    width: 28px;
+    height: 28px;
+    font-size: 0.98rem;
+  }
+  .modern-agregar, .modern-cerrar {
+    font-size: 0.98rem;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+  }
+}

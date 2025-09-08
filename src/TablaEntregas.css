@@ -1,3 +1,56 @@
+/* === Colores para columna Tipo de Entrega === */
+.modern-tipoentrega {
+  display: inline-block;
+  padding: 0.28rem 0.7rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.89rem;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  margin: 0 0.1rem;
+}
+.modern-tipoentrega-tienda {
+  background: #e3f2fd;
+  color: #1565c0;
+  border: 1.5px solid #90caf9;
+}
+.modern-tipoentrega-bodega-sps {
+  background: #fff3e0;
+  color: #ef6c00;
+  border: 1.5px solid #ffe0b2;
+}
+.modern-tipoentrega-bodega-tg {
+  background: #f3e5f5;
+  color: #6a1b9a;
+  border: 1.5px solid #ce93d8;
+}
+.modern-tipoentrega-domicilio {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1.5px solid #a5d6a7;
+}
+
+/* === Colores para columna Gestionada === */
+.modern-gestionada {
+  display: inline-block;
+  padding: 0.28rem 0.7rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.89rem;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  margin: 0 0.1rem;
+}
+.modern-gestionada-gestionada {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1.5px solid #a5d6a7;
+}
+.modern-gestionada-no-gestionada {
+  background: #ffebee;
+  color: #c62828;
+  border: 1.5px solid #ef9a9a;
+}
 /* =============================
    TABLA / CARDS DE ENTREGAS RESPONSIVA
    ============================= */
