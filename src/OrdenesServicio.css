@@ -5,7 +5,8 @@
   .ordenes-header h1 {
     font-size: 1.1rem;
   }
-  .ordenes-table th, .ordenes-table td {
+  .ordenes-table th,
+  .ordenes-table td {
     font-size: 0.85rem;
     padding: 0.5rem;
   }
@@ -13,7 +14,9 @@
     min-width: 600px;
     font-size: 0.85rem;
   }
-  .order-details, .order-details-modal, .update-state-modal {
+  .order-details,
+  .order-details-modal,
+  .update-state-modal {
     padding: 0.5rem;
     font-size: 0.95rem;
     max-width: 98vw;
@@ -79,7 +82,11 @@ body {
 }
 
 .ordenes-table th {
-  background: linear-gradient(90deg, var(--primary-blue), var(--primary-blue-dark));
+  background: linear-gradient(
+    90deg,
+    var(--primary-blue),
+    var(--primary-blue-dark)
+  );
   color: #fff;
   padding: 14px;
   text-align: left;
@@ -101,6 +108,26 @@ body {
 .ordenes-table tr:hover {
   background: #eef6ff;
   cursor: pointer;
+}
+
+/* Ajustes responsivos para tablas */
+.ordenes-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: auto;
+}
+
+.ordenes-table th,
+.ordenes-table td {
+  padding: 0.5rem;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .ordenes-table th,
+  .ordenes-table td {
+    font-size: 0.9rem;
+  }
 }
 
 /* Botón flotante */
@@ -351,17 +378,47 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
-.estado-button.pendiente-de-visita { background: var(--estado-pendiente-visita); color: #fff; }
-.estado-button.pendiente-de-repuesto { background: var(--estado-pendiente-repuesto); color: #fff; }
-.estado-button.reparado { background: var(--estado-reparado); color: #fff; }
-.estado-button.sugerencia-de-cambio { background: var(--estado-sugerencia-cambio); color: #fff; }
-.estado-button.rechazado { background: var(--estado-rechazado); color: #fff; }
+.estado-button.pendiente-de-visita {
+  background: var(--estado-pendiente-visita);
+  color: #fff;
+}
+.estado-button.pendiente-de-repuesto {
+  background: var(--estado-pendiente-repuesto);
+  color: #fff;
+}
+.estado-button.reparado {
+  background: var(--estado-reparado);
+  color: #fff;
+}
+.estado-button.sugerencia-de-cambio {
+  background: var(--estado-sugerencia-cambio);
+  color: #fff;
+}
+.estado-button.rechazado {
+  background: var(--estado-rechazado);
+  color: #fff;
+}
 
-.estado-button.active.pendiente-de-visita { background: #0d47a1; border: 2.5px solid var(--estado-pendiente-visita); }
-.estado-button.active.pendiente-de-repuesto { background: #ef6c00; border: 2.5px solid var(--estado-pendiente-repuesto); }
-.estado-button.active.reparado { background: #1b5e20; border: 2.5px solid var(--estado-reparado); }
-.estado-button.active.sugerencia-de-cambio { background: #4a148c; border: 2.5px solid var(--estado-sugerencia-cambio); }
-.estado-button.active.rechazado { background: #b71c1c; border: 2.5px solid var(--estado-rechazado); }
+.estado-button.active.pendiente-de-visita {
+  background: #0d47a1;
+  border: 2.5px solid var(--estado-pendiente-visita);
+}
+.estado-button.active.pendiente-de-repuesto {
+  background: #ef6c00;
+  border: 2.5px solid var(--estado-pendiente-repuesto);
+}
+.estado-button.active.reparado {
+  background: #1b5e20;
+  border: 2.5px solid var(--estado-reparado);
+}
+.estado-button.active.sugerencia-de-cambio {
+  background: #4a148c;
+  border: 2.5px solid var(--estado-sugerencia-cambio);
+}
+.estado-button.active.rechazado {
+  background: #b71c1c;
+  border: 2.5px solid var(--estado-rechazado);
+}
 
 .estado-button:not(.active) {
   background-color: #f0f0f0;
@@ -408,11 +465,26 @@ body {
   transition: background-color 0.3s, filter 0.3s, opacity 0.3s;
 }
 
-.filter-button.pendiente-de-visita { background: var(--estado-pendiente-visita); color: #fff; }
-.filter-button.pendiente-de-repuesto { background: var(--estado-pendiente-repuesto); color: #fff; }
-.filter-button.reparado { background: var(--estado-reparado); color: #fff; }
-.filter-button.sugerencia-de-cambio { background: var(--estado-sugerencia-cambio); color: #fff; }
-.filter-button.rechazado { background: var(--estado-rechazado); color: #fff; }
+.filter-button.pendiente-de-visita {
+  background: var(--estado-pendiente-visita);
+  color: #fff;
+}
+.filter-button.pendiente-de-repuesto {
+  background: var(--estado-pendiente-repuesto);
+  color: #fff;
+}
+.filter-button.reparado {
+  background: var(--estado-reparado);
+  color: #fff;
+}
+.filter-button.sugerencia-de-cambio {
+  background: var(--estado-sugerencia-cambio);
+  color: #fff;
+}
+.filter-button.rechazado {
+  background: var(--estado-rechazado);
+  color: #fff;
+}
 
 .filter-button.active {
   box-shadow: 0 0 0 2px #fff, 0 2px 8px rgba(10, 35, 66, 0.15);
@@ -420,11 +492,26 @@ body {
   border: 2.5px solid #222;
 }
 
-.filter-button.active.pendiente-de-visita { background: #0d47a1; border-color: var(--estado-pendiente-visita); }
-.filter-button.active.pendiente-de-repuesto { background: #ef6c00; border-color: var(--estado-pendiente-repuesto); }
-.filter-button.active.reparado { background: #1b5e20; border-color: var(--estado-reparado); }
-.filter-button.active.sugerencia-de-cambio { background: #4a148c; border-color: var(--estado-sugerencia-cambio); }
-.filter-button.active.rechazado { background: #b71c1c; border-color: var(--estado-rechazado); }
+.filter-button.active.pendiente-de-visita {
+  background: #0d47a1;
+  border-color: var(--estado-pendiente-visita);
+}
+.filter-button.active.pendiente-de-repuesto {
+  background: #ef6c00;
+  border-color: var(--estado-pendiente-repuesto);
+}
+.filter-button.active.reparado {
+  background: #1b5e20;
+  border-color: var(--estado-reparado);
+}
+.filter-button.active.sugerencia-de-cambio {
+  background: #4a148c;
+  border-color: var(--estado-sugerencia-cambio);
+}
+.filter-button.active.rechazado {
+  background: #b71c1c;
+  border-color: var(--estado-rechazado);
+}
 
 .filter-button:not(.active) {
   opacity: 0.85;

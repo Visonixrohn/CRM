@@ -4,6 +4,7 @@ import ChoferModal from "./ChoferModal";
 import ChoferDetalleModal from "./ChoferDetalleModal";
 import "./EntregasModern.css";
 import Modals from "./ModalInput";
+import "./Entregas.css";
 
 const estados = ["Pendiente", "Entregado", "Rechazado", "Reprogramado"];
 
@@ -49,7 +50,7 @@ const ModalEstatus = ({ open, onClose, onSelect }) => {
             Reprogramado
           </button>
         </div>
-        <button className="modern-cerrar" onClick={onClose}>
+        <button className="modern-modal-close" onClick={onClose}>
           Cerrar
         </button>
       </div>
@@ -72,38 +73,41 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer }) => {
     }
   }
 
- const handleEnviarDatos = () => {
-  // Construcción del mensaje de entrega
-  const mensaje = `Entrega para: ${entrega.cliente}\nFactura: ${entrega.factura}\nTeléfono: ${entrega.cel}\nUbicación: https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+  const handleEnviarDatos = () => {
+    // Construcción del mensaje de entrega
+    const mensaje = `Entrega para: ${entrega.cliente}\nFactura: ${entrega.factura}\nTeléfono: ${entrega.cel}\nUbicación: https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
 
-  // Verifica si el dispositivo es móvil o no
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  const baseUrl = isMobile
-    ? "https://wa.me/"
-    : "https://web.whatsapp.com/send";
+    // Verifica si el dispositivo es móvil o no
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const baseUrl = isMobile
+      ? "https://wa.me/"
+      : "https://web.whatsapp.com/send";
 
-  // Usar el número del chofer de la entrega, o si no existe, el chofer global (React state)
-  // Usar SIEMPRE el número del chofer global si existe
-  let telefono = (typeof chofer !== 'undefined' && (chofer.telefono || chofer.contacto)) || "";
+    // Usar el número del chofer de la entrega, o si no existe, el chofer global (React state)
+    // Usar SIEMPRE el número del chofer global si existe
+    let telefono =
+      (typeof chofer !== "undefined" && (chofer.telefono || chofer.contacto)) ||
+      "";
 
-  // Limpiar el teléfono, eliminando caracteres no numéricos
-  telefono = String(telefono).replace(/[^\d]/g, "");
-  // Si el número comienza con '504' (código de país de Honduras), eliminarlo
-  if (telefono.startsWith("504")) {
-    telefono = telefono.slice(3);
-  }
+    // Limpiar el teléfono, eliminando caracteres no numéricos
+    telefono = String(telefono).replace(/[^\d]/g, "");
+    // Si el número comienza con '504' (código de país de Honduras), eliminarlo
+    if (telefono.startsWith("504")) {
+      telefono = telefono.slice(3);
+    }
 
-  // Verifica que el número tenga una longitud válida (8 dígitos)
-  if (telefono.length !== 8) {
-    alert("No hay un número de teléfono válido para WhatsApp del chofer");
-    return;
-  }
+    // Verifica que el número tenga una longitud válida (8 dígitos)
+    if (telefono.length !== 8) {
+      alert("No hay un número de teléfono válido para WhatsApp del chofer");
+      return;
+    }
 
-  // Construcción de la URL para abrir WhatsApp
-  const url = `${baseUrl}?phone=504${telefono}&text=${encodeURIComponent(mensaje)}`;
-  window.open(url, "_blank");
-};
-
+    // Construcción de la URL para abrir WhatsApp
+    const url = `${baseUrl}?phone=504${telefono}&text=${encodeURIComponent(
+      mensaje
+    )}`;
+    window.open(url, "_blank");
+  };
 
   return (
     <div className="modern-modal-bg">
@@ -588,7 +592,6 @@ const Entregas = () => {
       ])
       .select();
     if (error) {
-
     }
     if (!error && data && data.length > 0) {
       // Recargar lista desde supabase para evitar inconsistencias
@@ -635,7 +638,6 @@ const Entregas = () => {
   };
 
   const handleChoferButtonClick = () => {
-
     if (chofer) {
       setChoferModal("detalle"); // Abrir modal de detalles si ya hay chofer
     } else {
@@ -758,19 +760,15 @@ const Entregas = () => {
           </thead>
           <tbody>
             {entregasFiltradas.map((e, i) => (
-              <tr
-                key={e.id || i}
-                className="modern-fila"
-                onClick={() => setDetalle(e)}
-              >
-                <td>{e.cliente}</td>
-                <td>{e.factura}</td>
-                <td>{e.cel}</td>
-                <td>{e.articulo}</td>
-                <td>{e.fecha}</td>
-                <td>{e.fecha_entrega}</td>
-                <td>{tiempoTranscurrido(e.fecha)}</td>
-                <td>
+              <tr key={e.id || i} onClick={() => setDetalle(e)}>
+                <td data-label="Cliente">{e.cliente}</td>
+                <td data-label="Factura">{e.factura}</td>
+                <td data-label="Cel">{e.cel}</td>
+                <td data-label="Artículo">{e.articulo}</td>
+                <td data-label="Fecha">{e.fecha}</td>
+                <td data-label="Fecha entrega">{e.fecha_entrega}</td>
+                <td data-label="Tiempo">{tiempoTranscurrido(e.fecha)}</td>
+                <td data-label="Estatus">
                   <span
                     className={`modern-status modern-${e.estatus?.toLowerCase?.()}`}
                   >

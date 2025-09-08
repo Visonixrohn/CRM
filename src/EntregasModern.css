@@ -34,7 +34,9 @@
     font-size: 0.85rem;
     min-width: 600px;
   }
-  .modern-modal, .modern-modal-agregar, .modern-modal-detalle {
+  .modern-modal,
+  .modern-modal-agregar,
+  .modern-modal-detalle {
     max-width: 98vw !important;
     min-width: unset !important;
     padding: 1rem !important;
@@ -49,7 +51,9 @@
     width: 100% !important;
     min-width: unset !important;
   }
-  .modern-btn, .modern-agregar, .modern-cerrar {
+  .modern-btn,
+  .modern-agregar,
+  .modern-cerrar {
     width: 100%;
     font-size: 1rem;
     padding: 0.8rem 0;
@@ -336,7 +340,7 @@
     var(--color-bg) 0%,
     var(--color-bg-accent) 100%
   );
-  padding-top: 100px;
+  padding-top: 0; /* Ajustar padding superior */
 }
 
 .entregas-modern-bar {
@@ -350,7 +354,7 @@
 
 .entregas-modern-bar h2 {
   text-align: center; /* centrado */
-  width: 100%;        /* ocupar todo el espacio */
+  width: 100%; /* ocupar todo el espacio */
   color: var(--color-dark);
   font-size: 2.4rem;
   font-weight: 700;
@@ -359,9 +363,8 @@
 
   /* efecto de luz azul */
   text-shadow: 0 0 6px rgba(215, 215, 226, 0.6),
-               0 0 12px rgba(116, 117, 151, 0.5);
+    0 0 12px rgba(116, 117, 151, 0.5);
 }
-
 
 button {
   border: none;
@@ -608,6 +611,12 @@ button:hover {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

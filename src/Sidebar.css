@@ -22,20 +22,30 @@
 
 /* Sidebar container */
 .sidebar {
-  width: 80px;
+  width: 0px;
   background: var(--background-white);
   height: 100vh;
-  position: fixed;
-  top: 7.9vh;
-  left: -80px;
+  position: relative; /* Cambiado de fixed a relative */
+  top: 0;
+  left: 0;
   transition: var(--transition);
   box-shadow: var(--shadow-light);
-  overflow: hidden;
-  z-index: 1000;
+  overflow: hidden; /* Evitar scroll dentro del sidebar */
 }
 
 .sidebar.open {
-  left: 0;
+  width: 100px; /* Ajustar el ancho cuando está abierto */
+  overflow-y: hidden; /* Asegurar que no haya scroll vertical al abrir el sidebar */
+}
+
+/* Main content adjustments */
+.main-content {
+  margin-left: 80px; /* Margen inicial para el sidebar cerrado */
+  transition: var(--transition);
+}
+
+.sidebar.open ~ .layout-container #main-content {
+  margin-left: 8px; /* Ajustar margen cuando el sidebar está abierto */
 }
 
 /* Sidebar icons container */
@@ -101,20 +111,18 @@
 /* Tooltip styling */
 .sidebar-tooltip {
   visibility: hidden;
-  width: 150px;
-  background: var(--neon-blue);
+  width: auto;
+  background: var(--neon-blue-dark);
   color: var(--background-white);
-  text-align: center;
+
   padding: 0.5rem;
   border-radius: 6px;
-  position: absolute;
-  left: 90px;
-  top: 50%;
-  transform: translateY(-50%);
+  position: fixed; /* Asegurar que la pestaña esté encima de todo */
+
   font-size: 0.9rem;
   font-family: var(--font-family);
-  box-shadow: var(--shadow-blue);
-  z-index: 1;
+
+  z-index: 1000; /* Máxima prioridad para que se muestre sobre otros elementos */
   opacity: 0;
   transition: var(--transition);
 }
@@ -153,6 +161,16 @@
 .cerrar-sesion:hover .icon-text {
   color: #cc3333;
   text-shadow: 0 0 8px #cc3333;
+}
+
+/* Prevent scroll on fixed elements */
+body {
+  overflow: hidden;
+}
+
+.main-content {
+  overflow-y: auto;
+  height: 10vh; /* Asegurar que las vistas ocupen toda la pantalla */
 }
 
 /* Responsive adjustments */

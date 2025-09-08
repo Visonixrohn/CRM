@@ -1,36 +1,20 @@
-@media (max-width: 480px) {
-  .comisiones-container {
-    padding: 0.5rem;
-  }
-  .comisiones-title {
-    font-size: 1.1rem;
-  }
-  .com-card {
-    padding: 0.5rem;
-    font-size: 0.9rem;
-  }
-  .com-card-value {
-    font-size: 1rem;
-  }
-  .comisiones-cards-grid {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-}
-/* CSS Variables for consistent theming */
+/* CSS Variables for Consistent Theming */
 :root {
-  --primary-color: #4f46e5; /* Indigo */
-  --success-color: #10b981; /* Emerald */
-  --danger-color: #ef4444; /* Red */
-  --neutral-color: #6b7280; /* Gray */
-  --background-color: #f8fafc; /* Slate-50 */
-  --text-color: #1f2937; /* Gray-800 */
-  --card-shadow: 0 4px 12px rgba(39, 36, 36, 0.1);
-  --border-radius: 12px;
-  --transition: all 0.3s ease;
-  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, sans-serif;
+  --primary-color: #6d28d9; /* Deep purple for a luxurious feel */
+  --success-color: #34d399; /* Vibrant emerald for success */
+  --danger-color: #f87171; /* Soft red for alerts */
+  --neutral-color: #9ca3af; /* Neutral gray for balance */
+  --background-color: #f3f4f6; /* Light gray for clean background */
+  --text-color: #1f2937; /* Dark gray for readability */
+  --accent-color: #facc15; /* Golden accent for fashion flair */
+  --card-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  --border-radius: 16px;
+  --transition: all 0.3s ease-in-out;
+  --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
+
+/* Import Google Font for a Fashionable Look */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 /* Reset and Base Styles */
 * {
@@ -41,107 +25,137 @@
 
 body,
 html {
-  margin: 0;
-  padding: 0;
   height: 100%;
   width: 100%;
-  overflow: hidden;
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  overscroll-behavior: none; /* Prevent overscroll bounce */
 }
 
 #root {
   height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
+/* Main Container */
 .comisiones-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  height: 100%;
+  min-height: 100vh;
   width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  background-color: #f9f9f9;
+  padding: 1.5rem;
+  background: linear-gradient(180deg, #f9fafb, var(--background-color));
+  overflow-y: auto; /* Allow scrolling on long content */
 }
 
+/* Header */
 .comisiones-header {
   margin-bottom: 2rem;
   text-align: center;
+  animation: fadeIn 0.5s ease-in;
 }
 
 .comisiones-title {
-  font-size: 2rem;
+  font-size: 2.25rem;
   font-weight: 600;
   color: var(--text-color);
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
+  letter-spacing: -0.025em;
 }
 
 /* Card Grid */
 .comisiones-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1280px;
   margin-bottom: 2rem;
 }
 
 .com-card {
-  background: white;
+  background: #ffffff;
   border-radius: var(--border-radius);
   padding: 1.5rem;
   text-align: center;
   box-shadow: var(--card-shadow);
   transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.com-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--accent-color);
+  transition: var(--transition);
 }
 
 .com-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.com-card:hover::before {
+  height: 8px;
 }
 
 .com-card.meta {
-  background: linear-gradient(135deg, var(--primary-color), #a5b4fc);
-  color: white;
+  background: linear-gradient(135deg, var(--primary-color), #a78bfa);
+  color: #ffffff;
 }
 .com-card.success {
   background: linear-gradient(135deg, var(--success-color), #6ee7b7);
-  color: white;
+  color: #ffffff;
 }
 .com-card.danger {
-  background: linear-gradient(135deg, var(--danger-color), #f87171);
-  color: white;
+  background: linear-gradient(135deg, var(--danger-color), #fca5a5);
+  color: #ffffff;
 }
 .com-card.primary {
   background: linear-gradient(135deg, #3b82f6, #93c5fd);
-  color: white;
+  color: #ffffff;
 }
 .com-card.neutral {
   background: linear-gradient(135deg, var(--neutral-color), #d1d5db);
-  color: white;
+  color: #ffffff;
 }
 
 .com-card-icon {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
   display: block;
+  transition: var(--transition);
+}
+
+.com-card:hover .com-card-icon {
+  transform: scale(1.1);
 }
 
 .com-card-title {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  opacity: 0.9;
+  opacity: 0.85;
   margin-bottom: 0.5rem;
-  display: block;
 }
 
 .com-card-value {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
+  letter-spacing: -0.025em;
 }
 
 /* Actions Header */
@@ -149,14 +163,16 @@ html {
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .header-round-btn {
   background: var(--primary-color);
-  color: white;
+  color: #ffffff;
   border: none;
-  border-radius: var(--border-radius);
-  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  padding: 0.75rem 1.75rem;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -164,42 +180,41 @@ html {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .header-round-btn:hover {
-  background: #4338ca;
+  background: #5b21b6;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Chart */
-.comisiones-chart {
-  background: white;
-  border-radius: var(--border-radius);
-  padding: 1.5rem;
-  box-shadow: var(--card-shadow);
-  max-width: 1200px;
-  width: 100%;
+.header-round-btn:active {
+  transform: translateY(0);
 }
 
 /* Modal */
 .modal-overlay {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
 
 .modal-content {
-  background: white;
+  background: #ffffff;
   border-radius: var(--border-radius);
   padding: 2rem;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: var(--card-shadow);
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease;
 }
 
 .modal-content h2 {
   font-size: 1.5rem;
+  font-weight: 600;
   margin-bottom: 1.5rem;
   text-align: center;
   color: var(--text-color);
@@ -215,26 +230,24 @@ html {
   transition: var(--transition);
 }
 
-input {
-  color: black;
-}
-
 .modal-input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.2);
 }
 
 .modal-error {
   color: var(--danger-color);
   font-size: 0.9rem;
   margin-bottom: 1rem;
+  text-align: center;
 }
 
 .modal-buttons {
   display: flex;
   gap: 1rem;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .modal-button {
@@ -248,17 +261,17 @@ input {
 }
 
 .modal-button.save {
-  background: var(--primary-color);
-  color: white;
+  background: var(--success-color);
+  color: #ffffff;
 }
 
 .modal-button.save:hover {
-  background: #4338ca;
+  background: #2aa36d;
 }
 
 .modal-button.cancel {
   background: var(--danger-color);
-  color: white;
+  color: #ffffff;
 }
 
 .modal-button.cancel:hover {
@@ -272,23 +285,40 @@ input {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
 }
 
 .ReactModal__Content {
-  color: var(--text-color);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  width: 400px;
-  max-width: 90%;
-  z-index: 1001;
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  transform: none;
+  margin: 1rem;
+  border: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Loading and Error States */
@@ -298,6 +328,7 @@ input {
   text-align: center;
   padding: 2rem;
   color: var(--text-color);
+  animation: fadeIn 0.5s ease;
 }
 
 .error {
@@ -305,7 +336,30 @@ input {
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .comisiones-cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .comisiones-title {
+    font-size: 1.75rem;
+  }
+
+  .com-card {
+    padding: 1.25rem;
+  }
+
+  .com-card-value {
+    font-size: 1.5rem;
+  }
+}
+
 @media (max-width: 768px) {
+  .comisiones-container {
+    padding: 1rem;
+  }
+
   .comisiones-cards-grid {
     grid-template-columns: 1fr;
   }
@@ -318,23 +372,80 @@ input {
     padding: 1rem;
   }
 
+  .com-card-icon {
+    font-size: 1.75rem;
+  }
+
   .com-card-value {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
   }
 
   .header-round-btn {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
+    padding: 0.6rem 1.25rem;
+    font-size: 0.95rem;
   }
 }
 
 @media (max-width: 480px) {
   .comisiones-container {
-    padding: 1rem;
+    padding: 0.75rem;
+  }
+
+  .comisiones-title {
+    font-size: 1.25rem;
+  }
+
+  .com-card {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .com-card-icon {
+    font-size: 1.5rem;
+  }
+
+  .com-card-title {
+    font-size: 0.85rem;
+  }
+
+  .com-card-value {
+    font-size: 1.2rem;
+  }
+
+  .comisiones-actions-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .header-round-btn {
+    width: 100%;
+    padding: 0.6rem;
+    font-size: 0.9rem;
   }
 
   .modal-content {
-    width: 90%;
-    padding: 1.5rem;
+    width: 95%;
+    padding: 1.25rem;
+  }
+
+  .modal-content h2 {
+    font-size: 1.25rem;
+  }
+
+  .modal-input {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+
+  .modal-button {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* High-Resolution Devices */
+@media (min-resolution: 2dppx) {
+  .com-card, .modal-content {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   }
 }

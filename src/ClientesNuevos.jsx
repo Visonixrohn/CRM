@@ -8,7 +8,6 @@ const actualizarStatus = async (identidad, nuevoStatus) => {
   try {
     const response = await fetch(url, { method: "GET" });
     const data = await response.json();
-
   } catch (error) {
     console.error("Error al actualizar status:", error);
   }
@@ -29,7 +28,6 @@ const ClientesNuevos = () => {
       Papa.parse(csvData, {
         header: true,
         complete: (result) => {
-
           setClientes(result.data);
         },
       });
@@ -70,8 +68,6 @@ const ClientesNuevos = () => {
     return true;
   });
 
-
-
   return (
     <div className="clientes-nuevos-container">
       <h1>Clientes Nuevos</h1>
@@ -105,34 +101,36 @@ const ClientesNuevos = () => {
         />
       </div>
 
-      <table className="clientes-nuevos-tabla">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>No. de Identidad</th>
-            <th>Celular</th>
-            <th>Estatus</th>
-          </tr>
-        </thead>
-        <tbody>
-          {clientesFiltrados.map((cliente, index) => (
-            <tr
-              key={index}
-              onClick={() => handleRowClick(cliente)}
-              className={
-                cliente.Estatus === "Tomado"
-                  ? "status-tomado"
-                  : "status-sin-tomar"
-              }
-            >
-              <td>{cliente.Nombre}</td>
-              <td>{cliente["No. de Identidad"]}</td>
-              <td>{cliente.Celular}</td>
-              <td>{cliente.STATUS}</td>
+      <div className="tabla-container">
+        <table className="clientes-nuevos-tabla">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>No. de Identidad</th>
+              <th>Celular</th>
+              <th>Estatus</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {clientesFiltrados.map((cliente, index) => (
+              <tr
+                key={index}
+                onClick={() => handleRowClick(cliente)}
+                className={
+                  cliente.Estatus === "Tomado"
+                    ? "status-tomado"
+                    : "status-sin-tomar"
+                }
+              >
+                <td>{cliente.Nombre}</td>
+                <td>{cliente["No. de Identidad"]}</td>
+                <td>{cliente.Celular}</td>
+                <td>{cliente.STATUS}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {detalle && (
         <div className="detalle-modal">

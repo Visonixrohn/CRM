@@ -1,69 +1,105 @@
+/* Configuración dinámica del Sidebar y el contenedor de vistas */
 #app-layout {
   display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  width: 100vw;
-}
-
-#main-content-layout {
-  display: flex;
-  flex: 1 1 auto;
-  min-height: 0;
-  height: 100%;
-  width: 100%;
-}
-
-#main-content {
-  flex: 1 1 auto;
-  min-width: 0;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  height: 100%;
+  flex-direction: column; /* Header arriba, contenido debajo */
+  height: 100vh; /* Ocupa toda la altura de la ventana */
+  width: 100vw; /* Ocupa todo el ancho de la ventana */
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  overflow: hidden; /* Evitar scroll innecesario */
 }
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
+
+/* Contenedor que incluye sidebar y main content */
+.layout-container {
+  display: flex;
+  flex: 1; /* Ocupa el resto del espacio debajo del header */
+  width: 100%;
+  height: calc(100vh - 64px); /* Restar altura del header */
+  overflow: hidden; /* Evitar scroll horizontal o espacios extra */
+}
+
+/* Main content flexible con scroll oculto */
+.main-content {
+  flex: 1; /* Ocupa todo el espacio disponible */
+  overflow-y: auto; /* Scroll vertical si hace falta */
+  padding: 1.5rem;
+
+  /* Ocultar scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.main-content::-webkit-scrollbar {
+  display: none; /* Chrome, Edge, Safari */
+}
+
+/* Sidebar */
+.sidebar {
+  flex-shrink: 0;
+  width: 80px; /* Sidebar cerrado */
+  height: 100%;
+  overflow: hidden; /* Evitar scroll dentro del sidebar */
+  transition: width 0.3s ease;
+}
+
+.sidebar.open {
+  width: 240px; /* Sidebar abierto */
+}
+
+/* Sidebar ajustable */
+.sidebar {
+  flex-shrink: 0;
+  width: 0px; /* Ancho inicial del Sidebar */
+  transition: width 0.3s ease;
+  box-sizing: border-box; /* Asegura que el padding no afecte el tamaño */
+}
+
+.sidebar.open {
+  width: 40px; /* Ancho del Sidebar cuando está abierto */
+}
+
+/* Contenedor de vistas dinámico */
+#main-content {
+  flex: 1;
+  overflow-y: auto;
+  height: 100vh; /* Asegurar que las vistas ocupen toda la pantalla */
+  margin: 0;
   padding: 0;
-  text-align: initial;
+  position: relative; /* Asegurar que no herede posiciones absolutas */
+  top: 0; /* Corregir cualquier desplazamiento vertical */
+  margin: 0 auto; /* Centrar el contenido */
+  background-color: transparent; /* Asegurar que no haya fondo oscuro */
+  max-width: 100%; /* Asegurar que ocupe todo el ancho */
+  box-sizing: border-box;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+#app-layout.sidebar-open #main-content {
+  margin-left: 21px; /* Ajustar margen cuando el Sidebar está abierto */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#app-layout:not(.sidebar-open) #main-content {
+  margin-left: 21px; /* Ajustar margen cuando el Sidebar está cerrado */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Asegurar que .layout-container no ocupe espacio innecesario y mantenga un diseño en fila */
+.layout-container {
+  display: flex;
+  flex-direction: row; /* Mantener los contenedores en fila */
+  flex: 1; /* Asegurar que ocupen el espacio restante debajo del header */
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden; /* Asegurar que no haya scroll en el contenedor principal */
 }
 
-.card {
-  padding: 2em;
+/* Ocultar la barra de desplazamiento en toda la aplicación */
+body {
+  overflow: hidden; /* Ocultar la barra de desplazamiento */
+  scrollbar-width: none; /* Ocultar en navegadores compatibles */
 }
 
-.read-the-docs {
-  color: #888;
+body::-webkit-scrollbar {
+  display: none; /* Ocultar en navegadores basados en WebKit */
 }

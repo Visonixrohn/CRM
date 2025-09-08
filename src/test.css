@@ -1,0 +1,36 @@
+/* Estilos básicos para prueba */
+body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+#app-layout {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 80px;
+  background-color: #333;
+  color: #fff;
+  height: 100vh;
+  transition: width 0.3s ease;
+}
+
+.sidebar.open {
+  width: 240px;
+}
+
+#main-content {
+  flex: 1;
+  background-color: #fff;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+}
+
+#app-layout.sidebar-open #main-content {
+  margin-left: 240px;
+}

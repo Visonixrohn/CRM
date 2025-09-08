@@ -42,20 +42,18 @@ const Razones = () => {
   return (
     <div className="razones-container">
       <h1>Razones</h1>
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Buscar por códigos exactos (separados por espacios)"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)} // Filtrar automáticamente mientras se escribe
-        />
-      </div>
+      <input
+        type="text"
+        placeholder="Buscar razón..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="search-bar"
+      />
       <table className="styled-table">
         <thead>
           <tr>
             <th>Código</th>
             <th>Descripción</th>
-            <th>Razón</th>
           </tr>
         </thead>
         <tbody>
@@ -63,7 +61,6 @@ const Razones = () => {
             <tr key={razon.id}>
               <td>{razon.codigo}</td>
               <td>{razon.descripcion}</td>
-              <td>{razon.razon}</td>
             </tr>
           ))}
         </tbody>

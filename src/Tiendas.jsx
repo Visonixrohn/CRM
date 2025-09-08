@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 import "./Razones.css"; // Reutilizar estilos de Razones
+import "./Tiendas.css"; // Importando el archivo CSS para los estilos de la tabla
 
 const Tiendas = () => {
   const [tiendas, setTiendas] = useState([]);
@@ -42,28 +43,29 @@ const Tiendas = () => {
   }, [search, tiendas]); // Filtrar automáticamente cuando cambia la búsqueda o los datos
 
   return (
-    <div className="razones-container">
+    <div className="tiendas-container">
       <h1>Tiendas</h1>
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Buscar por número de tienda (separados por espacios)"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)} // Filtrar automáticamente mientras se escribe
-        />
-      </div>
+      <input
+        type="text"
+        placeholder="Buscar tienda..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="search-bar"
+      />
       <table className="styled-table">
         <thead>
           <tr>
             <th>Número de Tienda</th>
-            <th>Tienda</th>
+            <th>Nombre</th>
+            <th>Ubicación</th>
           </tr>
         </thead>
         <tbody>
           {filteredTiendas.map((tienda) => (
             <tr key={tienda.id}>
               <td>{tienda.numero_tienda}</td>
-              <td>{tienda.tienda}</td>
+              <td>{tienda.nombre}</td>
+              <td>{tienda.ubicacion}</td>
             </tr>
           ))}
         </tbody>

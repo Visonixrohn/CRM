@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import Modal from "react-modal";
+import { CSVLink } from "react-csv";
 import "./OrdenesServicio.css";
 
 const OrdenesServicio = () => {
@@ -37,21 +38,22 @@ const OrdenesServicio = () => {
     "PENDIENTE DE REPUESTO",
     "REPARADO",
     "SUGERENCIA DE CAMBIO",
-    "RECHAZADO",
   ];
 
   useEffect(() => {
+    const fetchOrdenes = async () => {
+      const { data, error } = await supabase
+        .from("ordenes_servicio")
+        .select("*");
+      if (error) {
+        console.error("Error fetching ordenes:", error);
+      } else {
+        setOrdenes(data);
+      }
+    };
+
     fetchOrdenes();
   }, []);
-
-  const fetchOrdenes = async () => {
-    const { data, error } = await supabase.from("ordenes_servicio").select("*");
-    if (error) {
-      console.error("Error fetching ordenes:", error);
-    } else {
-      setOrdenes(data);
-    }
-  };
 
   const handleAddOrder = async (e) => {
     e.preventDefault();
@@ -103,7 +105,6 @@ const OrdenesServicio = () => {
     if (error) {
       console.error("Error al guardar la orden:", error);
     } else {
-
       setIsSuccessModalOpen(true);
     }
 
@@ -136,7 +137,6 @@ const OrdenesServicio = () => {
     if (error) {
       console.error("Error al actualizar el estado:", error);
     } else {
-
       setSelectedOrden({ ...selectedOrden, estado: selectedState });
       setIsUpdateStateModalOpen(false);
     }
@@ -223,11 +223,16 @@ const OrdenesServicio = () => {
             const estadoClass = estado
               .toLowerCase()
               .replace(/\s+/g, "-")
-              .replace(/[áéíóú]/g, (m) => ({á:'a',é:'e',í:'i',ó:'o',ú:'u'}[m]));
+              .replace(
+                /[áéíóú]/g,
+                (m) => ({ á: "a", é: "e", í: "i", ó: "o", ú: "u" }[m])
+              );
             return (
               <button
                 key={estado}
-                className={`filter-button ${estadoClass} ${filterState === estado ? "active" : ""}`}
+                className={`filter-button ${estadoClass} ${
+                  filterState === estado ? "active" : ""
+                }`}
                 onClick={() =>
                   setFilterState(filterState === estado ? "" : estado)
                 }
@@ -239,36 +244,38 @@ const OrdenesServicio = () => {
         </div>
       </header>
 
-      <table className="ordenes-table">
-        <thead>
-          <tr>
-            <th>FECHA</th>
-            <th>CLIENTE</th>
-            <th>NÚMERO DE ORDEN</th>
-            <th>ARTÍCULO</th>
-            <th>ESTADO</th>
-            <th>DIAS</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredOrdenes.map((orden) => (
-            <tr key={orden.id} onClick={() => handleRowClick(orden)}>
-              <td>{orden.fecha}</td>
-              <td>{orden.cliente}</td>
-              <td>{orden.numero_orden}</td>
-              <td>{orden.articulo}</td>
-              <td
-                className={`estado-${orden.estado
-                  .replace(/\s+/g, "-")
-                  .toLowerCase()}`}
-              >
-                {orden.estado}
-              </td>
-              <td>{calculateDaysElapsed(orden.fecha)}</td>
+      <div className="table-container">
+        <table className="ordenes-table">
+          <thead>
+            <tr>
+              <th>FECHA</th>
+              <th>CLIENTE</th>
+              <th>NÚMERO DE ORDEN</th>
+              <th>ARTÍCULO</th>
+              <th>ESTADO</th>
+              <th>DIAS</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredOrdenes.map((orden) => (
+              <tr key={orden.id} onClick={() => handleRowClick(orden)}>
+                <td>{orden.fecha}</td>
+                <td>{orden.cliente}</td>
+                <td>{orden.numero_orden}</td>
+                <td>{orden.articulo}</td>
+                <td
+                  className={`estado-${orden.estado
+                    .replace(/\s+/g, "-")
+                    .toLowerCase()}`}
+                >
+                  {orden.estado}
+                </td>
+                <td>{calculateDaysElapsed(orden.fecha)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Botón flotante */}
       <button

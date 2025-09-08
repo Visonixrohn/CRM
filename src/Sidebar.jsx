@@ -116,10 +116,8 @@ const Sidebar = ({
           className="sidebar-icon cerrar-sesion"
           title="Cerrar Sesión"
           onClick={async () => {
-
             const { error } = await supabase.auth.signOut();
             if (!error) {
-
               localStorage.removeItem("token");
               setUser(null);
             } else {

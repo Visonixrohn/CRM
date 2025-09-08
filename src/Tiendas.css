@@ -1,0 +1,19 @@
+/* Ajustes responsivos para tablas */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: auto;
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 0.5rem;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .styled-table th,
+  .styled-table td {
+    font-size: 0.9rem;
+  }
+}

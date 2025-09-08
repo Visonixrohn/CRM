@@ -1,4 +1,5 @@
 import BottomBar from "./BottomBar";
+import "./App.css";
 
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
@@ -38,22 +39,55 @@ function App() {
   const [comisionHoy, setComisionHoy] = useState(0);
   const [choferModal, setChoferModal] = useState(false);
   const [chofer, setChofer] = useState({ nombre: "", contacto: "" });
-  const [modal, setModal] = useState({ open: false, label: "", value: "", setter: null, isMoney: false });
+  const [modal, setModal] = useState({
+    open: false,
+    label: "",
+    value: "",
+    setter: null,
+    isMoney: false,
+  });
   // Handlers y helpers para navegación y sidebar (forzar redeploy)
   const toggleSidebar = () => setSidebarOpen((open) => !open);
   const closeSidebar = () => setSidebarOpen(false);
   const handleOverlayClick = () => closeSidebar();
 
   // Handlers para navegación desde Sidebar (solo cierran sidebar en desktop)
-  const handleComisionesClick = () => { setPage("comisiones"); if (!isMobile) closeSidebar(); };
-  const handleEntregasClick = () => { setPage("entregas"); if (!isMobile) closeSidebar(); };
-  const handleOrdenesClick = () => { setPage("ordenes"); if (!isMobile) closeSidebar(); };
-  const handleCalculadoraClick = () => { setPage("calculadoras"); if (!isMobile) closeSidebar(); };
-  const handleRazonesClick = () => { setPage("razones"); if (!isMobile) closeSidebar(); };
-  const handleTiendasClick = () => { setPage("tiendas"); if (!isMobile) closeSidebar(); };
-  const handleDocumentosClick = () => { setPage("documentos"); if (!isMobile) closeSidebar(); };
-  const handleClientesNuevosClick = () => { setPage("clientes-nuevos"); if (!isMobile) closeSidebar(); };
-  const handleActualizacionesClick = () => { setPage("actualizaciones"); if (!isMobile) closeSidebar(); };
+  const handleComisionesClick = () => {
+    setPage("comisiones");
+    if (!isMobile) closeSidebar();
+  };
+  const handleEntregasClick = () => {
+    setPage("entregas");
+    if (!isMobile) closeSidebar();
+  };
+  const handleOrdenesClick = () => {
+    setPage("ordenes");
+    if (!isMobile) closeSidebar();
+  };
+  const handleCalculadoraClick = () => {
+    setPage("calculadoras");
+    if (!isMobile) closeSidebar();
+  };
+  const handleRazonesClick = () => {
+    setPage("razones");
+    if (!isMobile) closeSidebar();
+  };
+  const handleTiendasClick = () => {
+    setPage("tiendas");
+    if (!isMobile) closeSidebar();
+  };
+  const handleDocumentosClick = () => {
+    setPage("documentos");
+    if (!isMobile) closeSidebar();
+  };
+  const handleClientesNuevosClick = () => {
+    setPage("clientes-nuevos");
+    if (!isMobile) closeSidebar();
+  };
+  const handleActualizacionesClick = () => {
+    setPage("actualizaciones");
+    if (!isMobile) closeSidebar();
+  };
 
   // Handlers para ModalInput
   const handleModalClose = () => setModal((m) => ({ ...m, open: false }));
@@ -64,7 +98,6 @@ function App() {
   // Cerrar sidebar al hacer click fuera (en móvil/tablet)
   const [bottomBarExpanded, setBottomBarExpanded] = useState(false);
 
-
   // Recuperar usuario autenticado al cargar la app
   useEffect(() => {
     const session = supabase.auth.getSession ? null : null; // fallback para versiones viejas
@@ -73,19 +106,22 @@ function App() {
       if (data && data.user) setUser(data.user);
     })();
     // Suscribirse a cambios de sesión
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session && session.user) setUser(session.user);
-      else setUser(null);
-    });
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session && session.user) setUser(session.user);
+        else setUser(null);
+      }
+    );
     return () => {
-      if (listener && listener.subscription) listener.subscription.unsubscribe();
+      if (listener && listener.subscription)
+        listener.subscription.unsubscribe();
     };
   }, []);
 
   if (!user) return <Login onLogin={setUser} />;
 
   // Detectar si es móvil
-  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
 
   // Handler para menú: en móvil expande BottomBar, en desktop abre sidebar
   const handleMenuClick = () => {
@@ -97,28 +133,11 @@ function App() {
   };
 
   return (
-    <div id="app-layout">
+    <div id="app-layout" className={sidebarOpen ? "sidebar-open" : ""}>
       <Header onMenuClick={handleMenuClick} actions={[]} />
-      {/* Overlay para cerrar sidebar en móvil/tablet */}
-      {sidebarOpen && !bottomBarExpanded && isMobile && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0,0,0,0.18)",
-            zIndex: 1000,
-          }}
-          onClick={handleOverlayClick}
-        />
-      )}
-      {/* Sidebar solo en desktop */}
-      {!isMobile && (
+      <div className="layout-container">
         <Sidebar
           open={sidebarOpen}
-          onClose={closeSidebar}
           onComisionesClick={handleComisionesClick}
           onEntregasClick={handleEntregasClick}
           onOrdenesClick={handleOrdenesClick}
@@ -130,41 +149,31 @@ function App() {
           onActualizacionesClick={handleActualizacionesClick}
           setUser={setUser}
         />
-      )}
-      {/* BottomBar solo en móvil */}
-      <BottomBar
-        onNavigate={(p) => {
-          setPage(p);
-          closeSidebar();
-        }}
-        active={page}
-        expanded={bottomBarExpanded}
-        onCloseExpand={() => setBottomBarExpanded(false)}
-      />
-      <div id="main-content">
-        {page === "comisiones" && (
-          <Comisiones
-            meta={meta}
-            setMeta={setMeta}
-            comisionObtenida={comisionObtenida}
-            setComisionObtenida={setComisionObtenida}
-            ventaPorCliente={ventaPorCliente}
-            setVentaPorCliente={setVentaPorCliente}
-            metaHoy={metaHoy}
-            setMetaHoy={setMetaHoy}
-            comisionHoy={comisionHoy}
-            setComisionHoy={setComisionHoy}
-            handleUpdate={() => {}}
-          />
-        )}
-        {page === "entregas" && <Entregas />}
-        {page === "ordenes" && <OrdenesServicio />}
-        {page === "calculadoras" && <Calculadoras />}
-        {page === "razones" && <Razones />}
-        {page === "tiendas" && <Tiendas />}
-        {page === "documentos" && <Documentos />}
-        {page === "clientes-nuevos" && <ClientesNuevos />}
-        {page === "actualizaciones" && <Actualizaciones />}
+        <div id="main-content">
+          {page === "comisiones" && (
+            <Comisiones
+              meta={meta}
+              setMeta={setMeta}
+              comisionObtenida={comisionObtenida}
+              setComisionObtenida={setComisionObtenida}
+              ventaPorCliente={ventaPorCliente}
+              setVentaPorCliente={setVentaPorCliente}
+              metaHoy={metaHoy}
+              setMetaHoy={setMetaHoy}
+              comisionHoy={comisionHoy}
+              setComisionHoy={setComisionHoy}
+              handleUpdate={() => {}}
+            />
+          )}
+          {page === "entregas" && <Entregas />}
+          {page === "ordenes" && <OrdenesServicio />}
+          {page === "calculadoras" && <Calculadoras />}
+          {page === "razones" && <Razones />}
+          {page === "tiendas" && <Tiendas />}
+          {page === "documentos" && <Documentos />}
+          {page === "clientes-nuevos" && <ClientesNuevos />}
+          {page === "actualizaciones" && <Actualizaciones />}
+        </div>
       </div>
       <ModalInput
         open={modal.open}
@@ -182,6 +191,15 @@ function App() {
           setChoferModal(false);
         }}
       />
+      {/* BottomBar solo en móviles */}
+      {isMobile && (
+        <BottomBar
+          onNavigate={setPage}
+          active={page}
+          expanded={bottomBarExpanded}
+          onCloseExpand={() => setBottomBarExpanded(false)}
+        />
+      )}
     </div>
   );
 }

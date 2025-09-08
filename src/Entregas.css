@@ -6,7 +6,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 90px;
+  padding-top: 0; /* Ajustar padding superior */
   box-sizing: border-box;
 }
 .entregas-container h2 {
@@ -53,4 +53,80 @@
   padding: 0.3rem 0.8rem;
   font-size: 0.98rem;
   font-weight: 600;
+}
+/* Estilos generales */
+.entregas-modern-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Tabla en desktop */
+.entregas-modern-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  min-width: 800px;
+}
+
+.entregas-modern-table th,
+.entregas-modern-table td {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.entregas-modern-table th {
+  background: #eef2ff;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.entregas-modern-table tbody tr:hover {
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+/* ===== Responsive: versión en tarjetas ===== */
+@media (max-width: 768px) {
+  .entregas-modern-table,
+  .entregas-modern-table thead,
+  .entregas-modern-table tbody,
+  .entregas-modern-table th,
+  .entregas-modern-table td,
+  .entregas-modern-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  .entregas-modern-table thead {
+    display: none; /* Ocultar encabezados */
+  }
+
+  .entregas-modern-table tr {
+    margin-bottom: 1rem;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .entregas-modern-table td {
+    border: none;
+    padding: 0.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+  }
+
+  .entregas-modern-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #4f46e5;
+    flex-basis: 40%;
+    text-align: left;
+  }
 }
