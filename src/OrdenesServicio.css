@@ -1,3 +1,29 @@
+/* Colores para los botones de estado en el modal de actualización */
+/* Colores para los botones de estado en el modal de actualización */
+.estado-button.pendiente-de-visita {
+  background: var(--estado-pendiente-visita);
+  color: #1f1f1f;
+}
+.estado-button.pendiente-de-repuesto {
+  background: var(--estado-pendiente-repuesto);
+  color: #fff;
+}
+.estado-button.reparado {
+  background: var(--estado-reparado);
+  color: #fff;
+}
+.estado-button.sugerencia-de-cambio {
+  background: var(--estado-sugerencia-cambio);
+  color: #fff;
+}
+.estado-button.otro {
+  background: #a5b1c2;
+  color: #fff;
+}
+.estado-button.active {
+  border: 2px solid #222f3e;
+  box-shadow: 0 0 8px #222f3e44;
+}
 /* Reset básico para consistencia en navegadores */
 * {
   margin: 0;

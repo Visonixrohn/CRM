@@ -1,14 +1,16 @@
 /* =============================
-   BOTÓN FLOTANTE (+) AJUSTADO
+   BOTÓN FLOTANTE (+) REDISEÑADO - FIJADO CIRCULAR
    ============================= */
 .btn-agregar-orden {
   position: fixed;
-  bottom: 4rem;   /* 🔹 Más arriba */
-  right: 2rem;    /* 🔹 Más hacia adentro */
+  bottom: 4rem;
+  right: 2rem;
   width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #4f46e5, #06b6d4);
+  height: 60px; /* 🔹 Asegurar que height == width para círculo perfecto */
+  min-width: 60px; /* 🔹 Prevenir colapso por contenido */
+  min-height: 60px;
+  border-radius: 50%; /* 🔹 50% para círculo perfecto (basado en el menor de width/height) */
+  background: #1e3a8a; /* 🔹 Azul oscuro sólido */
   color: #fff;
   font-size: 2rem;
   font-weight: bold;
@@ -17,54 +19,130 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-  transition: all 0.3s ease;
+  box-sizing: border-box; /* 🔹 Incluir padding/border en dimensiones - aunque no hay */
+  line-height: 1; /* 🔹 Evitar padding vertical implícito del texto */
+  padding: 0; /* 🔹 Sin padding para mantener dimensiones exactas */
+  box-shadow: 
+    0 4px 12px rgba(30, 58, 138, 0.4), /* 🔹 Sombra azulada suave */
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* 🔹 Transición más fluida */
   z-index: 1000;
+  overflow: hidden; /* 🔹 Para efectos internos */
+}
+
+.btn-agregar-orden::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.6s ease;
+  z-index: 0;
 }
 
 .btn-agregar-orden:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px) scale(1.08); /* 🔹 Elevación y escala más pronunciada */
+  box-shadow: 
+    0 8px 25px rgba(30, 58, 138, 0.5), /* 🔹 Sombra más intensa */
+    0 4px 8px rgba(0, 0, 0, 0.2);
+  background: #1e40af; /* 🔹 Ligeramente más claro en hover para efecto */
+}
+
+.btn-agregar-orden:hover::before {
+  width: 300px;
+  height: 300px; /* 🔹 Efecto ripple en hover */
 }
 
 .btn-agregar-orden:active {
-  transform: scale(0.95);
+  transform: translateY(-2px) scale(0.96); /* 🔹 Presión más realista */
+  transition: all 0.1s ease;
 }
 
-/* Tooltip opcional en escritorio */
+/* Tooltip mejorado */
 .btn-agregar-orden::after {
   content: "Agregar orden";
   position: absolute;
   bottom: 70px;
   right: 0;
-  background: #1f2937;
+  background: #1e3a8a; /* 🔹 Coherente con el botón */
   color: #fff;
-  font-size: 0.8rem;
-  padding: 4px 8px;
-  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 8px;
   opacity: 0;
-  transform: translateY(5px);
+  transform: translateY(10px);
   pointer-events: none;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.4);
 }
 
 .btn-agregar-orden:hover::after {
-    color: #000;
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Responsivo */
-@media (max-width: 700px) {
+/* ========================
+   RESPONSIVO MEJORADO - FIJANDO CIRCULARIDAD
+   ======================== */
+@media (max-width: 768px) {
   .btn-agregar-orden {
-    width: 55px;
-    height: 50px;
-    font-size: 1.6rem;
-    bottom: 5rem;  /* 🔹 En móviles también un poco arriba */
-    right: 1.5rem; /* 🔹 Más cómodo para el pulgar */
+    width: 56px;
+    height: 56px; /* 🔹 Igualar siempre width y height */
+    min-width: 56px;
+    min-height: 56px;
+    font-size: 1.8rem;
+    bottom: 4.5rem;
+    right: 1.5rem;
+    line-height: 1;
+    padding: 0;
   }
+  
   .btn-agregar-orden::after {
-    display: none; /* Sin tooltip en móviles */
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    bottom: 65px;
   }
 }
+
+@media (max-width: 480px) {
+  .btn-agregar-orden {
+    width: 52px;
+    height: 52px; /* 🔹 Igualar siempre width y height */
+    min-width: 52px;
+    min-height: 52px;
+    font-size: 1.6rem;
+    bottom: 5rem;
+    right: 1.2rem; /* 🔹 Aún más accesible para pulgar */
+    line-height: 1;
+    padding: 0;
+  }
+  
+  .btn-agregar-orden::after {
+    display: none; /* 🔹 Sin tooltip en pantallas muy pequeñas */
+  }
+  
+  .btn-agregar-orden:hover {
+    transform: translateY(-3px) scale(1.05); /* 🔹 Efecto más sutil en móvil */
+  }
+}
+
+/* ========================
+   ANIMACIÓN DE PULSO OPCIONAL
+   ======================== */
+/* Descomenta si quieres un pulso sutil para llamar la atención */
+/*
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.btn-agregar-orden {
+  animation: pulse 2s infinite ease-in-out;
+}
+*/

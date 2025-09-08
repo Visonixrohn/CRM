@@ -1,3 +1,4 @@
+import "./EntregasBusqueda.css";
 import React, { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import ChoferModal from "./ChoferModal";
@@ -516,13 +517,16 @@ const Entregas = () => {
   return (
     <div className="entregas-modern-bg">
       <div className="botones-bar-container">
-        <input
-          type="text"
-          placeholder="Buscar por cliente o factura..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          style={{ padding: "8px", marginRight: "1rem" }}
-        />
+        <div className="entregas-busqueda-barra-container">
+          <input
+            type="text"
+            placeholder="Buscar por cliente o factura..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="entregas-busqueda-barra"
+          />
+          <span className="entregas-busqueda-icono">🔍</span>
+        </div>
         <button className="btn-agregar" onClick={() => setShowAgregar(true)}>
           Agregar entrega
         </button>

@@ -1,21 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Calculadoras.css"; // Importamos estilos
 
 const Calculadoras = () => {
-  const [activeCalculator, setActiveCalculator] = useState(null);
-  const [inputs, setInputs] = useState({
-    precioNormal: "",
-    precioConDescuento: "",
-    totalACobrar: "",
-    precioDeseado: "",
-    precioNuestro: "",
-    precioCompetencia: "",
+  const [activeCalculator, setActiveCalculator] = useState(() => {
+    return localStorage.getItem("activeCalculator") || null;
+  });
+  const [inputs, setInputs] = useState(() => {
+    const saved = localStorage.getItem("calculadoraInputs");
+    return saved
+      ? JSON.parse(saved)
+      : {
+          precioNormal: "",
+          precioConDescuento: "",
+          totalACobrar: "",
+          precioDeseado: "",
+          precioNuestro: "",
+          precioCompetencia: "",
+        };
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setInputs({ ...inputs, [name]: value });
+    setInputs((prev) => {
+      const updated = { ...prev, [name]: value };
+      localStorage.setItem("calculadoraInputs", JSON.stringify(updated));
+      return updated;
+    });
   };
+
+  useEffect(() => {
+    if (activeCalculator) {
+      localStorage.setItem("activeCalculator", activeCalculator);
+    }
+  }, [activeCalculator]);
 
   const renderCalculator = () => {
     if (activeCalculator === "extrafinanciamiento") {
@@ -91,27 +108,8 @@ const Calculadoras = () => {
     <div className="calculadoras-container">
       <h1>Calculadoras</h1>
 
-      {/* Botones */}
-      <div className="button-group">
-        <button
-          className={activeCalculator === "extrafinanciamiento" ? "active" : ""}
-          onClick={() => setActiveCalculator("extrafinanciamiento")}
-        >
-          Extrafinanciamiento
-        </button>
-        <button
-          className={activeCalculator === "descuento" ? "active" : ""}
-          onClick={() => setActiveCalculator("descuento")}
-        >
-          Descuento
-        </button>
-        <button
-          className={activeCalculator === "garantia" ? "active" : ""}
-          onClick={() => setActiveCalculator("garantia")}
-        >
-          Garantía de Precio
-        </button>
-      </div>
+      {/* Card con resultado */}
+      {renderCalculator()}
 
       {/* Inputs dinámicos */}
       <div className="formulario">
@@ -194,8 +192,27 @@ const Calculadoras = () => {
         )}
       </div>
 
-      {/* Card con resultado */}
-      {renderCalculator()}
+      {/* Botones */}
+      <div className="button-group">
+        <button
+          className={activeCalculator === "extrafinanciamiento" ? "active" : ""}
+          onClick={() => setActiveCalculator("extrafinanciamiento")}
+        >
+          Extrafinanciamiento
+        </button>
+        <button
+          className={activeCalculator === "descuento" ? "active" : ""}
+          onClick={() => setActiveCalculator("descuento")}
+        >
+          Descuento
+        </button>
+        <button
+          className={activeCalculator === "garantia" ? "active" : ""}
+          onClick={() => setActiveCalculator("garantia")}
+        >
+          Garantía de Precio
+        </button>
+      </div>
     </div>
   );
 };

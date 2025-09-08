@@ -4,14 +4,26 @@
 
 /* Contenedor */
 .tabla-entregas-container {
-  width: 100%;
-  overflow-x: auto; /* Scroll horizontal si es necesario */
+  width: 95%;
+  overflow-x: auto;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 1rem;
   margin: 1rem 0;
 }
+
+/* En móviles: ancho del 65% */
+@media (max-width: 700px) {
+  .tabla-entregas-container {
+    width: 65%;
+    margin: 1rem auto; /* Centrar horizontalmente */
+    padding: 1rem 0.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  }
+}
+
 
 /* Tabla base para desktop */
 .tabla-entregas {
@@ -73,6 +85,40 @@
 .estatus.reprogramado {
   background: #3b82f6;
 } /* Azul */
+
+/* Colores para cada estado */
+.modern-status {
+  display: inline-block;
+  padding: 0.35rem 0.8rem;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 0.97rem;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border: none;
+  margin: 0 0.2rem;
+}
+.modern-pendiente {
+  background: #fff3cd;
+  color: #856404;
+  border: 1.5px solid #ffe082;
+}
+.modern-entregado {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1.5px solid #a5d6a7;
+}
+.modern-rechazado {
+  background: #ffebee;
+  color: #c62828;
+  border: 1.5px solid #ef9a9a;
+}
+.modern-reprogramado {
+  background: #e3f2fd;
+  color: #1565c0;
+  border: 1.5px solid #90caf9;
+}
 
 /* Botones / iconos */
 .tabla-entregas td .btn-icon {

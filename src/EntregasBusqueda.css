@@ -1,0 +1,58 @@
+/* CSS exclusivo para la barra de búsqueda de Entregas */
+.entregas-busqueda-barra-container {
+  position: relative;
+  width: 50%;
+  max-width: 400px;
+
+}
+
+.entregas-busqueda-barra {
+  width: 100%;
+  padding: 12px 16px 12px 44px;
+  border: 2px solid #bdbdbd;
+  border-radius: 14px;
+  font-size: 1.05rem;
+  color: #263238;
+  background: #f9fafb;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 10px rgba(33, 150, 243, 0.07);
+}
+.entregas-busqueda-barra::placeholder {
+  color: #90a4ae;
+  font-size: 1rem;
+  font-style: italic;
+}
+.entregas-busqueda-barra:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.13);
+  background: #e3f2fd;
+}
+.entregas-busqueda-icono {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  font-size: 1.25rem;
+  color: #1976d2;
+  pointer-events: none;
+  z-index: 1;
+  transition: color 0.3s;
+}
+.entregas-busqueda-barra:focus + .entregas-busqueda-icono {
+  color: #0d47a1;
+}
+@media (max-width: 600px) {
+  .entregas-busqueda-barra-container {
+    max-width: 98vw;
+  }
+  .entregas-busqueda-barra {
+    font-size: 0.97rem;
+    padding: 10px 12px 10px 40px;
+    border-radius: 10px;
+  }
+  .entregas-busqueda-icono {
+    font-size: 1.05rem;
+    left: 10px;
+  }
+}

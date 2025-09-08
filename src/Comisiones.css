@@ -135,3 +135,140 @@ body, html {
 
 /* High-Resolution Devices */
 @media (min-resolution: 2dppx) { .com-card, .modal-content { box-shadow: 0 8px 32px rgba(0,0,0,0.12); } }
+/* =========================================
+   Comisiones.css - Cards adaptativas
+   ========================================= */
+
+/* Cards Grid */
+.comisiones-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(180px, 30%, 220px), 1fr));
+  gap: clamp(0.5rem, 2vw, 1.25rem);
+  width: 100%;
+  max-width: 1280px;
+  margin-bottom: clamp(1rem, 2vw, 2rem);
+}
+
+/* Card Estándar */
+.com-card {
+  background: #ffffff;
+  border-radius: clamp(12px, 2vw, 16px);
+  padding: clamp(0.75rem, 1.5vw, 1.5rem);
+  text-align: center;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.com-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--accent-color);
+  transition: var(--transition);
+}
+.com-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+.com-card:hover::before {
+  height: 8px;
+}
+
+.com-card-icon {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  margin-bottom: clamp(0.5rem,1vw,0.75rem);
+  display: block;
+  transition: var(--transition);
+}
+.com-card:hover .com-card-icon {
+  transform: scale(1.1);
+}
+
+.com-card-title {
+  font-size: clamp(0.75rem, 1vw, 0.95rem);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.85;
+  margin-bottom: 0.5rem;
+}
+.com-card-value {
+  font-size: clamp(1rem, 2.5vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+/* Colores específicos de cards */
+.com-card.meta {
+  background: linear-gradient(135deg, var(--primary-color), #a78bfa);
+  color: #fff;
+}
+.com-card.success {
+  background: linear-gradient(135deg, var(--success-color), #6ee7b7);
+  color: #fff;
+}
+.com-card.danger {
+  background: linear-gradient(135deg, var(--danger-color), #fca5a5);
+  color: #fff;
+}
+.com-card.primary {
+  background: linear-gradient(135deg, #3b82f6, #93c5fd);
+  color: #fff;
+}
+.com-card.neutral {
+  background: linear-gradient(135deg, var(--neutral-color), #d1d5db);
+  color: #fff;
+}
+
+/* =============================
+   REDISEÑO MÓVIL - ESTILO PLANO
+   ============================= */
+@media (max-width: 640px) {
+  .comisiones-cards-grid {
+    grid-template-columns: 1fr; /* ✅ Una columna en móviles */
+  }
+
+  .com-card {
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    color: var(--text-color); /* ✅ Asegura contraste en fondo claro */
+  }
+
+  .com-card::before {
+    display: none; /* ✅ Oculta decoración superior */
+  }
+
+  .com-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .com-card-icon {
+    font-size: 1rem;
+    display: inline-block;
+    margin-right: 0.5rem;
+    margin-bottom: 0;
+    vertical-align: middle;
+    transform: none !important;
+  }
+
+  .com-card-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: none;
+    opacity: 0.9;
+    margin-bottom: 0.15rem;
+  }
+
+  .com-card-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+}

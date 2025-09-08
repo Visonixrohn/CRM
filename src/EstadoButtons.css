@@ -1,0 +1,45 @@
+/* Botones de estado para el modal de actualización de estado en Órdenes de Servicio */
+.estado-button {
+  padding: 0.6rem 0.9rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: bold;
+  margin: 0.2rem 0.3rem;
+  transition: background 0.3s, color 0.3s, border 0.3s, box-shadow 0.3s;
+  min-width: 160px;
+  box-shadow: 0 2px 8px rgba(10, 35, 66, 0.08);
+}
+
+.estado-button.pendiente-de-visita {
+  background: #1976d2;
+  color: #fff;
+}
+.estado-button.pendiente-de-repuesto {
+  background: #ff9800;
+  color: #fff;
+}
+.estado-button.reparado {
+  background: #388e3c;
+  color: #fff;
+}
+.estado-button.sugerencia-de-cambio {
+  background: #7b1fa2;
+  color: #fff;
+}
+.estado-button.otro {
+  background: #a5b1c2;
+  color: #fff;
+}
+
+.estado-button.active {
+  border: 3.5px solid #0019f5;
+  box-shadow: 0 0 8px #222f3e44;
+  filter: brightness(1.1);
+}
+
+.estado-button:not(.active):hover {
+  filter: brightness(1.08);
+  opacity: 0.95;
+}

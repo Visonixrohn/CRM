@@ -1,3 +1,4 @@
+import "./EstadoButtons.css";
 import React, { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import Modal from "react-modal";
@@ -48,16 +49,24 @@ const OrdenesServicio = () => {
 
   useEffect(() => {
     const fetchOrdenes = async () => {
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
+      if (authError || !user) {
+        setOrdenes([]);
+        return;
+      }
       const { data, error } = await supabase
         .from("ordenes_servicio")
-        .select("*");
+        .select("*")
+        .eq("user_id", user.id);
       if (error) {
         console.error("Error fetching ordenes:", error);
       } else {
         setOrdenes(data);
       }
     };
-
     fetchOrdenes();
   }, []);
 
@@ -104,6 +113,7 @@ const OrdenesServicio = () => {
       {
         ...newOrder,
         archivo: archivoUrl,
+        user_id: user.id,
       },
     ]);
 
@@ -111,8 +121,12 @@ const OrdenesServicio = () => {
       console.error("Error al guardar la orden:", error);
     } else {
       setIsSuccessModalOpen(true);
-      const { data } = await supabase.from("ordenes_servicio").select("*");
-      setOrdenes(data);
+      // Refrescar solo las órdenes del usuario actual
+      const { data: ordenesActualizadas } = await supabase
+        .from("ordenes_servicio")
+        .select("*")
+        .eq("user_id", user.id);
+      setOrdenes(ordenesActualizadas);
     }
 
     setIsLoading(false);
@@ -135,18 +149,32 @@ const OrdenesServicio = () => {
   const handleUpdateState = async () => {
     if (!selectedOrden || !selectedState) return;
 
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+    if (authError || !user) {
+      console.error("Usuario no autenticado");
+      return;
+    }
+
     const { error } = await supabase
       .from("ordenes_servicio")
       .update({ estado: selectedState })
-      .eq("numero_orden", selectedOrden.numero_orden);
+      .eq("numero_orden", selectedOrden.numero_orden)
+      .eq("user_id", user.id);
 
     if (error) {
       console.error("Error al actualizar el estado:", error);
     } else {
       setSelectedOrden({ ...selectedOrden, estado: selectedState });
       setIsUpdateStateModalOpen(false);
-      const { data } = await supabase.from("ordenes_servicio").select("*");
-      setOrdenes(data);
+      // Refrescar solo las órdenes del usuario actual
+      const { data: ordenesActualizadas } = await supabase
+        .from("ordenes_servicio")
+        .select("*")
+        .eq("user_id", user.id);
+      setOrdenes(ordenesActualizadas);
     }
   };
 
@@ -218,13 +246,16 @@ const OrdenesServicio = () => {
     <div className="ordenes-container">
       <header className="ordenes-header">
         <h1>Órdenes de Servicio</h1>
-        <input
-          type="text"
-          placeholder="Buscar por cliente o número de orden"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-bar"
-        />
+        <div className="osv-busqueda-barra-container">
+          <input
+            type="text"
+            placeholder="Buscar por cliente o número de orden"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="osv-busqueda-barra"
+          />
+          <span className="osv-busqueda-icono">🔍</span>
+        </div>
         <div className="filter-buttons">
           {estados.map((estado) => {
             const estadoClass = estado
@@ -288,9 +319,7 @@ const OrdenesServicio = () => {
       <button
         className="btn-agregar-orden"
         onClick={() => setIsAddOrderModalOpen(true)}
-      >
-        +
-      </button>
+      >+</button>
 
       {selectedOrden && (
         <div className="modal-overlay">
@@ -389,22 +418,22 @@ const OrdenesServicio = () => {
             <div className="estado-buttons">
               {estados.map((estado) => {
                 // Normalizar nombre para clase exclusiva
-                let clase = "";
+                let clase = "otro";
                 if (
                   estado.toLowerCase().includes("pendiente") &&
                   estado.toLowerCase().includes("visita")
-                )
-                  clase = "pendiente";
-                else if (estado.toLowerCase().includes("reparado"))
-                  clase = "reparado";
-                else if (
+                ) {
+                  clase = "pendiente-de-visita";
+                } else if (
                   estado.toLowerCase().includes("pendiente") &&
                   estado.toLowerCase().includes("repuesto")
-                )
-                  clase = "repuesto";
-                else if (estado.toLowerCase().includes("cambio"))
-                  clase = "cambio";
-                else clase = "otro";
+                ) {
+                  clase = "pendiente-de-repuesto";
+                } else if (estado.toLowerCase().includes("reparado")) {
+                  clase = "reparado";
+                } else if (estado.toLowerCase().includes("cambio")) {
+                  clase = "sugerencia-de-cambio";
+                }
 
                 return (
                   <button
@@ -414,8 +443,6 @@ const OrdenesServicio = () => {
                     }`}
                     onClick={() => {
                       setSelectedState(estado);
-                      setIsUpdateStateModalOpen(false);
-                      setTimeout(() => window.location.reload(), 200);
                     }}
                   >
                     {estado}
