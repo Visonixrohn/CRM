@@ -80,7 +80,9 @@ const Comisiones = () => {
           console.error("Error al obtener datos de Supabase:", error);
         } else if (!data) {
           // Si no existe el registro, lo crea con valores por defecto
-          await supabase.from("comisiones").insert({ id: 1, meta: 0, comision_obtenida: 0 });
+          await supabase
+            .from("comisiones")
+            .insert({ id: 1, meta: 0, comision_obtenida: 0 });
           setMeta(0);
           setComisionObtenida(0);
         } else {
@@ -101,8 +103,6 @@ const Comisiones = () => {
   const diasRestantes = getDiasRestantesMes();
   const diferenciaMeta = meta - comisionObtenida;
   const metaHoy = diasRestantes > 0 ? diferenciaMeta / diasRestantes : 0;
-
-
 
   const upsertMetaInSupabase = async (metaValue) => {
     try {
@@ -239,8 +239,6 @@ const Comisiones = () => {
           icon="💵"
         />
       </div>
-
-
 
       <Modal
         isOpen={isModalOpen}

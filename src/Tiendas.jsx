@@ -43,33 +43,34 @@ const Tiendas = () => {
   }, [search, tiendas]); // Filtrar automáticamente cuando cambia la búsqueda o los datos
 
   return (
-    <div className="tiendas-container">
+    <div className="razones-container">
       <h1>Tiendas</h1>
-      <input
-        type="text"
-        placeholder="Buscar tienda..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="search-bar"
-      />
-      <table className="styled-table">
-        <thead>
-          <tr>
-            <th>Número de Tienda</th>
-            <th>Nombre</th>
-            <th>Ubicación</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredTiendas.map((tienda) => (
-            <tr key={tienda.id}>
-              <td>{tienda.numero_tienda}</td>
-              <td>{tienda.nombre}</td>
-              <td>{tienda.ubicacion}</td>
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Buscar por número de tienda (separados por espacios)"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)} // Filtrar automáticamente mientras se escribe
+        />
+      </div>
+      <div className="table-container">
+        <table className="styled-table">
+          <thead>
+            <tr>
+              <th>Número de Tienda</th>
+              <th>Tienda</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredTiendas.map((tienda) => (
+              <tr key={tienda.id}>
+                <td>{tienda.numero_tienda}</td>
+                <td>{tienda.tienda}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

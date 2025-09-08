@@ -58,7 +58,6 @@ const OrdenesServicio = () => {
   const handleAddOrder = async (e) => {
     e.preventDefault();
 
-    // Verificar si el usuario está autenticado
     const {
       data: { user },
       error: authError,
@@ -82,7 +81,7 @@ const OrdenesServicio = () => {
         setIsLoading(false);
         setIsAddOrderModalOpen(false);
         setNewOrder({
-          fecha: new Date().toISOString().split("T")[0], // Resetear a la fecha actual
+          fecha: new Date().toISOString().split("T")[0],
           cliente: "",
           numero_orden: "",
           articulo: "",
@@ -106,19 +105,20 @@ const OrdenesServicio = () => {
       console.error("Error al guardar la orden:", error);
     } else {
       setIsSuccessModalOpen(true);
+      const { data } = await supabase.from("ordenes_servicio").select("*");
+      setOrdenes(data);
     }
 
     setIsLoading(false);
     setIsAddOrderModalOpen(false);
     setNewOrder({
-      fecha: new Date().toISOString().split("T")[0], // Resetear a la fecha actual
+      fecha: new Date().toISOString().split("T")[0],
       cliente: "",
       numero_orden: "",
       articulo: "",
       estado: "",
       archivo: null,
     });
-    fetchOrdenes();
   };
 
   const handleRowClick = (orden) => {
@@ -139,6 +139,8 @@ const OrdenesServicio = () => {
     } else {
       setSelectedOrden({ ...selectedOrden, estado: selectedState });
       setIsUpdateStateModalOpen(false);
+      const { data } = await supabase.from("ordenes_servicio").select("*");
+      setOrdenes(data);
     }
   };
 
@@ -181,7 +183,7 @@ const OrdenesServicio = () => {
           <iframe
             src={`https://caqukltkvvsfairqphjf.supabase.co/storage/v1/object/public/archivos/${order.archivo}`}
             title="Vista previa del archivo"
-            style={{ width: "80%", height: "500px", border: "none" }}
+            className="order-details-iframe"
           ></iframe>
         </div>
       )}
@@ -193,7 +195,7 @@ const OrdenesServicio = () => {
 
   const handleInputChange = (field, value) => {
     if (field === "dias_trascurridos" && isNaN(value)) {
-      value = 0; // Asegurar que no se asigne NaN
+      value = 0;
     }
     setNewOrder({ ...newOrder, [field]: value });
   };
@@ -219,7 +221,6 @@ const OrdenesServicio = () => {
         />
         <div className="filter-buttons">
           {estados.map((estado) => {
-            // Generar clase para color
             const estadoClass = estado
               .toLowerCase()
               .replace(/\s+/g, "-")
@@ -259,25 +260,25 @@ const OrdenesServicio = () => {
           <tbody>
             {filteredOrdenes.map((orden) => (
               <tr key={orden.id} onClick={() => handleRowClick(orden)}>
-                <td>{orden.fecha}</td>
-                <td>{orden.cliente}</td>
-                <td>{orden.numero_orden}</td>
-                <td>{orden.articulo}</td>
+                <td data-label="Fecha">{orden.fecha}</td>
+                <td data-label="Cliente">{orden.cliente}</td>
+                <td data-label="Número de Orden">{orden.numero_orden}</td>
+                <td data-label="Artículo">{orden.articulo}</td>
                 <td
+                  data-label="Estado"
                   className={`estado-${orden.estado
                     .replace(/\s+/g, "-")
                     .toLowerCase()}`}
                 >
                   {orden.estado}
                 </td>
-                <td>{calculateDaysElapsed(orden.fecha)}</td>
+                <td data-label="Días">{calculateDaysElapsed(orden.fecha)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* Botón flotante */}
       <button
         className="floating-btn"
         onClick={() => setIsAddOrderModalOpen(true)}
@@ -285,89 +286,85 @@ const OrdenesServicio = () => {
         +
       </button>
 
-      {selectedOrden ? (
+      {selectedOrden && (
         <div className="modal-overlay">
           <div className="order-details-modal fade-in">
             {renderOrderDetails(selectedOrden)}
             <button onClick={() => setSelectedOrden(null)}>Cerrar</button>
           </div>
         </div>
-      ) : (
-        isAddOrderModalOpen && (
-          <div className="modal-overlay">
-            <div className="AddOrderForm fade-in">
-              <h2>Agregar Orden de Servicio</h2>
-              <form onSubmit={handleAddOrder}>
-                <input
-                  type="date"
-                  value={newOrder.fecha || ""}
-                  onChange={(e) => handleInputChange("fecha", e.target.value)}
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Cliente"
-                  value={newOrder.cliente || ""}
-                  onChange={(e) => handleInputChange("cliente", e.target.value)}
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Número de Orden"
-                  value={newOrder.numero_orden || ""}
-                  onChange={(e) =>
-                    handleInputChange("numero_orden", e.target.value)
-                  }
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Artículo"
-                  value={newOrder.articulo || ""}
-                  onChange={(e) =>
-                    handleInputChange("articulo", e.target.value)
-                  }
-                  required
-                />
-                <select
-                  value={newOrder.estado || ""}
-                  onChange={(e) => handleInputChange("estado", e.target.value)}
-                  required
-                >
-                  <option value="" disabled>
-                    Selecciona un estado
+      )}
+
+      {isAddOrderModalOpen && (
+        <div className="modal-overlay">
+          <div className="AddOrderForm fade-in">
+            <h2>Agregar Orden de Servicio</h2>
+            <form onSubmit={handleAddOrder}>
+              <input
+                type="date"
+                value={newOrder.fecha || ""}
+                onChange={(e) => handleInputChange("fecha", e.target.value)}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Cliente"
+                value={newOrder.cliente || ""}
+                onChange={(e) => handleInputChange("cliente", e.target.value)}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Número de Orden"
+                value={newOrder.numero_orden || ""}
+                onChange={(e) =>
+                  handleInputChange("numero_orden", e.target.value)
+                }
+                required
+              />
+              <input
+                type="text"
+                placeholder="Artículo"
+                value={newOrder.articulo || ""}
+                onChange={(e) => handleInputChange("articulo", e.target.value)}
+                required
+              />
+              <select
+                value={newOrder.estado || ""}
+                onChange={(e) => handleInputChange("estado", e.target.value)}
+                required
+              >
+                <option value="" disabled>
+                  Selecciona un estado
+                </option>
+                {estados.map((estado) => (
+                  <option key={estado} value={estado}>
+                    {estado}
                   </option>
-                  {estados.map((estado) => (
-                    <option key={estado} value={estado}>
-                      {estado}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="file"
-                  accept="application/pdf"
-                  onChange={(e) =>
-                    handleInputChange("archivo", e.target.files[0])
-                  }
-                  required
-                />
-                <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
+                ))}
+              </select>
+              <input
+                type="file"
+                accept="application/pdf"
+                onChange={(e) =>
+                  handleInputChange("archivo", e.target.files[0])
+                }
+                required
+              />
+              <div className="form-actions">
+                <button type="submit" disabled={isLoading}>
+                  {isLoading ? "Guardando..." : "Guardar"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsAddOrderModalOpen(false)}
                 >
-                  <button type="submit" disabled={isLoading}>
-                    {isLoading ? "Guardando..." : "Guardar"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsAddOrderModalOpen(false)}
-                  >
-                    Cancelar
-                  </button>
-                </div>
-              </form>
-            </div>
+                  Cancelar
+                </button>
+              </div>
+            </form>
           </div>
-        )
+        </div>
       )}
 
       {isSuccessModalOpen && (
@@ -384,25 +381,28 @@ const OrdenesServicio = () => {
           <div className="update-state-modal fade-in">
             <h3>Actualizar Estado</h3>
             <div className="estado-buttons">
-              {estados.map((estado) => (
-                <button
-                  key={estado}
-                  className={`estado-button ${
-                    selectedState === estado ? "active" : ""
-                  }`}
-                  onClick={() => setSelectedState(estado)}
-                >
-                  {estado}
-                </button>
-              ))}
+              {estados.map((estado) => {
+                const estadoClass = estado
+                  .toLowerCase()
+                  .replace(/\s+/g, "-")
+                  .replace(
+                    /[áéíóú]/g,
+                    (m) => ({ á: "a", é: "e", í: "i", ó: "o", ú: "u" }[m])
+                  );
+                return (
+                  <button
+                    key={estado}
+                    className={`estado-button ${estadoClass} ${
+                      selectedState === estado ? "active" : ""
+                    }`}
+                    onClick={() => setSelectedState(estado)}
+                  >
+                    {estado}
+                  </button>
+                );
+              })}
             </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: "20px",
-              }}
-            >
+            <div className="form-actions">
               <button onClick={handleUpdateState}>Guardar</button>
               <button onClick={() => setIsUpdateStateModalOpen(false)}>
                 Cancelar

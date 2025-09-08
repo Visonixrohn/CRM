@@ -1,19 +1,131 @@
-/* Ajustes responsivos para tablas */
+/* Estilos generales del contenedor */
+.tiendas-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Estilos de la barra de búsqueda */
+.search-bar {
+  width: 100%;
+  max-width: 500px;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+/* Estilos responsivos para la tabla */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .styled-table {
   width: 100%;
   border-collapse: collapse;
-  overflow-x: auto;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .styled-table th,
 .styled-table td {
-  padding: 0.5rem;
+  padding: 0.75rem;
   text-align: left;
+  border-bottom: 1px solid #e0e0e0;
 }
 
+.styled-table th {
+  background-color: #141414;
+  font-weight: 600;
+}
+
+.styled-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* Media Queries para dispositivos más pequeños */
 @media (max-width: 768px) {
+  .tiendas-container {
+    padding: 1rem;
+  }
+
+  .search-bar {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+
+  .styled-table {
+    font-size: 0.9rem;
+  }
+
   .styled-table th,
   .styled-table td {
-    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+
+  /* Hacer la tabla más compacta en pantallas pequeñas */
+  .styled-table th:nth-child(3),
+  .styled-table td:nth-child(3) {
+    display: none; /* Ocultar la columna de ubicación en pantallas pequeñas */
+  }
+}
+
+@media (max-width: 480px) {
+  .tiendas-container {
+    padding: 0.5rem;
+  }
+
+  .search-bar {
+    font-size: 0.85rem;
+  }
+
+  .styled-table {
+    font-size: 0.85rem;
+  }
+
+  .styled-table th,
+  .styled-table td {
+    padding: 0.4rem;
+  }
+
+  /* Convertir la tabla en un formato de bloques para pantallas muy pequeñas */
+  .styled-table {
+    display: block;
+  }
+
+  .styled-table thead {
+    display: none; /* Ocultar encabezados en pantallas muy pequeñas */
+  }
+
+  .styled-table tbody,
+  .styled-table tr {
+    display: block;
+  }
+
+  .styled-table td {
+    display: block;
+    text-align: left;
+    position: relative;
+    padding-left: 50%;
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .styled-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0.5rem;
+    width: 45%;
+    font-weight: 600;
+  }
+
+  .styled-table td:nth-child(1)::before {
+    content: "Número de Tienda";
+  }
+
+  .styled-table td:nth-child(2)::before {
+    content: "Nombre";
   }
 }
