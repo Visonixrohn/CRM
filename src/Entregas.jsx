@@ -175,7 +175,7 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer }) => {
             loading="lazy"
             allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
-            src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyA-Jv8AMyTySXYsd8rY2kEdNhhotdNWolg&center=${lat},${lng}&zoom=16&maptype=satellite`}
+            src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyA4SuJGczpIN1YzyRVc0AFAo1nZ7ruhLaY&center=${lat},${lng}&zoom=16&maptype=satellite`}
           ></iframe>
         )}
         <div
