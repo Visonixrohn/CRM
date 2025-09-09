@@ -1,0 +1,50 @@
+.gestion-card-mobile {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin: 16px 8px;
+  padding: 18px 16px;
+  transition: box-shadow 0.2s;
+  position: relative;
+}
+.gestion-card-mobile:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+.gestion-card-header {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #007bff;
+  margin-bottom: 6px;
+}
+.gestion-card-info {
+  margin-bottom: 8px;
+  color: #333;
+}
+.gestion-card-phone {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.gestion-card-phone a {
+  color: #28a745;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 1.1em;
+  margin-left: 8px;
+}
+.gestion-card-actions {
+  display: flex;
+  gap: 10px;
+}
+@media (min-width: 768px) {
+  .gestion-card-mobile {
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+  .table-container {
+    display: none !important;
+  }
+}

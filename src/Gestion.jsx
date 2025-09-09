@@ -2,6 +2,24 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import "./Gestion.css";
+import "./GestionCard.css";
+// Componente Card para móviles
+const GestionCard = ({ cliente, onWhatsApp, onQuitar }) => (
+  <div className="gestion-card-mobile">
+    <div className="gestion-card-header">{cliente.nombre} {cliente.apellido}</div>
+    <div className="gestion-card-info">ID: {cliente.id}</div>
+    <div className="gestion-card-info">Tienda: {cliente.tienda}</div>
+    <div className="gestion-card-info">Segmento: {cliente.segmento}</div>
+    <div className="gestion-card-phone">
+      <span>📞</span>
+      <a href={`tel:${cliente.tel}`}>{cliente.tel}</a>
+    </div>
+    <div className="gestion-card-actions">
+      <button onClick={() => onWhatsApp(cliente)} style={{background:'#25D366',color:'#fff',border:'none',borderRadius:6,padding:'6px 12px'}}>WhatsApp</button>
+      <button onClick={() => onQuitar(cliente)} className="remove">Quitar</button>
+    </div>
+  </div>
+);
 
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnLNqq5vEQ5o0QhUIyywnvarUCMkVPA-n2B6ZConXYgL5hUuEvhj6J0Ejp430PK7NCzYGopGaJOw0Y/pub?output=csv";
 const MENSAJE_DEFAULT = `Hola 😇 {NOMBRE},\nLe saluda Miguel de Curacao Roatán. Usted es parte de nuestros CLIENTES ESPECIALES 💎 y queremos invitarle a unirse a nuestro grupo exclusivo de promociones en WhatsApp 📲.\n\n¡Descubra ofertas únicas solo para usted y aproveche descuentos increíbles! 🎁🔥\n\n👉 Únase aquí: https://chat.whatsapp.com/GxyudGf4OZ8ET6PilXjVCj\n\nSerá un placer atenderle,\nAtt. Miguel Romero`;
@@ -170,6 +188,20 @@ const Gestion = () => {
         <button onClick={() => setModalOpen(true)}>Mensaje</button>
         <button onClick={restaurarCliente}>Regresar</button>
       </div>
+      {/* Cards móviles */}
+      {clientesFiltrados
+        .filter((cliente) =>
+          !gestionados.some((g) => g.id === cliente.id && g.fecha === hoy)
+        )
+        .map((cliente) => (
+          <GestionCard
+            key={cliente.id}
+            cliente={cliente}
+            onWhatsApp={enviarWhatsApp}
+            onQuitar={quitarCliente}
+          />
+        ))}
+      {/* Tabla solo visible en desktop por CSS */}
       <div className="table-container">
         <table id="clientesTable">
           <thead>
