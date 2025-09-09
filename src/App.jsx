@@ -18,6 +18,7 @@ import Documentos from "./Documentos";
 import ClientesNuevos from "./ClientesNuevos";
 import Actualizaciones from "./Actualizaciones";
 import LoadingScreen from "./LoadingScreen";
+import Gestion from "./Gestion";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -88,6 +89,10 @@ function App() {
     setPage("actualizaciones");
     if (!isMobile) closeSidebar();
   };
+  const handleGestionClick = () => {
+    setPage("gestion");
+    if (!isMobile) closeSidebar();
+  };
 
   // Handlers para ModalInput
   const handleModalClose = () => setModal((m) => ({ ...m, open: false }));
@@ -147,6 +152,7 @@ function App() {
           onDocumentosClick={handleDocumentosClick}
           onClientesNuevosClick={handleClientesNuevosClick}
           onActualizacionesClick={handleActualizacionesClick}
+          onGestionClick={handleGestionClick}
           setUser={setUser}
         />
         <div id="main-content">
@@ -173,6 +179,7 @@ function App() {
           {page === "documentos" && <Documentos />}
           {page === "clientes-nuevos" && <ClientesNuevos />}
           {page === "actualizaciones" && <Actualizaciones />}
+          {page === "gestion" && <Gestion />}
         </div>
       </div>
       <ModalInput

@@ -11,6 +11,7 @@ const ICONS = [
   { key: "documentos", label: "Documentos", emoji: "📄" },
   { key: "clientes-nuevos", label: "Clientes Nuevos", emoji: "🧑‍💼" },
   { key: "actualizaciones", label: "Actualizaciones", emoji: "👥" },
+  { key: "gestion", label: "Gestión", emoji: "📞" },
 ];
 
 const BottomBar = ({

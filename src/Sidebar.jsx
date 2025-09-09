@@ -11,6 +11,7 @@ import {
   FaUserPlus,
   FaUsers,
   FaSignOutAlt,
+  FaPhone,
 } from "react-icons/fa"; // Importing icons from react-icons
 import "./Sidebar.css";
 import { supabase } from "./supabaseClient";
@@ -27,10 +28,20 @@ const Sidebar = ({
   onClientesNuevosClick,
   onActualizacionesClick,
   setUser,
+  onGestionClick,
 }) => {
   return (
     <aside className={`sidebar${open ? " open" : ""}`}>
       <nav className="sidebar-icons">
+        <div
+          className="sidebar-icon"
+          title="Gestión"
+          onClick={onGestionClick}
+          style={{ position: "relative" }}
+        >
+          <FaPhone className="icon-text" style={{ color: '#2196f3' }} />
+          <span className="sidebar-tooltip">Gestión</span>
+        </div>
         <div
           className="sidebar-icon"
           title="Comisiones"
