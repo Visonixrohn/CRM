@@ -142,7 +142,8 @@ const Gestion = () => {
     const texto = encodeURIComponent(
       mensajeBase.replace("{NOMBRE}", cliente.nombre)
     );
-    const url = `https://web.whatsapp.com/send?phone=504${cliente.tel}&text=${texto}`;
+    // Usar wa.me para abrir WhatsApp directamente en el teléfono
+    const url = `https://wa.me/504${cliente.tel}?text=${texto}`;
     window.open(url, "_blank");
   };
 
