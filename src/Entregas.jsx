@@ -16,7 +16,8 @@ import "./DetalleEntregaModal.css";
 
 const estados = ["Pendiente", "Entregado", "Rechazado", "Reprogramado"];
 
-function tiempoTranscurrido(fecha) {
+function tiempoTranscurrido(fecha, estatus) {
+  if (estatus && estatus.toLowerCase() === "entregado") return "✔️";
   if (!fecha) return "-";
   const fechaEntrega = new Date(fecha);
   const ahora = new Date();
@@ -24,9 +25,9 @@ function tiempoTranscurrido(fecha) {
   const diffMins = Math.floor(diffMs / 60000);
   const diffHrs = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHrs / 24);
-  if (diffDays > 0) return `${diffDays}d`;
-  if (diffHrs > 0) return `${diffHrs}h`;
-  if (diffMins > 0) return `${diffMins}min`;
+  if (diffDays > 0) return `${diffDays}  dias`;
+  if (diffHrs > 0) return `${diffHrs} horas`;
+  if (diffMins > 0) return `${diffMins} minutos`;
   return "ahora";
 }
 
@@ -393,6 +394,7 @@ const Entregas = () => {
   const [chofer, setChofer] = useState(null);
   const [user, setUser] = useState(null);
   const [filtroEstatus, setFiltroEstatus] = useState("");
+  const [filtroNoGestionados, setFiltroNoGestionados] = useState(false);
   const [busqueda, setBusqueda] = useState("");
 
   // Handler para el botón Chofer
@@ -467,7 +469,8 @@ const Entregas = () => {
       ? e.cliente.toLowerCase().includes(busqueda.toLowerCase()) ||
         e.factura.toLowerCase().includes(busqueda.toLowerCase())
       : true;
-    return matchesEstatus && matchesBusqueda;
+    const matchesNoGestionados = filtroNoGestionados ? (e.gestionada || '').toLowerCase() === 'no gestionada' : true;
+    return matchesEstatus && matchesBusqueda && matchesNoGestionados;
   });
 
   // Actualizar estatus en Supabase
@@ -564,23 +567,6 @@ const Entregas = () => {
         <button className="btn-agregar" onClick={() => setShowAgregar(true)}>
           Agregar entrega
         </button>
-        <div className="filtros-bar">
-          {estados.map((e) => (
-            <button
-              key={e}
-              className={`btn-filtro${filtroEstatus === e ? " selected" : ""}`}
-              onClick={() => setFiltroEstatus(e === filtroEstatus ? "" : e)}
-            >
-              {e}
-            </button>
-          ))}
-          <button
-            className={`btn-filtro${filtroEstatus === "" ? " selected" : ""}`}
-            onClick={() => setFiltroEstatus("")}
-          >
-            Todos
-          </button>
-        </div>
         <button className="btn-chofer" title="Chofer" onClick={handleChoferButtonClick}>
           <svg
             width="22"
@@ -598,6 +584,37 @@ const Entregas = () => {
           </svg>
           Chofer
         </button>
+        <button
+          className={`btn-filtro${filtroNoGestionados ? " selected" : ""}`}
+          style={{ marginLeft: 8 }}
+          onClick={() => {
+            setFiltroEstatus("");
+            setFiltroNoGestionados((prev) => !prev);
+          }}
+        >
+          No gestionados
+        </button>
+        <div className="filtros-bar">
+          {estados.map((e) => (
+            <button
+              key={e}
+              className={`btn-filtro${filtroEstatus === e ? " selected" : ""}`}
+              onClick={() => setFiltroEstatus(e === filtroEstatus ? "" : e)}
+            >
+              {e}
+            </button>
+          ))}
+          <button
+            className={`btn-filtro${filtroEstatus === "" && !filtroNoGestionados ? " selected" : ""}`}
+            onClick={() => {
+              setFiltroEstatus("");
+              setFiltroNoGestionados(false);
+            }}
+          >
+            Todos
+          </button>
+        </div>
+        
       </div>
 
       {/* Cards solo en móvil */}
@@ -617,11 +634,11 @@ const Entregas = () => {
         <table className="tabla-entregas">
           <thead>
             <tr>
+              <th>Fecha</th>
               <th>Cliente</th>
               <th>Factura</th>
               <th>Cel</th>
               <th>Artículo</th>
-              <th>Fecha</th>
               <th>Fecha de entrega</th>
               <th>Tipo de entrega</th>
               <th>Gestionada</th>
@@ -632,11 +649,44 @@ const Entregas = () => {
           <tbody>
             {entregasFiltradas.map((e) => (
               <tr key={e.id} onClick={() => setDetalle(e)}>
-                <td data-label="Cliente">{e.cliente}</td>
-                <td data-label="Factura">{e.factura}</td>
-                <td data-label="Cel">{e.cel}</td>
-                <td data-label="Artículo">{e.articulo}</td>
                 <td data-label="Fecha">{e.fecha}</td>
+                <td data-label="Cliente">{e.cliente}</td>
+                <td data-label="Factura">
+                  
+                  <button
+                    title="Copiar factura"
+                    style={{ marginLeft: 8, background: 'none', border: 'none', cursor: 'pointer', color: '#6366f1', fontSize: '1.1em', verticalAlign: 'middle' }}
+                    onClick={ev => {
+                      ev.stopPropagation();
+                      if (navigator.clipboard) {
+                        navigator.clipboard.writeText(e.factura);
+                        ev.target.innerHTML = '✔️';
+                        setTimeout(() => { if (ev.target) ev.target.innerHTML = '☰'; }, 1200);
+                      }
+                    }}
+                  >
+                    ☰
+                  </button>{e.factura}
+                </td>
+                <td data-label="Cel">
+                  
+                  {e.cel && (
+                    <a
+                      href={`https://web.whatsapp.com/send?phone=504${e.cel.replace(/[^\d]/g, "")}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Chatear por WhatsApp"
+                      style={{ marginLeft: 8, color: '#25D366', fontSize: '1.3em', verticalAlign: 'middle', textDecoration: 'none' }}
+                      onClick={ev => ev.stopPropagation()}
+                    >
+                      <svg width="22" height="22" viewBox="0 0 32 32" fill="currentColor" style={{verticalAlign:'middle'}}>
+                        <path d="M16 3C9.373 3 4 8.373 4 15c0 2.385.832 4.584 2.236 6.393L4 29l7.824-2.05C13.41 27.633 14.686 28 16 28c6.627 0 12-5.373 12-12S22.627 3 16 3zm0 22c-1.13 0-2.238-.188-3.287-.558l-.235-.08-4.646 1.217 1.24-4.527-.153-.236C7.188 19.238 7 18.13 7 17c0-4.963 4.037-9 9-9s9 4.037 9 9-4.037 9-9 9zm5.29-6.709c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.67.85-.82 1.02-.15.17-.3.19-.56.06-.26-.13-1.09-.4-2.08-1.28-.77-.68-1.29-1.52-1.44-1.78-.15-.26-.02-.4.11-.53.11-.11.26-.29.39-.44.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.58-1.4-.8-1.92-.21-.51-.43-.44-.58-.45-.15-.01-.32-.01-.5-.01-.17 0-.45.06-.68.28-.23.22-.9.88-.9 2.15s.92 2.49 1.05 2.66c.13.17 1.81 2.77 4.39 3.78.61.21 1.09.33 1.46.42.61.13 1.16.11 1.6.07.49-.05 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.24-.17-.5-.3z"/>
+                      </svg>
+                    </a>
+                  )}{e.cel}
+                </td>
+                <td data-label="Artículo">{e.articulo}</td>
+                
                 <td data-label="Fecha entrega">{e.fecha_entrega}</td>
                 <td data-label="Tipo de entrega">
                   <span className={`modern-tipoentrega modern-tipoentrega-${(e.tipo_entrega || '').toLowerCase().replace(/\s/g, '-')}`}>{e.tipo_entrega}</span>
@@ -644,7 +694,7 @@ const Entregas = () => {
                 <td data-label="Gestionada">
                   <span className={`modern-gestionada modern-gestionada-${(e.gestionada || '').toLowerCase().replace(/\s/g, '-')}`}>{e.gestionada}</span>
                 </td>
-                <td data-label="Tiempo">{tiempoTranscurrido(e.fecha)}</td>
+                <td data-label="Tiempo">{tiempoTranscurrido(e.fecha, e.estatus)}</td>
                 <td data-label="Estatus">
                   <span className={`modern-status modern-${e.estatus?.toLowerCase?.()}`}>{e.estatus}</span>
                 </td>
@@ -666,25 +716,7 @@ const Entregas = () => {
         onClose={() => setShowAgregar(false)}
         onAdd={handleAdd}
       />
-      <button
-        className="chofer-fab"
-        title="Datos de chofer"
-        onClick={handleChoferButtonClick}
-      >
-        <svg
-          width="28"
-          height="28"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#fff"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="12" cy="7" r="4" />
-          <path d="M5.5 21a7.5 7.5 0 0 1 13 0" />
-        </svg>
-      </button>
+  {/* Botón flotante chofer-fab eliminado por solicitud del usuario */}
       {choferModal && choferModalType === "detalle" && (
         <ChoferDetalleModal
           open={choferModal}

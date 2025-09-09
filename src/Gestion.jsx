@@ -11,6 +11,20 @@ const GestionCard = ({ cliente, onWhatsApp, onQuitar }) => (
     <div className="gestion-card-info">Tienda: {cliente.tienda}</div>
     <div className="gestion-card-info">Segmento: {cliente.segmento}</div>
     <div className="gestion-card-phone">
+      {cliente.tel && (
+        <a
+          href={`https://web.whatsapp.com/send?phone=504${cliente.tel.replace(/[^\d]/g, "")}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Chatear por WhatsApp"
+          style={{ marginRight: 8, color: '#25D366', fontSize: '1.3em', verticalAlign: 'middle', textDecoration: 'none' }}
+          onClick={ev => ev.stopPropagation()}
+        >
+          <svg width="22" height="22" viewBox="0 0 32 32" fill="currentColor" style={{verticalAlign:'middle'}}>
+            <path d="M16 3C9.373 3 4 8.373 4 15c0 2.385.832 4.584 2.236 6.393L4 29l7.824-2.05C13.41 27.633 14.686 28 16 28c6.627 0 12-5.373 12-12S22.627 3 16 3zm0 22c-1.13 0-2.238-.188-3.287-.558l-.235-.08-4.646 1.217 1.24-4.527-.153-.236C7.188 19.238 7 18.13 7 17c0-4.963 4.037-9 9-9s9 4.037 9 9-4.037 9-9 9zm5.29-6.709c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.67.85-.82 1.02-.15.17-.3.19-.56.06-.26-.13-1.09-.4-2.08-1.28-.77-.68-1.29-1.52-1.44-1.78-.15-.26-.02-.4.11-.53.11-.11.26-.29.39-.44.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.58-1.4-.8-1.92-.21-.51-.43-.44-.58-.45-.15-.01-.32-.01-.5-.01-.17 0-.45.06-.68.28-.23.22-.9.88-.9 2.15s.92 2.49 1.05 2.66c.13.17 1.81 2.77 4.39 3.78.61.21 1.09.33 1.46.42.61.13 1.16.11 1.6.07.49-.05 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.24-.17-.5-.3z"/>
+          </svg>
+        </a>
+      )}
       <span>📞</span>
       <a href={`tel:${cliente.tel}`}>{cliente.tel}</a>
     </div>
@@ -21,7 +35,7 @@ const GestionCard = ({ cliente, onWhatsApp, onQuitar }) => (
   </div>
 );
 
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnLNqq5vEQ5o0QhUIyywnvarUCMkVPA-n2B6ZConXYgL5hUuEvhj6J0Ejp430PK7NCzYGopGaJOw0Y/pub?output=csv";
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnLNqq5vEQ5o0QhUIyywnvarUCMkVPA-n2B6ZConXYgL5hUuEvhj6J0Ejp430PK7NCzYGopGaJOw0Y/pub?gid=0&single=true&output=csv";
 const MENSAJE_DEFAULT = `Hola 😇 {NOMBRE},\nLe saluda Miguel de Curacao Roatán. Usted es parte de nuestros CLIENTES ESPECIALES 💎 y queremos invitarle a unirse a nuestro grupo exclusivo de promociones en WhatsApp 📲.\n\n¡Descubra ofertas únicas solo para usted y aproveche descuentos increíbles! 🎁🔥\n\n👉 Únase aquí: https://chat.whatsapp.com/GxyudGf4OZ8ET6PilXjVCj\n\nSerá un placer atenderle,\nAtt. Miguel Romero`;
 
 function parseCSV(data) {
@@ -29,7 +43,7 @@ function parseCSV(data) {
   return rows
     .map((r) => {
       const cols = r.split(",");
-      if (cols.length < 9) return null;
+      if (cols.length < 10) return null;
       return {
         tienda: cols[6] || "",
         cadena: cols[1] || "",
@@ -40,10 +54,14 @@ function parseCSV(data) {
         id: cols[0] || "",
         tel: cols[7] || "",
         segmento: cols[8] || "",
+        usuario: cols[9] || "",
       };
     })
     .filter((c) => c && c.tel);
 }
+
+import { useEffect as useEffectApp, useState as useStateApp } from "react";
+import { supabase } from "./supabaseClient";
 
 const Gestion = () => {
   const [clientes, setClientes] = useState([]);
@@ -54,6 +72,15 @@ const Gestion = () => {
   const [lastRemoved, setLastRemoved] = useState(null);
   const [update, setUpdate] = useState(0);
   const mensajeRef = useRef();
+  const [userId, setUserId] = useState(null);
+
+  // Obtener usuario actual de Supabase
+  useEffectApp(() => {
+    (async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (data && data.user) setUserId(data.user.id);
+    })();
+  }, []);
 
   // Cargar clientes desde Google Sheets
   useEffect(() => {
@@ -79,14 +106,16 @@ const Gestion = () => {
   const gestionados = JSON.parse(localStorage.getItem("gestionados") || "[]");
   const countGestionados = gestionados.filter((g) => g.fecha === hoy).length;
 
-  // Filtrar clientes
-  const clientesFiltrados = clientes.filter((c) =>
-    filtros.every((f, i) => {
-      if (!f) return true;
-      const val = [c.id, c.nombre, c.apellido, c.tel, c.tienda][i] || "";
-      return val.toLowerCase().includes(f.toLowerCase());
-    })
-  );
+  // Filtrar clientes: solo mostrar los del usuario autenticado
+  const clientesFiltrados = clientes
+    .filter((c) => !userId || (c.usuario && c.usuario.trim() === userId))
+    .filter((c) =>
+      filtros.every((f, i) => {
+        if (!f) return true;
+        const val = [c.id, c.nombre, c.apellido, c.tel, c.tienda][i] || "";
+        return val.toLowerCase().includes(f.toLowerCase());
+      })
+    );
 
   // Quitar cliente
   const quitarCliente = (cliente) => {

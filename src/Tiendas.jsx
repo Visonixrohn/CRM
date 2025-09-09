@@ -8,6 +8,7 @@ import "./components/TiendasCard.css";
 const Tiendas = () => {
   const [tiendas, setTiendas] = useState([]);
   const [search, setSearch] = useState("");
+  const [searchNombre, setSearchNombre] = useState("");
   const [filteredTiendas, setFilteredTiendas] = useState([]);
 
   useEffect(() => {
@@ -26,23 +27,29 @@ const Tiendas = () => {
   }, []);
 
   useEffect(() => {
-    if (search.trim() === "") {
-      setFilteredTiendas(tiendas); // Mostrar todos los datos si la búsqueda está en blanco
-    } else {
+    let result = tiendas;
+    // Filtrar por número de tienda si hay búsqueda
+    if (search.trim() !== "") {
       const searchTerms = search
         .toLowerCase()
-        .split(/\s+/) // Dividir por espacios
+        .split(/\s+/)
         .map((term) => term.trim())
-        .filter((term) => term !== ""); // Eliminar términos vacíos
-
-      const newFilteredTiendas = tiendas.filter((tienda) =>
+        .filter((term) => term !== "");
+      result = result.filter((tienda) =>
         searchTerms.some(
-          (term) => tienda.numero_tienda.toLowerCase() === term // Comparar exactamente
+          (term) => tienda.numero_tienda.toLowerCase() === term
         )
       );
-      setFilteredTiendas(newFilteredTiendas);
     }
-  }, [search, tiendas]); // Filtrar automáticamente cuando cambia la búsqueda o los datos
+    // Filtrar por nombre de tienda si hay búsqueda
+    if (searchNombre.trim() !== "") {
+      const nombreTerm = searchNombre.toLowerCase();
+      result = result.filter((tienda) =>
+        tienda.tienda && tienda.tienda.toLowerCase().includes(nombreTerm)
+      );
+    }
+    setFilteredTiendas(result);
+  }, [search, searchNombre, tiendas]);
 
   return (
     <div className="razones-container">
@@ -53,6 +60,14 @@ const Tiendas = () => {
           placeholder="Buscar por número de tienda (separados por espacios)"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Buscar por nombre de tienda"
+          value={searchNombre}
+          onChange={(e) => setSearchNombre(e.target.value)}
         />
       </div>
       {/* Cards móviles */}
