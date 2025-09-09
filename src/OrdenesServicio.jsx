@@ -10,6 +10,10 @@ import "./OrdenesServicioForm.css";
 import "./OrdenesServicioDetalle.css";
 import "./OrdenesServicioActualizarEstado.css";
 import "./OrdenesServicioBusqueda.css";
+import OrdenesServicioCard from "./components/OrdenesServicioCard";
+import "./components/OrdenesServicioCard.css";
+import OrdenesServicioFiltroMovil from "./components/OrdenesServicioFiltroMovil";
+import "./components/OrdenesServicioFiltroMovil.css";
 
 const OrdenesServicio = () => {
   const [ordenes, setOrdenes] = useState([]);
@@ -256,6 +260,7 @@ const OrdenesServicio = () => {
           />
           <span className="osv-busqueda-icono">🔍</span>
         </div>
+        <OrdenesServicioFiltroMovil estados={estados} filterState={filterState} setFilterState={setFilterState} />
         <div className="filter-buttons">
           {estados.map((estado) => {
             const estadoClass = estado
@@ -282,7 +287,12 @@ const OrdenesServicio = () => {
         </div>
       </header>
 
-      <div className="table-container">
+      {/* Cards móviles */}
+      {filteredOrdenes.map((orden) => (
+        <OrdenesServicioCard key={orden.id} orden={orden} onVerDetalle={handleRowClick} />
+      ))}
+      {/* Tabla solo visible en desktop por CSS */}
+      <div className="ordenes-servicio-table-container">
         <table className="ordenes-table">
           <thead>
             <tr>

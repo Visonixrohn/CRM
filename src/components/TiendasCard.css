@@ -1,0 +1,34 @@
+.tienda-card-mobile {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin: 16px 8px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 1.05em;
+  border: 1px solid #e0e0e0;
+}
+.tienda-card-header {
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #007bff;
+  margin-bottom: 4px;
+}
+.tienda-card-info {
+  color: #333;
+  margin-bottom: 2px;
+}
+@media (min-width: 768px) {
+  .tienda-card-mobile {
+    display: none;
+  }
+}
+
+/* Oculta la tabla en móviles */
+@media (max-width: 767px) {
+  .tiendas-table-container {
+    display: none;
+  }
+}

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 import "./Razones.css";
+import RazonesCard from "./components/RazonesCard";
+import "./components/RazonesCard.css";
 
 const Razones = () => {
   const [razones, setRazones] = useState([]);
@@ -49,22 +51,29 @@ const Razones = () => {
         onChange={(e) => setSearch(e.target.value)}
         className="search-bar"
       />
-      <table className="styled-table">
-        <thead>
-          <tr>
-            <th>Código</th>
-            <th>Descripción</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredRazones.map((razon) => (
-            <tr key={razon.id}>
-              <td>{razon.codigo}</td>
-              <td>{razon.descripcion}</td>
+      {/* Cards móviles */}
+      {filteredRazones.map((razon) => (
+        <RazonesCard key={razon.id} razon={razon} />
+      ))}
+      {/* Tabla solo visible en desktop por CSS */}
+      <div className="razones-table-container">
+        <table className="styled-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Descripción</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredRazones.map((razon) => (
+              <tr key={razon.id}>
+                <td>{razon.codigo}</td>
+                <td>{razon.descripcion}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

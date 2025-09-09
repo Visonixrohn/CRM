@@ -26,6 +26,7 @@
 
 /* Barra de búsqueda */
 .search-bar {
+  color: #333;
   margin-bottom: 20px;
   display: flex;
   flex-wrap: wrap;

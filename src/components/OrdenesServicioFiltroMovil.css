@@ -1,0 +1,32 @@
+.ordenes-servicio-filtro-movil {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 18px 0;
+  justify-content: center;
+}
+.filtro-movil-btn {
+  background: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 1em;
+  color: #333;
+  transition: background 0.2s, color 0.2s;
+}
+.filtro-movil-btn.active {
+  background: #007bff;
+  color: #fff;
+}
+@media (min-width: 768px) {
+  .ordenes-servicio-filtro-movil {
+    display: none;
+  }
+}
+
+/* Oculta los filtros de escritorio en móviles */
+@media (max-width: 767px) {
+  .filter-buttons {
+    display: none !important;
+  }
+}
