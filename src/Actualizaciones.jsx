@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./ClientesNuevos.css";
 import Papa from "papaparse";
+import { supabase } from "./supabaseClient";
 
 const Actualizaciones = () => {
   const [clientes, setClientes] = useState([]);
@@ -8,8 +9,17 @@ const Actualizaciones = () => {
   const [filtro, setFiltro] = useState("todos");
   const [busqueda, setBusqueda] = useState("");
   const [cargando, setCargando] = useState(false);
+  const [usuarioId, setUsuarioId] = useState(null);
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) setUsuarioId(data.user.id);
+    };
+    getUser();
+  }, []);
 
   useEffect(() => {
+    setCargando(true);
     const fetchData = async () => {
       const sheetId = "1MmVZkubwhL4goX3wptmRZGvMFJtRBhJnb2TEwVwUNbk";
       const apiKey = "AIzaSyCIUJIvnSyAxU4NEp2lotm-QodOKQ0FqFA";
@@ -29,8 +39,6 @@ const Actualizaciones = () => {
             });
             return obj;
           });
-
-
           setClientes(formattedData);
         } else {
           console.error("No se encontraron datos en la hoja ACT.");
@@ -38,8 +46,9 @@ const Actualizaciones = () => {
       } catch (error) {
         console.error("Error al cargar los datos de Google Sheets:", error);
       }
+      // Esperar 2 segundos antes de quitar el cargando
+      setTimeout(() => setCargando(false), 2000);
     };
-
     fetchData();
   }, []);
 
@@ -52,10 +61,11 @@ const Actualizaciones = () => {
   };
 
   const clientesFiltrados = clientes.filter((cliente) => {
+    // Filtrar por usuario si existe el campo y el usuarioId
+    if (usuarioId && cliente.usuario && cliente.usuario !== usuarioId) return false;
     const nombre = cliente["Nombre del Cliente"]?.toLowerCase() || "";
     const numeroIdentidad = cliente["Número de Identidad"]?.toLowerCase() || "";
     const busquedaLower = busqueda.toLowerCase();
-
     if (filtro === "tomados" && cliente.STATUS !== "Tomado") return false;
     if (filtro === "sin-tomar" && cliente.STATUS === "Tomado") return false;
     if (
@@ -97,10 +107,18 @@ const Actualizaciones = () => {
 
 
 
+  if (cargando) {
+    return (
+      <div className="modal-carga">
+        <div className="contenido-carga">
+          <p>Cargando...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="clientes-nuevos-container">
       <h1>Actualizaciones</h1>
-
       <div className="filtros-busqueda">
         <button
           onClick={() => setFiltro("todos")}
@@ -120,7 +138,6 @@ const Actualizaciones = () => {
         >
           Sin Tomar
         </button>
-
         <input
           type="text"
           placeholder="Buscar por nombre o No. de Identidad"
@@ -129,7 +146,6 @@ const Actualizaciones = () => {
           className="barra-busqueda"
         />
       </div>
-
       <table className="clientes-nuevos-tabla">
         <thead>
           <tr>
@@ -152,12 +168,10 @@ const Actualizaciones = () => {
               <td>{cliente["Nombre del Cliente"]}</td>
               <td>{cliente.Celular}</td>
               <td>{cliente.STATUS}</td>
-              <td></td>
             </tr>
           ))}
         </tbody>
       </table>
-
       {detalle && (
         <div className="detalle-modal">
           <div className="detalle-contenido">
@@ -177,14 +191,6 @@ const Actualizaciones = () => {
             >
               Actualizar a Tomado
             </button>
-          </div>
-        </div>
-      )}
-
-      {cargando && (
-        <div className="modal-carga">
-          <div className="contenido-carga">
-            <p>Cargando...</p>
           </div>
         </div>
       )}

@@ -1,3 +1,4 @@
+
 import ModalForm from "./ModalForm";
 import modalFormStyles from "./ModalForm.module.css";
 import React from "react";
@@ -7,6 +8,7 @@ import tablaStyles from "./TablaAmortizacion.module.css";
 import formCardStyles from "./FormCard.module.css";
 import RegistrarPlanMobile from "./RegistrarPlanMobile";
 import cardMobileStyles from "./CardMobile.module.css";
+import CotizacionWhatsappModal from "./CotizacionWhatsappModal";
 
 
 import { useState, useEffect } from "react";
@@ -75,6 +77,16 @@ const Cotizaciones = () => {
   const [loadingPlanes, setLoadingPlanes] = useState(false);
   const [agregando, setAgregando] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalWhatsappOpen, setModalWhatsappOpen] = useState(false);
+  const [usuarioId, setUsuarioId] = useState("");
+  // Obtener usuario actual para WhatsApp
+  useEffect(() => {
+    async function getUser() {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) setUsuarioId(data.user.id);
+    }
+    getUser();
+  }, []);
 
   // Cargar planes desde Supabase
   useEffect(() => {
@@ -127,9 +139,14 @@ const Cotizaciones = () => {
     <div className={styles.cotizacionesContainer}>
       <div className={styles.cotizacionesHeader}>
         <h2>Tabla de Amortización</h2>
-        <button className={styles.cotizacionesAddBtn} onClick={() => setModalOpen(true)}>
-          + Registrar nuevo plan
-        </button>
+        <div style={{display: 'flex', gap: 12}}>
+          <button className={styles.cotizacionesAddBtn} onClick={() => setModalOpen(true)}>
+            + Registrar nuevo plan
+          </button>
+          <button className={styles.cotizacionesAddBtn} style={{background: '#25d366'}} onClick={() => setModalWhatsappOpen(true)}>
+            WhatsApp Cotización
+          </button>
+        </div>
       </div>
       {/* Contenedor especial para mobile */}
       <div className={cardMobileStyles.mobileCardsContainer}>
@@ -184,7 +201,15 @@ const Cotizaciones = () => {
       </div>
       {modalMobile}
       {/* Modal solo para desktop */}
-     
+      <CotizacionWhatsappModal
+        open={modalWhatsappOpen}
+        onClose={() => setModalWhatsappOpen(false)}
+        usuarioId={usuarioId}
+        plazo={plazo}
+        prima={prima}
+        cuota={cuota}
+        productoDefault={''}
+      />
     </div>
   );
 }
