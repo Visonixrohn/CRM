@@ -44,7 +44,7 @@ const GAForm = ({ onClose }) => {
         <br />
         <label>
           Porcentaje:
-          <input type="number" value={porcentaje} onChange={e => setPorcentaje(e.target.value)} required min={0} max={100} step={0.01} disabled={loading} />
+          <input type="number" value={porcentaje} onChange={e => setPorcentaje(e.target.value)} required min={0} max={100} step="any" disabled={loading} />
         </label>
         <br />
         <button type="submit" disabled={loading}>{loading ? 'Registrando...' : 'Registrar'}</button>
