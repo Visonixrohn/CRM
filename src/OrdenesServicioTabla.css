@@ -1,5 +1,97 @@
-/* =============================
-   TABLA DE ÓRDENES DE SERVICIO
+/* Colores diferenciados para los estados en la columna ESTADO */
+.ordenes-table td.estado-pendiente-de-visita {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%) !important;
+  color: #fff !important;
+  border-radius: 22px;
+  font-weight: 700;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+  border: 2px solid #115293;
+  cursor: pointer;
+  padding: 0.5em 1.2em;
+  min-width: 120px;
+  display: inline-block;
+  transition: filter 0.2s, box-shadow 0.2s, border 0.2s;
+  text-align: center;
+ 
+}
+
+.ordenes-table td.estado-pendiente-de-repuesto {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%) !important;
+  color: #fff !important;
+  border-radius: 22px;
+  font-weight: 700;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+  border: 2px solid #c66900;
+  cursor: pointer;
+  padding: 0.5em 1.2em;
+  min-width: 120px;
+  display: inline-block;
+  transition: filter 0.2s, box-shadow 0.2s, border 0.2s;
+  text-align: center;
+ 
+}
+
+.ordenes-table td.estado-reparado {
+  background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%) !important;
+  color: #fff !important;
+  border-radius: 22px;
+  font-weight: 700;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+  border: 2px solid #255d27;
+  cursor: pointer;
+  padding: 0.5em 1.2em;
+  min-width: 120px;
+  display: inline-block;
+  transition: filter 0.2s, box-shadow 0.2s, border 0.2s;
+  text-align: center;
+
+}
+
+.ordenes-table td.estado-sugerencia-de-cambio {
+  background: linear-gradient(135deg, #7b1fa2 0%, #6a1b9a 100%) !important;
+  color: #fff !important;
+  border-radius: 22px;
+  font-weight: 700;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+  border: 2px solid #4a0072;
+  cursor: pointer;
+  padding: 0.5em 1.2em;
+  min-width: 120px;
+  display: inline-block;
+  transition: filter 0.2s, box-shadow 0.2s, border 0.2s;
+  text-align: center;
+}
+
+
+.ordenes-table td.estado-anuladas {
+  background: linear-gradient(135deg, #924141 0%, #d30c0c 100%) !important;
+  color: #fff !important;
+  border-radius: 22px;
+  font-weight: 700;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+  border: 2px solid #424242;
+  cursor: pointer;
+  padding: 0.5em 1.2em;
+  min-width: 120px;
+  display: inline-block;
+  transition: filter 0.2s, box-shadow 0.2s, border 0.2s;
+  text-align: center;
+}
+
+.ordenes-table td[class^="estado-"]:hover {
+  filter: brightness(1.08) saturate(1.1);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.16);
+  border-color: #222;
+}
+
+
+/* ============================= 
+   TABLA DE ÓRDENES DE SERVICIO 
    ============================= */
 
 /* Contenedor */
@@ -8,34 +100,47 @@
   overflow-x: auto;
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
   padding: 1rem;
+  max-width: 100%;
+  transition: all 0.3s ease-in-out;
+}
+
+.table-container:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Tabla base (desktop) */
 .ordenes-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.95rem;
+  font-size: 1rem;
   background: #fff;
+  font-family: 'Roboto', sans-serif;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
 }
 
 /* Encabezados */
 .ordenes-table th {
   padding: 12px;
-  background: #f3f4f6;
-  color: #374151;
+  background: #f7fafc;
+  color: #2d3748;
   font-weight: 700;
   text-align: left;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  border-bottom: 2px solid #e5e7eb;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Celdas */
 .ordenes-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 12px;
+  border-bottom: 1px solid #f0f4f8;
   text-align: left;
-  transition: background 0.2s ease;
+  font-size: 0.95rem;
+  color: #4a5568;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .ordenes-table tr:last-child td {
@@ -43,11 +148,12 @@
 }
 
 .ordenes-table tr:hover {
-  background: #f0f6ff;
+  background-color: #f1f5f9;
+  transform: scale(1.02);
 }
 
-/* =============================
-   RESPONSIVE (MÓVILES)
+/* ============================= 
+   RESPONSIVE (MÓVILES) 
    ============================= */
 @media (max-width: 700px) {
   .ordenes-table {
@@ -56,7 +162,7 @@
   }
 
   .ordenes-table thead {
-    display: none; /* Ocultamos encabezados */
+    display: none;
   }
 
   .ordenes-table tr {
@@ -65,19 +171,19 @@
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    padding: 0.8rem;
+    padding: 1rem;
   }
 
   .ordenes-table td {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.6rem 0;
+    padding: 1rem;
     border-bottom: 1px solid #e5e7eb;
   }
 
   .ordenes-table td::before {
-    content: attr(data-label); /* Mostramos el nombre de la columna */
+    content: attr(data-label);
     font-weight: 600;
     color: #374151;
     flex: 1;

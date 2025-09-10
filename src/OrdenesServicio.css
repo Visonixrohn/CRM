@@ -44,6 +44,43 @@
   --estado-reparado: #388e3c;
   --estado-sugerencia-cambio: #7b1fa2;
   --estado-rechazado: #d32f2f;
+  --estado-anuladas: #616161;
+/* Colores diferenciados para los estados en la tabla */
+.ordenes-table td.estado-pendiente-de-visita {
+  background: var(--estado-pendiente-visita) !important;
+  color: #fff !important;
+  border-radius: 8px;
+  padding: 0.3em 0.7em;
+  font-weight: bold;
+}
+.ordenes-table td.estado-pendiente-de-repuesto {
+  background: var(--estado-pendiente-repuesto) !important;
+  color: #fff !important;
+  border-radius: 8px;
+  padding: 0.3em 0.7em;
+  font-weight: bold;
+}
+.ordenes-table td.estado-reparado {
+  background: var(--estado-reparado) !important;
+  color: #fff !important;
+  border-radius: 8px;
+  padding: 0.3em 0.7em;
+  font-weight: bold;
+}
+.ordenes-table td.estado-sugerencia-de-cambio {
+  background: var(--estado-sugerencia-cambio) !important;
+  color: #fff !important;
+  border-radius: 8px;
+  padding: 0.3em 0.7em;
+  font-weight: bold;
+}
+.ordenes-table td.estado-anuladas {
+  background: var(--estado-anuladas) !important;
+  color: #fff !important;
+  border-radius: 8px;
+  padding: 0.3em 0.7em;
+  font-weight: bold;
+}
 }
 
 /* Estilos generales */

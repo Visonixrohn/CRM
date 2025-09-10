@@ -49,6 +49,7 @@ const OrdenesServicio = () => {
     "PENDIENTE DE REPUESTO",
     "REPARADO",
     "SUGERENCIA DE CAMBIO",
+    "ANULADA",
   ];
 
   useEffect(() => {
@@ -313,9 +314,14 @@ const OrdenesServicio = () => {
                 <td data-label="Artículo">{orden.articulo}</td>
                 <td
                   data-label="Estado"
-                  className={`estado-${orden.estado
-                    .replace(/\s+/g, "-")
-                    .toLowerCase()}`}
+                  className={`estado-${(() => {
+                    let estado = orden.estado
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")
+                      .replace(/[áéíóú]/g, m => ({ á: "a", é: "e", í: "i", ó: "o", ú: "u" }[m]));
+                    if (estado === "anulada") return "anuladas";
+                    return estado;
+                  })()}`}
                 >
                   {orden.estado}
                 </td>
