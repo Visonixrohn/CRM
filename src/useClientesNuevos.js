@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import Papa from "papaparse";
 import { supabase } from "./supabaseClient";
+
+const SHEET_ID = "1MmVZkubwhL4goX3wptmRZGvMFJtRBhJnb2TEwVwUNbk";
+const API_KEY = "AIzaSyCIUJIvnSyAxU4NEp2lotm-QodOKQ0FqFA";
+const URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/SolicitudesCredito?key=${API_KEY}`;
 
 export default function useClientesNuevos() {
   const [clientes, setClientes] = useState([]);
@@ -10,7 +13,7 @@ export default function useClientesNuevos() {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
+      const { data } = await supabase.auth.getUser();
       if (data?.user) setUsuarioId(data.user.id);
     };
     getUser();
@@ -21,25 +24,25 @@ export default function useClientesNuevos() {
     setLoading(true);
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "https://docs.google.com/spreadsheets/d/e/2PACX-1vTFX5eKDodVmbXf_U0DJNl5MgXrzZgCCgGbswtez88Gu4ywvLMoRIsBAd33vZ1rDEidXTO4zfcv3zWE/pub?output=csv"
-        );
-        const csvData = await response.text();
-        Papa.parse(csvData, {
-          header: true,
-          complete: (result) => {
-            // Filtrar por usuario
-            const filtrados = result.data.filter(
-              (row) => row.usuario && row.usuario === usuarioId
-            );
-            setClientes(filtrados);
-            setLoading(false);
-          },
-          error: (err) => {
-            setError(err.message);
-            setLoading(false);
-          },
-        });
+        const response = await fetch(URL);
+        const data = await response.json();
+        if (data.values) {
+          const headers = data.values[0];
+          const rows = data.values.slice(1);
+          const formatted = rows.map((row) => {
+            const obj = {};
+            headers.forEach((header, idx) => {
+              obj[header] = row[idx] || "";
+            });
+            return obj;
+          });
+          // Filtrar por usuario
+          const filtrados = formatted.filter(row => row.usuario && row.usuario === usuarioId);
+          setClientes(filtrados);
+        } else {
+          setClientes([]);
+        }
+        setLoading(false);
       } catch (err) {
         setError(err.message);
         setLoading(false);
