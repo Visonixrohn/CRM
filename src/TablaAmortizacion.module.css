@@ -1,0 +1,26 @@
+.tablaAmortizacion {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #1976d211;
+  margin-top: 18px;
+}
+.tablaAmortizacion th {
+  background: linear-gradient(90deg, #1976d2 80%, #42a5f5 100%);
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 0;
+  font-size: 1.05rem;
+  border: none;
+}
+.tablaAmortizacion td {
+  padding: 10px 0;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: center;
+  font-size: 1.04rem;
+}
+.tablaAmortizacion tr:last-child td {
+  border-bottom: none;
+}

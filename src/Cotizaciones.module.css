@@ -1,0 +1,201 @@
+.cotizacionesContainer {
+  padding: 32px 16px;
+  max-width: 100%;
+  margin: 32px auto;
+  background: #f8fafc;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 #0001;
+}
+.cotizacionesMainRow {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.cotizacionesFormCard {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #1976d111;
+  padding: 18px 16px 10px 16px;
+  min-width: 320px;
+  max-width: 370px;
+  flex: 1 1 340px;
+  margin-bottom: 0;
+}
+.cotizacionesTableWrap {
+  flex: 2 1 500px;
+  min-width: 340px;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.cotizaciones-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+.cotizaciones-header h2 {
+  margin: 0;
+  color: #1976d2;
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.cotizacionesForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 18px;
+  align-items: flex-end;
+  background: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+}
+.cotizaciones-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #333;
+  min-width: 140px;
+  font-size: 1rem;
+}
+.cotizaciones-form input,
+.cotizaciones-form select {
+  margin-top: 6px;
+  padding: 8px 12px;
+  border: 1.5px solid #bdbdbd;
+  border-radius: 7px;
+  font-size: 1.08rem;
+  background: #f6f8fa;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.cotizaciones-form input:focus,
+.cotizaciones-form select:focus {
+  border: 1.5px solid #1976d2;
+  outline: none;
+  box-shadow: 0 0 0 2px #1976d233;
+}
+.cotizaciones-cuota {
+  font-size: 1.25rem;
+  color: #388e3c;
+  font-weight: 600;
+  margin-bottom: 18px;
+  text-align: right;
+}
+.cotizaciones-table {
+  margin-top: 18px;
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #1976d211;
+}
+.cotizaciones-table th {
+  background: linear-gradient(90deg, #1976d2 80%, #42a5f5 100%);
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 0;
+  font-size: 1.05rem;
+  border: none;
+}
+.cotizaciones-table td {
+  padding: 10px 0;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: center;
+  font-size: 1.04rem;
+}
+.cotizaciones-table tr:last-child td {
+  border-bottom: none;
+}
+.cotizaciones-add-btn {
+  background: linear-gradient(90deg, #1976d2 80%, #42a5f5 100%);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 10px 26px;
+  font-size: 1.08rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  box-shadow: 0 2px 8px #1976d233;
+  margin-left: auto;
+  display: block;
+}
+.cotizaciones-add-btn:hover {
+  background: linear-gradient(90deg, #1565c0 80%, #1976d2 100%);
+  box-shadow: 0 4px 16px #1976d244;
+  transform: translateY(-2px) scale(1.04);
+}
+ .cotizaciones-modal-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #0007;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeInBg 0.2s;
+}
+/* Modal siempre sobrepuesto */
+/* El bloque duplicado fue eliminado para evitar errores de CSS */
+@keyframes fadeInBg {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.cotizaciones-modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 36px 28px 28px 28px;
+  min-width: 320px;
+  max-width: 95vw;
+  box-shadow: 0 8px 32px #0003;
+  animation: popIn 0.25s cubic-bezier(.4,2,.6,1.2);
+  position: relative;
+}
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.cotizaciones-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.7rem;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.cotizaciones-modal-close:hover {
+  color: #1976d2;
+}
+.cotizaciones-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.cotizaciones-modal label {
+  font-weight: 500;
+  color: #333;
+  font-size: 1.05rem;
+}
+.cotizaciones-modal input {
+  margin-top: 6px;
+  padding: 8px 12px;
+  border: 1.5px solid #bdbdbd;
+  border-radius: 7px;
+  font-size: 1.08rem;
+  background: #f6f8fa;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.cotizaciones-modal input:focus {
+  border: 1.5px solid #1976d2;
+  outline: none;
+  box-shadow: 0 0 0 2px #1976d233;
+}
+.cotizaciones-modal .cotizaciones-add-btn {
+  margin: 0;
+  width: 100%;
+}

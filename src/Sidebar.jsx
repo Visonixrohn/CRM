@@ -12,6 +12,7 @@ import {
   FaUsers,
   FaSignOutAlt,
   FaPhone,
+  FaCreditCard,
 } from "react-icons/fa"; // Importing icons from react-icons
 import "./Sidebar.css";
 import { supabase } from "./supabaseClient";
@@ -26,6 +27,7 @@ const Sidebar = ({
   onTiendasClick,
   onDocumentosClick,
   onClientesNuevosClick,
+  onCotizacionesClick,
   onActualizacionesClick,
   setUser,
   onGestionClick,
@@ -113,6 +115,15 @@ const Sidebar = ({
         >
           <FaUserPlus className="icon-text" />
           <span className="sidebar-tooltip">Clientes Nuevos</span>
+        </div>
+        <div
+          className="sidebar-icon"
+          title="Cotizaciones"
+          onClick={onCotizacionesClick}
+          style={{ position: "relative" }}
+        >
+          <FaCreditCard className="icon-text" style={{ color: '#4caf50' }} />
+          <span className="sidebar-tooltip">Cotizaciones</span>
         </div>
         <div
           className="sidebar-icon"

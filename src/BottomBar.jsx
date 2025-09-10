@@ -10,6 +10,7 @@ const ICONS = [
   { key: "tiendas", label: "Tiendas", emoji: "🏬" },
   { key: "documentos", label: "Documentos", emoji: "📄" },
   { key: "clientes-nuevos", label: "Clientes Nuevos", emoji: "🧑‍💼" },
+  { key: "cotizaciones", label: "Cotizaciones", emoji: "💳" },
   { key: "actualizaciones", label: "Actualizaciones", emoji: "👥" },
   { key: "gestion", label: "Gestión", emoji: "📞" },
 ];

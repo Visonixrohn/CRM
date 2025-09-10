@@ -19,8 +19,13 @@ import ClientesNuevos from "./ClientesNuevos";
 import Actualizaciones from "./Actualizaciones";
 import LoadingScreen from "./LoadingScreen";
 import Gestion from "./Gestion";
+import Cotizaciones from "./Cotizaciones";
 
 function App() {
+  const handleCotizacionesClick = () => {
+    setPage("cotizaciones");
+    if (!isMobile) closeSidebar();
+  };
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [page, setPage] = useState(() => {
@@ -153,6 +158,7 @@ function App() {
           onClientesNuevosClick={handleClientesNuevosClick}
           onActualizacionesClick={handleActualizacionesClick}
           onGestionClick={handleGestionClick}
+          onCotizacionesClick={handleCotizacionesClick}
           setUser={setUser}
         />
         <div id="main-content">
@@ -178,6 +184,7 @@ function App() {
           {page === "tiendas" && <Tiendas />}
           {page === "documentos" && <Documentos />}
           {page === "clientes-nuevos" && <ClientesNuevos />}
+          {page === "cotizaciones" && <Cotizaciones />}
           {page === "actualizaciones" && <Actualizaciones />}
           {page === "gestion" && <Gestion />}
         </div>

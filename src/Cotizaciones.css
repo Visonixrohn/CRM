@@ -1,0 +1,134 @@
+.cotizaciones-container {
+  padding: 4px;
+  max-width: 100vh;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px 0 #0002;
+}
+.cotizaciones-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.cotizaciones-header h2 {
+  margin: 0;
+  color: #1976d2;
+  font-size: 2rem;
+  font-weight: 700;
+}
+.cotizaciones-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: flex-end;
+}
+.cotizaciones-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #333;
+}
+.cotizaciones-form input,
+.cotizaciones-form select {
+  margin-top: 4px;
+  padding: 6px 10px;
+  border: 1px solid #bdbdbd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border 0.2s;
+}
+.cotizaciones-form input:focus,
+.cotizaciones-form select:focus {
+  border: 1.5px solid #1976d2;
+  outline: none;
+}
+.cotizaciones-cuota {
+  font-size: 1.2rem;
+  color: #388e3c;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.cotizaciones-table {
+  margin-top: 24px;
+  width: 100%;
+  border-collapse: collapse;
+  background: #fafafa;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #0001;
+}
+.cotizaciones-table th {
+  background: #1976d2;
+  color: #fff;
+  font-weight: 600;
+  padding: 8px;
+}
+.cotizaciones-table td {
+  padding: 8px;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: center;
+}
+.cotizaciones-table tr:last-child td {
+  border-bottom: none;
+}
+.cotizaciones-add-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px #1976d233;
+}
+.cotizaciones-add-btn:hover {
+  background: #1565c0;
+  box-shadow: 0 4px 16px #1976d244;
+}
+.cotizaciones-modal-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #0007;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeInBg 0.2s;
+}
+@keyframes fadeInBg {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.cotizaciones-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px 24px 24px 24px;
+  min-width: 320px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px #0003;
+  animation: popIn 0.25s cubic-bezier(.4,2,.6,1.2);
+  position: relative;
+}
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.cotizaciones-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.cotizaciones-modal-close:hover {
+  color: #1976d2;
+}
