@@ -107,15 +107,7 @@ const Sidebar = ({
           <FaFileAlt className="icon-text" />
           <span className="sidebar-tooltip">Documentos</span>
         </div>
-        <div
-          className="sidebar-icon"
-          title="Clientes Nuevos"
-          onClick={onClientesNuevosClick}
-          style={{ position: "relative" }}
-        >
-          <FaUserPlus className="icon-text" />
-          <span className="sidebar-tooltip">Clientes Nuevos</span>
-        </div>
+        
         <div
           className="sidebar-icon"
           title="Cotizaciones"
@@ -124,6 +116,15 @@ const Sidebar = ({
         >
           <FaCreditCard className="icon-text" style={{ color: '#4caf50' }} />
           <span className="sidebar-tooltip">Cotizaciones</span>
+        </div>
+        <div
+          className="sidebar-icon"
+          title="Clientes Nuevos"
+          onClick={onClientesNuevosClick}
+          style={{ position: "relative" }}
+        >
+          <FaUserPlus className="icon-text" />
+          <span className="sidebar-tooltip">Clientes Nuevos</span>
         </div>
         <div
           className="sidebar-icon"
