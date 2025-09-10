@@ -35,15 +35,7 @@ const Sidebar = ({
   return (
     <aside className={`sidebar${open ? " open" : ""}`}>
       <nav className="sidebar-icons">
-        <div
-          className="sidebar-icon"
-          title="Gestión"
-          onClick={onGestionClick}
-          style={{ position: "relative" }}
-        >
-          <FaPhone className="icon-text" style={{ color: '#2196f3' }} />
-          <span className="sidebar-tooltip">Gestión</span>
-        </div>
+        
         <div
           className="sidebar-icon"
           title="Comisiones"
@@ -107,7 +99,15 @@ const Sidebar = ({
           <FaFileAlt className="icon-text" />
           <span className="sidebar-tooltip">Documentos</span>
         </div>
-        
+        <div
+          className="sidebar-icon"
+          title="Gestión"
+          onClick={onGestionClick}
+          style={{ position: "relative" }}
+        >
+          <FaPhone className="icon-text" style={{ color: '#2196f3' }} />
+          <span className="sidebar-tooltip">Gestión</span>
+        </div>
         <div
           className="sidebar-icon"
           title="Cotizaciones"

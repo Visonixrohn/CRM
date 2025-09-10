@@ -1,20 +1,20 @@
-
-
 import React, { useEffect, useState, useRef } from "react";
 import "./Gestion.css";
 import "./GestionCard.css";
 import GestionLinkModal from "./GestionLinkModal";
+import useGestion from "./useGestion";
+
 // Componente Card para móviles
 const GestionCard = ({ cliente, onWhatsApp, onQuitar }) => (
   <div className="gestion-card-mobile">
-    <div className="gestion-card-header">{cliente.nombre} {cliente.apellido}</div>
-    <div className="gestion-card-info">ID: {cliente.id}</div>
-    <div className="gestion-card-info">Tienda: {cliente.tienda}</div>
-    <div className="gestion-card-info">Segmento: {cliente.segmento}</div>
+    <div className="gestion-card-header">{cliente.NOMBRES || cliente.nombre} {cliente.APELLIDOS || cliente.apellido}</div>
+    <div className="gestion-card-info">ID: {cliente.ID || cliente.id}</div>
+    <div className="gestion-card-info">Tienda: {cliente.TIENDA || cliente.tienda}</div>
+    <div className="gestion-card-info">Segmento: {cliente.SEGMENTO || cliente.segmento}</div>
     <div className="gestion-card-phone">
-      {cliente.tel && (
+      {(cliente.TELEFONO || cliente.tel) && (
         <a
-          href={`https://web.whatsapp.com/send?phone=504${cliente.tel.replace(/[^\d]/g, "")}`}
+          href={`https://web.whatsapp.com/send?phone=504${(cliente.TELEFONO || cliente.tel).replace(/[^\d]/g, "")}`}
           target="_blank"
           rel="noopener noreferrer"
           title="Chatear por WhatsApp"
@@ -27,7 +27,7 @@ const GestionCard = ({ cliente, onWhatsApp, onQuitar }) => (
         </a>
       )}
       <span>📞</span>
-      <a href={`tel:${cliente.tel}`}>{cliente.tel}</a>
+      <a href={`tel:${cliente.TELEFONO || cliente.tel}`}>{cliente.TELEFONO || cliente.tel}</a>
     </div>
     <div className="gestion-card-actions">
       <button onClick={() => onWhatsApp(cliente)} style={{background:'#25D366',color:'#fff',border:'none',borderRadius:6,padding:'6px 12px'}}>WhatsApp</button>
@@ -36,36 +36,13 @@ const GestionCard = ({ cliente, onWhatsApp, onQuitar }) => (
   </div>
 );
 
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnLNqq5vEQ5o0QhUIyywnvarUCMkVPA-n2B6ZConXYgL5hUuEvhj6J0Ejp430PK7NCzYGopGaJOw0Y/pub?gid=0&single=true&output=csv";
 const MENSAJE_DEFAULT = `Hola 😇 {NOMBRE},\nLe saluda Miguel de Curacao Roatán. Usted es parte de nuestros CLIENTES ESPECIALES 💎 y queremos invitarle a unirse a nuestro grupo exclusivo de promociones en WhatsApp 📲.\n\n¡Descubra ofertas únicas solo para usted y aproveche descuentos increíbles! 🎁🔥\n\n👉 Únase aquí: https://chat.whatsapp.com/GxyudGf4OZ8ET6PilXjVCj\n\nSerá un placer atenderle,\nAtt. Miguel Romero`;
-
-function parseCSV(data) {
-  const rows = data.split("\n").slice(1);
-  return rows
-    .map((r) => {
-      const cols = r.split(",");
-      if (cols.length < 10) return null;
-      return {
-        tienda: cols[6] || "",
-        cadena: cols[1] || "",
-        apellido: cols[2] || "",
-        nombre: cols[3] || "",
-        depto: cols[4] || "",
-        muni: cols[5] || "",
-        id: cols[0] || "",
-        tel: cols[7] || "",
-        segmento: cols[8] || "",
-        usuario: cols[9] || "",
-      };
-    })
-    .filter((c) => c && c.tel);
-}
 
 import { useEffect as useEffectApp, useState as useStateApp } from "react";
 import { supabase } from "./supabaseClient";
 
+
 const Gestion = () => {
-  const [clientes, setClientes] = useState([]);
   const [mensajeBase, setMensajeBase] = useState(() => localStorage.getItem("mensajeBase") || MENSAJE_DEFAULT);
   const [modalOpen, setModalOpen] = useState(false);
   const [error, setError] = useState("");
@@ -76,32 +53,14 @@ const Gestion = () => {
   const [userId, setUserId] = useState(null);
   const [modalLinkOpen, setModalLinkOpen] = useState(false);
   const [linkCliente, setLinkCliente] = useState(null);
+  const { datos, loading, error: errorGestion, total, pendientes } = useGestion();
 
   // Obtener usuario actual de Supabase
-  useEffectApp(() => {
+  useEffect(() => {
     (async () => {
       const { data, error } = await supabase.auth.getUser();
       if (data && data.user) setUserId(data.user.id);
     })();
-  }, []);
-
-  // Cargar clientes desde Google Sheets
-  useEffect(() => {
-    fetch(SHEET_URL)
-      .then((res) => {
-        if (!res.ok) throw new Error(`Error al cargar la hoja: ${res.status}`);
-        return res.text();
-      })
-      .then((data) => {
-        const parsed = parseCSV(data);
-        if (parsed.length === 0) {
-          setError("No se encontraron clientes con números de teléfono válidos.");
-        }
-        setClientes(parsed);
-      })
-      .catch((err) => {
-        setError("Error al cargar los datos: " + err.message);
-      });
   }, []);
 
   // Gestionados hoy
@@ -109,16 +68,14 @@ const Gestion = () => {
   const gestionados = JSON.parse(localStorage.getItem("gestionados") || "[]");
   const countGestionados = gestionados.filter((g) => g.fecha === hoy).length;
 
-  // Filtrar clientes: solo mostrar los del usuario autenticado
-  const clientesFiltrados = clientes
-    .filter((c) => !userId || (c.usuario && c.usuario.trim() === userId))
-    .filter((c) =>
-      filtros.every((f, i) => {
-        if (!f) return true;
-        const val = [c.id, c.nombre, c.apellido, c.tel, c.tienda][i] || "";
-        return val.toLowerCase().includes(f.toLowerCase());
-      })
-    );
+  // Filtrar clientes: solo mostrar los del usuario autenticado y aplicar filtros
+  const clientesFiltrados = datos.filter((c) =>
+    filtros.every((f, i) => {
+      if (!f) return true;
+      const val = [c.ID || c.id, c.NOMBRES || c.nombre, c.APELLIDOS || c.apellido, c.TELEFONO || c.tel, c.TIENDA || c.tienda][i] || "";
+      return val.toLowerCase().includes(f.toLowerCase());
+    })
+  );
 
   // Quitar cliente
   const quitarCliente = (cliente) => {
@@ -202,10 +159,9 @@ const Gestion = () => {
 
   return (
     <div>
-    
       <div className="cards">
         <div className="card">
-          <h2>{clientes.length}</h2>
+          <h2>{total}</h2>
           <p>Total Clientes</p>
         </div>
         <div className="card">
@@ -213,7 +169,7 @@ const Gestion = () => {
           <p>Gestionados Hoy</p>
         </div>
         <div className="card">
-          <h2>{clientes.length - countGestionados}</h2>
+          <h2>{pendientes}</h2>
           <p>Pendientes</p>
         </div>
       </div>
@@ -224,12 +180,20 @@ const Gestion = () => {
       {/* Cards móviles */}
       {clientesFiltrados
         .filter((cliente) =>
-          !gestionados.some((g) => g.id === cliente.id && g.fecha === hoy)
+          !gestionados.some((g) => g.id === (cliente.ID || cliente.id) && g.fecha === hoy)
         )
         .map((cliente) => (
           <GestionCard
-            key={cliente.id}
-            cliente={cliente}
+            key={cliente.ID || cliente.id}
+            cliente={{
+              ...cliente,
+              id: cliente.ID || cliente.id,
+              nombre: cliente.NOMBRES || cliente.nombre,
+              apellido: cliente.APELLIDOS || cliente.apellido,
+              tel: cliente.TELEFONO || cliente.tel,
+              tienda: cliente.TIENDA || cliente.tienda,
+              segmento: cliente.SEGMENTO || cliente.segmento
+            }}
             onWhatsApp={enviarWhatsApp}
             onQuitar={quitarCliente}
           />
@@ -290,25 +254,25 @@ const Gestion = () => {
           <tbody>
             {clientesFiltrados
               .filter((cliente) =>
-                !gestionados.some((g) => g.id === cliente.id && g.fecha === hoy)
+                !gestionados.some((g) => g.id === (cliente.ID || cliente.id) && g.fecha === hoy)
               )
               .map((cliente) => (
-                <tr key={cliente.id}>
+                <tr key={cliente.ID || cliente.id}>
                   <td>
-                    {cliente.id}
+                    {cliente.ID || cliente.id}
                     <span
                       className="copy-btn"
                       title="Copiar ID"
                       style={{ marginLeft: 5 }}
-                      onClick={(e) => copyToClipboard(cliente.id, e)}
+                      onClick={(e) => copyToClipboard(cliente.ID || cliente.id, e)}
                     >
                       📋
                     </span>
                   </td>
-                  <td>{cliente.nombre}</td>
-                  <td>{cliente.apellido}</td>
-                  <td>{cliente.tel}</td>
-                  <td>{cliente.tienda}</td>
+                  <td>{cliente.NOMBRES || cliente.nombre}</td>
+                  <td>{cliente.APELLIDOS || cliente.apellido}</td>
+                  <td>{cliente.TELEFONO || cliente.tel}</td>
+                  <td>{cliente.TIENDA || cliente.tienda}</td>
                   <td>
                     <button onClick={() => enviarWhatsApp(cliente)}>
                       Enviar
@@ -325,7 +289,7 @@ const Gestion = () => {
           open={modalLinkOpen}
           onClose={() => setModalLinkOpen(false)}
           usuarioId={userId}
-          telefono={linkCliente?.tel?.replace(/[^\d]/g, "") || ""}
+          telefono={(linkCliente?.TELEFONO || linkCliente?.tel || "").replace(/[^\d]/g, "")}
         />
                 </tr>
               ))}
