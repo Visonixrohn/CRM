@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./Gestion.css";
 import "./GestionCard.css";
+import GestionLinkModal from "./GestionLinkModal";
 // Componente Card para móviles
 const GestionCard = ({ cliente, onWhatsApp, onQuitar }) => (
   <div className="gestion-card-mobile">
@@ -73,6 +74,8 @@ const Gestion = () => {
   const [update, setUpdate] = useState(0);
   const mensajeRef = useRef();
   const [userId, setUserId] = useState(null);
+  const [modalLinkOpen, setModalLinkOpen] = useState(false);
+  const [linkCliente, setLinkCliente] = useState(null);
 
   // Obtener usuario actual de Supabase
   useEffectApp(() => {
@@ -310,10 +313,20 @@ const Gestion = () => {
                     <button onClick={() => enviarWhatsApp(cliente)}>
                       Enviar
                     </button>
+                    <button style={{marginLeft:4,marginRight:4}} onClick={() => { setLinkCliente(cliente); setModalLinkOpen(true); }}>
+                      Link
+                    </button>
                     <button className="remove" onClick={() => quitarCliente(cliente)}>
                       Quitar
                     </button>
                   </td>
+        {/* Modal para enviar link por WhatsApp */}
+        <GestionLinkModal
+          open={modalLinkOpen}
+          onClose={() => setModalLinkOpen(false)}
+          usuarioId={userId}
+          telefono={linkCliente?.tel?.replace(/[^\d]/g, "") || ""}
+        />
                 </tr>
               ))}
           </tbody>
