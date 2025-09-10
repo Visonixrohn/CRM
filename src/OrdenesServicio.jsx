@@ -310,7 +310,29 @@ const OrdenesServicio = () => {
               <tr key={orden.id} onClick={() => handleRowClick(orden)}>
                 <td data-label="Fecha">{orden.fecha}</td>
                 <td data-label="Cliente">{orden.cliente}</td>
-                <td data-label="Número de Orden">{orden.numero_orden}</td>
+                <td data-label="Número de Orden" style={{whiteSpace: 'nowrap'}}>
+                  {orden.numero_orden}
+                  <button
+                    onClick={e => {
+                      e.stopPropagation();
+                      navigator.clipboard.writeText(orden.numero_orden);
+                    }}
+                    title="Copiar número de orden"
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      marginLeft: 8,
+                      padding: 0,
+                      verticalAlign: 'middle',
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{verticalAlign: 'middle'}}>
+                      <rect x="9" y="9" width="13" height="13" rx="2" stroke="#1976d2" strokeWidth="2" fill="#fff"/>
+                      <rect x="3" y="3" width="13" height="13" rx="2" stroke="#1976d2" strokeWidth="2" fill="#e3f2fd"/>
+                    </svg>
+                  </button>
+                </td>
                 <td data-label="Artículo">{orden.articulo}</td>
                 <td
                   data-label="Estado"
