@@ -1,4 +1,3 @@
-
 import ModalForm from "./ModalForm";
 import modalFormStyles from "./ModalForm.module.css";
 import React from "react";
@@ -11,6 +10,8 @@ import cardMobileStyles from "./CardMobile.module.css";
 import CotizacionWhatsappModal from "./CotizacionWhatsappModal";
 
 
+import GASelectorRows from "./GASelectorRows";
+import GASelectorRowsModal from "./GASelectorRowsModal";
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 
@@ -66,7 +67,10 @@ function generarTablaAmortizacion(capital, tasa, plazo) {
 }
 
 const Cotizaciones = () => {
-  const [capital, setCapital] = useState(0);
+  const [rows, setRows] = useState([
+    { precio: 0, depto: '', total: 0, gaEnabled: true }
+  ]);
+  const capital = rows.reduce((acc, row) => acc + (Number(row.total) || 0), 0);
   const [prima, setPrima] = useState(0);
   const [tasa, setTasa] = useState(0.02); // 2% mensual
   const [plazo, setPlazo] = useState(12);
@@ -79,6 +83,8 @@ const Cotizaciones = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalWhatsappOpen, setModalWhatsappOpen] = useState(false);
   const [usuarioId, setUsuarioId] = useState("");
+  const [modalGAOpen, setModalGAOpen] = useState(false);
+  const [modalPPlusOpen, setModalPPlusOpen] = useState(false);
   // Obtener usuario actual para WhatsApp
   useEffect(() => {
     async function getUser() {
@@ -135,6 +141,16 @@ const Cotizaciones = () => {
     ? Math.round((capitalFinanciar * tasa) / (1 - Math.pow(1 + tasa, -plazo)))
     : 0;
 
+  // Manejar registro en Supabase
+  const handleGAFormSubmit = async ({ depto, porcentaje }) => {
+    await supabase.from("ga_registros").insert({ depto, porcentaje });
+    // Aquí podrías mostrar un mensaje de éxito o refrescar datos si es necesario
+  };
+              {/* GASelectorRows debajo del botón GA + */}
+              <div style={{marginTop: '16px'}}>
+                <GASelectorRows />
+              </div>
+
   return (
     <div className={styles.cotizacionesContainer}>
       <div className={styles.cotizacionesHeader}>
@@ -155,7 +171,7 @@ const Cotizaciones = () => {
           <form className={formCardStyles.formCardForm} onSubmit={e => e.preventDefault()}>
             <label>
               Capital
-              <input type="number" value={capital} onChange={e => setCapital(Number(e.target.value))} min={1} />
+              <input type="number" value={capital} readOnly style={{background:'#f3f3f3'}} />
             </label>
             <label>
               Prima
@@ -179,12 +195,48 @@ const Cotizaciones = () => {
             */}
             <label>
               Plazo (meses)
-              <input type="number" value={plazo} onChange={e => setPlazo(Number(e.target.value))} min={1} />
+              <div style={{display:'flex',gap:6,flexWrap:'wrap',marginTop:4}}>
+                {[3,6,9,12,15,18,24,36,48].map(val => (
+                  <button
+                    key={val}
+                    type="button"
+                    style={{
+                      background: plazo === val ? '#1976d2' : '#eee',
+                      color: plazo === val ? '#fff' : '#222',
+                      border: 'none',
+                      borderRadius: 4,
+                      padding: '4px 10px',
+                      cursor: 'pointer',
+                      fontWeight: plazo === val ? 'bold' : 'normal'
+                    }}
+                    onClick={() => setPlazo(val)}
+                  >
+                    {val}
+                  </button>
+                ))}
+              </div>
             </label>
           </form>
           <div className={formCardStyles.formCardCuota}>
             Cuota mensual estimada: <span>L {cuota}</span>
+            <br />
+            <div style={{display:'flex', gap:8, marginTop:8}}>
+              <button type="button" style={{background:'#1976d2', color:'#fff', border:'none', borderRadius:4, padding:'4px 12px', cursor:'pointer'}} onClick={() => setModalGAOpen(true)}>
+                Registrar GA %
+              </button>
+              <button type="button" style={{background:'#43a047', color:'#fff', border:'none', borderRadius:4, padding:'4px 12px', cursor:'pointer'}} onClick={() => setModalPPlusOpen(true)}>
+                Agregar roductos 
+              </button>
+            </div>
           </div>
+          {modalGAOpen && (
+            <div style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',background:'#0008',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
+              <div>
+                <GAForm onClose={() => setModalGAOpen(false)} onSubmit={handleGAFormSubmit} />
+              </div>
+            </div>
+          )}
+          <GASelectorRowsModal open={modalPPlusOpen} onClose={() => setModalPPlusOpen(false)} rows={rows} setRows={setRows} />
           {planSeleccionado && planes.length > 0 && (() => {
             const plan = planes.find(p => p.id === Number(planSeleccionado));
             return plan ? (
@@ -213,4 +265,7 @@ const Cotizaciones = () => {
     </div>
   );
 }
+import GAForm from "./GAForm";
 export default Cotizaciones;
+
+// Eliminar importación duplicada de GASelectorRows
