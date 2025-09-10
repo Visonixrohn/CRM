@@ -124,7 +124,7 @@ const Cotizaciones = () => {
               <select value={planSeleccionado} onChange={e => setPlanSeleccionado(e.target.value)}>
                 <option value="">Selecciona un plan</option>
                 {planes.map(plan => (
-                  <option key={plan.id} value={plan.id}>{plan.plan} ({Number(plan.tasa).toLocaleString(undefined, { maximumFractionDigits: 2 })}% mensual)</option>
+                  <option key={plan.id} value={plan.id}>{plan.plan} </option>
                 ))}
               </select>
               {loadingPlanes && <span> Cargando...</span>}
@@ -143,7 +143,18 @@ const Cotizaciones = () => {
           <div className={formCardStyles.formCardCuota}>
             Cuota mensual estimada: <span>L {cuota}</span>
           </div>
-        </div>
+          {planSeleccionado && planes.length > 0 && (() => {
+            const plan = planes.find(p => p.id === Number(planSeleccionado));
+            return plan ? (
+              <div className={formCardStyles.formCardCuota}>
+               <span>tasa: {Number(plan.tasa).toLocaleString(undefined, { maximumFractionDigits: 2 })}% </span>
+              </div>
+            ) : null;
+          })()}
+          
+          
+
+              </div>
         <div className={`${styles.cotizacionesTableWrap} ${cardMobileStyles.cardMobile}`} style={{marginTop: 0}}>
           <div className={cardMobileStyles.cardMobileTitle}>Tabla de Amortización</div>
           <TablaAmortizacion capital={capitalFinanciar} tasa={tasa} plazo={plazo} />
