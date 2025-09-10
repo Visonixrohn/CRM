@@ -25,7 +25,7 @@ export default function RegistrarPlanMobile({ open, onClose, onAddPlan }) {
   return (
     <div className={styles.modalMobile} onClick={handleBackdropClick}>
       <form className={styles.formContainer} onSubmit={handleSubmit} onClick={e => e.stopPropagation()}>
-        <button type="button" className={styles.cerrar} onClick={onClose} aria-label="Cerrar">×</button>
+        <button type="button" className={styles.cerrar} onClick={onClose} aria-label="Cerrar"></button>
         <div className={styles.titulo}>Agregar Plan</div>
         <input
           className={styles.input}
