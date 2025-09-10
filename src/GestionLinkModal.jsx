@@ -19,8 +19,15 @@ const GestionLinkModal = ({ open, onClose, usuarioId, telefono }) => {
   };
 
   return (
-    <div className={styles.backdrop} onClick={onClose}>
-      <div className={styles.modal} onClick={e => e.stopPropagation()}>
+    <div
+      className={styles.backdrop}
+      onClick={onClose}
+      style={{background: "transparent"}}
+    >
+      <div
+        className={styles.modal}
+        onClick={e => e.stopPropagation()}
+      >
         <button className={styles.cerrar} onClick={onClose}>×</button>
         <h2>Enviar link por WhatsApp</h2>
         <div className={styles.tiposBtns}>

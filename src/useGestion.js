@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 
-const SHEET_ID = "1MmVZkubwhL4goX3wptmRZGvMFJtRBhJnb2TEwVwUNbk";
+const SHEET_ID = "1DT9s9uYmVuLctxeBApAwU8HaNfwc6UQNzO2O437Qq5s";
 const API_KEY = "AIzaSyCIUJIvnSyAxU4NEp2lotm-QodOKQ0FqFA";
-const URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/ACT?key=${API_KEY}`;
+const URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Hoja 1?key=${API_KEY}`;
 
-export default function useActualizaciones() {
+export default function useGestion() {
   const [datos, setDatos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,8 +36,8 @@ export default function useActualizaciones() {
             });
             return obj;
           });
-          // Filtrar por usuario (acepta USUARIO o usuario)
-          const filtrados = formatted.filter(row => (row.USUARIO && row.USUARIO === usuarioId) || (row.usuario && row.usuario === usuarioId));
+          // Filtrar por usuario
+          const filtrados = formatted.filter(row => row.USUARIO && row.USUARIO === usuarioId);
           setDatos(filtrados);
         } else {
           setDatos([]);
