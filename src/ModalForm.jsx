@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import styles from "./RegistrarPlanMobile.module.css";
+import styles from "./ModalForm.module.css";
 
-export default function RegistrarPlanMobile({ open, onClose, onAddPlan }) {
+export default function ModalForm({ open, onClose, onAddPlan }) {
   const [nombre, setNombre] = useState("");
   const [tasa, setTasa] = useState("");
   const [agregando, setAgregando] = useState(false);
@@ -23,7 +23,7 @@ export default function RegistrarPlanMobile({ open, onClose, onAddPlan }) {
   };
 
   return (
-    <div className={styles.modalMobile} onClick={handleBackdropClick}>
+    <div className={styles.modalDesktop} onClick={handleBackdropClick}>
       <form className={styles.formContainer} onSubmit={handleSubmit} onClick={e => e.stopPropagation()}>
         <button type="button" className={styles.cerrar} onClick={onClose} aria-label="Cerrar">×</button>
         <div className={styles.titulo}>Agregar Plan</div>
@@ -52,7 +52,3 @@ export default function RegistrarPlanMobile({ open, onClose, onAddPlan }) {
     </div>
   );
 }
-
-
-
-

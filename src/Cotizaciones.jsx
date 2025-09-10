@@ -1,3 +1,5 @@
+import ModalForm from "./ModalForm";
+import modalFormStyles from "./ModalForm.module.css";
 import React from "react";
 import { createPortal } from "react-dom";
 import styles from "./Cotizaciones.module.css";
@@ -181,6 +183,8 @@ const Cotizaciones = () => {
         </div>
       </div>
       {modalMobile}
+      {/* Modal solo para desktop */}
+     
     </div>
   );
 }

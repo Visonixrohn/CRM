@@ -67,7 +67,7 @@
   cursor: pointer;
 }
 
-@media (min-width: 700px) {
+@media (min-width: 10000px) {
   .modalMobile {
     display: none !important;
   }
