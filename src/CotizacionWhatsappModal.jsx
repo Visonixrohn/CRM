@@ -24,7 +24,13 @@ const CotizacionWhatsappModal = ({ open, onClose, usuarioId, plazo, prima, cuota
       `cuota mensual: ${cuota} estimada%0A` +
       `total de : ${Number(cuota) * Number(plazo)}%0A%0A` +
       `llena este link para  avanzar con el ingreso de la solicitud:%0A${url}`;
-    window.open(`https://wa.me/${cel}?text=${mensaje}`, "_blank");
+    // Forzar web.whatsapp.com en desktop y wa.me solo en pantallas pequeñas
+    const isMobileScreen = typeof window !== "undefined" && window.innerWidth < 900;
+    if (isMobileScreen) {
+      window.open(`https://wa.me/${cel}?text=${mensaje}`, "_blank");
+    } else {
+      window.open(`https://web.whatsapp.com/send?phone=${cel}&text=${mensaje}`, "_blank");
+    }
   };
 
   return (

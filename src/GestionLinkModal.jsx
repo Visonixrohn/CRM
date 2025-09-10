@@ -15,7 +15,7 @@ const GestionLinkModal = ({ open, onClose, usuarioId, telefono }) => {
       : `https://crtroatan568-lab.github.io/Actualizacion/?usuario=${usuarioId}`;
     const mensaje =
       `Hola Gracias por contestar mi llamada para avanzar con la solicitu ayudame llenando este formulario para  avanzar con el ingreso de la solicitud:%0A${url}`;
-    window.open(`https://wa.me/${telefono}?text=${mensaje}`, "_blank");
+  window.open(`https://web.whatsapp.com/send/?phone=${telefono}&text=${mensaje}`, "_blank");
   };
 
   return (
