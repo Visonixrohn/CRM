@@ -1,0 +1,38 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #0008;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+.modal {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px 10px 10px 10px;
+  min-width: 90vw;
+  max-width: 98vw;
+  box-shadow: 0 4px 24px #0003;
+  position: relative;
+  max-height: 95vh;
+  overflow-y: auto;
+}
+.closeBtn {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+}
+@media (min-width: 901px) {
+  .overlay {
+    display: none !important;
+  }
+}

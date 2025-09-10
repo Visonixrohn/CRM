@@ -20,7 +20,7 @@ const GASelectorRow = ({ onAddRow, gaRegistros, row, setRow, gaEnabled, setGaEna
     } else {
       setRow(r => ({ ...r, total: r.precio }));
     }
-  }, [row.precio, row.depto, gaEnabled, gaRegistros, setRow]);
+  }, [row.precio, row.depto, gaEnabled, gaRegistros]);
 
   return (
     <div className={styles.rowContainer}>

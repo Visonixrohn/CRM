@@ -1,3 +1,21 @@
+/* Mostrar solo en desktop */
+.showOnlyDesktop {
+  display: block;
+}
+@media (max-width: 900px) {
+  .showOnlyDesktop {
+    display: none !important;
+  }
+}
+/* Mostrar solo en móvil */
+.showOnlyMobile {
+  display: none;
+}
+@media (max-width: 900px) {
+  .showOnlyMobile {
+    display: block !important;
+  }
+}
 * {
   margin: 0;
   padding: 0;

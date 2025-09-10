@@ -12,6 +12,8 @@ import CotizacionWhatsappModal from "./CotizacionWhatsappModal";
 
 import GASelectorRows from "./GASelectorRows";
 import GASelectorRowsModal from "./GASelectorRowsModal";
+import GASelectorRowsMobile from "./GASelectorRowsMobile";
+import GASelectorRowsMobileModal from "./GASelectorRowsMobileModal";
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 
@@ -236,7 +238,12 @@ const Cotizaciones = () => {
               </div>
             </div>
           )}
-          <GASelectorRowsModal open={modalPPlusOpen} onClose={() => setModalPPlusOpen(false)} rows={rows} setRows={setRows} />
+          {/* Solo desktop */}
+          <div className="showOnlyDesktop">
+            <GASelectorRowsModal open={modalPPlusOpen} onClose={() => setModalPPlusOpen(false)} rows={rows} setRows={setRows} />
+          </div>
+          {/* Solo móvil: modal */}
+          <GASelectorRowsMobileModal open={modalPPlusOpen} onClose={() => setModalPPlusOpen(false)} rows={rows} setRows={setRows} />
           {planSeleccionado && planes.length > 0 && (() => {
             const plan = planes.find(p => p.id === Number(planSeleccionado));
             return plan ? (
