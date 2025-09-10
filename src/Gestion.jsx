@@ -2,10 +2,11 @@ import React, { useEffect, useState, useRef } from "react";
 import "./Gestion.css";
 import "./GestionCard.css";
 import GestionLinkModal from "./GestionLinkModal";
+import GestionLinkModalMobile from "./GestionLinkModalMobile";
 import useGestion from "./useGestion";
 
 // Componente Card para móviles
-const GestionCard = ({ cliente, onWhatsApp, onQuitar }) => (
+const GestionCard = ({ cliente, onWhatsApp, onQuitar, onLink }) => (
   <div className="gestion-card-mobile">
     <div className="gestion-card-header">{cliente.NOMBRES || cliente.nombre} {cliente.APELLIDOS || cliente.apellido}</div>
     <div className="gestion-card-info">ID: {cliente.ID || cliente.id}</div>
@@ -31,6 +32,7 @@ const GestionCard = ({ cliente, onWhatsApp, onQuitar }) => (
     </div>
     <div className="gestion-card-actions">
       <button onClick={() => onWhatsApp(cliente)} style={{background:'#25D366',color:'#fff',border:'none',borderRadius:6,padding:'6px 12px'}}>WhatsApp</button>
+      <button onClick={() => onLink(cliente)} style={{background:'#007bff',color:'#fff',border:'none',borderRadius:6,padding:'6px 12px',marginLeft:6}}>Link</button>
       <button onClick={() => onQuitar(cliente)} className="remove">Quitar</button>
     </div>
   </div>
@@ -196,8 +198,16 @@ const Gestion = () => {
             }}
             onWhatsApp={enviarWhatsApp}
             onQuitar={quitarCliente}
+            onLink={(c) => { setLinkCliente(c); setModalLinkOpen(true); }}
           />
         ))}
+      {/* Modal para enviar link por WhatsApp en móvil */}
+      <GestionLinkModalMobile
+        open={modalLinkOpen}
+        onClose={() => setModalLinkOpen(false)}
+        usuarioId={userId}
+        telefono={(linkCliente?.TELEFONO || linkCliente?.tel || "").replace(/[^\d]/g, "")}
+      />
       {/* Tabla solo visible en desktop por CSS */}
       <div className="table-container">
         <table id="clientesTable">
