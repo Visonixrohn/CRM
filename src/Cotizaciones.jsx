@@ -3,7 +3,8 @@ import { createPortal } from "react-dom";
 import styles from "./Cotizaciones.module.css";
 import tablaStyles from "./TablaAmortizacion.module.css";
 import formCardStyles from "./FormCard.module.css";
-import PlanModal from "./PlanModal";
+import RegistrarPlanMobile from "./RegistrarPlanMobile";
+import cardMobileStyles from "./CardMobile.module.css";
 
 
 import { useState, useEffect } from "react";
@@ -84,6 +85,28 @@ const Cotizaciones = () => {
     fetchPlanes();
   }, []);
 
+    // Modal solo para móviles
+    const modalMobile = (
+      <div className="showOnlyMobile">
+        <RegistrarPlanMobile
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onAddPlan={async (nuevoPlan, nuevaTasa, resetPlan, resetTasa) => {
+            setAgregando(true);
+            const { error } = await supabase.from("planes").insert({ plan: nuevoPlan, tasa: Number(nuevaTasa) });
+            if (!error) {
+              resetPlan("");
+              resetTasa("");
+              setModalOpen(false);
+              // Refrescar lista de planes
+              const { data } = await supabase.from("planes").select();
+              setPlanes(data || []);
+            }
+            setAgregando(false);
+          }}
+        />
+      </div>
+    );
   // Cuando cambia el plan seleccionado, actualizar la tasa
   useEffect(() => {
     if (planSeleccionado && planes.length > 0) {
@@ -147,39 +170,18 @@ const Cotizaciones = () => {
             const plan = planes.find(p => p.id === Number(planSeleccionado));
             return plan ? (
               <div className={formCardStyles.formCardCuota}>
-               <span>tasa: {Number(plan.tasa).toLocaleString(undefined, { maximumFractionDigits: 2 })}% </span>
+                <span>tasa: {Number(plan.tasa).toLocaleString(undefined, { maximumFractionDigits: 2 })}% </span>
               </div>
             ) : null;
           })()}
-          
-          
-
-              </div>
+        </div>
         <div className={`${styles.cotizacionesTableWrap} ${cardMobileStyles.cardMobile}`} style={{marginTop: 0}}>
           <div className={cardMobileStyles.cardMobileTitle}>Tabla de Amortización</div>
           <TablaAmortizacion capital={capitalFinanciar} tasa={tasa} plazo={plazo} />
         </div>
       </div>
-
-      <PlanModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onAddPlan={async (nuevoPlan, nuevaTasa, resetPlan, resetTasa) => {
-          setAgregando(true);
-          const { error } = await supabase.from("planes").insert({ plan: nuevoPlan, tasa: Number(nuevaTasa) });
-          if (!error) {
-            resetPlan("");
-            resetTasa("");
-            setModalOpen(false);
-            // Refrescar lista de planes
-            const { data } = await supabase.from("planes").select();
-            setPlanes(data || []);
-          }
-          setAgregando(false);
-        }}
-      />
+      {modalMobile}
     </div>
   );
 }
 export default Cotizaciones;
-import cardMobileStyles from "./CardMobile.module.css";

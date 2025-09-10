@@ -1,9 +1,7 @@
-// Archivo eliminado intencionalmente
 import React, { useState } from "react";
-import { createPortal } from "react-dom";
-import modalFormStyles from "./ModalForm.module.css";
+import styles from "./ModalFormMobile.module.css";
 
-export default function PlanModal({ open, onClose, onAddPlan }) {
+export default function ModalFormMobile({ open, onClose, onAddPlan }) {
   const [nuevoPlan, setNuevoPlan] = useState("");
   const [nuevaTasa, setNuevaTasa] = useState("");
   const [agregando, setAgregando] = useState(false);
@@ -17,12 +15,12 @@ export default function PlanModal({ open, onClose, onAddPlan }) {
     setAgregando(false);
   };
 
-  return createPortal(
-    <div className={modalFormStyles.modalBg} onClick={onClose}>
-      <div className={modalFormStyles.modal} onClick={e => e.stopPropagation()}>
-        <button className={modalFormStyles.close} onClick={onClose} title="Cerrar">×</button>
-        <h3 style={{marginTop:0}}>Registrar nuevo plan</h3>
-        <form onSubmit={handleSubmit} className={modalFormStyles.modalForm}>
+  return (
+    <div className={styles.modalBg} onClick={onClose}>
+      <div className={styles.modal} onClick={e => e.stopPropagation()}>
+        <button className={styles.close} onClick={onClose} title="Cerrar">×</button>
+        <h3 className={styles.title}>Registrar nuevo plan</h3>
+        <form onSubmit={handleSubmit} className={styles.modalForm}>
           <label>
             Nombre del plan
             <input
@@ -45,10 +43,9 @@ export default function PlanModal({ open, onClose, onAddPlan }) {
               required
             />
           </label>
-          <button className={modalFormStyles.addBtn} type="submit" disabled={agregando}>{agregando ? "Agregando..." : "Registrar plan"}</button>
+          <button className={styles.addBtn} type="submit" disabled={agregando}>{agregando ? "Agregando..." : "Registrar plan"}</button>
         </form>
       </div>
-    </div>,
-    document.body
+    </div>
   );
 }

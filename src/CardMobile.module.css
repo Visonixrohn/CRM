@@ -1,9 +1,24 @@
+/* Utilidades para mostrar/ocultar según tamaño */
+.hideOnMobile {
+  display: block;
+}
+.showOnlyMobile {
+  display: none;
+}
+@media (max-width: 699px) {
+  .hideOnMobile {
+    display: none !important;
+  }
+  .showOnlyMobile {
+    display: block !important;
+  }
+}
 /* Card general para mobile */
 .cardMobile {
   background: #fff;
   border-radius: 14px;
   box-shadow: 0 4px 18px 0 rgba(0,0,0,0.10);
-  padding: 18px 14px 14px 14px;
+  padding: 18px 10px 14px 10px;
   margin-bottom: 18px;
   width: 100%;
   max-width: 480px;
@@ -13,6 +28,18 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-sizing: border-box;
+}
+.cardMobile input,
+.cardMobile select,
+.cardMobile form {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cardMobile table {
+  width: 100% !important;
+  box-sizing: border-box;
 }
 
 @media (min-width: 700px) {
