@@ -173,7 +173,7 @@ const Cotizaciones = () => {
   return (
     <div className={styles.cotizacionesContainer}>
       <div className={styles.cotizacionesHeader}>
-        <h2>Tabla de Amortización</h2>
+        <h2>COTIZACIONES</h2>
         <div style={{display: 'flex', gap: 12}}>
           <button className={styles.cotizacionesAddBtn} onClick={() => setModalOpen(true)}>
             + Registrar nuevo plan
