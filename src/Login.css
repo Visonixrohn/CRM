@@ -181,6 +181,7 @@
   text-align: center;
   margin-top: 15px;
   font-size: 0.85rem;
+  color: #142bad; /* Azul oscuro brillante */
 }
 
 .login-toggle button {
