@@ -5,6 +5,7 @@ export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [msg, setMsg] = useState("");
+  const [sessionError, setSessionError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Obtener los tokens del hash de la URL
@@ -13,13 +14,18 @@ export default function ResetPassword() {
   const refreshToken = params.get('refresh_token');
 
   useEffect(() => {
-    // Si hay tokens, establecer la sesión de recuperación
-    if (accessToken && refreshToken) {
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      });
+    let ignore = false;
+    async function setRecoverySession() {
+      if (accessToken && refreshToken) {
+        const { error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        if (!ignore && error) setSessionError(true);
+      }
     }
+    setRecoverySession();
+    return () => { ignore = true; };
   }, [accessToken, refreshToken]);
 
   const handleSubmit = async (e) => {
@@ -39,8 +45,22 @@ export default function ResetPassword() {
     setLoading(false);
   };
 
-  if (!accessToken) {
-    return <div style={{padding:32}}>Enlace inválido o expirado.</div>;
+  if (!accessToken || sessionError) {
+    return (
+      <div style={{
+        maxWidth: 400, margin: "40px auto", padding: 24, background: "#fff",
+        borderRadius: 8, boxShadow: "0 2px 12px #0001", textAlign: "center"
+      }}>
+        <h2 style={{ color: "#d32f2f", marginBottom: 12 }}>No se pudo validar el enlace</h2>
+        <p style={{ color: "#555", fontSize: 16 }}>
+          El enlace de recuperación es inválido, expiró, ya fue utilizado o falta la sesión de autenticación.<br />
+          Por seguridad, solicita un nuevo enlace desde la página de inicio de sesión.
+        </p>
+        <a href="/" style={{
+          display: 'inline-block', marginTop: 18, padding: '10px 24px', background: '#1976d2', color: '#fff', borderRadius: 4, textDecoration: 'none', fontWeight: 'bold'
+        }}>Ir al inicio de sesión</a>
+      </div>
+    );
   }
 
   return (
