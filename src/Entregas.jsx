@@ -488,12 +488,47 @@ const Entregas = () => {
   // Actualizar estatus en Supabase
   const handleUpdateEstatus = async (nuevo, tipoEntrega, gestionada) => {
     if (!detalle) return;
+    console.log("DEBUG update estatus:", { detalle, detalleId: detalle.id, userId: user?.id });
     try {
-      const { error } = await supabase
+      // SELECT previo para depuración
+      const { data: preData, error: preError } = await supabase
+        .from("entregas_pendientes")
+        .select("*")
+        .eq("id", detalle.id)
+        .eq("usuario_id", user.id);
+      console.log("DEBUG pre-select:", { preData, preError });
+      if (!preData || preData.length === 0) {
+        alert("No existe ningún registro con ese id y usuario_id. Verifica los valores.");
+        return;
+      }
+      // Log de comparación de valores actuales vs nuevos
+      const actual = preData[0];
+      console.log("VALORES ACTUALES:", {
+        estatus: actual.estatus,
+        tipo_entrega: actual.tipo_entrega,
+        gestionada: actual.gestionada
+      });
+      console.log("VALORES NUEVOS:", {
+        estatus: nuevo,
+        tipo_entrega: tipoEntrega,
+        gestionada: gestionada
+      });
+      const { data, error } = await supabase
         .from("entregas_pendientes")
         .update({ estatus: nuevo, tipo_entrega: tipoEntrega, gestionada })
-        .eq("id", detalle.id);
-      if (error) throw error;
+        .eq("id", detalle.id)
+        .eq("usuario_id", user.id)
+        .select(); // id del registro y usuario_id para seguridad
+      console.log("Supabase update result:", { data, error });
+      if (error) {
+        console.error("Supabase error:", error);
+        alert("Error en Supabase: " + (error.message || error));
+        return;
+      }
+      if (!data || data.length === 0) {
+        alert("No se actualizó ningún registro en la base de datos. Verifica el id y usuario_id.");
+        return;
+      }
       setEntregas(
         entregas.map((e) =>
           e.id === detalle.id
@@ -502,10 +537,10 @@ const Entregas = () => {
         )
       );
       setDetalle(null);
-    window.location.reload();
+      window.location.reload();
     } catch (e) {
-      console.error("Error al actualizar estatus:", e.message);
-      alert("No se pudo actualizar el estatus.");
+      console.error("Error al actualizar estatus:", e.message || e);
+      alert("No se pudo actualizar el estatus. " + (e.message || e));
     }
   };
 
