@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 
 export default function ResetPassword() {
@@ -7,8 +7,20 @@ export default function ResetPassword() {
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Obtener el token de la URL
-  const accessToken = new URLSearchParams(window.location.hash.replace('#', '?')).get('access_token');
+  // Obtener los tokens del hash de la URL
+  const params = new URLSearchParams(window.location.hash.replace('#', '?'));
+  const accessToken = params.get('access_token');
+  const refreshToken = params.get('refresh_token');
+
+  useEffect(() => {
+    // Si hay tokens, establecer la sesión de recuperación
+    if (accessToken && refreshToken) {
+      supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      });
+    }
+  }, [accessToken, refreshToken]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

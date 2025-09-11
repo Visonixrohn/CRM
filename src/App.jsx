@@ -23,6 +23,11 @@ import Cotizaciones from "./Cotizaciones";
 import ResetPassword from "./ResetPassword";
 
 function App() {
+  // Mostrar pantalla de reset si la URL contiene /reset-password
+  if (window.location.pathname.startsWith('/reset-password')) {
+    return <ResetPassword />;
+  }
+
   const handleCotizacionesClick = () => {
     setPage("cotizaciones");
     if (!isMobile) closeSidebar();
