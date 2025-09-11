@@ -111,6 +111,7 @@ const Comisiones = () => {
   const porcentajeAvance = meta > 0 ? (comisionObtenida / meta) * 100 : 0;
   let estadoActual = "";
   const montoProyectadoHoy = meta > 0 ? (hoy.getDate() / diasDelMes) * meta : 0;
+  const montoAtrasado = Math.max(0, montoProyectadoHoy - comisionObtenida);
   if (porcentajeAvance < (hoy.getDate() / diasDelMes) * 100 - 5) {
     estadoActual = "Atrasado";
   } else if (porcentajeAvance > (hoy.getDate() / diasDelMes) * 100 + 5) {
@@ -338,6 +339,10 @@ const Comisiones = () => {
               <div>
                 <div style={{ fontWeight: 500, color: "#9ca3af" }}>Monto proyectado de hoy</div>
                 <div style={{ fontWeight: 700, fontSize: 22 }}>L{montoProyectadoHoy.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div>
+              </div>
+              <div>
+                <div style={{ fontWeight: 500, color: "#f87171" }}>Monto atrasado</div>
+                <div style={{ fontWeight: 700, fontSize: 22, color: '#f87171' }}>L{montoAtrasado.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div>
               </div>
               <div>
                 <div style={{ fontWeight: 500, color: "#9ca3af" }}>% de avance</div>
