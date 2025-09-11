@@ -20,6 +20,7 @@ import Actualizaciones from "./Actualizaciones";
 import LoadingScreen from "./LoadingScreen";
 import Gestion from "./Gestion";
 import Cotizaciones from "./Cotizaciones";
+import ResetPassword from "./ResetPassword";
 
 function App() {
   const handleCotizacionesClick = () => {
@@ -128,6 +129,10 @@ function App() {
     };
   }, []);
 
+  // Mostrar pantalla de reset si la URL contiene /reset-password
+  if (window.location.pathname.startsWith('/reset-password')) {
+    return <ResetPassword />;
+  }
   if (!user) return <Login onLogin={setUser} />;
 
   // Detectar si es móvil
