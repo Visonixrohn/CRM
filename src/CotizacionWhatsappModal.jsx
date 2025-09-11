@@ -1,12 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./CotizacionWhatsappModal.module.css";
 
 const tipos = ["Nuevo", "Establecido"];
 
 const CotizacionWhatsappModal = ({ open, onClose, usuarioId, plazo, prima, cuota, productoDefault }) => {
+
   const [tipo, setTipo] = useState("Nuevo");
   const [cel, setCel] = useState("");
   const [producto, setProducto] = useState(productoDefault || "");
+
+  // Sincronizar producto con productoDefault cada vez que cambie el modal o el prop
+  useEffect(() => {
+    if (open) {
+      setProducto(productoDefault || "");
+    }
+  }, [productoDefault, open]);
 
   if (!open) return null;
 
