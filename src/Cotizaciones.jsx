@@ -143,9 +143,16 @@ const Cotizaciones = () => {
   useEffect(() => {
     if (planSeleccionado && planes.length > 0) {
       const plan = planes.find(p => p.id === Number(planSeleccionado));
-      if (plan) setTasa(Number(plan.tasa) / 100);
+      if (plan) {
+        setTasa(Number(plan.tasa) / 100);
+        if (plan.plan && plan.plan.trim().toLowerCase() === 'plan 50/50') {
+          // Calcular 50% del total de precios
+          const totalPrecios = rows.reduce((acc, row) => acc + (Number(row.precio) || 0), 0);
+          setPrima(Number((totalPrecios * 0.5).toFixed(2)));
+        }
+      }
     }
-  }, [planSeleccionado, planes]);
+  }, [planSeleccionado, planes, rows]);
   const capitalFinanciar = Math.max(capital - prima, 0);
 
   // Para mostrar la cuota esperada
