@@ -78,7 +78,7 @@
 /* Título */
 .login-form h2 {
   margin-bottom: 20px;
-  color: #1e3e96;
+  color: #ffffff;
   text-align: center;
   font-size: 1.8rem;
   font-weight: 700;
@@ -113,13 +113,13 @@
   font-size: 14px;
   outline: none;
   background: #1c1c1c;
-  color: #fff;
+  color: #ffffff;
   transition: all 0.3s ease;
   box-shadow: inset 0 2px 5px rgba(0,0,0,0.4);
 }
 
 .input-group input::placeholder {
-  color: #999;
+  color: #ffffff;
   font-weight: 500;
 }
 
@@ -186,7 +186,7 @@
 .login-toggle button {
   background: none;
   border: none;
-  color: #110f8a;
+  color: #ffffff;
   cursor: pointer;
   font-weight: 600;
   padding: 0;
