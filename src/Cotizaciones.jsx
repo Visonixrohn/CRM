@@ -104,26 +104,39 @@ const Cotizaciones = () => {
     fetchPlanes();
   }, []);
 
-    // Modal solo para móviles
-    const modalMobile = (
-      <div className="showOnlyMobile">
-        <RegistrarPlanMobile
-          open={modalOpen}
-          onClose={() => setModalOpen(false)}
-          onAddPlan={async (nuevoPlan, nuevaTasa, resetPlan, resetTasa) => {
-            setAgregando(true);
-            const { error } = await supabase.from("planes").insert({ plan: nuevoPlan, tasa: Number(nuevaTasa) });
-            if (!error) {
-              resetPlan("");
-              resetTasa("");
-              setModalOpen(false);
-              // Refrescar lista de planes
-              const { data } = await supabase.from("planes").select();
-              setPlanes(data || []);
-            }
-            setAgregando(false);
-          }}
-        />
+    // Modal para registrar plan (desktop y mobile)
+    const handleAddPlan = async (e) => {
+      e.preventDefault();
+      setAgregando(true);
+      const { error } = await supabase.from("planes").insert({ plan: nuevoPlan, tasa: Number(nuevaTasa) });
+      if (!error) {
+        setNuevoPlan("");
+        setNuevaTasa("");
+        setModalOpen(false);
+        // Refrescar lista de planes
+        const { data } = await supabase.from("planes").select();
+        setPlanes(data || []);
+      }
+      setAgregando(false);
+    };
+
+    const modalPlan = modalOpen && (
+      <div style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',background:'#0008',display:'flex',alignItems:'center',justifyContent:'center',zIndex:2000}}>
+        <form onSubmit={handleAddPlan} style={{background:'#fff',padding:24,borderRadius:8,minWidth:300,boxShadow:'0 2px 12px #0003',display:'flex',flexDirection:'column',gap:12}}>
+          <h3>Registrar nuevo plan</h3>
+          <label>
+            Nombre del plan
+            <input value={nuevoPlan} onChange={e=>setNuevoPlan(e.target.value)} required />
+          </label>
+          <label>
+            Tasa (%)
+            <input type="number" value={nuevaTasa} onChange={e=>setNuevaTasa(e.target.value)} min={0.01} step={0.01} required />
+          </label>
+          <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
+            <button type="button" onClick={()=>setModalOpen(false)} style={{background:'#eee',border:'none',padding:'6px 16px',borderRadius:4}}>Cancelar</button>
+            <button type="submit" disabled={agregando} style={{background:'#1976d2',color:'#fff',border:'none',padding:'6px 16px',borderRadius:4}}>{agregando ? 'Guardando...' : 'Guardar'}</button>
+          </div>
+        </form>
       </div>
     );
   // Cuando cambia el plan seleccionado, actualizar la tasa
@@ -217,7 +230,12 @@ const Cotizaciones = () => {
             </label>
           </form>
           <div className={formCardStyles.formCardCuota}>
-            Cuota mensual estimada: <span>L {cuota}</span>
+
+            Cuota mensual estimada: <span>L {cuota}</span><br />
+
+            Total a pagar: <span>L {cuota * plazo}</span>
+
+        
             <br />
             <div style={{display:'flex', gap:8, marginTop:8}}>
               <button type="button" style={{background:'#1976d2', color:'#fff', border:'none', borderRadius:4, padding:'4px 12px', cursor:'pointer'}} onClick={() => setModalGAOpen(true)}>
@@ -255,7 +273,7 @@ const Cotizaciones = () => {
           <TablaAmortizacion capital={capitalFinanciar} tasa={tasa} plazo={plazo} />
         </div>
       </div>
-      {modalMobile}
+  {modalPlan}
       {/* Modal solo para desktop */}
       <CotizacionWhatsappModal
         open={modalWhatsappOpen}
