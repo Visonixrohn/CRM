@@ -38,7 +38,7 @@ const OrdenesServicio = () => {
     archivo: null,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  // Eliminado isSuccessModalOpen
   const [isUpdateStateModalOpen, setIsUpdateStateModalOpen] = useState(false);
   const [selectedState, setSelectedState] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -54,15 +54,9 @@ const OrdenesServicio = () => {
 
   useEffect(() => {
     const fetchOrdenes = async () => {
-      const userId = localStorage.getItem("userId");
-      if (!userId) {
-        setOrdenes([]);
-        return;
-      }
       const { data, error } = await supabase
         .from("ordenes_servicio")
-        .select("*")
-  .eq("user_id", userId);
+        .select("*");
       if (error) {
         console.error("Error fetching ordenes:", error);
       } else {
@@ -75,11 +69,6 @@ const OrdenesServicio = () => {
   const handleAddOrder = async (e) => {
     e.preventDefault();
 
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      console.error("Usuario no autenticado");
-      return;
-    }
 
     setIsLoading(true);
 
@@ -92,8 +81,13 @@ const OrdenesServicio = () => {
 
       if (uploadError) {
         console.error("Error al subir el archivo:", uploadError);
-        setIsLoading(false);
+        // Refrescar la tabla y limpiar estado
+        const { data: ordenesActualizadas } = await supabase
+          .from("ordenes_servicio")
+          .select("*");
+        setOrdenes(ordenesActualizadas);
         setIsAddOrderModalOpen(false);
+        setIsLoading(false);
         setNewOrder({
           fecha: new Date().toISOString().split("T")[0],
           cliente: "",
@@ -112,24 +106,22 @@ const OrdenesServicio = () => {
       {
         ...newOrder,
         archivo: archivoUrl,
-  user_id: userId,
       },
     ]);
 
+
     if (error) {
       console.error("Error al guardar la orden:", error);
+      setIsAddOrderModalOpen(false);
     } else {
-      setIsSuccessModalOpen(true);
-      // Refrescar solo las órdenes del usuario actual
-      const { data: ordenesActualizadas } = await supabase
-        .from("ordenes_servicio")
-        .select("*")
-  .eq("user_id", userId);
-      setOrdenes(ordenesActualizadas);
+      setIsAddOrderModalOpen(false);
     }
-
+    // Refrescar todas las órdenes SIEMPRE
+    const { data: ordenesActualizadas } = await supabase
+      .from("ordenes_servicio")
+      .select("*");
+    setOrdenes(ordenesActualizadas);
     setIsLoading(false);
-    setIsAddOrderModalOpen(false);
     setNewOrder({
       fecha: new Date().toISOString().split("T")[0],
       cliente: "",
@@ -148,28 +140,21 @@ const OrdenesServicio = () => {
   const handleUpdateState = async () => {
     if (!selectedOrden || !selectedState) return;
 
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      console.error("Usuario no autenticado");
-      return;
-    }
 
     const { error } = await supabase
       .from("ordenes_servicio")
       .update({ estado: selectedState })
-      .eq("numero_orden", selectedOrden.numero_orden)
-  .eq("user_id", userId);
+      .eq("numero_orden", selectedOrden.numero_orden);
 
     if (error) {
       console.error("Error al actualizar el estado:", error);
     } else {
       setSelectedOrden({ ...selectedOrden, estado: selectedState });
       setIsUpdateStateModalOpen(false);
-      // Refrescar solo las órdenes del usuario actual
+      // Refrescar todas las órdenes
       const { data: ordenesActualizadas } = await supabase
         .from("ordenes_servicio")
-        .select("*")
-  .eq("user_id", userId);
+        .select("*");
       setOrdenes(ordenesActualizadas);
     }
   };
@@ -351,17 +336,32 @@ const OrdenesServicio = () => {
       >+</button>
 
       {selectedOrden && (
-        <div className="modal-overlay">
-          <div className="order-details-modal fade-in">
+        <div
+          className="modal-overlay"
+          onClick={e => {
+            if (e.target.classList.contains('modal-overlay')) {
+              setSelectedOrden(null);
+            }
+          }}
+        >
+          <div className="order-details-modal fade-in" onClick={e => e.stopPropagation()}>
             {renderOrderDetails(selectedOrden)}
             <button onClick={() => setSelectedOrden(null)}>Cerrar</button>
           </div>
         </div>
       )}
 
-      {isAddOrderModalOpen && (
-        <div className="modal-overlay">
-          <div className="AddOrderForm fade-in">
+  {isAddOrderModalOpen && (
+        <div
+          className="modal-overlay"
+          onClick={e => {
+            // Solo cerrar si el click es en el fondo, no en el modal
+            if (e.target.classList.contains('modal-overlay')) {
+              setIsAddOrderModalOpen(false);
+            }
+          }}
+        >
+          <div className="AddOrderForm fade-in" onClick={e => e.stopPropagation()}>
             <h2>Agregar Orden de Servicio</h2>
             <form onSubmit={handleAddOrder}>
               <input
@@ -431,18 +431,18 @@ const OrdenesServicio = () => {
         </div>
       )}
 
-      {isSuccessModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal fade-in">
-            <h2>¡Orden guardada exitosamente!</h2>
-            <button onClick={() => setIsSuccessModalOpen(false)}>Cerrar</button>
-          </div>
-        </div>
-      )}
+  {/* Modal de éxito eliminado por solicitud del usuario */}
 
       {isUpdateStateModalOpen && (
-        <div className="modal-overlay">
-          <div className="update-state-modal fade-in">
+        <div
+          className="modal-overlay"
+          onClick={e => {
+            if (e.target.classList.contains('modal-overlay')) {
+              setIsUpdateStateModalOpen(false);
+            }
+          }}
+        >
+          <div className="update-state-modal fade-in" onClick={e => e.stopPropagation()}>
             <h3>Actualizar Estado</h3>
             <div className="estado-buttons">
               {estados.map((estado) => {
