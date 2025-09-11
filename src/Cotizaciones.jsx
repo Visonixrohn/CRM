@@ -89,11 +89,8 @@ const Cotizaciones = () => {
   const [modalPPlusOpen, setModalPPlusOpen] = useState(false);
   // Obtener usuario actual para WhatsApp
   useEffect(() => {
-    async function getUser() {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) setUsuarioId(data.user.id);
-    }
-    getUser();
+    const userId = localStorage.getItem("userId");
+    if (userId) setUsuarioId(userId);
   }, []);
 
   // Cargar planes desde Supabase

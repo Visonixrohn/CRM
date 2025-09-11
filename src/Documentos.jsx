@@ -35,12 +35,8 @@ const Documentos = () => {
     }
 
     try {
-      const {
-        data: { user },
-        error: errorAuth,
-      } = await supabase.auth.getUser();
-
-      if (errorAuth || !user) {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
         throw new Error("No se pudo obtener el usuario autenticado.");
       }
 

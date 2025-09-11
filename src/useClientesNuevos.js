@@ -12,15 +12,13 @@ export default function useClientesNuevos() {
   const [usuarioId, setUsuarioId] = useState(null);
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) setUsuarioId(data.user.id);
-    };
-    getUser();
+    const userId = localStorage.getItem("userId");
+    if (userId) setUsuarioId(userId);
   }, []);
 
   useEffect(() => {
-    if (!usuarioId) return;
+  if (!usuarioId) return;
+  console.log("usuarioId para clientes nuevos:", usuarioId);
     setLoading(true);
     const fetchData = async () => {
       try {

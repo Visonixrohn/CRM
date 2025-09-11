@@ -1,32 +1,18 @@
-import React, { useState, useEffect } from "react";
+
+import React, { useState } from "react";
 import { supabase } from "./supabaseClient";
+import { hashPassword } from "./utils/hash";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [msg, setMsg] = useState("");
-  const [sessionError, setSessionError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Obtener los tokens del hash de la URL
-  const params = new URLSearchParams(window.location.hash.replace('#', '?'));
-  const accessToken = params.get('access_token');
-  const refreshToken = params.get('refresh_token');
+  // Permitir reset por uid (flujo personalizado)
+  const params = new URLSearchParams(window.location.search);
+  const uid = params.get("uid");
 
-  useEffect(() => {
-    let ignore = false;
-    async function setRecoverySession() {
-      if (accessToken && refreshToken) {
-        const { error } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        });
-        if (!ignore && error) setSessionError(true);
-      }
-    }
-    setRecoverySession();
-    return () => { ignore = true; };
-  }, [accessToken, refreshToken]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,8 +20,18 @@ export default function ResetPassword() {
     if (!password || password.length < 6) return setMsg("La contraseña debe tener al menos 6 caracteres.");
     if (password !== confirm) return setMsg("Las contraseñas no coinciden.");
     setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password });
-    if (error) setMsg(error.message);
+    if (!uid) {
+      setMsg("No se pudo validar el usuario para resetear la contraseña.");
+      setLoading(false);
+      return;
+    }
+    // Actualizar la contraseña en profiles
+    const hash = await hashPassword(password);
+    const { error } = await supabase
+      .from('profiles')
+      .update({ contrasena: hash })
+      .eq('id', uid);
+    if (error) setMsg("Error al actualizar la contraseña: " + error.message);
     else {
       setMsg("¡Contraseña actualizada! Redirigiendo al login...");
       setTimeout(() => {
@@ -45,15 +41,15 @@ export default function ResetPassword() {
     setLoading(false);
   };
 
-  if (!accessToken || sessionError) {
+  if (!uid) {
     return (
       <div style={{
         maxWidth: 400, margin: "40px auto", padding: 24, background: "#fff",
         borderRadius: 8, boxShadow: "0 2px 12px #0001", textAlign: "center"
       }}>
-        <h2 style={{ color: "#d32f2f", marginBottom: 12 }}>No se pudo validar el enlace</h2>
+        <h2 style={{ color: "#d32f2f", marginBottom: 12 }}>No se pudo validar el usuario</h2>
         <p style={{ color: "#555", fontSize: 16 }}>
-          El enlace de recuperación es inválido, expiró, ya fue utilizado o falta la sesión de autenticación.<br />
+          El enlace de recuperación es inválido o falta el identificador de usuario.<br />
           Por seguridad, solicita un nuevo enlace desde la página de inicio de sesión.
         </p>
         <a href="/" style={{

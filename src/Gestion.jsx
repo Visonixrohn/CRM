@@ -57,12 +57,10 @@ const Gestion = () => {
   const [linkCliente, setLinkCliente] = useState(null);
   const { datos, loading, error: errorGestion, total, pendientes } = useGestion();
 
-  // Obtener usuario actual de Supabase
+  // Obtener usuario actual desde localStorage
   useEffect(() => {
-    (async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (data && data.user) setUserId(data.user.id);
-    })();
+    const userId = localStorage.getItem("userId");
+    if (userId) setUserId(userId);
   }, []);
 
   // Gestionados hoy

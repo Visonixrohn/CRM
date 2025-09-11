@@ -116,22 +116,20 @@ function App() {
 
   // Recuperar usuario autenticado al cargar la app
   useEffect(() => {
-    const session = supabase.auth.getSession ? null : null; // fallback para versiones viejas
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      setUser(null);
+      return;
+    }
     (async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (data && data.user) setUser(data.user);
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .maybeSingle();
+      if (error || !data) setUser(null);
+      else setUser(data);
     })();
-    // Suscribirse a cambios de sesión
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        if (session && session.user) setUser(session.user);
-        else setUser(null);
-      }
-    );
-    return () => {
-      if (listener && listener.subscription)
-        listener.subscription.unsubscribe();
-    };
   }, []);
 
   // Mostrar pantalla de reset si la URL contiene /reset-password

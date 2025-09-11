@@ -54,18 +54,15 @@ const OrdenesServicio = () => {
 
   useEffect(() => {
     const fetchOrdenes = async () => {
-      const {
-        data: { user },
-        error: authError,
-      } = await supabase.auth.getUser();
-      if (authError || !user) {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
         setOrdenes([]);
         return;
       }
       const { data, error } = await supabase
         .from("ordenes_servicio")
         .select("*")
-        .eq("user_id", user.id);
+  .eq("user_id", userId);
       if (error) {
         console.error("Error fetching ordenes:", error);
       } else {
@@ -78,11 +75,8 @@ const OrdenesServicio = () => {
   const handleAddOrder = async (e) => {
     e.preventDefault();
 
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-    if (authError || !user) {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
       console.error("Usuario no autenticado");
       return;
     }
@@ -118,7 +112,7 @@ const OrdenesServicio = () => {
       {
         ...newOrder,
         archivo: archivoUrl,
-        user_id: user.id,
+  user_id: userId,
       },
     ]);
 
@@ -130,7 +124,7 @@ const OrdenesServicio = () => {
       const { data: ordenesActualizadas } = await supabase
         .from("ordenes_servicio")
         .select("*")
-        .eq("user_id", user.id);
+  .eq("user_id", userId);
       setOrdenes(ordenesActualizadas);
     }
 
@@ -154,11 +148,8 @@ const OrdenesServicio = () => {
   const handleUpdateState = async () => {
     if (!selectedOrden || !selectedState) return;
 
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-    if (authError || !user) {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
       console.error("Usuario no autenticado");
       return;
     }
@@ -167,7 +158,7 @@ const OrdenesServicio = () => {
       .from("ordenes_servicio")
       .update({ estado: selectedState })
       .eq("numero_orden", selectedOrden.numero_orden)
-      .eq("user_id", user.id);
+  .eq("user_id", userId);
 
     if (error) {
       console.error("Error al actualizar el estado:", error);
@@ -178,7 +169,7 @@ const OrdenesServicio = () => {
       const { data: ordenesActualizadas } = await supabase
         .from("ordenes_servicio")
         .select("*")
-        .eq("user_id", user.id);
+  .eq("user_id", userId);
       setOrdenes(ordenesActualizadas);
     }
   };

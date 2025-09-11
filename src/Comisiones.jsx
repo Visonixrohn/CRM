@@ -55,16 +55,13 @@ const Comisiones = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const {
-          data: { user },
-          error: userError
-        } = await supabase.auth.getUser();
-        if (userError) throw userError;
-        setUsuario(user.id);
+        const userId = localStorage.getItem("userId");
+        if (!userId) throw new Error("No se pudo obtener el usuario autenticado.");
+        setUsuario(userId);
         const { data, error } = await supabase
           .from("comisiones")
           .select("meta, comision_obtenida")
-          .eq("usuario", user.id)
+          .eq("usuario", userId)
           .single();
         if (error && error.code !== "PGRST116") {
           setError("Error al obtener datos de Supabase");

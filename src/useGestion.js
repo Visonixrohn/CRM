@@ -14,15 +14,13 @@ export default function useGestion() {
   const [pendientes, setPendientes] = useState(0);
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) setUsuarioId(data.user.id);
-    };
-    getUser();
+    const userId = localStorage.getItem("userId");
+    if (userId) setUsuarioId(userId);
   }, []);
 
   useEffect(() => {
-    if (!usuarioId) return;
+  if (!usuarioId) return;
+  console.log("usuarioId para gestión:", usuarioId);
     setLoading(true);
     const fetchData = async () => {
       try {

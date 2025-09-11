@@ -410,7 +410,7 @@ const Entregas = () => {
       const { data, error } = await supabase
         .from("choferes")
         .select("*")
-        .eq("usuario_id", user.id)
+  .eq("usuario_id", user.id)
         .single();
       if (error && error.code !== 'PGRST116') throw error;
       setChofer(data || null);
@@ -427,16 +427,27 @@ const Entregas = () => {
   const handleEdit = (entrega) => setDetalle(entrega);
   const handleDelete = () => alert('Función eliminar aún no implementada');
 
-  // Obtener usuario autenticado
+  // Obtener usuario autenticado desde localStorage y tabla profiles
   useEffect(() => {
     const getUser = async () => {
-      try {
-        const { data, error } = await supabase.auth.getUser();
-        if (error) throw error;
-        setUser(data?.user || null);
-      } catch (e) {
-        console.error("Error al obtener usuario:", e.message);
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
         alert("No se pudo obtener el usuario autenticado.");
+        setUser(null);
+        return;
+      }
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", userId)
+          .maybeSingle();
+        if (error || !data) throw error || new Error("No existe el usuario");
+        setUser(data);
+      } catch (e) {
+        console.error("Error al obtener usuario:", e?.message || e);
+        alert("No se pudo obtener el usuario autenticado.");
+        setUser(null);
       }
     };
     getUser();
@@ -446,6 +457,7 @@ const Entregas = () => {
   useEffect(() => {
     const fetchEntregas = async () => {
       if (!user) return;
+      console.log("user.id para entregas:", user.id);
       try {
         const { data, error } = await supabase
           .from("entregas_pendientes")
@@ -503,7 +515,7 @@ const Entregas = () => {
     try {
       const { data, error } = await supabase
         .from("entregas_pendientes")
-        .insert([{ ...nuevo, usuario_id: user.id }])
+  .insert([{ ...nuevo, usuario_id: user.id }])
         .select();
       if (error) throw error;
       if (data && data.length > 0) {
@@ -537,7 +549,7 @@ const Entregas = () => {
       const { data } = await supabase
         .from("choferes")
         .select("*")
-        .eq("usuario_id", user.id)
+  .eq("usuario_id", user.id)
         .single();
       setChofer(data || null);
       setChoferModalType("detalle");
