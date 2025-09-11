@@ -75,8 +75,13 @@ const Comisiones = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const userId = localStorage.getItem("userId");
-        if (!userId) throw new Error("No se pudo obtener el usuario autenticado.");
+        // Ahora usuario es texto, puedes usar un identificador local, correo o nombre
+        let userId = localStorage.getItem("userId");
+        if (!userId) {
+          userId = prompt("Ingrese su identificador de usuario (ej: nombre o correo):");
+          if (!userId) throw new Error("Debe ingresar un identificador de usuario.");
+          localStorage.setItem("userId", userId);
+        }
         setUsuario(userId);
         const { data, error } = await supabase
           .from("comisiones")
@@ -162,7 +167,7 @@ const Comisiones = () => {
   // Función para actualizar o insertar la comisión obtenida del usuario actual
   const upsertComisionObtenidaInSupabase = async (comisionValue) => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("comisiones")
         .select("id")
         .eq("usuario", usuario)
@@ -185,7 +190,7 @@ const Comisiones = () => {
 
   const upsertMetaInSupabase = async (metaValue) => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("comisiones")
         .select("id")
         .eq("usuario", usuario)
@@ -247,15 +252,26 @@ const Comisiones = () => {
             onClick={async () => {
               setLoading(true);
               setError(null);
+              let userId = localStorage.getItem("userId");
+              if (!userId) {
+                userId = prompt("Ingrese su identificador de usuario (ej: nombre o correo):");
+                if (!userId) {
+                  setError("Debe ingresar un identificador de usuario.");
+                  setLoading(false);
+                  return;
+                }
+                localStorage.setItem("userId", userId);
+              }
               const { error } = await supabase
                 .from("comisiones")
-                .insert({ meta: 0, comision_obtenida: 0, usuario });
+                .insert({ meta: 0, comision_obtenida: 0, usuario: userId });
               if (error) {
                 setError("Error al crear el espacio: " + error.message);
               } else {
                 setNoData(false);
                 setMeta(0);
                 setComisionObtenida(0);
+                setUsuario(userId);
               }
               setLoading(false);
             }}
