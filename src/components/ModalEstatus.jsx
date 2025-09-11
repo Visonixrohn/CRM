@@ -8,7 +8,7 @@ const tipos = ["TIENDA", "BODEGA SPS", "BODEGA TG", "DOMICILIO"];
 const gestionadas = ["GESTIONADA", "NO GESTIONADA"];
 
 
-const ModalEstatus = ({ open, onClose, entrega }) => {
+const ModalEstatus = ({ open, onClose, entrega, fetchEntregas }) => {
   const [estatus, setEstatus] = useState(entrega?.estatus || "Pendiente");
   const [tipo, setTipo] = useState(entrega?.tipo_entrega || "TIENDA");
   const [gestionada, setGestionada] = useState(entrega?.gestionada || "NO GESTIONADA");
@@ -47,10 +47,10 @@ const ModalEstatus = ({ open, onClose, entrega }) => {
         setMsg("No se actualizó ningún registro. Verifica permisos o datos.");
       } else {
         setMsg("¡Actualizado correctamente!");
+        if (fetchEntregas) await fetchEntregas();
         setTimeout(() => {
           setMsg("");
           onClose();
-          window.location.reload();
         }, 900);
       }
     } catch (e) {

@@ -31,7 +31,7 @@ function tiempoTranscurrido(fecha, estatus) {
   return "ahora";
 }
 
-const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer }) => {
+const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEntregas }) => {
   const [showEstatus, setShowEstatus] = useState(false);
 
   if (!open || !entrega) return null;
@@ -111,6 +111,7 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer }) => {
             open={showEstatus}
             onClose={() => setShowEstatus(false)}
             entrega={entrega}
+            fetchEntregas={fetchEntregas}
             onSave={async (nuevoEstatus, nuevoTipo, nuevaGestionada) => {
               await onUpdateEstatus(nuevoEstatus, nuevoTipo, nuevaGestionada);
               setShowEstatus(false);
@@ -453,24 +454,24 @@ const Entregas = () => {
     getUser();
   }, []);
 
-  // Obtener entregas del usuario
+  // Obtener entregas del usuario (reutilizable)
+  const fetchEntregas = async () => {
+    if (!user) return;
+    console.log("user.id para entregas:", user.id);
+    try {
+      const { data, error } = await supabase
+        .from("entregas_pendientes")
+        .select("*")
+        .eq("usuario_id", user.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      setEntregas(data || []);
+    } catch (e) {
+      console.error("Error al obtener entregas:", e.message);
+      alert("No se pudieron cargar las entregas.");
+    }
+  };
   useEffect(() => {
-    const fetchEntregas = async () => {
-      if (!user) return;
-      console.log("user.id para entregas:", user.id);
-      try {
-        const { data, error } = await supabase
-          .from("entregas_pendientes")
-          .select("*")
-          .eq("usuario_id", user.id)
-          .order("created_at", { ascending: false });
-        if (error) throw error;
-        setEntregas(data || []);
-      } catch (e) {
-        console.error("Error al obtener entregas:", e.message);
-        alert("No se pudieron cargar las entregas.");
-      }
-    };
     fetchEntregas();
   }, [user]);
 
@@ -550,10 +551,11 @@ const Entregas = () => {
     try {
       const { data, error } = await supabase
         .from("entregas_pendientes")
-  .insert([{ ...nuevo, usuario_id: user.id }])
+        .insert([{ ...nuevo, usuario_id: user.id }])
         .select();
       if (error) throw error;
       if (data && data.length > 0) {
+        await fetchEntregas(); // Actualiza la tabla sin recargar
         return true;
       }
       return false;
@@ -757,6 +759,7 @@ const Entregas = () => {
         onClose={() => setDetalle(null)}
         onUpdateEstatus={handleUpdateEstatus}
         chofer={chofer}
+        fetchEntregas={fetchEntregas}
       />
       <ModalAgregar
         open={showAgregar}
