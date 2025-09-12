@@ -1,75 +1,76 @@
 /* Overlay y menú expandido */
 .bottom-bar-expand-overlay {
   position: fixed;
-  inset: 0; /* top:0; left:0; right:0; bottom:0 */
-  background: rgba(0, 0, 0, 0.25); /* un poco más visible */
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3); /* Fondo más suave y profesional */
   z-index: 3000;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(4px); /* Mayor desenfoque para un efecto premium */
+  transition: opacity 0.3s ease-in-out;
 }
 
 .bottom-bar-expand-menu {
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); /* Gradiente sutil */
   width: 100%;
-  max-width: 480px;
-  border-radius: 20px 20px 0 0;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-  padding: 20px 10px 15px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  align-items: center;
-  animation: slideUp 0.25s cubic-bezier(0.4, 1.2, 0.6, 1) forwards;
-  gap: 12px;
+  max-width: 500px; /* Ligeramente más ancho para mejor disposición */
+  border-radius: 24px 24px 0 0; /* Bordes más suaves */
+  box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.1); /* Sombra más natural */
+  padding: 24px 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); /* Diseño en cuadrícula adaptable */
+  gap: 16px;
+  animation: slideUp 0.3s cubic-bezier(0.33, 1, 0.68, 1) forwards; /* Animación más fluida */
 }
 
 .bottom-bar-expand-menu button {
-  flex: 1 1 80px;
-  min-width: 70px;
-  max-width: 120px;
-  background: none;
+  background: transparent;
   border: none;
-  color: #4f46e5;
-  font-size: 1rem;
-  font-weight: 500;
+  color: #1e40af; /* Color principal más oscuro y profesional */
+  font-size: 0.95rem;
+  font-weight: 600;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  padding: 10px 0;
-  transition: all 0.3s ease;
+  border-radius: 16px;
+  padding: 12px;
+  transition: all 0.2s ease-in-out;
+  gap: 6px; /* Espacio entre ícono y texto */
 }
 
 .bottom-bar-expand-menu button:hover {
-  background: #f0f0ff;
-  color: #3b3fc1;
+  background: #e0e7ff; /* Fondo más claro para hover */
+  color: #1e3a8a;
+  transform: translateY(-2px); /* Efecto de elevación */
 }
 
 .bottom-bar-expand-menu button.active {
-  color: #fff;
-  background: #4f46e5;
-  box-shadow: 0 4px 12px rgba(79,70,229,0.4);
+  color: #ffffff;
+  background: #1e40af;
+  box-shadow: 0 4px 16px rgba(30, 64, 175, 0.3);
+  transform: translateY(-2px);
 }
 
 .bottom-bar-close-expand,
 .bottom-bar-logout {
   width: 100%;
-  margin-top: 10px;
-  background: #f3f4f6;
-  color: #111;
-  border-radius: 12px;
-  font-size: 1rem;
-  padding: 10px 0;
+  margin-top: 16px;
+  background: #f1f5f9; /* Color de fondo más limpio */
+  color: #1f2937;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 12px;
   border: none;
-  transition: background 0.2s;
+  transition: all 0.2s ease-in-out;
 }
 
 .bottom-bar-close-expand:hover,
 .bottom-bar-logout:hover {
-  background: #e0e0e0;
+  background: #e2e8f0;
+  transform: translateY(-1px);
 }
 
 /* Animación slideUp */
@@ -86,59 +87,83 @@
 }
 
 .bottom-bar.show {
-  display: flex !important;
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 70px; /* Ligeramente más alta para mejor proporción */
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); /* Gradiente sutil */
+  border-top: 1px solid #e2e8f0; /* Borde más suave */
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06); /* Sombra más ligera */
+  z-index: 2000;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 8px;
+  gap: 8px;
 }
 
+.bottom-bar button {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e40af;
+  border-radius: 12px;
+  transition: all 0.2s ease-in-out;
+  padding: 8px;
+  gap: 4px; /* Espacio entre ícono y texto */
+}
+
+.bottom-bar button:hover {
+  background: #e0e7ff;
+  color: #1e3a8a;
+  transform: translateY(-2px); /* Efecto de elevación */
+}
+
+.bottom-bar button.active {
+  color: #ffffff;
+  background: #1e40af;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+.bottom-bar-label {
+  font-size: 0.7rem; /* Tamaño más legible */
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: capitalize; /* Estilo más elegante */
+}
+
+/* Media Queries para Responsividad */
 @media (max-width: 700px) {
   .bottom-bar.show {
-    display: flex !important;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 65px;
-    background: #fff;
-    border-top: 1px solid #e5e7eb;
-    box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.08);
-    z-index: 2000;
-    justify-content: space-around;
-    align-items: center;
-    padding: 0;
+    height: 64px; /* Altura ajustada para pantallas pequeñas */
+    padding: 0 4px;
     gap: 4px;
   }
 
   .bottom-bar button {
-    flex: 1;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    outline: none;
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: #4f46e5;
-    border-radius: 12px;
-    transition: all 0.3s ease;
-    margin: 0 2px;
-  }
-
-  .bottom-bar button:hover {
-    background: #f0f0ff;
-    color: #3b3fc1;
-  }
-
-  .bottom-bar button.active {
-    color: #fff;
-    background: #4f46e5;
-    box-shadow: 0 4px 10px rgba(79,70,229,0.35);
+    font-size: 0.9rem;
+    padding: 6px;
   }
 
   .bottom-bar-label {
     font-size: 0.65rem;
-    margin-top: 2px;
-    letter-spacing: 0.02em;
   }
+}
+
+/* Soporte para accesibilidad */
+.bottom-bar button:focus,
+.bottom-bar-expand-menu button:focus,
+.bottom-bar-close-expand:focus,
+.bottom-bar-logout:focus {
+  outline: 2px solid #1e40af;
+  outline-offset: 2px;
 }
