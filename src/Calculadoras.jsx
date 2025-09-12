@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Calculadoras.css"; // Importamos estilos
 
 const Calculadoras = () => {
-  const [activeCalculator, setActiveCalculator] = useState(null);
+  const [activeCalculator, setActiveCalculator] = useState("descuento");
   const [inputs, setInputs] = useState({
     precioNormal: "",
     precioConDescuento: "",
