@@ -1,38 +1,3 @@
-  // Notificaciones por entregas para hoy o atrasadas
-  useEffect(() => {
-    if (!Array.isArray(entregas)) return;
-    if (typeof window === 'undefined' || !('Notification' in window)) return;
-    const hoy = new Date();
-    const yyyy = hoy.getFullYear();
-    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-    const dd = String(hoy.getDate()).padStart(2, '0');
-    const hoyStr = `${yyyy}-${mm}-${dd}`;
-    entregas.forEach(e => {
-      if (String(e.estatus).toLowerCase() === 'entregado') return;
-      // Para hoy
-      if (e.fecha_entrega === hoyStr) {
-        if (Notification.permission === 'granted') {
-          new Notification('Entrega para hoy', {
-            body: `La entrega del cliente ${e.cliente} es para hoy.`,
-            icon: '/icon-192.png'
-          });
-        } else if (Notification.permission !== 'denied') {
-          Notification.requestPermission();
-        }
-      }
-      // Atrasada
-      if (e.fecha_entrega < hoyStr) {
-        if (Notification.permission === 'granted') {
-          new Notification('Entrega atrasada', {
-            body: `La entrega del cliente ${e.cliente} está atrasada.`,
-            icon: '/icon-192.png'
-          });
-        } else if (Notification.permission !== 'denied') {
-          Notification.requestPermission();
-        }
-      }
-    });
-  }, [entregas]);
 import ModalEstatus from "./components/ModalEstatus";
 import "./EntregasBusqueda.css";
 import React, { useState, useEffect } from "react";

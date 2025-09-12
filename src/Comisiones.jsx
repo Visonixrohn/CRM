@@ -557,7 +557,6 @@ const Comisiones = () => {
           </Modal>
         </div>
       )}
-
     </>
   );
 }
