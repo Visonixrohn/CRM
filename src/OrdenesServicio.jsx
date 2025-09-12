@@ -5,6 +5,7 @@ import Modal from "react-modal";
 import { CSVLink } from "react-csv";
 import "./OrdenesServicioTabla.css";
 import "./botonordenmovil.css";
+import "./ordendeskopagregar.css";
 import "./OrdenesServicioFiltroBtn.css";
 import "./OrdenesServicioForm.css";
 import "./OrdenesServicioDetalle.css";
@@ -339,7 +340,7 @@ const OrdenesServicio = () => {
       <button
         className="btn-agregar-orden-desktop"
         onClick={() => setIsAddOrderModalOpen(true)}
-      >Agregar Orden</button>
+      >+</button>
 
       {selectedOrden && (
         <div
