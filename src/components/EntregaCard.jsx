@@ -2,8 +2,33 @@ import React from "react";
 import "./EntregaCard.css";
 
 const EntregaCard = ({ entrega, onEdit, onDelete }) => {
+  // Alerta visual para fecha de entrega
+  const hoy = new Date();
+  const yyyy = hoy.getFullYear();
+  const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+  const dd = String(hoy.getDate()).padStart(2, '0');
+  const hoyStr = `${yyyy}-${mm}-${dd}`;
+  const fechaEntrega = entrega.fecha_entrega;
+  const estatusLower = String(entrega.estatus).toLowerCase();
+
+  let alertaEntrega = null;
+  if (fechaEntrega === hoyStr && estatusLower !== 'entregado') {
+    alertaEntrega = (
+      <div style={{background:'#fbbf24',color:'#b45309',padding:'2px 8px',borderRadius:6,fontWeight:'bold',marginBottom:6,textAlign:'center'}}>
+        ENTREGA PARA HOY
+      </div>
+    );
+  } else if (fechaEntrega < hoyStr && estatusLower !== 'entregado') {
+    alertaEntrega = (
+      <div style={{background:'#ef4444',color:'#fff',padding:'2px 8px',borderRadius:6,fontWeight:'bold',marginBottom:6,textAlign:'center'}}>
+        ENTREGA ATRASADA
+      </div>
+    );
+  }
+
   return (
     <div className="entrega-card">
+      {alertaEntrega}
       <div className="entrega-card-row">
         <span className="entrega-card-label">Cliente:</span>
         <span className="entrega-card-value">{entrega.cliente}</span>

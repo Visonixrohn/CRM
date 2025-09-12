@@ -34,8 +34,33 @@ const cards = [
   },
 ];
 
-const ComisionesMobileCards = ({ meta, comisionObtenida, diferenciaMeta, diasRestantes, metaHoy }) => {
+const ComisionesMobileCards = ({ meta, comisionObtenida, diferenciaMeta, diasRestantes, metaHoy, entregasPendientesAtrasadas, entregasParaHoy, entregasNoGestionadas }) => {
   const values = { meta, comisionObtenida, diferenciaMeta, diasRestantes, metaHoy };
+  const extraCards = [];
+  if (entregasPendientesAtrasadas > 0) {
+    extraCards.push({
+      title: "Entregas Atrasadas",
+      value: entregasPendientesAtrasadas,
+      colorClass: "danger",
+      icon: "⏰"
+    });
+  }
+  if (entregasParaHoy > 0) {
+    extraCards.push({
+      title: "Entregas para Hoy",
+      value: entregasParaHoy,
+      colorClass: "warning",
+      icon: "📅"
+    });
+  }
+  if (entregasNoGestionadas > 0) {
+    extraCards.push({
+      title: "No Gestionadas",
+      value: entregasNoGestionadas,
+      colorClass: "info",
+      icon: "🕓"
+    });
+  }
   return (
     <div className="comisiones-mobile-cards">
       {cards.map((card) => (
@@ -47,6 +72,13 @@ const ComisionesMobileCards = ({ meta, comisionObtenida, diferenciaMeta, diasRes
               ? `L${values[card.valueKey].toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
               : values[card.valueKey]}
           </strong>
+        </div>
+      ))}
+      {extraCards.map((card) => (
+        <div className={`com-card-mobile ${card.colorClass}`} key={card.title}>
+          <span className="com-card-mobile-icon">{card.icon}</span>
+          <span className="com-card-mobile-title">{card.title}</span>
+          <strong className="com-card-mobile-value">{card.value}</strong>
         </div>
       ))}
     </div>

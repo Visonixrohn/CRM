@@ -49,6 +49,36 @@ const ActionButton = ({ onClick, label, icon }) => (
 );
 
 const Comisiones = () => {
+  // --- Lógica para obtener entregas pendientes del usuario actual ---
+  // Estado para cards de entregas
+  const [entregasPendientes, setEntregasPendientes] = useState([]);
+  const [entregasPendientesAtrasadas, setEntregasPendientesAtrasadas] = useState(0);
+  const [entregasParaHoy, setEntregasParaHoy] = useState(0);
+  const [entregasNoGestionadas, setEntregasNoGestionadas] = useState(0);
+  useEffect(() => {
+    async function fetchEntregasPendientes() {
+      let userId = localStorage.getItem("userId");
+      if (!userId) return;
+      try {
+        const { data, error } = await supabase
+          .from("entregas_pendientes")
+          .select("id, fecha_entrega, estatus, gestionada")
+          .eq("usuario_id", userId);
+        if (error) return;
+        setEntregasPendientes(data);
+        // Calcular atrasadas, para hoy y no gestionadas
+        const hoy = new Date();
+        const yyyy = hoy.getFullYear();
+        const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+        const dd = String(hoy.getDate()).padStart(2, '0');
+        const hoyStr = `${yyyy}-${mm}-${dd}`;
+        setEntregasPendientesAtrasadas(data.filter(e => e.fecha_entrega < hoyStr && String(e.estatus).toLowerCase() !== 'entregado').length);
+        setEntregasParaHoy(data.filter(e => e.fecha_entrega === hoyStr && String(e.estatus).toLowerCase() !== 'entregado').length);
+        setEntregasNoGestionadas(data.filter(e => (e.gestionada || '').toLowerCase() === 'no gestionada' && String(e.estatus).toLowerCase() !== 'entregado').length);
+      } catch (e) {}
+    }
+    fetchEntregasPendientes();
+  }, []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInputValue, setModalInputValue] = useState("");
   const [currentAction, setCurrentAction] = useState(null);
@@ -308,6 +338,20 @@ const Comisiones = () => {
               <ComCard title="Diferencia a Meta" value={diferenciaMeta} colorClass="danger" icon="📊" />
               <ComCard title="Días Restantes  del Mes" value={diasRestantes} colorClass="primary" icon="📆" isNumberOnly={true} />
               <ComCard title="Meta Diaria" value={metaHoy} colorClass="neutral" icon="📈" />
+              {/* Cards de entregas */}
+              {Array.isArray(entregasPendientes) && entregasPendientes.length > 0 && (
+                <>
+                  {entregasPendientesAtrasadas > 0 && (
+                    <ComCard title="Entregas Atrasadas" value={entregasPendientesAtrasadas} colorClass="danger" icon="⏰" isNumberOnly={true} />
+                  )}
+                  {entregasParaHoy > 0 && (
+                    <ComCard title="Entregas para Hoy" value={entregasParaHoy} colorClass="warning" icon="📅" isNumberOnly={true} />
+                  )}
+                  {entregasNoGestionadas > 0 && (
+                    <ComCard title="No Gestionadas" value={entregasNoGestionadas} colorClass="info" icon="🕓" isNumberOnly={true} />
+                  )}
+                </>
+              )}
             </div>
             <div className="comisiones-cards-mobile">
               <ComisionesMobileCards
@@ -316,6 +360,9 @@ const Comisiones = () => {
                 diferenciaMeta={diferenciaMeta}
                 diasRestantes={diasRestantes}
                 metaHoy={metaHoy}
+                entregasPendientesAtrasadas={entregasPendientesAtrasadas}
+                entregasParaHoy={entregasParaHoy}
+                entregasNoGestionadas={entregasNoGestionadas}
               />
             </div>
           </div>

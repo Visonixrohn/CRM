@@ -753,7 +753,32 @@ const Entregas = () => {
                 </td>
                 <td data-label="Artículo">{e.articulo}</td>
                 
-                <td data-label="Fecha entrega">{e.fecha_entrega}</td>
+                <td data-label="Fecha entrega">
+                  {(() => {
+                    const hoy = new Date();
+                    const yyyy = hoy.getFullYear();
+                    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+                    const dd = String(hoy.getDate()).padStart(2, '0');
+                    const hoyStr = `${yyyy}-${mm}-${dd}`;
+                    const fechaEntrega = e.fecha_entrega;
+                    const estatusLower = String(e.estatus).toLowerCase();
+                    if (fechaEntrega === hoyStr && estatusLower !== 'entregado') {
+                      return (
+                        <span style={{background:'#fbbf24',color:'#b45309',padding:'2px 8px',borderRadius:6,fontWeight:'bold'}}>
+                          ENTREGA PARA HOY
+                        </span>
+                      );
+                    }
+                    if (fechaEntrega < hoyStr && estatusLower !== 'entregado') {
+                      return (
+                        <span style={{background:'#ef4444',color:'#fff',padding:'2px 8px',borderRadius:6,fontWeight:'bold'}}>
+                          ENTREGA ATRASADA
+                        </span>
+                      );
+                    }
+                    return fechaEntrega;
+                  })()}
+                </td>
                 <td data-label="Tipo de entrega">
                   <span className={`modern-tipoentrega modern-tipoentrega-${(e.tipo_entrega || '').toLowerCase().replace(/\s/g, '-')}`}>{e.tipo_entrega}</span>
                 </td>

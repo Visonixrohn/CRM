@@ -1,3 +1,15 @@
+.com-card.warning {
+  background: #fbbf24;
+  color: #b45309;
+}
+.com-card.danger {
+  background: #ef4444;
+  color: #fff;
+}
+.com-card.info {
+  background: #6a7da7;
+  color: #f30303;
+}
 /* Responsive wrapper para mostrar solo una versión de las cards según el tamaño */
 .comisiones-cards-responsive {
   width: 100%;
