@@ -402,37 +402,6 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
 };
 
 const Entregas = () => {
-  // Solicitar permiso de notificaciones al cargar
-  useEffect(() => {
-    if ("Notification" in window && Notification.permission === "default") {
-      Notification.requestPermission();
-    }
-  }, []);
-
-  // Notificar entregas para hoy o atrasadas
-  useEffect(() => {
-    if (!entregas || !Array.isArray(entregas) || Notification.permission !== "granted") return;
-    const hoy = new Date();
-    const yyyy = hoy.getFullYear();
-    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-    const dd = String(hoy.getDate()).padStart(2, '0');
-    const hoyStr = `${yyyy}-${mm}-${dd}`;
-    entregas.forEach(e => {
-      const estatusLower = String(e.estatus).toLowerCase();
-      if (estatusLower === 'entregado') return;
-      if (e.fecha_entrega === hoyStr) {
-        new Notification("Entrega para hoy", {
-          body: `Cliente: ${e.cliente} - Artículo: ${e.articulo || ''}`.trim(),
-          icon: "/public/icon-192.png"
-        });
-      } else if (e.fecha_entrega < hoyStr) {
-        new Notification("Entrega atrasada", {
-          body: `Cliente: ${e.cliente} - Artículo: ${e.articulo || ''}`.trim(),
-          icon: "/public/icon-192.png"
-        });
-      }
-    });
-  }, [entregas]);
 
   // --- Declarar todos los useState ANTES de cualquier useEffect ---
   const [entregas, setEntregas] = useState([]);
