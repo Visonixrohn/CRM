@@ -55,7 +55,6 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
 
     // Verifica si el dispositivo es móvil o no
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const baseUrl = isMobile ? "https://wa.me/" : "https://web.whatsapp.com/send";
 
     // Usar el número del chofer de la entrega si existe, si no el global
     let telefono = (entrega.chofer_telefono || entrega.choferCel || entrega.cel_chofer || chofer?.telefono || chofer?.contacto || "").replace(/[^\d]/g, "");
@@ -70,7 +69,14 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
       return;
     }
 
-    const url = `${baseUrl}?phone=504${telefono}&text=${encodeURIComponent(mensaje)}`;
+    let url = "";
+    if (isMobile) {
+      // Para móviles: https://wa.me/504XXXXXXXX?text=...
+      url = `https://wa.me/504${telefono}?text=${encodeURIComponent(mensaje)}`;
+    } else {
+      // Para escritorio: https://web.whatsapp.com/send?phone=504XXXXXXXX&text=...
+      url = `https://web.whatsapp.com/send?phone=504${telefono}&text=${encodeURIComponent(mensaje)}`;
+    }
     console.log("URL WhatsApp generada:", url);
     window.open(url, "_blank");
   };
