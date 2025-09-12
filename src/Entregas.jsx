@@ -59,6 +59,8 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
 
     // Usar el número del chofer de la entrega si existe, si no el global
     let telefono = (entrega.chofer_telefono || entrega.choferCel || entrega.cel_chofer || chofer?.telefono || chofer?.contacto || "").replace(/[^\d]/g, "");
+    // Log para depuración
+    console.log("DEBUG WhatsApp:", { entrega, chofer, telefono });
     if (telefono.startsWith("504")) {
       telefono = telefono.slice(3);
     }
@@ -69,9 +71,15 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
     }
 
     const url = `${baseUrl}?phone=504${telefono}&text=${encodeURIComponent(mensaje)}`;
+    console.log("URL WhatsApp generada:", url);
     window.open(url, "_blank");
   };
 
+  // Mostrar el número que se usará para WhatsApp en el modal para depuración visual
+  let telefonoDebug = (entrega.chofer_telefono || entrega.choferCel || entrega.cel_chofer || chofer?.telefono || chofer?.contacto || "").replace(/[^\d]/g, "");
+  if (telefonoDebug.startsWith("504")) {
+    telefonoDebug = telefonoDebug.slice(3);
+  }
   return (
     <div className="detalle-entrega-modal-bg">
       <div className="detalle-entrega-modal">
@@ -90,6 +98,9 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
               <a className="detalle-entrega-valor" href={urlMaps} target="_blank" rel="noopener noreferrer">Ver en Google Maps</a>
             </div>
           )}
+        </div>
+        <div style={{color:'#25D366',fontWeight:'bold',marginBottom:8}}>
+          Cel. chofer: {telefonoDebug ? `+504 ${telefonoDebug}` : 'No detectado'}
         </div>
         <button className="detalle-entrega-cerrar" onClick={onClose}>Cerrar</button>
         <button

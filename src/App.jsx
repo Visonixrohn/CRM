@@ -24,8 +24,11 @@ import Cotizaciones from "./Cotizaciones";
 import ResetPassword from "./ResetPassword";
 
 function App() {
-  // Detectar si es móvil
-  // (isMobile ya está declarado arriba)
+  // Detectar si es móvil (debe ir antes de cualquier uso de isMobile)
+  let isMobile = false;
+  if (typeof window !== "undefined") {
+    isMobile = window.innerWidth <= 768;
+  }
 
   // Inhabilitar botón atrás en móviles
   useEffect(() => {
@@ -38,9 +41,6 @@ function App() {
     window.addEventListener('popstate', handler);
     return () => window.removeEventListener('popstate', handler);
   }, [isMobile]);
-
-  // Detectar si es móvil
-  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
 
   // Mostrar pantalla de reset si la URL contiene /reset-password
   if (window.location.pathname.startsWith('/reset-password')) {
