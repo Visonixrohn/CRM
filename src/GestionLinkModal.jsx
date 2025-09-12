@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import useNombreUsuario from "./hooks/useNombreUsuario";
 import styles from "./GestionLinkModal.module.css";
 
@@ -8,26 +8,6 @@ const GestionLinkModal = ({ open, onClose, usuarioId, telefono }) => {
   const [tipo, setTipo] = useState("Nuevo");
   const nombreUsuario = useNombreUsuario();
 
-  // Manejo de historial para botón atrás
-  const firstRender = useRef(true);
-  useEffect(() => {
-    if (open) {
-      if (!firstRender.current) {
-        window.history.pushState({ modal: 'gestionLink' }, '');
-      }
-      const handlePop = (e) => {
-        if (open) onClose();
-      };
-      window.addEventListener('popstate', handlePop);
-      return () => {
-        window.removeEventListener('popstate', handlePop);
-        if (!firstRender.current && open) {
-          window.history.back();
-        }
-      };
-    }
-    firstRender.current = false;
-  }, [open]);
   if (!open) return null;
 
   const handleEnviar = () => {

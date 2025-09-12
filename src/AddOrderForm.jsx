@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import "./AddOrderForm.css";
 
 const AddOrderFormF = ({ supabase }) => {
@@ -37,9 +37,8 @@ const AddOrderFormF = ({ supabase }) => {
       </button>
 
       {isAddOrderModalOpen && (
-        <ModalBackHandler onClose={() => setIsAddOrderModalOpen(false)}>
-          <div className="modal-bg">
-            <div className="modal-card">
+        <div className="modal-bg">
+          <div className="modal-card">
             <h3 className="modal-title">Nueva Orden de Servicio</h3>
 
             <div className="form-grid">
@@ -120,31 +119,7 @@ const AddOrderFormF = ({ supabase }) => {
               </button>
             </div>
           </div>
-        </ModalBackHandler>
-// --- Handler para back button en modales ---
-function ModalBackHandler({ children, onClose }) {
-  const firstRender = useRef(true);
-  useEffect(() => {
-    if (!firstRender.current) {
-      window.history.pushState({ modal: 'addOrderForm' }, '');
-    }
-    const handlePop = (e) => {
-      onClose();
-    };
-    window.addEventListener('popstate', handlePop);
-    return () => {
-      window.removeEventListener('popstate', handlePop);
-      if (!firstRender.current) {
-        window.history.back();
-      }
-    };
-    // eslint-disable-next-line
-  }, []);
-  useEffect(() => {
-    firstRender.current = false;
-  }, []);
-  return children;
-}
+        </div>
       )}
     </>
   );

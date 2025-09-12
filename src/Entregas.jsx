@@ -1,6 +1,6 @@
 import ModalEstatus from "./components/ModalEstatus";
 import "./EntregasBusqueda.css";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import EntregaCard from "./components/EntregaCard";
 import { createPortal } from "react-dom";
 import { supabase } from "./supabaseClient";
@@ -32,28 +32,6 @@ function tiempoTranscurrido(fecha, estatus) {
 }
 
 const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEntregas }) => {
-  // Manejo de historial para botón atrás
-  const firstRender = useRef(true);
-  useEffect(() => {
-    if (open) {
-      if (!firstRender.current) {
-        window.history.pushState({ modal: 'detalle' }, '');
-      }
-      const handlePop = (e) => {
-        if (open) {
-          onClose();
-        }
-      };
-      window.addEventListener('popstate', handlePop);
-      return () => {
-        window.removeEventListener('popstate', handlePop);
-        if (!firstRender.current && open) {
-          window.history.back();
-        }
-      };
-    }
-    firstRender.current = false;
-  }, [open]);
   const [showEstatus, setShowEstatus] = useState(false);
 
   if (!open || !entrega) return null;
@@ -146,28 +124,6 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
 };
 
 const ModalAgregar = ({ open, onClose, onAdd }) => {
-  // Manejo de historial para botón atrás
-  const firstRender = useRef(true);
-  useEffect(() => {
-    if (open) {
-      if (!firstRender.current) {
-        window.history.pushState({ modal: 'agregar' }, '');
-      }
-      const handlePop = (e) => {
-        if (open) {
-          onClose();
-        }
-      };
-      window.addEventListener('popstate', handlePop);
-      return () => {
-        window.removeEventListener('popstate', handlePop);
-        if (!firstRender.current && open) {
-          window.history.back();
-        }
-      };
-    }
-    firstRender.current = false;
-  }, [open]);
   const [touched, setTouched] = useState({});
   const today = new Date();
   const yyyy = today.getFullYear();

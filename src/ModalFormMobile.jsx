@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import styles from "./ModalFormMobile.module.css";
 
 export default function ModalFormMobile({ open, onClose, onAddPlan }) {
@@ -6,26 +6,6 @@ export default function ModalFormMobile({ open, onClose, onAddPlan }) {
   const [nuevaTasa, setNuevaTasa] = useState("");
   const [agregando, setAgregando] = useState(false);
 
-  // Manejo de historial para botón atrás
-  const firstRender = useRef(true);
-  useEffect(() => {
-    if (open) {
-      if (!firstRender.current) {
-        window.history.pushState({ modal: 'modalFormMobile' }, '');
-      }
-      const handlePop = (e) => {
-        if (open) onClose();
-      };
-      window.addEventListener('popstate', handlePop);
-      return () => {
-        window.removeEventListener('popstate', handlePop);
-        if (!firstRender.current && open) {
-          window.history.back();
-        }
-      };
-    }
-    firstRender.current = false;
-  }, [open]);
   if (!open) return null;
 
   const handleSubmit = async (e) => {

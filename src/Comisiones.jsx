@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import Modal from "react-modal";
 import "./Comisiones.css";
@@ -211,29 +211,6 @@ const Comisiones = () => {
       setError("Error al actualizar la meta");
     }
   };
-
-  // Manejo de historial para botón atrás en el modal
-  const firstRenderModal = useRef(true);
-  useEffect(() => {
-    if (isModalOpen) {
-      if (!firstRenderModal.current) {
-        window.history.pushState({ modal: 'comisiones' }, '');
-      }
-      const handlePop = (e) => {
-        if (isModalOpen) {
-          closeModal();
-        }
-      };
-      window.addEventListener('popstate', handlePop);
-      return () => {
-        window.removeEventListener('popstate', handlePop);
-        if (!firstRenderModal.current && isModalOpen) {
-          window.history.back();
-        }
-      };
-    }
-    firstRenderModal.current = false;
-  }, [isModalOpen]);
 
   const openModal = (action) => {
     setCurrentAction(action);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import {
   FaDollarSign,
   FaTruck,
@@ -37,27 +37,6 @@ const BottomBar = ({
   onLogout,
 }) => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  // Manejo de historial para menú expandido y logout modal
-  const firstRender = useRef(true);
-  useEffect(() => {
-    if (expanded || showLogoutModal) {
-      if (!firstRender.current) {
-        window.history.pushState({ modal: expanded ? 'bottomBarExpand' : 'bottomBarLogout' }, '');
-      }
-      const handlePop = (e) => {
-        if (expanded) onCloseExpand && onCloseExpand();
-        if (showLogoutModal) setShowLogoutModal(false);
-      };
-      window.addEventListener('popstate', handlePop);
-      return () => {
-        window.removeEventListener('popstate', handlePop);
-        if (!firstRender.current && (expanded || showLogoutModal)) {
-          window.history.back();
-        }
-      };
-    }
-    firstRender.current = false;
-  }, [expanded, showLogoutModal]);
   // Mostrar solo los primeros 5 iconos si no está expandido
   const visibleIcons = expanded ? ICONS : ICONS.slice(0, 5);
 

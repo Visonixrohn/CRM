@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import "./DetalleDocumento.css";
@@ -8,26 +8,6 @@ const DetalleDocumento = () => {
   const navigate = useNavigate();
   const { nombre, url } = location.state || {};
 
-  // Manejo de historial para botón atrás
-  const firstRender = useRef(true);
-  useEffect(() => {
-    if (url) {
-      if (!firstRender.current) {
-        window.history.pushState({ modal: 'detalleDocumento' }, '');
-      }
-      const handlePop = (e) => {
-        navigate(-1);
-      };
-      window.addEventListener('popstate', handlePop);
-      return () => {
-        window.removeEventListener('popstate', handlePop);
-        if (!firstRender.current && url) {
-          window.history.back();
-        }
-      };
-    }
-    firstRender.current = false;
-  }, [url]);
   if (!url) {
     return (
       <div className="detalle-container">
