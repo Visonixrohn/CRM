@@ -80,10 +80,6 @@
 
 /* Responsivo */
 @media (max-width: 600px) {
-  .header {
-    display: none !important;
-  }
-
   .header-title {
     font-size: 1rem;
     margin-bottom: 0.5rem;

@@ -2,17 +2,17 @@ import React from "react";
 import "./BottomBar.css";
 
 const ICONS = [
-  { key: "comisiones", label: "Comisiones", emoji: "💰" },
-  { key: "entregas", label: "Entregas", emoji: "🚚" },
-  { key: "ordenes", label: "Órdenes", emoji: "📝" },
-  { key: "calculadoras", label: "Calculadoras", emoji: "🧮" },
-  { key: "razones", label: "Razones", emoji: "📋" },
-  { key: "tiendas", label: "Tiendas", emoji: "🏬" },
-  { key: "documentos", label: "Documentos", emoji: "📄" },
-  { key: "clientes-nuevos", label: "Clientes Nuevos", emoji: "🧑‍💼" },
-  { key: "cotizaciones", label: "Cotizaciones", emoji: "💳" },
-  { key: "actualizaciones", label: "Actualizaciones", emoji: "👥" },
-  { key: "gestion", label: "Gestión", emoji: "📞" },
+  { key: "comisiones", label: "Comisiones", emoji: "💸" }, // Dinero en movimiento, más específico para comisiones
+  { key: "entregas", label: "Entregas", emoji: "🚚" }, // Correcto, el camión representa entregas
+  { key: "ordenes", label: "Órdenes", emoji: "🛒" }, // Carrito de compras, más relacionado con órdenes
+  { key: "calculadoras", label: "Calculadoras", emoji: "🧮" }, // Correcto, la calculadora es adecuada
+  { key: "razones", label: "Razones", emoji: "📊" }, // Gráfico para análisis o razones
+  { key: "tiendas", label: "Tiendas", emoji: "🏪" }, // Tienda pequeña, más específica que un edificio
+  { key: "documentos", label: "Documentos", emoji: "📑" }, // Documentos apilados, más preciso
+  { key: "clientes-nuevos", label: "Clientes Nuevos", emoji: "🤝" }, // Apretón de manos, simboliza nuevos clientes
+  { key: "cotizaciones", label: "Cotizaciones", emoji: "📈" }, // Gráfico ascendente, relacionado con finanzas/cotizaciones
+  { key: "actualizaciones", label: "Actualizaciones", emoji: "🔄" }, // Símbolo de actualización o sincronización
+  { key: "gestion", label: "Gestión", emoji: "📋" } // Portapapeles, más asociado con gestión,
 ];
 
 const BottomBar = ({
