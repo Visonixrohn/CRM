@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./CotizacionWhatsappModal.module.css";
 import useNombreUsuario from "./hooks/useNombreUsuario";
 
@@ -18,6 +18,26 @@ const CotizacionWhatsappModal = ({ open, onClose, usuarioId, plazo, prima, cuota
     }
   }, [productoDefault, open]);
 
+  // Manejo de historial para botón atrás
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (open) {
+      if (!firstRender.current) {
+        window.history.pushState({ modal: 'cotizacionWhatsapp' }, '');
+      }
+      const handlePop = (e) => {
+        if (open) onClose();
+      };
+      window.addEventListener('popstate', handlePop);
+      return () => {
+        window.removeEventListener('popstate', handlePop);
+        if (!firstRender.current && open) {
+          window.history.back();
+        }
+      };
+    }
+    firstRender.current = false;
+  }, [open]);
   if (!open) return null;
 
   const handleEnviar = () => {
