@@ -1,0 +1,104 @@
+
+/* FAB flotante centrado para móviles */
+
+.header-movil-fab-container-right {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1200;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.header-movil-fab-blue {
+  pointer-events: auto;
+  background: #fff;
+  border-radius: 50%;
+  height: 62px;
+  width: 62px;
+  box-shadow: 0 6px 24px #2563eb33, 0 2px 8px #2563eb22;
+  border: 2.5px solid #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.18s, transform 0.18s, background 0.18s, border 0.18s;
+  position: relative;
+  bottom: 0;
+  cursor: pointer;
+  animation: fadeInHeaderBottom 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.header-movil-fab-blue:active, .header-movil-fab-blue:focus {
+  background: #2563eb11;
+  box-shadow: 0 2px 8px #2563eb33;
+  border-color: #1d4ed8;
+  transform: scale(1.12);
+}
+
+
+.header-movil-icon {
+  background: none;
+  border: none;
+  outline: none;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.1rem;
+  color: #312e81;
+  cursor: pointer;
+  transition: color 0.18s, transform 0.18s, background 0.18s;
+  border-radius: 50%;
+  padding: 0.3rem 0.2rem;
+  position: relative;
+}
+.header-movil-icon:active, .header-movil-icon:focus {
+  background: #ede9fe;
+  color: #7c3aed;
+  transform: scale(1.08);
+}
+
+.header-movil-plus {
+  background: linear-gradient(135deg, #4c9bff 60%, #7c3aed 100%);
+  color: #fff !important;
+  border-radius: 50%;
+  height: 54px;
+  width: 54px;
+  font-size: 2.5rem;
+  box-shadow: 0 4px 16px #7c3aed33, 0 1.5px 8px #4c9bff22;
+  margin: 0 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  position: relative;
+  top: -18px;
+  z-index: 2;
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+.header-movil-plus:active, .header-movil-plus:focus {
+  background: linear-gradient(135deg, #7c3aed 60%, #4c9bff 100%);
+  box-shadow: 0 2px 8px #4c9bff33;
+  transform: scale(1.12);
+}
+
+.header-movil-profile {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #a5b4fc;
+  box-shadow: 0 1px 4px #a5b4fc33;
+  transition: border 0.18s, box-shadow 0.18s;
+}
+
+@media (min-width: 601px) {
+  .header-movil-fab-container-right {
+    display: none !important;
+  }
+}
+
+@keyframes fadeInHeaderBottom {
+  from { opacity: 0; transform: translateY(32px); }
+  to { opacity: 1; transform: translateY(0); }
+}

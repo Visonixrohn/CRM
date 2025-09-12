@@ -6,6 +6,7 @@ import { supabase } from "./supabaseClient";
 import Login from "./Login";
 import ModalInput from "./ModalInput";
 import Header from "./Header";
+import HeaderMovil from "./HeaderMovil";
 import ChoferModal from "./ChoferModal";
 import Sidebar from "./Sidebar";
 import Comisiones from "./Comisiones";
@@ -152,7 +153,14 @@ function App() {
 
   return (
     <div id="app-layout" className={sidebarOpen ? "sidebar-open" : ""}>
-      <Header onMenuClick={handleMenuClick} actions={[]} />
+      {!isMobile && (
+        <Header onMenuClick={handleMenuClick} actions={[]} />
+      )}
+      {isMobile && (
+        <HeaderMovil
+          onMenu={() => setBottomBarExpanded(true)}
+        />
+      )}
       <div className="layout-container">
         <Sidebar
           open={sidebarOpen}

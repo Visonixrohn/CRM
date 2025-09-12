@@ -1,3 +1,107 @@
+/* Gráfica de análisis responsiva */
+.analisis-chart-container {
+  width: 100%;
+  aspect-ratio: 2.2/1;
+  min-height: 220px;
+  max-width: 1100px;
+  margin: 0 auto 1.5rem auto;
+  background: #f9fafb;
+  border-radius: 18px;
+  padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+  box-shadow: 0 2px 12px 0 #a5b4fc22;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 700px) {
+  .analisis-chart-container {
+    aspect-ratio: 1.1/1;
+    padding: 0.7rem 0.2rem 0.7rem 0.2rem;
+    border-radius: 12px;
+    min-height: 180px;
+  }
+}
+.com-card, .analisis-card {
+  transition: box-shadow 0.3s, transform 0.3s, background 0.3s, color 0.3s;
+  animation: fadeInCard 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+    border-radius: 28px;
+    background: linear-gradient(135deg, #ede9fe 60%, #c7d2fe 100%);
+    color: #312e81;
+  border: 1.5px solid #a5b4fc;
+}
+.com-card:hover, .analisis-card:hover {
+  box-shadow: 0 8px 24px rgba(109,40,217,0.18), 0 1.5px 6px rgba(52,211,153,0.10);
+  transform: translateY(-4px) scale(1.04);
+  background: linear-gradient(120deg, #ede9fe 60%, #f9fafb 100%);
+  color: #6d28d9;
+  border-color: #c4b5fd;
+}
+
+@keyframes fadeInCard {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Efecto de resplandor al enfocar (accesibilidad) */
+.com-card:focus-within, .analisis-card:focus-within {
+  box-shadow: 0 0 0 4px #a78bfa55;
+  outline: none;
+}
+/* Cards de análisis para vista móvil y desktop */
+.analisis-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 24px;
+  max-width: 700px;
+}
+.analisis-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 1rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  transition: box-shadow 0.2s;
+}
+.analisis-card-title {
+  font-size: 0.95rem;
+  color: #9ca3af;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  text-align: center;
+}
+.analisis-card-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+}
+@media (max-width: 640px) {
+  .analisis-cards-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .analisis-card {
+    min-height: 60px;
+    padding: 0.7rem 0.3rem;
+  }
+  .analisis-card-title {
+    font-size: 0.85rem;
+  }
+  .analisis-card-value {
+    font-size: 1.05rem;
+  }
+}
 /* =========================================
    Comisiones.css - Fluido, Responsivo
    Escala automáticamente con clamp()
@@ -56,9 +160,67 @@ body, html {
 /* Cards Grid */
 .comisiones-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(clamp(180px, 30%, 220px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: clamp(0.5rem, 2vw, 1.25rem);
-  width: 100%; max-width: 1280px; margin-bottom: clamp(1rem, 2vw, 2rem);
+  width: 100%;
+  max-width: 1280px;
+  margin-bottom: clamp(1rem, 2vw, 2rem);
+}
+
+@media (max-width: 640px) {
+  .comisiones-cards-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 1.2rem;
+  }
+  .com-card {
+    min-height: 90px;
+    padding: 1.1rem 0.7rem 1.3rem 0.7rem;
+    border-radius: 28px;
+    box-shadow: 0 2px 8px rgba(109,40,217,0.10);
+    background: linear-gradient(135deg, #f3f4f6 60%, #e0e7ff 100%);
+    color: #312e81;
+    border: 1.5px solid #a5b4fc;
+    margin: 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .com-card-icon {
+    font-size: 2.1rem;
+    margin-bottom: 0.25rem;
+    filter: drop-shadow(0 2px 4px rgba(109,40,217,0.13));
+    opacity: 0.93;
+  }
+  .com-card-title {
+    font-size: 1.01rem;
+    font-weight: 600;
+    margin-bottom: 0.18rem;
+    opacity: 0.92;
+    letter-spacing: 0.04em;
+    color: #5b21b6;
+    text-shadow: 0 1px 2px #ede9fe;
+  }
+  .com-card-value {
+    font-size: 2.05rem;
+    font-weight: 800;
+    color: #312e81;
+    letter-spacing: -0.01em;
+    margin-top: 0.13rem;
+    text-shadow: 0 2px 8px #a5b4fc33, 0 1px 0 #fff;
+    filter: brightness(1.08) drop-shadow(0 2px 6px #a5b4fc33);
+    transition: color 0.18s, text-shadow 0.18s;
+  }
+  .analisis-card {
+    border-radius: 22px;
+    background: linear-gradient(135deg, #f3f4f6 60%, #e0e7ff 100%);
+    color: #312e81;
+    border: 1.5px solid #a5b4fc;
+    box-shadow: 0 2px 8px rgba(109,40,217,0.10);
+  }
 }
 
 /* Card */
@@ -203,24 +365,74 @@ body, html {
 
 /* Colores específicos de cards */
 .com-card.meta {
-  background: linear-gradient(135deg, var(--primary-color), #a78bfa);
+  background: linear-gradient(135deg, #a78bfa 60%, #7c3aed 100%);
   color: #fff;
+  border: 2.5px solid #7c3aed;
+  box-shadow: 0 6px 24px 0 #a78bfa55, 0 2px 8px 0 #7c3aed22;
+}
+.com-card.meta .com-card-title {
+  color: #ede9fe;
+  text-shadow: 0 2px 8px #7c3aed55;
+}
+.com-card.meta .com-card-value {
+  color: #fff;
+  text-shadow: 0 2px 12px #7c3aed99, 0 1px 0 #fff8;
 }
 .com-card.success {
-  background: linear-gradient(135deg, var(--success-color), #6ee7b7);
+  background: linear-gradient(135deg, #6ee7b7 60%, #059669 100%);
   color: #fff;
+  border: 2.5px solid #059669;
+  box-shadow: 0 6px 24px 0 #6ee7b755, 0 2px 8px 0 #05966922;
+}
+.com-card.success .com-card-title {
+  color: #e0f2fe;
+  text-shadow: 0 2px 8px #05966955;
+}
+.com-card.success .com-card-value {
+  color: #fff;
+  text-shadow: 0 2px 12px #05966999, 0 1px 0 #fff8;
 }
 .com-card.danger {
-  background: linear-gradient(135deg, var(--danger-color), #fca5a5);
+  background: linear-gradient(135deg, #fca5a5 60%, #dc2626 100%);
   color: #fff;
+  border: 2.5px solid #dc2626;
+  box-shadow: 0 6px 24px 0 #fca5a555, 0 2px 8px 0 #dc262622;
+}
+.com-card.danger .com-card-title {
+  color: #fee2e2;
+  text-shadow: 0 2px 8px #dc262655;
+}
+.com-card.danger .com-card-value {
+  color: #fff;
+  text-shadow: 0 2px 12px #dc262699, 0 1px 0 #fff8;
 }
 .com-card.primary {
-  background: linear-gradient(135deg, #3b82f6, #93c5fd);
+  background: linear-gradient(135deg, #93c5fd 60%, #3b82f6 100%);
   color: #fff;
+  border: 2.5px solid #3b82f6;
+  box-shadow: 0 6px 24px 0 #93c5fd55, 0 2px 8px 0 #3b82f622;
+}
+.com-card.primary .com-card-title {
+  color: #e0e7ff;
+  text-shadow: 0 2px 8px #3b82f655;
+}
+.com-card.primary .com-card-value {
+  color: #fff;
+  text-shadow: 0 2px 12px #3b82f699, 0 1px 0 #fff8;
 }
 .com-card.neutral {
-  background: linear-gradient(135deg, var(--neutral-color), #d1d5db);
+  background: linear-gradient(135deg, #d1d5db 60%, #6b7280 100%);
   color: #fff;
+  border: 2.5px solid #6b7280;
+  box-shadow: 0 6px 24px 0 #d1d5db55, 0 2px 8px 0 #6b728022;
+}
+.com-card.neutral .com-card-title {
+  color: #f3f4f6;
+  text-shadow: 0 2px 8px #6b728055;
+}
+.com-card.neutral .com-card-value {
+  color: #fff;
+  text-shadow: 0 2px 12px #6b728099, 0 1px 0 #fff8;
 }
 
 /* =============================

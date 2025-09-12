@@ -339,38 +339,48 @@ const Comisiones = () => {
             alignItems: "center"
           }}>
             <h2 style={{ fontSize: "1.3rem", fontWeight: 600, marginBottom: 12, color: "#6d28d9" }}>Análisis del Mes</h2>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 24, justifyContent: "center", marginBottom: 24 }}>
-              <div>
-                <div style={{ fontWeight: 500, color: "#9ca3af" }}>Días del mes</div>
-                <div style={{ fontWeight: 700, fontSize: 22 }}>{diasDelMes}</div>
+            <div
+              className="analisis-cards-grid"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+                gap: 16,
+                width: "100%",
+                marginBottom: 24,
+                maxWidth: 700
+              }}
+            >
+              <div className="analisis-card">
+                <div className="analisis-card-title">Días del mes</div>
+                <div className="analisis-card-value">{diasDelMes}</div>
               </div>
-              <div>
-                <div style={{ fontWeight: 500, color: "#9ca3af" }}>Meta diaria</div>
-                <div style={{ fontWeight: 700, fontSize: 22 }}>L{meta > 0 ? (meta / diasDelMes).toLocaleString("en-US", { minimumFractionDigits: 2 }) : "0.00"}</div>
+              <div className="analisis-card">
+                <div className="analisis-card-title">Meta diaria</div>
+                <div className="analisis-card-value">L{meta > 0 ? (meta / diasDelMes).toLocaleString("en-US", { minimumFractionDigits: 2 }) : "0.00"}</div>
               </div>
-              <div>
-                <div style={{ fontWeight: 500, color: "#9ca3af" }}>Monto vendido</div>
-                <div style={{ fontWeight: 700, fontSize: 22 }}>L{comisionObtenida.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div>
+              <div className="analisis-card">
+                <div className="analisis-card-title">Monto vendido</div>
+                <div className="analisis-card-value">L{comisionObtenida.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div>
               </div>
-              <div>
-                <div style={{ fontWeight: 500, color: "#9ca3af" }}>Monto proyectado de hoy</div>
-                <div style={{ fontWeight: 700, fontSize: 22 }}>L{montoProyectadoHoy.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div>
+              <div className="analisis-card">
+                <div className="analisis-card-title">Monto proyectado de hoy</div>
+                <div className="analisis-card-value">L{montoProyectadoHoy.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div>
               </div>
-              <div>
-                <div style={{ fontWeight: 500, color: "#f87171" }}>Monto atrasado</div>
-                <div style={{ fontWeight: 700, fontSize: 22, color: '#f87171' }}>L{montoAtrasado.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div>
+              <div className="analisis-card">
+                <div className="analisis-card-title" style={{ color: "#f87171" }}>Monto atrasado</div>
+                <div className="analisis-card-value" style={{ color: '#f87171' }}>L{montoAtrasado.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div>
               </div>
-              <div>
-                <div style={{ fontWeight: 500, color: "#9ca3af" }}>% de avance</div>
-                <div style={{ fontWeight: 700, fontSize: 22 }}>{porcentajeAvance.toFixed(1)}%</div>
+              <div className="analisis-card">
+                <div className="analisis-card-title">% de avance</div>
+                <div className="analisis-card-value">{porcentajeAvance.toFixed(1)}%</div>
               </div>
-              <div>
-                <div style={{ fontWeight: 500, color: "#9ca3af" }}>Estado actual</div>
-                <div style={{ fontWeight: 700, fontSize: 22, color: estadoActual === "Atrasado" ? "#f87171" : estadoActual === "Avanzado" ? "#34d399" : "#facc15" }}>{estadoActual}</div>
+              <div className="analisis-card">
+                <div className="analisis-card-title">Estado actual</div>
+                <div className="analisis-card-value" style={{ color: estadoActual === "Atrasado" ? "#f87171" : estadoActual === "Avanzado" ? "#34d399" : "#facc15" }}>{estadoActual}</div>
               </div>
             </div>
-            <div style={{ width: "100%", maxWidth: 700, background: "#f9fafb", borderRadius: 12, padding: 16 }}>
-              <Line data={chartData} options={chartOptions} height={220} />
+            <div className="analisis-chart-container">
+              <Line data={chartData} options={chartOptions} />
             </div>
           </div>
           {/* Fin bloque de análisis visual */}
