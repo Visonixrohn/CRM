@@ -1,3 +1,75 @@
+/* Modal de confirmación de logout */
+.bottom-bar-logout-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 4000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s;
+}
+
+.bottom-bar-logout-modal {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(30,64,175,0.18);
+  padding: 32px 24px 24px 24px;
+  min-width: 270px;
+  max-width: 90vw;
+  text-align: center;
+  animation: popIn 0.22s cubic-bezier(0.33,1,0.68,1);
+}
+
+.bottom-bar-logout-modal p {
+  font-size: 1.08rem;
+  color: #1e293b;
+  margin-bottom: 22px;
+}
+
+.bottom-bar-logout-modal-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.bottom-bar-logout-modal-buttons .confirm {
+  background: #1e40af;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.bottom-bar-logout-modal-buttons .confirm:hover {
+  background: #2563eb;
+}
+.bottom-bar-logout-modal-buttons .cancel {
+  background: #f1f5f9;
+  color: #1e293b;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.bottom-bar-logout-modal-buttons .cancel:hover {
+  background: #e2e8f0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes popIn {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
 /* Overlay y menú expandido */
 .bottom-bar-expand-overlay {
   position: fixed;

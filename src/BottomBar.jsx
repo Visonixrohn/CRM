@@ -1,18 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
+import {
+  FaDollarSign,
+  FaTruck,
+  FaBook,
+  FaCalculator,
+  FaClipboardList,
+  FaStore,
+  FaFileAlt,
+  FaUserPlus,
+  FaUsers,
+  FaSignOutAlt,
+  FaPhone,
+  FaCreditCard,
+} from "react-icons/fa";
 import "./BottomBar.css";
 
 const ICONS = [
-  { key: "comisiones", label: "Comisiones", emoji: "💸" }, // Dinero en movimiento, más específico para comisiones
-  { key: "entregas", label: "Entregas", emoji: "🚚" }, // Correcto, el camión representa entregas
-  { key: "ordenes", label: "Órdenes", emoji: "🛒" }, // Carrito de compras, más relacionado con órdenes
-  { key: "calculadoras", label: "Calculadoras", emoji: "🧮" }, // Correcto, la calculadora es adecuada
-  { key: "razones", label: "Razones", emoji: "📊" }, // Gráfico para análisis o razones
-  { key: "tiendas", label: "Tiendas", emoji: "🏪" }, // Tienda pequeña, más específica que un edificio
-  { key: "documentos", label: "Documentos", emoji: "📑" }, // Documentos apilados, más preciso
-  { key: "clientes-nuevos", label: "Clientes Nuevos", emoji: "🤝" }, // Apretón de manos, simboliza nuevos clientes
-  { key: "cotizaciones", label: "Cotizaciones", emoji: "📈" }, // Gráfico ascendente, relacionado con finanzas/cotizaciones
-  { key: "actualizaciones", label: "Actualizaciones", emoji: "🔄" }, // Símbolo de actualización o sincronización
-  { key: "gestion", label: "Gestión", emoji: "📋" } // Portapapeles, más asociado con gestión,
+  { key: "comisiones", label: "Comisiones", icon: <FaDollarSign color="#2196f3" /> },
+  { key: "entregas", label: "Entregas", icon: <FaTruck color="#2196f3" /> },
+  { key: "ordenes", label: "Órdenes", icon: <FaBook color="#2196f3" /> },
+  { key: "calculadoras", label: "Calculadoras", icon: <FaCalculator color="#2196f3" /> },
+  { key: "razones", label: "Razones", icon: <FaClipboardList color="#2196f3" /> },
+  { key: "tiendas", label: "Tiendas", icon: <FaStore color="#2196f3" /> },
+  { key: "documentos", label: "Documentos", icon: <FaFileAlt color="#2196f3" /> },
+  { key: "clientes-nuevos", label: "Clientes Nuevos", icon: <FaUserPlus color="#2196f3" /> },
+  { key: "cotizaciones", label: "Cotizaciones", icon: <FaCreditCard color="#2196f3" /> },
+  { key: "actualizaciones", label: "Actualizaciones", icon: <FaUsers color="#2196f3" /> },
+  { key: "gestion", label: "Gestión", icon: <FaPhone color="#2196f3" /> },
 ];
 
 const BottomBar = ({
@@ -22,11 +36,38 @@ const BottomBar = ({
   onCloseExpand,
   onLogout,
 }) => {
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   // Mostrar solo los primeros 5 iconos si no está expandido
   const visibleIcons = expanded ? ICONS : ICONS.slice(0, 5);
 
+  const handleLogoutClick = (e) => {
+    e.preventDefault();
+    setShowLogoutModal(true);
+  };
+
+  const handleConfirmLogout = () => {
+    setShowLogoutModal(false);
+    onLogout();
+  };
+
+  const handleCancelLogout = () => {
+    setShowLogoutModal(false);
+  };
+
   return (
     <>
+      {/* Modal de confirmación de logout */}
+      {showLogoutModal && (
+        <div className="bottom-bar-logout-modal-overlay" onClick={handleCancelLogout}>
+          <div className="bottom-bar-logout-modal" onClick={e => e.stopPropagation()}>
+            <p>¿Estás seguro que deseas cerrar sesión?</p>
+            <div className="bottom-bar-logout-modal-buttons">
+              <button onClick={handleConfirmLogout} className="confirm">Sí, cerrar sesión</button>
+              <button onClick={handleCancelLogout} className="cancel">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Menú expandido tipo modal */}
       {expanded && (
         <div className="bottom-bar-expand-overlay" onClick={onCloseExpand}>
@@ -43,8 +84,8 @@ const BottomBar = ({
                   onCloseExpand();
                 }}
               >
-                <span role="img" aria-label={icon.label}>
-                  {icon.emoji}
+                <span className="bottom-bar-icon" aria-label={icon.label}>
+                  {icon.icon}
                 </span>
                 <span className="bottom-bar-label">{icon.label}</span>
               </button>
@@ -52,8 +93,11 @@ const BottomBar = ({
             <button className="bottom-bar-close-expand" onClick={onCloseExpand}>
               Cerrar
             </button>
-            <button className="bottom-bar-logout" onClick={onLogout}>
-              Cerrar sesión
+            <button className="bottom-bar-logout" onClick={handleLogoutClick}>
+              <span className="bottom-bar-icon" aria-label="Cerrar sesión">
+                <FaSignOutAlt color="#2196f3" />
+              </span>
+              <span className="bottom-bar-label">Cerrar sesión</span>
             </button>
           </div>
         </div>
@@ -65,15 +109,15 @@ const BottomBar = ({
             className={active === icon.key ? "active" : ""}
             onClick={() => onNavigate(icon.key)}
           >
-            <span role="img" aria-label={icon.label}>
-              {icon.emoji}
+            <span className="bottom-bar-icon" aria-label={icon.label}>
+              {icon.icon}
             </span>
             <span className="bottom-bar-label">{icon.label}</span>
           </button>
         ))}
-        <button className="bottom-bar-logout" onClick={onLogout}>
-          <span role="img" aria-label="Cerrar sesión">
-            🚪
+        <button className="bottom-bar-logout" onClick={handleLogoutClick}>
+          <span className="bottom-bar-icon" aria-label="Cerrar sesión">
+            <FaSignOutAlt color="#2196f3" />
           </span>
           <span className="bottom-bar-label">Cerrar sesión</span>
         </button>
