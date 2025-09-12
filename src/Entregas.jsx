@@ -57,8 +57,8 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     const baseUrl = isMobile ? "https://wa.me/" : "https://web.whatsapp.com/send";
 
-    // Usar el número del chofer
-    let telefono = (chofer?.telefono || chofer?.contacto || "").replace(/[^\d]/g, "");
+    // Usar el número del chofer de la entrega si existe, si no el global
+    let telefono = (entrega.chofer_telefono || entrega.choferCel || entrega.cel_chofer || chofer?.telefono || chofer?.contacto || "").replace(/[^\d]/g, "");
     if (telefono.startsWith("504")) {
       telefono = telefono.slice(3);
     }
