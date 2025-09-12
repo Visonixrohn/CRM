@@ -1,3 +1,27 @@
+/* Responsive wrapper para mostrar solo una versión de las cards según el tamaño */
+.comisiones-cards-responsive {
+  width: 100%;
+}
+.comisiones-cards-desktop {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 4.4rem;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto clamp(1rem, 2vw, 2rem) auto;
+  justify-items: center;
+}
+.comisiones-cards-mobile {
+  display: none;
+}
+@media (max-width: 700px) {
+  .comisiones-cards-desktop {
+    display: none;
+  }
+  .comisiones-cards-mobile {
+    display: block;
+  }
+}
 /* Gráfica de análisis responsiva */
 .analisis-chart-container {
   width: 100%;
@@ -224,33 +248,74 @@ body, html {
 }
 
 /* Card */
+
+/* Cards desktop mejoradas */
+
+/* Cards desktop compactas tipo card tradicional */
 .com-card {
-  background: #ffffff;
-  border-radius: clamp(12px, 2vw, 16px);
-  padding: clamp(0.75rem, 1.5vw, 1.5rem);
+  background: #fff;
+  border-radius: 18px;
+  padding: 1.1rem 1rem 1.2rem 1rem;
   text-align: center;
-  box-shadow: var(--card-shadow);
-  transition: var(--transition);
-  position: relative; overflow: hidden;
+  box-shadow: 0 2px 12px 0 #a5b4fc22;
+  transition: box-shadow 0.2s, transform 0.2s, background 0.2s, color 0.2s;
+  position: relative;
+  overflow: hidden;
+  border: 1.5px solid #a5b4fc;
+  margin-bottom: 0.5rem;
 }
 .com-card::before {
-  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-  background: var(--accent-color); transition: var(--transition);
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 4px;
+  background: var(--accent-color);
+  transition: var(--transition);
+  border-radius: 18px 18px 0 0;
 }
-.com-card:hover { transform: translateY(-6px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
-.com-card:hover::before { height: 8px; }
+.com-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(109,40,217,0.18), 0 1.5px 6px rgba(52,211,153,0.10);
+  background: linear-gradient(120deg, #ede9fe 60%, #f9fafb 100%);
+  color: #6d28d9;
+  border-color: #c4b5fd;
+}
+.com-card:hover::before {
+  height: 8px;
+}
+.com-card.meta { background: linear-gradient(135deg, #ede9fe 60%, #a78bfa 100%); color: #6d28d9; }
+.com-card.success { background: linear-gradient(135deg, #e0fdf2 60%, #6ee7b7 100%); color: #059669; }
+.com-card.danger { background: linear-gradient(135deg, #fef2f2 60%, #fca5a5 100%); color: #b91c1c; }
+.com-card.primary { background: linear-gradient(135deg, #e0e7ff 60%, #93c5fd 100%); color: #2563eb; }
+.com-card.neutral { background: linear-gradient(135deg, #f3f4f6 60%, #d1d5db 100%); color: #64748b; }
 
-.com-card.meta { background: linear-gradient(135deg, var(--primary-color), #a78bfa); color: #fff; }
-.com-card.success { background: linear-gradient(135deg, var(--success-color), #6ee7b7); color: #fff; }
-.com-card.danger { background: linear-gradient(135deg, var(--danger-color), #fca5a5); color: #fff; }
-.com-card.primary { background: linear-gradient(135deg, #3b82f6, #93c5fd); color: #fff; }
-.com-card.neutral { background: linear-gradient(135deg, var(--neutral-color), #d1d5db); color: #fff; }
-
-.com-card-icon { font-size: clamp(1.25rem, 3vw, 2rem); margin-bottom: clamp(0.5rem,1vw,0.75rem); display: block; transition: var(--transition); }
-.com-card:hover .com-card-icon { transform: scale(1.1); }
-
-.com-card-title { font-size: clamp(0.75rem, 1vw, 0.95rem); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.85; margin-bottom: 0.5rem; }
-.com-card-value { font-size: clamp(1rem, 2.5vw, 1.75rem); font-weight: 700; letter-spacing: -0.025em; }
+.com-card-icon {
+  font-size: 1.7rem;
+  margin-bottom: 0.4rem;
+  display: block;
+  transition: var(--transition);
+  filter: drop-shadow(0 2px 4px rgba(109,40,217,0.13));
+  opacity: 0.93;
+}
+.com-card:hover .com-card-icon {
+  transform: scale(1.08);
+}
+.com-card-title {
+  font-size: 0.98rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.89;
+  margin-bottom: 0.3rem;
+  color: #5b21b6;
+  text-shadow: 0 1px 2px #ede9fe;
+}
+.com-card-value {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 8px #a5b4fc33, 0 1px 0 #fff;
+  filter: brightness(1.08) drop-shadow(0 2px 6px #a5b4fc33);
+}
 
 /* Actions Header */
 .comisiones-actions-header { display: flex; gap: clamp(0.5rem, 2vw, 1rem); flex-wrap: wrap; justify-content: center; }

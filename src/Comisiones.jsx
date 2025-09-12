@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import Modal from "react-modal";
 import "./Comisiones.css";
+import ComisionesMobileCards from "./ComisionesMobileCards";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -285,33 +286,24 @@ const Comisiones = () => {
           <header className="comisiones-header">
             <h1 className="comisiones-title">📊 Dashboard de Comisiones</h1>
           </header>
-          <div className="comisiones-cards-grid">
-            <ComCard title="Meta" value={meta} colorClass="meta" icon="🎯" />
-            <ComCard
-              title="Comisión Obtenida"
-              value={comisionObtenida}
-              colorClass="success"
-              icon="💵"
-            />
-            <ComCard
-              title="Diferencia a Meta"
-              value={diferenciaMeta}
-              colorClass="danger"
-              icon="📊"
-            />
-            <ComCard
-              title="Días Restantes  del Mes   "
-              value={diasRestantes}
-              colorClass="primary"
-              icon="📆"
-              isNumberOnly={true}
-            />
-            <ComCard
-              title="Meta Diaria"
-              value={metaHoy}
-              colorClass="neutral"
-              icon="📈"
-            />
+          {/* Cards para mobile y desktop */}
+          <div className="comisiones-cards-responsive">
+            <div className="comisiones-cards-desktop">
+              <ComCard title="Meta" value={meta} colorClass="meta" icon="🎯" />
+              <ComCard title="Comisión Obtenida" value={comisionObtenida} colorClass="success" icon="💵" />
+              <ComCard title="Diferencia a Meta" value={diferenciaMeta} colorClass="danger" icon="📊" />
+              <ComCard title="Días Restantes  del Mes" value={diasRestantes} colorClass="primary" icon="📆" isNumberOnly={true} />
+              <ComCard title="Meta Diaria" value={metaHoy} colorClass="neutral" icon="📈" />
+            </div>
+            <div className="comisiones-cards-mobile">
+              <ComisionesMobileCards
+                meta={meta}
+                comisionObtenida={comisionObtenida}
+                diferenciaMeta={diferenciaMeta}
+                diasRestantes={diasRestantes}
+                metaHoy={metaHoy}
+              />
+            </div>
           </div>
           <div className="comisiones-actions-header" style={{ marginBottom: 24 }}>
             <ActionButton
