@@ -58,24 +58,26 @@
 }
 
 /* Botón menú */
-.menu-btn {
-  background: none;
+
+.menu-btn.modern {
+  background: #3569b6;
   border: none;
   margin-right: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  padding: 0.25rem;
-  transition: transform 0.3s ease;
+  padding: 0.35rem 0.6rem;
+  border-radius: 10px;
+  box-shadow: none;
+  backdrop-filter: none;
+  transition: none;
+  position: relative;
+  overflow: hidden;
 }
 
-.menu-btn:hover {
-  transform: rotate(10deg); /* Efecto de rotación en hover */
-}
-
-.menu-btn svg {
-
-  transition: transform 0.3s ease;
+.menu-btn.modern svg {
+  display: block;
+  transition: none;
 }
 
 /* Responsivo */
@@ -91,9 +93,9 @@
     gap: 0.5rem;
   }
 
-  .menu-btn svg {
-    width: 24px;
-    height: 24px;
+  .menu-btn.modern svg {
+    width: 28px;
+    height: 28px;
   }
 }
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./CotizacionWhatsappModal.module.css";
+import useNombreUsuario from "./hooks/useNombreUsuario";
 
 const tipos = ["Nuevo", "Establecido"];
 
@@ -8,6 +9,7 @@ const CotizacionWhatsappModal = ({ open, onClose, usuarioId, plazo, prima, cuota
   const [tipo, setTipo] = useState("Nuevo");
   const [cel, setCel] = useState("");
   const [producto, setProducto] = useState(productoDefault || "");
+  const nombreUsuario = useNombreUsuario();
 
   // Sincronizar producto con productoDefault cada vez que cambie el modal o el prop
   useEffect(() => {
@@ -19,27 +21,42 @@ const CotizacionWhatsappModal = ({ open, onClose, usuarioId, plazo, prima, cuota
   if (!open) return null;
 
   const handleEnviar = () => {
-    if (!cel || !producto) return alert("Completa todos los campos");
-    const url = tipo === "Nuevo"
-      ? `https://crtroatan568-lab.github.io/SOLICITUD/?usuario=${usuarioId}`
-      : `https://crtroatan568-lab.github.io/Actualizacion/?usuario=${usuarioId}`;
-    const mensaje =
-      `Hola%0A` +
-      `tu cotizacion de ${producto}%0A` +
-      `es la siguiente:%0A` +
-      `plazo: ${plazo} meses%0A` +
-      `prima: ${prima}%0A` +
-      `cuota mensual: ${cuota} estimada%0A` +
-      `total de : ${Number(cuota) * Number(plazo)}%0A%0A` +
-      `llena este link para  avanzar con el ingreso de la solicitud:%0A${url}`;
-    // Forzar web.whatsapp.com en desktop y wa.me solo en pantallas pequeñas
-    const isMobileScreen = typeof window !== "undefined" && window.innerWidth < 900;
-    if (isMobileScreen) {
-      window.open(`https://wa.me/${cel}?text=${mensaje}`, "_blank");
-    } else {
-      window.open(`https://web.whatsapp.com/send?phone=${cel}&text=${mensaje}`, "_blank");
-    }
-  };
+  if (!cel || !producto) return alert("Completa todos los campos");
+
+  let nombre = nombreUsuario;
+  if (!nombre) {
+    nombre = prompt("¿Cuál es tu nombre completo?");
+    if (!nombre) return alert("Debes ingresar tu nombre para continuar.");
+    localStorage.setItem("nombre", nombre);
+  }
+
+  // Construir la URL con todos los parámetros
+  const baseUrl = tipo === "Nuevo"
+    ? "https://crtroatan568-lab.github.io/SOLICITUD/"
+    : "https://crtroatan568-lab.github.io/Actualizacion/";
+
+  const url = `${baseUrl}?usuario=${encodeURIComponent(usuarioId)}&name=${encodeURIComponent(nombre)}`;
+
+  // Codificar toda la URL para WhatsApp
+  const mensaje =
+    `Hola te saluda ${nombre},%0A` +
+    `tu cotización de ${producto}%0A` +
+    `es la siguiente:%0A` +
+    `plazo: ${plazo} meses%0A` +
+    `prima: ${prima}%0A` +
+    `cuota mensual: ${cuota} estimada%0A` +
+    `total de: ${Number(cuota) * Number(plazo)}%0A%0A` +
+    `Llena este link para avanzar con el ingreso de la solicitud:%0A` +
+    encodeURIComponent(url); // ✅ aquí está la clave
+
+  // Abrir WhatsApp según dispositivo
+  const isMobileScreen = typeof window !== "undefined" && window.innerWidth < 900;
+  if (isMobileScreen) {
+    window.open(`https://wa.me/${cel}?text=${mensaje}`, "_blank");
+  } else {
+    window.open(`https://web.whatsapp.com/send?phone=${cel}&text=${mensaje}`, "_blank");
+  }
+};
 
   return (
     <div className={styles.backdrop} onClick={onClose}>

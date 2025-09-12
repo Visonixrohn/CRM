@@ -1,22 +1,41 @@
 import React, { useState } from "react";
+import useNombreUsuario from "./hooks/useNombreUsuario";
 import styles from "./GestionLinkModal.module.css";
 
 const tipos = ["Nuevo", "Establecido"];
 
 const GestionLinkModal = ({ open, onClose, usuarioId, telefono }) => {
   const [tipo, setTipo] = useState("Nuevo");
+  const nombreUsuario = useNombreUsuario();
 
   if (!open) return null;
 
   const handleEnviar = () => {
-    if (!telefono) return alert("No hay teléfono disponible");
-    const url = tipo === "Nuevo"
-      ? `https://crtroatan568-lab.github.io/SOLICITUD/?usuario=${usuarioId}`
-      : `https://crtroatan568-lab.github.io/Actualizacion/?usuario=${usuarioId}`;
-    const mensaje =
-      `Hola Gracias por contestar mi llamada para avanzar con la solicitu ayudame llenando este formulario para  avanzar con el ingreso de la solicitud:%0A${url}`;
+  if (!telefono) return alert("No hay teléfono disponible");
+
+  let nombre = nombreUsuario;
+  if (!nombre) {
+    nombre = prompt("¿Cuál es tu nombre completo?");
+    if (!nombre) return alert("Debes ingresar tu nombre para continuar.");
+    localStorage.setItem("nombre", nombre);
+  }
+
+  // Construir la URL completa con parámetros
+  const baseUrl = tipo === "Nuevo"
+    ? "https://crtroatan568-lab.github.io/SOLICITUD/"
+    : "https://crtroatan568-lab.github.io/Actualizacion/";
+
+  const url = `${baseUrl}?usuario=${encodeURIComponent(usuarioId)}&name=${encodeURIComponent(nombre)}`;
+
+  // Codificar toda la URL para WhatsApp
+  const mensaje =
+    `Hola, gracias por contestar mi llamada. Para avanzar con la solicitud, por favor ayúdame llenando este formulario:%0A` +
+    encodeURIComponent(url); // ✅ codificamos toda la URL
+
+  // Abrir WhatsApp Web
   window.open(`https://web.whatsapp.com/send/?phone=${telefono}&text=${mensaje}`, "_blank");
-  };
+};
+
 
   return (
     <div

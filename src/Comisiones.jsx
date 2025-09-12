@@ -72,6 +72,18 @@ const Comisiones = () => {
           localStorage.setItem("userId", userId);
         }
         setUsuario(userId);
+        // Si no hay nombre en localStorage, buscarlo en Supabase
+        let nombre = localStorage.getItem("nombre");
+        if (!nombre && userId) {
+          const { data: profile, error: errorProfile } = await supabase
+            .from("profiles")
+            .select("nombre")
+            .eq("id", userId)
+            .maybeSingle();
+          if (profile && profile.nombre) {
+            localStorage.setItem("nombre", profile.nombre);
+          }
+        }
         const { data, error } = await supabase
           .from("comisiones")
           .select("meta, comision_obtenida")
@@ -272,7 +284,21 @@ const Comisiones = () => {
       ) : (
         <div className="comisiones-container">
           <header className="comisiones-header">
-            <h1 className="comisiones-title">📊 Dashboard de Comisiones</h1>
+            <h1 className="comisiones-title">
+              {(() => {
+                // Saludo dinámico según la hora
+                const hora = new Date().getHours();
+                let saludo = "Hola";
+                if (hora >= 5 && hora < 12) saludo = "Buenos días";
+                else if (hora >= 12 && hora < 19) saludo = "Buenas tardes";
+                else saludo = "Buenas noches";
+                // Buscar nombre real del usuario si está en localStorage
+                let nombre = localStorage.getItem("nombre");
+                // Si no hay nombre, usar el identificador
+                if (!nombre && usuario) nombre = usuario;
+                return `${saludo}${nombre ? ", " + nombre : ""}. El avance de tus resultados económicos son estos:`;
+              })()}
+            </h1>
           </header>
           {/* Cards para mobile y desktop */}
           <div className="comisiones-cards-responsive">
@@ -374,16 +400,16 @@ const Comisiones = () => {
                               Math.max(0, meta - (typeof comisionObtenida === 'number' && comisionObtenida > 0 ? comisionObtenida : 0))
                             ],
                             backgroundColor: ["#3612bbff", "#9da0a7ff"],
-                            borderWidth: 6,
-                            borderColor: ["#3612bbff", "#9da0a7ff"],
+                            borderWidth: 0,
+                            borderColor: ["transparent", "transparent"],
                             hoverOffset: 16,
                             cutout: "65%",
                           }
                         : {
                             data: [1],
                             backgroundColor: ["#f3f4f6"],
-                            borderWidth: 6,
-                            borderColor: ["#e5e7eb"],
+                            borderWidth: 0,
+                            borderColor: ["transparent"],
                             hoverOffset: 0,
                             cutout: "65%",
                           }

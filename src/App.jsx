@@ -154,7 +154,7 @@ function App() {
   return (
     <div id="app-layout" className={sidebarOpen ? "sidebar-open" : ""}>
       {!isMobile && (
-        <Header onMenuClick={handleMenuClick} actions={[]} />
+        <Header onMenuClick={handleMenuClick} actions={[]} user={user} />
       )}
       {isMobile && (
         <HeaderMovil

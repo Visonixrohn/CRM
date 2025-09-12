@@ -286,6 +286,7 @@ const Cotizaciones = () => {
         open={modalWhatsappOpen}
         onClose={() => setModalWhatsappOpen(false)}
         usuarioId={usuarioId}
+        nombreUsuario={localStorage.getItem("nombre") || ""}
         plazo={plazo}
         prima={prima}
         cuota={cuota}

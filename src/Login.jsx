@@ -10,6 +10,7 @@ export default function Login({ onLogin }) {
   const [password, setPassword] = useState("");
   const [identidad, setIdentidad] = useState("");
   const [telefono, setTelefono] = useState("");
+  const [nombre, setNombre] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
@@ -25,20 +26,21 @@ export default function Login({ onLogin }) {
     setLoading(true);
     setError("");
     if (isRegister) {
-      if (!identidad || !telefono) {
-        setError("Debes ingresar número de identidad y teléfono");
+      if (!identidad || !telefono || !nombre) {
+        setError("Debes ingresar nombre, número de identidad y teléfono");
         setLoading(false);
         return;
       }
       // Hashear la contraseña antes de guardar
       const hash = await hashPassword(password);
       const id = uuidv4();
-      console.log('Intentando registrar usuario:', { id, identidad, telefono, email, contrasena: hash });
+      console.log('Intentando registrar usuario:', { id, identidad, telefono, email, nombre, contrasena: hash });
       const { data, error } = await supabase.from("profiles").insert({
         id,
         identidad,
         telefono,
         email,
+        nombre,
         contrasena: hash
       });
       if (error) {
@@ -56,7 +58,7 @@ export default function Login({ onLogin }) {
       // El hook no trae la contraseña, así que hay que pedirla
       const { data: profileWithPass, error } = await supabase
         .from("profiles")
-        .select("id, contrasena, email, identidad, telefono")
+        .select("id, contrasena, email, identidad, telefono, nombre")
         .eq("email", email.trim())
         .maybeSingle();
       if (error || !profileWithPass) {
@@ -72,6 +74,9 @@ export default function Login({ onLogin }) {
       }
       // Guardar sesión simple (puedes mejorar esto con JWT o context)
       localStorage.setItem("userId", profileWithPass.id);
+      if (profileWithPass.nombre) {
+        localStorage.setItem("nombre", profileWithPass.nombre);
+      }
       onLogin && onLogin(profileWithPass);
     }
     setLoading(false);
@@ -158,6 +163,15 @@ export default function Login({ onLogin }) {
               </div>
               {isRegister && (
                 <>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      placeholder="Un nombre y un apellido"
+                      value={nombre}
+                      onChange={e => setNombre(e.target.value)}
+                      required
+                    />
+                  </div>
                   <div className="input-group">
                     <input
                       type="text"

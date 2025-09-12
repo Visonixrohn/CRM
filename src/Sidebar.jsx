@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FaDollarSign,
@@ -32,10 +32,25 @@ const Sidebar = ({
   setUser,
   onGestionClick,
 }) => {
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
+
+  const handleLogout = async () => {
+    setLogoutLoading(true);
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      localStorage.removeItem("token");
+      setUser(null);
+    } else {
+      alert("No se pudo cerrar la sesión. Inténtalo de nuevo.");
+    }
+    setLogoutLoading(false);
+    setShowLogoutModal(false);
+  };
+
   return (
     <aside className={`sidebar${open ? " open" : ""}`}>
       <nav className="sidebar-icons">
-        
         <div
           className="sidebar-icon"
           title="Comisiones"
@@ -138,21 +153,32 @@ const Sidebar = ({
         <button
           className="sidebar-icon cerrar-sesion"
           title="Cerrar Sesión"
-          onClick={async () => {
-            const { error } = await supabase.auth.signOut();
-            if (!error) {
-              localStorage.removeItem("token");
-              setUser(null);
-            } else {
-              console.error("Error al cerrar sesión:", error);
-              alert("No se pudo cerrar la sesión. Inténtalo de nuevo.");
-            }
-          }}
+          onClick={() => setShowLogoutModal(true)}
         >
           <FaSignOutAlt className="icon-text" />
           <span className="sidebar-tooltip">Cerrar Sesión</span>
         </button>
       </nav>
+      {showLogoutModal && (
+        <div
+          className="modal-logout-overlay"
+          onClick={e => {
+            if (e.target === e.currentTarget) setShowLogoutModal(false);
+          }}
+        >
+          <div className="modal-logout">
+            <h3>¿Seguro que deseas cerrar sesión?</h3>
+            <div style={{ display: 'flex', gap: 12, marginTop: 18 }}>
+              <button className="modal-btn confirm" onClick={handleLogout} disabled={logoutLoading}>
+                {logoutLoading ? 'Cerrando...' : 'Sí, cerrar sesión'}
+              </button>
+              <button className="modal-btn cancel" onClick={() => setShowLogoutModal(false)} disabled={logoutLoading}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 };
