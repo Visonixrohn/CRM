@@ -3,8 +3,8 @@
 
 .header-movil-fab-container-right {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
+  right: 1rem;
+  bottom: 2rem;
   z-index: 1200;
   pointer-events: none;
   display: flex;

@@ -1,0 +1,39 @@
+/* =============================
+   BOTÓN FLOTANTE MÓVIL ORDEN DE SERVICIO
+   ============================= */
+.boton-orden-movil {
+  position: fixed;
+  bottom: 7rem;
+  right: 1rem;
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  min-height: 60px;
+  border-radius: 50%;
+  background: #1e4619;
+  color: #fff;
+  font-size: 2rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  line-height: 1;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.4), 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  overflow: hidden;
+}
+.boton-orden-movil:active, .boton-orden-movil:focus {
+  background: #2563eb;
+  box-shadow: 0 6px 20px #2563eb33;
+  transform: scale(1.08);
+}
+@media (min-width: 768px) {
+  .boton-orden-movil {
+    display: none !important;
+  }
+}

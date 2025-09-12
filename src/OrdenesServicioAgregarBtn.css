@@ -1,4 +1,77 @@
 /* =============================
+   BOTÓN FLOTANTE MÓVIL EXCLUSIVO
+   ============================= */
+.btn-agregar-orden-movil {
+  position: fixed;
+  bottom: 4rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  min-height: 60px;
+  border-radius: 50%;
+  background: #1e3a8a;
+  color: #fff;
+  font-size: 2rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  line-height: 1;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.4), 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  overflow: hidden;
+}
+.btn-agregar-orden-movil:active, .btn-agregar-orden-movil:focus {
+  background: #2563eb;
+  box-shadow: 0 6px 20px #2563eb33;
+  transform: scale(1.08);
+}
+@media (min-width: 768px) {
+  .btn-agregar-orden-movil {
+    display: none !important;
+  }
+}
+/* Solo visible en móvil */
+@media (min-width: 768px) {
+  .btn-agregar-orden-movil {
+    display: none !important;
+  }
+}
+@media (max-width: 767px) {
+  .btn-agregar-orden-desktop {
+    display: none !important;
+  }
+}
+
+/* Botón escritorio fijo arriba a la derecha */
+.btn-agregar-orden-desktop {
+  position: fixed;
+  top: 80px;
+  right: 2.5rem;
+  background: #1e3a8a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.7rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(30,58,138,0.13);
+  z-index: 1000;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s, transform 0.18s;
+}
+.btn-agregar-orden-desktop:hover, .btn-agregar-orden-desktop:focus {
+  background: #2563eb;
+  box-shadow: 0 4px 16px #2563eb33;
+  transform: translateY(-2px) scale(1.04);
+}
+/* =============================
    BOTÓN FLOTANTE (+) REDISEÑADO - FIJADO CIRCULAR
    ============================= */
 .btn-agregar-orden {

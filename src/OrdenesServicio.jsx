@@ -4,7 +4,7 @@ import { supabase } from "./supabaseClient";
 import Modal from "react-modal";
 import { CSVLink } from "react-csv";
 import "./OrdenesServicioTabla.css";
-import "./OrdenesServicioAgregarBtn.css";
+import "./botonordenmovil.css";
 import "./OrdenesServicioFiltroBtn.css";
 import "./OrdenesServicioForm.css";
 import "./OrdenesServicioDetalle.css";
@@ -224,7 +224,7 @@ const OrdenesServicio = () => {
   });
 
   return (
-    <div className="ordenes-container">
+  <div className="ordenes-container">
       <header className="ordenes-header">
         <h1>Órdenes de Servicio</h1>
         <div className="osv-busqueda-barra-container">
@@ -269,7 +269,7 @@ const OrdenesServicio = () => {
         <OrdenesServicioCard key={orden.id} orden={orden} onVerDetalle={handleRowClick} />
       ))}
       {/* Tabla solo visible en desktop por CSS */}
-      <div className="ordenes-servicio-table-container">
+  <div className="ordenes-servicio-table-container">
         <table className="ordenes-table">
           <thead>
             <tr>
@@ -330,10 +330,16 @@ const OrdenesServicio = () => {
         </table>
       </div>
 
+      {/* Botón flotante solo móvil */}
       <button
-        className="btn-agregar-orden"
+        className="boton-orden-movil"
         onClick={() => setIsAddOrderModalOpen(true)}
       >+</button>
+      {/* Botón fijo solo escritorio */}
+      <button
+        className="btn-agregar-orden-desktop"
+        onClick={() => setIsAddOrderModalOpen(true)}
+      >Agregar Orden</button>
 
       {selectedOrden && (
         <div
