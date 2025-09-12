@@ -24,6 +24,24 @@ import Cotizaciones from "./Cotizaciones";
 import ResetPassword from "./ResetPassword";
 
 function App() {
+  // Detectar si es móvil
+  // (isMobile ya está declarado arriba)
+
+  // Inhabilitar botón atrás en móviles
+  useEffect(() => {
+    if (!isMobile) return;
+    const handler = (e) => {
+      e.preventDefault();
+      window.history.pushState(null, '', window.location.href);
+    };
+    window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', handler);
+    return () => window.removeEventListener('popstate', handler);
+  }, [isMobile]);
+
+  // Detectar si es móvil
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
+
   // Mostrar pantalla de reset si la URL contiene /reset-password
   if (window.location.pathname.startsWith('/reset-password')) {
     return <ResetPassword />;
@@ -139,8 +157,7 @@ function App() {
   }
   if (!user) return <Login onLogin={setUser} />;
 
-  // Detectar si es móvil
-  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
+  // (isMobile ya está declarado arriba)
 
   // Handler para menú: en móvil expande BottomBar, en desktop abre sidebar
   const handleMenuClick = () => {
