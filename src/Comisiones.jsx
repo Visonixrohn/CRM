@@ -4,27 +4,15 @@ import { supabase } from "./supabaseClient";
 import Modal from "react-modal";
 import "./Comisiones.css";
 import ComisionesMobileCards from "./ComisionesMobileCards";
-import { Line } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
+  ArcElement,
   Tooltip,
   Legend,
 } from "chart.js";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 // Función utilitaria para calcular los días restantes del mes
 function getDiasRestantesMes() {
@@ -372,7 +360,84 @@ const Comisiones = () => {
               </div>
             </div>
             <div className="analisis-chart-container">
-              <Line data={chartData} options={chartOptions} />
+              <div style={{position: 'relative', width: '100%', height: '100%'}}>
+                <Doughnut
+                  data={{
+                    labels: (typeof meta === 'number' && meta > 0)
+                      ? ["Comisión Obtenida", "Restante a Meta"]
+                      : ["Sin meta definida"],
+                    datasets: [
+                      (typeof meta === 'number' && meta > 0)
+                        ? {
+                            data: [
+                              typeof comisionObtenida === 'number' && comisionObtenida > 0 ? comisionObtenida : 0,
+                              Math.max(0, meta - (typeof comisionObtenida === 'number' && comisionObtenida > 0 ? comisionObtenida : 0))
+                            ],
+                            backgroundColor: ["#3612bbff", "#9da0a7ff"],
+                            borderWidth: 6,
+                            borderColor: ["#3612bbff", "#9da0a7ff"],
+                            hoverOffset: 16,
+                            cutout: "65%",
+                          }
+                        : {
+                            data: [1],
+                            backgroundColor: ["#f3f4f6"],
+                            borderWidth: 6,
+                            borderColor: ["#e5e7eb"],
+                            hoverOffset: 0,
+                            cutout: "65%",
+                          }
+                    ]
+                  }}
+                  options={{
+                    plugins: {
+                      legend: {
+                        display: typeof meta === 'number' && meta > 0,
+                        position: "bottom",
+                        labels: {
+                          color: "#1e293b",
+                          font: { size: 16, weight: "bold" },
+                          padding: 24,
+                        },
+                      },
+                      tooltip: {
+                        enabled: typeof meta === 'number' && meta > 0,
+                        callbacks: {
+                          label: function(context) {
+                            let label = context.label || "";
+                            if (label) label += ": ";
+                            if (context.parsed !== null) label += `L${context.parsed.toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+                            return label;
+                          }
+                        }
+                      }
+                    },
+                    cutout: "65%",
+                    responsive: true,
+                    maintainAspectRatio: false,
+                  }}
+                  style={{ filter: "drop-shadow(0 8px 32px #34d39933)" }}
+                />
+                {(!(typeof meta === 'number' && meta > 0)) && (
+                  <div style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "1.2rem",
+                    color: "#888",
+                    background: "rgba(255,255,255,0.7)",
+                    borderRadius: 18,
+                    pointerEvents: "none"
+                  }}>
+                    Sin datos para mostrar
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           {/* Fin bloque de análisis visual */}
