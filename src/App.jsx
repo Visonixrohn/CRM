@@ -1,7 +1,20 @@
+import React, { useState, useEffect } from "react";
+function ExitAppModal({ open, onCancel, onConfirm }) {
+  if (!open) return null;
+  return (
+    <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.5)',zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center'}}>
+      <div style={{background:'#fff',padding:32,borderRadius:12,maxWidth:320,textAlign:'center'}}>
+        <h3>¿Salir de la aplicación?</h3>
+        <p>¿Estás seguro que deseas salir de la app?</p>
+        <button style={{marginRight:16}} onClick={onCancel}>Cancelar</button>
+        <button style={{background:'#ef4444',color:'#fff'}} onClick={onConfirm}>Salir</button>
+      </div>
+    </div>
+  );
+}
 import BottomBar from "./BottomBar";
 import "./App.css";
 
-import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import Login from "./Login";
 import ModalInput from "./ModalInput";
@@ -24,6 +37,25 @@ import Cotizaciones from "./Cotizaciones";
 import ResetPassword from "./ResetPassword";
 
 function App() {
+  // Modal de confirmación de salida de la app
+  const [showExitModal, setShowExitModal] = useState(false);
+  useEffect(() => {
+    const handlePop = (e) => {
+      setShowExitModal(true);
+      window.history.pushState({ modal: 'exitApp' }, '');
+    };
+    window.addEventListener('popstate', handlePop);
+    return () => window.removeEventListener('popstate', handlePop);
+  }, []);
+
+  const handleExitConfirm = () => {
+    setShowExitModal(false);
+    window.history.go(-2); // Salir realmente
+  };
+  const handleExitCancel = () => {
+    setShowExitModal(false);
+    window.history.pushState({ modal: 'main' }, '');
+  };
   // Mostrar pantalla de reset si la URL contiene /reset-password
   if (window.location.pathname.startsWith('/reset-password')) {
     return <ResetPassword />;
@@ -205,6 +237,7 @@ function App() {
           {page === "gestion" && <Gestion />}
         </div>
       </div>
+        <ExitAppModal open={showExitModal} onCancel={handleExitCancel} onConfirm={handleExitConfirm} />
       <ModalInput
         open={modal.open}
         label={modal.label}
