@@ -53,7 +53,7 @@ export default function Push() {
           if (atrasadas.length > 0) body += `\n${atrasadas.length} atrasada(s)`;
           new Notification('CRM', {
             body,
-            icon: '/public/icon-192.png',
+            icon: '/icon-192.png',
           });
           lastNotifiedHash = hash;
         }
