@@ -47,7 +47,13 @@ const BottomBar = ({
 
   const handleConfirmLogout = () => {
     setShowLogoutModal(false);
-    onLogout();
+    // Limpiar toda la información de sesión relevante
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("nombre");
+    if (onLogout) onLogout();
+    // Forzar recarga para limpiar cualquier estado residual
+    window.location.reload();
   };
 
   const handleCancelLogout = () => {

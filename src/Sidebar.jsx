@@ -38,14 +38,15 @@ const Sidebar = ({
   const handleLogout = async () => {
     setLogoutLoading(true);
     const { error } = await supabase.auth.signOut();
-    if (!error) {
-      localStorage.removeItem("token");
-      setUser(null);
-    } else {
-      alert("No se pudo cerrar la sesión. Inténtalo de nuevo.");
-    }
+    // Limpiar toda la información de sesión relevante
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("nombre");
+    setUser(null);
     setLogoutLoading(false);
     setShowLogoutModal(false);
+    // Forzar recarga para limpiar cualquier estado residual
+    window.location.reload();
   };
 
   return (
