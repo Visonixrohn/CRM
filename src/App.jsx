@@ -213,6 +213,7 @@ function App() {
                 comisionHoy={comisionHoy}
                 setComisionHoy={setComisionHoy}
                 handleUpdate={() => {}}
+                setPage={setPage}
               />
             )}
             {page === "entregas" && <Entregas />}

@@ -1,5 +1,7 @@
 
 import React, { useState, useEffect } from "react";
+import useClientesNuevos from "./useClientesNuevos";
+import useActualizaciones from "./useActualizaciones";
 import { supabase } from "./supabaseClient";
 import Modal from "react-modal";
 import "./Comisiones.css";
@@ -48,7 +50,7 @@ const ActionButton = ({ onClick, label, icon }) => (
   </button>
 );
 
-const Comisiones = () => {
+const Comisiones = ({ setPage }) => {
   // --- Lógica para obtener entregas pendientes del usuario actual ---
   // Estado para cards de entregas
   const [entregasPendientes, setEntregasPendientes] = useState([]);
@@ -269,6 +271,12 @@ const Comisiones = () => {
     closeModal();
   };
 
+  // Obtener datos de clientes nuevos y actualizaciones
+  const { clientes: clientesNuevos = [] } = useClientesNuevos();
+  const { datos: actualizaciones = [] } = useActualizaciones();
+  const clientesNuevosSinTomar = clientesNuevos.filter(c => c.STATUS !== "Tomado").length;
+  const actualizacionesSinTomar = actualizaciones.filter(a => a.STATUS !== "Tomado").length;
+
   // Return principal del componente
   return (
     <>
@@ -366,7 +374,7 @@ const Comisiones = () => {
               />
             </div>
           </div>
-          <div className="comisiones-actions-header" style={{ marginBottom: 24 }}>
+          <div className="comisiones-actions-header" style={{ marginBottom: 24, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             <ActionButton
               onClick={() => openModal("meta")}
               label="Actualizar Meta"
@@ -377,6 +385,24 @@ const Comisiones = () => {
               label="Actualizar Comisión"
               icon="💵"
             />
+            {clientesNuevosSinTomar > 0 && (
+              <button
+                className="header-round-btn info"
+                style={{background:'#2563eb',color:'#fff'}} 
+                onClick={() => setPage && setPage('clientes-nuevos')}
+              >
+                Clientes nuevos: {clientesNuevosSinTomar}
+              </button>
+            )}
+            {actualizacionesSinTomar > 0 && (
+              <button
+                className="header-round-btn warning"
+                style={{background:'#fbbf24',color:'#fff'}} 
+                onClick={() => setPage && setPage('actualizaciones')}
+              >
+                Actualizaciones: {actualizacionesSinTomar}
+              </button>
+            )}
           </div>
           {/* Bloque de análisis visual */}
           <div className="comisiones-analisis-block" style={{
