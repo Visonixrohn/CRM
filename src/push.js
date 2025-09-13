@@ -5,9 +5,12 @@ import { supabase } from "./supabaseClient";
 
 export default function Push() {
   useEffect(() => {
-    let intervalId;
-    let notifiedIds = new Set();
+  let intervalId;
+  let lastNotifiedHash = null;
     async function notify() {
+      // Detectar si es móvil (Android/iOS)
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if (isMobile) return;
       if (!("Notification" in window)) return;
       let permission = Notification.permission;
       if (permission !== "granted") {
@@ -38,22 +41,27 @@ export default function Push() {
       const dd = String(hoy.getDate()).padStart(2, '0');
       const hoyStr = `${yyyy}-${mm}-${dd}`;
 
-      // Notificar por cada entrega pendiente para hoy o atrasada, solo una vez por id
-      entregas.forEach(e => {
-        if (String(e.estatus).toLowerCase() === 'entregado') return;
-        if (notifiedIds.has(e.id)) return;
-        if (e.fecha_entrega === hoyStr) {
-          new Notification(`Hola ${user.nombre || ''}!`, {
-            body: `Tienes entrega pendiente para hoy del cliente ${e.cliente}`
-          });
-          notifiedIds.add(e.id);
-        } else if (e.fecha_entrega < hoyStr) {
-          new Notification(`Hola ${user.nombre || ''}!`, {
-            body: `Entrega atrasada: cliente ${e.cliente}`
-          });
-          notifiedIds.add(e.id);
-        }
+      // Agrupar entregas pendientes para hoy o atrasadas
+      const pendientes = entregas.filter(e => {
+        if (String(e.estatus).toLowerCase() === 'entregado') return false;
+        return e.fecha_entrega === hoyStr || e.fecha_entrega < hoyStr;
       });
+      if (pendientes.length > 0) {
+        let body = pendientes.map(e => {
+          let estado = e.fecha_entrega === hoyStr ? 'para hoy' : 'atrasada';
+          return `${e.cliente} = ${estado}`;
+        }).join('\n');
+        // Crear un hash simple de la lista para evitar notificaciones duplicadas
+        const hash = pendientes.map(e => `${e.id}:${e.fecha_entrega}:${e.estatus}`).join('|');
+        if (hash !== lastNotifiedHash) {
+          new Notification(`Hola ${user.nombre || ''}!`, {
+            body: `Tienes estas entregas pendientes:\n${body}`
+          });
+          lastNotifiedHash = hash;
+        }
+      } else {
+        lastNotifiedHash = null;
+      }
     }
     notify();
     intervalId = setInterval(notify, 15000);
