@@ -1,11 +1,35 @@
 import React, { useState } from "react";
+// Componente de estrellas animadas inclinadas
+function StarBgAnimado() {
+  // Generar 40 estrellas con posiciones y delays aleatorios
+  const stars = Array.from({ length: 40 }).map((_, i) => {
+    const left = Math.random() * 100;
+    const delay = Math.random() * 2.5;
+    const size = Math.random() * 1.5 + 1.5;
+    return (
+      <div
+        key={i}
+        className="star"
+        style={{
+          left: `${left}%`,
+          bottom: '-10px',
+          width: `${size}px`,
+          height: `${size}px`,
+          animationDelay: `${delay}s`,
+        }}
+      />
+    );
+  });
+  return <div className="star-bg-animado">{stars}</div>;
+}
 import { supabase } from "./supabaseClient";
 import "./Login.css";
+import "./StarBgAnimado.css";
 import { hashPassword, comparePassword } from "./utils/hash";
 import { v4 as uuidv4 } from "uuid";
 import useProfileByEmail from "./hooks/useProfileByEmail";
 
-export default function Login({ onLogin }) {
+function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [identidad, setIdentidad] = useState("");
@@ -34,7 +58,6 @@ export default function Login({ onLogin }) {
       // Hashear la contraseña antes de guardar
       const hash = await hashPassword(password);
       const id = uuidv4();
-      console.log('Intentando registrar usuario:', { id, identidad, telefono, email, nombre, contrasena: hash });
       const { data, error } = await supabase.from("profiles").insert({
         id,
         identidad,
@@ -109,11 +132,13 @@ export default function Login({ onLogin }) {
 
   return (
     <div className="login-bg">
-      <div className="login-container">
-        <div className="login-card">
-          {showReset ? (
-            <form className="login-form" onSubmit={handleResetPassword}>
-              <h2>Recuperar contraseña</h2>
+      <div className="login-split-container">
+        <div className="login-left">
+          <div className="login-card">
+            {showReset ? (
+              <form className="login-form" onSubmit={handleResetPassword}>
+                <img src="https://i.imgur.com/qUoDoR7.png" alt="Logo" style={{ width: '120px', display: 'block', margin: '0 auto 16px auto' }} />
+                <h2>Recuperar contraseña</h2>
               <div className="input-group">
                 <input
                   type="email"
@@ -149,9 +174,10 @@ export default function Login({ onLogin }) {
                 </button>
               </div>
             </form>
-          ) : (
-            <form className="login-form" onSubmit={handleSubmit}>
-              <h2>{isRegister ? "Crear cuenta" : "Iniciar sesión"}</h2>
+            ) : (
+              <form className="login-form" onSubmit={handleSubmit}>
+                <img src="https://i.imgur.com/qUoDoR7.png" alt="Logo" style={{ width: '120px', display: 'block', margin: '0 auto 16px auto' }} />
+                <h2>{isRegister ? "Crear cuenta" : "Iniciar sesión"}</h2>
               <div className="input-group">
                 <input
                   type="email"
@@ -237,8 +263,15 @@ export default function Login({ onLogin }) {
               </div>
             </form>
           )}
+          </div>
+        </div>
+        <div className="login-right">
+          <div className="login-bg-animado"></div>
+          <StarBgAnimado />
         </div>
       </div>
     </div>
   );
 }
+
+export default Login;

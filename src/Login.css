@@ -1,16 +1,59 @@
 /* ==============================
    CONTENEDOR PRINCIPAL
    ============================== */
-.login-container {
+
+/* Split layout para desktop */
+.login-split-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  background: radial-gradient(circle at top, #0a0a0a, #1c284d 80%);
-  font-family: "Poppins", sans-serif;
-  overflow: hidden;
+  width: 100vw;
+}
+
+.login-left {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #0a0a0a, #0f1d47 80%);
   position: relative;
-  padding: 15px;
+  z-index: 1;
+}
+
+.login-right {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: #101c3a;
+}
+
+.login-bg-animado {
+  width: 100%;
+  height: 100vh;
+  background: radial-gradient(circle, rgba(0, 130, 255, 0.2), transparent 70%);
+  animation: rotateGlow 20s linear infinite;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+/* Responsivo para móvil */
+@media (max-width: 900px) {
+  .login-split-container {
+    flex-direction: column;
+  }
+  .login-left, .login-right {
+    flex: unset;
+    width: 100vw;
+    min-height: 50vh;
+  }
+  .login-right {
+    min-height: 30vh;
+    height: 30vh;
+  }
 }
 
 /* Glow animado de fondo */

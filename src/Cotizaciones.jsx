@@ -268,9 +268,10 @@ const Cotizaciones = () => {
           </form>
           <div className={formCardStyles.formCardCuota}>
 
-            Cuota mensual estimada: <span>L {cuota.toLocaleString('en-US')}</span><br />
 
-            Total a pagar: <span>L {(cuota * plazo).toLocaleString('en-US')}</span>
+            Cuota mensual estimada: <span>L {cuota.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><br />
+
+            Total a pagar: <span>L {(cuota * plazo).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
 
         
             <br />
