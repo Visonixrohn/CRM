@@ -16,38 +16,39 @@ export default function useClientesNuevos() {
     if (userId) setUsuarioId(userId);
   }, []);
 
-  useEffect(() => {
-  if (!usuarioId) return;
-  console.log("usuarioId para clientes nuevos:", usuarioId);
+  const fetchData = async () => {
+    if (!usuarioId) return;
     setLoading(true);
-    const fetchData = async () => {
-      try {
-        const response = await fetch(URL);
-        const data = await response.json();
-        if (data.values) {
-          const headers = data.values[0];
-          const rows = data.values.slice(1);
-          const formatted = rows.map((row) => {
-            const obj = {};
-            headers.forEach((header, idx) => {
-              obj[header] = row[idx] || "";
-            });
-            return obj;
+    try {
+      const response = await fetch(URL);
+      const data = await response.json();
+      if (data.values) {
+        const headers = data.values[0];
+        const rows = data.values.slice(1);
+        const formatted = rows.map((row) => {
+          const obj = {};
+          headers.forEach((header, idx) => {
+            obj[header] = row[idx] || "";
           });
-          // Filtrar por usuario
-          const filtrados = formatted.filter(row => row.usuario && row.usuario === usuarioId);
-          setClientes(filtrados);
-        } else {
-          setClientes([]);
-        }
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
+          return obj;
+        });
+        // Filtrar por usuario
+        const filtrados = formatted.filter(row => row.usuario && row.usuario === usuarioId);
+        setClientes(filtrados);
+      } else {
+        setClientes([]);
       }
-    };
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
+    // eslint-disable-next-line
   }, [usuarioId]);
 
-  return { clientes, loading, error };
+  return { clientes, loading, error, refetch: fetchData };
 }

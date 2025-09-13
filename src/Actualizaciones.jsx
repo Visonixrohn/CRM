@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import "./Actualizaciones.css";
 import useActualizaciones from "./useActualizaciones";
+import ModalExito from "./ModalExito";
 
 const Actualizaciones = () => {
   const [detalle, setDetalle] = useState(null);
   const [filtro, setFiltro] = useState("todos");
   const [busqueda, setBusqueda] = useState("");
-  const { datos: clientes, loading, error } = useActualizaciones();
+  const [cargando, setCargando] = useState(false);
+  const [exito, setExito] = useState(false);
+  const { datos: clientes, loading, error, refetch } = useActualizaciones();
 
   const handleRowClick = (cliente) => {
     setDetalle(cliente);
@@ -45,11 +48,23 @@ const Actualizaciones = () => {
       numeroIdentidad
     )}&status=${encodeURIComponent(status)}`;
 
+    // LOGS para depuración
+    console.log("actualizarStatus -> numeroIdentidad:", numeroIdentidad);
+    console.log("actualizarStatus -> status:", status);
+    console.log("actualizarStatus -> url:", url);
+
     try {
       const response = await fetch(url);
       const data = await response.json();
 
-      alert(data.message);
+      if (data.message && data.message.toLowerCase().includes("correctamente")) {
+        setExito(true);
+        if (typeof refetch === 'function') {
+          setTimeout(() => {
+            refetch();
+          }, 500);
+        }
+      }
       setDetalle(null); // Cerrar el modal de detalle
     } catch (error) {
       console.error(error);
@@ -81,6 +96,9 @@ const Actualizaciones = () => {
   }
   return (
     <div className="actualizaciones-container">
+      {exito && (
+        <ModalExito mensaje="Actualización exitosa" onClose={() => setExito(false)} />
+      )}
       <h2>Actualizaciones</h2>
       <div style={{width: '100%', maxWidth: 1200}}>
         <div style={{display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16}}>

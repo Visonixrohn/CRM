@@ -347,7 +347,7 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
                 </div>
                 <div className="input-group-float">
                   <input type="number" value={form.factura} onChange={e => setForm({ ...form, factura: e.target.value })} onBlur={() => setTouched(t => ({ ...t, factura: true }))} required style={touched.factura && !form.factura ? { borderColor: "#ef4444" } : {}} />
-                  <label className={form.factura ? "active" : ""}>Factura *</label>
+                  <label className={form.factura ? "active" : ""}>No. Documento *</label>
                 </div>
                 <div className="input-group-float">
                   <input type="tel" value={form.cel} onChange={e => setForm({ ...form, cel: e.target.value })} onBlur={() => setTouched(t => ({ ...t, cel: true }))} required style={touched.cel && !form.cel ? { borderColor: "#ef4444" } : {}} pattern="[0-9]{8,15}" maxLength={15} />
@@ -727,7 +727,7 @@ const Entregas = () => {
             <tr>
               <th>Fecha</th>
               <th>Cliente</th>
-              <th>Factura</th>
+              <th>Documento</th>
               <th>Cel</th>
               <th>Artículo</th>
               <th>Fecha de entrega</th>

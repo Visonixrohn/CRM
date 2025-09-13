@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./ClientesNuevos.css";
 import useClientesNuevos from "./useClientesNuevos";
+import ModalExito from "./ModalExito";
 
 const actualizarStatus = async (identidad, nuevoStatus) => {
   const url = `https://script.google.com/macros/s/AKfycbybKQScf_PZaGm0_OZKsKgw4RVZirPsS2iC-qc3OSuLL0duwFd8_HjycLbWaPMZTbnP/exec?identidad=${identidad}&status=${nuevoStatus}`;
@@ -18,7 +19,8 @@ const ClientesNuevos = () => {
   const [detalle, setDetalle] = useState(null);
   const [filtro, setFiltro] = useState("todos");
   const [busqueda, setBusqueda] = useState("");
-  const { clientes, loading, error } = useClientesNuevos();
+  const [exito, setExito] = useState(false);
+  const { clientes, loading, error, refetch } = useClientesNuevos();
 
   const handleRowClick = (cliente) => {
     setDetalle(cliente);
@@ -31,7 +33,12 @@ const ClientesNuevos = () => {
   const handleActualizarStatus = async (nuevoStatus) => {
     if (detalle) {
       await actualizarStatus(detalle["No. de Identidad"], nuevoStatus);
-      alert("Estatus actualizado correctamente");
+      setExito(true);
+      if (typeof refetch === 'function') {
+        setTimeout(() => {
+          refetch();
+        }, 500);
+      }
       closeDetalle();
     }
   };
@@ -60,6 +67,9 @@ const ClientesNuevos = () => {
   }
   return (
     <div className="clientes-nuevos-container">
+      {exito && (
+        <ModalExito mensaje="Actualización exitosa" onClose={() => setExito(false)} />
+      )}
       <h2>Clientes Nuevos</h2>
       <div style={{width: '100%', maxWidth: 1200}}>
         <div style={{display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16}}>

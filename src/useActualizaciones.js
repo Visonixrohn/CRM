@@ -16,38 +16,39 @@ export default function useActualizaciones() {
     if (userId) setUsuarioId(userId);
   }, []);
 
-  useEffect(() => {
-  if (!usuarioId) return;
-  console.log("usuarioId para actualizaciones:", usuarioId);
+  const fetchData = async () => {
+    if (!usuarioId) return;
     setLoading(true);
-    const fetchData = async () => {
-      try {
-        const response = await fetch(URL);
-        const data = await response.json();
-        if (data.values) {
-          const headers = data.values[0];
-          const rows = data.values.slice(1);
-          const formatted = rows.map((row) => {
-            const obj = {};
-            headers.forEach((header, idx) => {
-              obj[header] = row[idx] || "";
-            });
-            return obj;
+    try {
+      const response = await fetch(URL);
+      const data = await response.json();
+      if (data.values) {
+        const headers = data.values[0];
+        const rows = data.values.slice(1);
+        const formatted = rows.map((row) => {
+          const obj = {};
+          headers.forEach((header, idx) => {
+            obj[header] = row[idx] || "";
           });
-          // Filtrar por usuario (acepta USUARIO o usuario)
-          const filtrados = formatted.filter(row => (row.USUARIO && row.USUARIO === usuarioId) || (row.usuario && row.usuario === usuarioId));
-          setDatos(filtrados);
-        } else {
-          setDatos([]);
-        }
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
+          return obj;
+        });
+        // Filtrar por usuario (acepta USUARIO o usuario)
+        const filtrados = formatted.filter(row => (row.USUARIO && row.USUARIO === usuarioId) || (row.usuario && row.usuario === usuarioId));
+        setDatos(filtrados);
+      } else {
+        setDatos([]);
       }
-    };
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
+    // eslint-disable-next-line
   }, [usuarioId]);
 
-  return { datos, loading, error };
+  return { datos, loading, error, refetch: fetchData };
 }
