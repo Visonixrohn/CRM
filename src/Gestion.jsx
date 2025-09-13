@@ -38,7 +38,7 @@ const GestionCard = ({ cliente, onWhatsApp, onQuitar, onLink }) => (
   </div>
 );
 
-const MENSAJE_DEFAULT = `Hola 😇 {NOMBRE},\nLe saluda Miguel de Curacao Roatán. Usted es parte de nuestros CLIENTES ESPECIALES 💎 y queremos invitarle a unirse a nuestro grupo exclusivo de promociones en WhatsApp 📲.\n\n¡Descubra ofertas únicas solo para usted y aproveche descuentos increíbles! 🎁🔥\n\n👉 Únase aquí: https://chat.whatsapp.com/GxyudGf4OZ8ET6PilXjVCj\n\nSerá un placer atenderle,\nAtt. Miguel Romero`;
+const MENSAJE_DEFAULT = `Hola 😇 {NOMBRE}`;
 
 import { useEffect as useEffectApp, useState as useStateApp } from "react";
 import { supabase } from "./supabaseClient";
