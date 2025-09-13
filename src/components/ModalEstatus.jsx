@@ -8,10 +8,12 @@ const tipos = ["TIENDA", "BODEGA SPS", "BODEGA TG", "DOMICILIO"];
 const gestionadas = ["GESTIONADA", "NO GESTIONADA"];
 
 
+
 const ModalEstatus = ({ open, onClose, entrega, fetchEntregas }) => {
   const [estatus, setEstatus] = useState(entrega?.estatus || "Pendiente");
   const [tipo, setTipo] = useState(entrega?.tipo_entrega || "TIENDA");
   const [gestionada, setGestionada] = useState(entrega?.gestionada || "NO GESTIONADA");
+  const [fechaEntrega, setFechaEntrega] = useState(entrega?.fecha_entrega ? entrega.fecha_entrega.substring(0,10) : "");
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
 
@@ -35,9 +37,14 @@ const ModalEstatus = ({ open, onClose, entrega, fetchEntregas }) => {
         setLoading(false);
         return;
       }
+      // Construir el objeto de actualización
+      const updateObj = { estatus, tipo_entrega: tipo, gestionada };
+      if (estatus === "Reprogramado") {
+        updateObj.fecha_entrega = fechaEntrega;
+      }
       const { data, error } = await supabase
         .from("entregas_pendientes")
-        .update({ estatus, tipo_entrega: tipo, gestionada })
+        .update(updateObj)
         .eq("id", registroId)
         .eq("usuario_id", userId)
         .select();
@@ -69,6 +76,17 @@ const ModalEstatus = ({ open, onClose, entrega, fetchEntregas }) => {
             {estados.map(e => <option key={e} value={e}>{e}</option>)}
           </select>
         </label>
+        {estatus === "Reprogramado" && (
+          <label>
+            Nueva fecha de entrega:
+            <input
+              type="date"
+              value={fechaEntrega}
+              onChange={e => setFechaEntrega(e.target.value)}
+              min={new Date().toISOString().substring(0,10)}
+            />
+          </label>
+        )}
         <label>
           Tipo de entrega:
           <select value={tipo} onChange={e => setTipo(e.target.value)}>
