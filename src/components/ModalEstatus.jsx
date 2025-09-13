@@ -70,35 +70,66 @@ const ModalEstatus = ({ open, onClose, entrega, fetchEntregas }) => {
     <div className="modal-estatus-bg">
       <div className="modal-estatus">
         <h3>Actualizar estatus</h3>
-        <label>
-          Estatus:
-          <select value={estatus} onChange={e => setEstatus(e.target.value)}>
-            {estados.map(e => <option key={e} value={e}>{e}</option>)}
-          </select>
-        </label>
+        <div className="modal-estatus-group">
+          <div className="modal-estatus-label">Estatus:</div>
+          <div className="modal-estatus-btn-group">
+            {estados.map(e => (
+              <button
+                key={e}
+                type="button"
+                className={`modal-estatus-btn${estatus === e ? ' selected' : ''}`}
+                onClick={() => setEstatus(e)}
+                style={{background: estatus === e ? '#6366f1' : '#e0e7ff', color: estatus === e ? '#fff' : '#3730a3'}}
+              >
+                {e}
+              </button>
+            ))}
+          </div>
+        </div>
         {estatus === "Reprogramado" && (
-          <label>
-            Nueva fecha de entrega:
+          <div className="modal-estatus-group">
+            <div className="modal-estatus-label">Nueva fecha de entrega:</div>
             <input
               type="date"
               value={fechaEntrega}
               onChange={e => setFechaEntrega(e.target.value)}
               min={new Date().toISOString().substring(0,10)}
+              className="modal-estatus-date"
             />
-          </label>
+          </div>
         )}
-        <label>
-          Tipo de entrega:
-          <select value={tipo} onChange={e => setTipo(e.target.value)}>
-            {tipos.map(e => <option key={e} value={e}>{e}</option>)}
-          </select>
-        </label>
-        <label>
-          Gestionada:
-          <select value={gestionada} onChange={e => setGestionada(e.target.value)}>
-            {gestionadas.map(e => <option key={e} value={e}>{e}</option>)}
-          </select>
-        </label>
+        <div className="modal-estatus-group">
+          <div className="modal-estatus-label">Tipo de entrega:</div>
+          <div className="modal-estatus-btn-group">
+            {tipos.map(e => (
+              <button
+                key={e}
+                type="button"
+                className={`modal-estatus-btn${tipo === e ? ' selected' : ''}`}
+                onClick={() => setTipo(e)}
+                style={{background: tipo === e ? '#6366f1' : '#e0e7ff', color: tipo === e ? '#fff' : '#3730a3'}}
+              >
+                {e}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="modal-estatus-group">
+          <div className="modal-estatus-label">Gestionada:</div>
+          <div className="modal-estatus-btn-group">
+            {gestionadas.map(e => (
+              <button
+                key={e}
+                type="button"
+                className={`modal-estatus-btn${gestionada === e ? ' selected' : ''}`}
+                onClick={() => setGestionada(e)}
+                style={{background: gestionada === e ? '#6366f1' : '#e0e7ff', color: gestionada === e ? '#fff' : '#3730a3'}}
+              >
+                {e}
+              </button>
+            ))}
+          </div>
+        </div>
         {msg && <div style={{margin:'8px 0', color: msg.startsWith('¡') ? '#22c55e' : '#ef4444'}}>{msg}</div>}
         <div className="modal-estatus-actions">
           <button onClick={onClose} disabled={loading}>Cancelar</button>

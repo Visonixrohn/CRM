@@ -22,14 +22,35 @@
   color: #3730a3;
   font-size: 1.2rem;
 }
-.modal-estatus label {
-  display: flex;
-  flex-direction: column;
+.modal-estatus-group {
+  margin-bottom: 0.7rem;
+}
+.modal-estatus-label {
   font-weight: 600;
   color: #6366f1;
-  gap: 0.3rem;
+  margin-bottom: 0.3rem;
 }
-.modal-estatus select {
+.modal-estatus-btn-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.modal-estatus-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 1.1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #e0e7ff;
+  color: #3730a3;
+  transition: background 0.2s, color 0.2s;
+}
+.modal-estatus-btn.selected {
+  background: #6366f1;
+  color: #fff;
+}
+.modal-estatus-date {
   border-radius: 8px;
   padding: 0.4rem;
   border: 1px solid #c7d2fe;

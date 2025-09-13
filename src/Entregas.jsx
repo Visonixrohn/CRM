@@ -87,8 +87,19 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
     telefonoDebug = telefonoDebug.slice(3);
   }
   return (
-    <div className="detalle-entrega-modal-bg">
-      <div className="detalle-entrega-modal">
+    <div
+      className="detalle-entrega-modal-bg"
+      onClick={onClose}
+      role="presentation"
+      tabIndex={-1}
+      aria-modal="true"
+    >
+      <div
+        className="detalle-entrega-modal"
+        onClick={e => e.stopPropagation()}
+        role="dialog"
+        tabIndex={0}
+      >
         <div className="detalle-entrega-titulo">Detalle de Entrega</div>
         <div className="detalle-entrega-lista">
           <div className="detalle-entrega-item"><span className="detalle-entrega-label">Cliente:</span> <span className="detalle-entrega-valor">{entrega.cliente}</span></div>
@@ -108,21 +119,23 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
         <div style={{color:'#25D366',fontWeight:'bold',marginBottom:8}}>
           Cel. chofer: {telefonoDebug ? `+504 ${telefonoDebug}` : 'No detectado'}
         </div>
-        <button className="detalle-entrega-cerrar" onClick={onClose}>Cerrar</button>
-        <button
-          className="detalle-entrega-cerrar"
-          style={{ background: "#4f46e5", marginTop: "0.5rem" }}
-          onClick={() => setShowEstatus(true)}
-        >
-          Actualizar estatus
-        </button>
-        <button
-          className="detalle-entrega-cerrar"
-          style={{ background: "#25D366", marginTop: "0.5rem" }}
-          onClick={handleEnviarDatos}
-        >
-          Enviar por WhatsApp
-        </button>
+        <div className="detalle-entrega-botones">
+          <button className="detalle-entrega-cerrar" onClick={onClose}>Cerrar</button>
+          <button
+            className="detalle-entrega-cerrar"
+            style={{ background: "#4f46e5" }}
+            onClick={() => setShowEstatus(true)}
+          >
+            Actualizar estatus
+          </button>
+          <button
+            className="detalle-entrega-cerrar"
+            style={{ background: "#25D366" }}
+            onClick={handleEnviarDatos}
+          >
+            Enviar por WhatsApp
+          </button>
+        </div>
         {showEstatus && (
           <ModalEstatus
             open={showEstatus}
