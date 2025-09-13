@@ -1,5 +1,6 @@
 import BottomBar from "./BottomBar";
 import "./App.css";
+import Push from "./push";
 
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
@@ -169,89 +170,92 @@ function App() {
   };
 
   return (
-    <div id="app-layout" className={sidebarOpen ? "sidebar-open" : ""}>
-      {!isMobile && (
-        <Header onMenuClick={handleMenuClick} actions={[]} user={user} />
-      )}
-      {isMobile && (
-        <HeaderMovil
-          onMenu={() => setBottomBarExpanded(true)}
-        />
-      )}
-      <div className="layout-container">
-        <Sidebar
-          open={sidebarOpen}
-          onComisionesClick={handleComisionesClick}
-          onEntregasClick={handleEntregasClick}
-          onOrdenesClick={handleOrdenesClick}
-          onCalculadoraClick={handleCalculadoraClick}
-          onRazonesClick={handleRazonesClick}
-          onTiendasClick={handleTiendasClick}
-          onDocumentosClick={handleDocumentosClick}
-          onClientesNuevosClick={handleClientesNuevosClick}
-          onActualizacionesClick={handleActualizacionesClick}
-          onGestionClick={handleGestionClick}
-          onCotizacionesClick={handleCotizacionesClick}
-          setUser={setUser}
-        />
-        <div id="main-content">
-          {page === "comisiones" && (
-            <Comisiones
-              meta={meta}
-              setMeta={setMeta}
-              comisionObtenida={comisionObtenida}
-              setComisionObtenida={setComisionObtenida}
-              ventaPorCliente={ventaPorCliente}
-              setVentaPorCliente={setVentaPorCliente}
-              metaHoy={metaHoy}
-              setMetaHoy={setMetaHoy}
-              comisionHoy={comisionHoy}
-              setComisionHoy={setComisionHoy}
-              handleUpdate={() => {}}
-            />
-          )}
-          {page === "entregas" && <Entregas />}
-          {page === "ordenes" && <OrdenesServicio />}
-          {page === "calculadoras" && <Calculadoras />}
-          {page === "razones" && <Razones />}
-          {page === "tiendas" && <Tiendas />}
-          {page === "documentos" && <Documentos />}
-          {page === "clientes-nuevos" && <ClientesNuevos />}
-          {page === "cotizaciones" && <Cotizaciones />}
-          {page === "actualizaciones" && <Actualizaciones />}
-          {page === "gestion" && <Gestion />}
+    <>
+      <Push />
+      <div id="app-layout" className={sidebarOpen ? "sidebar-open" : ""}>
+        {!isMobile && (
+          <Header onMenuClick={handleMenuClick} actions={[]} user={user} />
+        )}
+        {isMobile && (
+          <HeaderMovil
+            onMenu={() => setBottomBarExpanded(true)}
+          />
+        )}
+        <div className="layout-container">
+          <Sidebar
+            open={sidebarOpen}
+            onComisionesClick={handleComisionesClick}
+            onEntregasClick={handleEntregasClick}
+            onOrdenesClick={handleOrdenesClick}
+            onCalculadoraClick={handleCalculadoraClick}
+            onRazonesClick={handleRazonesClick}
+            onTiendasClick={handleTiendasClick}
+            onDocumentosClick={handleDocumentosClick}
+            onClientesNuevosClick={handleClientesNuevosClick}
+            onActualizacionesClick={handleActualizacionesClick}
+            onGestionClick={handleGestionClick}
+            onCotizacionesClick={handleCotizacionesClick}
+            setUser={setUser}
+          />
+          <div id="main-content">
+            {page === "comisiones" && (
+              <Comisiones
+                meta={meta}
+                setMeta={setMeta}
+                comisionObtenida={comisionObtenida}
+                setComisionObtenida={setComisionObtenida}
+                ventaPorCliente={ventaPorCliente}
+                setVentaPorCliente={setVentaPorCliente}
+                metaHoy={metaHoy}
+                setMetaHoy={setMetaHoy}
+                comisionHoy={comisionHoy}
+                setComisionHoy={setComisionHoy}
+                handleUpdate={() => {}}
+              />
+            )}
+            {page === "entregas" && <Entregas />}
+            {page === "ordenes" && <OrdenesServicio />}
+            {page === "calculadoras" && <Calculadoras />}
+            {page === "razones" && <Razones />}
+            {page === "tiendas" && <Tiendas />}
+            {page === "documentos" && <Documentos />}
+            {page === "clientes-nuevos" && <ClientesNuevos />}
+            {page === "cotizaciones" && <Cotizaciones />}
+            {page === "actualizaciones" && <Actualizaciones />}
+            {page === "gestion" && <Gestion />}
+          </div>
         </div>
-      </div>
-      <ModalInput
-        open={modal.open}
-        label={modal.label}
-        value={modal.value}
-        onClose={handleModalClose}
-        onSave={handleModalSave}
-        isMoney={modal.isMoney}
-      />
-      <ChoferModal
-        open={choferModal}
-        onClose={() => setChoferModal(false)}
-        onSave={(data) => {
-          setChofer(data);
-          setChoferModal(false);
-        }}
-      />
-      {/* BottomBar solo en móviles */}
-      {isMobile && (
-        <BottomBar
-          onNavigate={setPage}
-          active={page}
-          expanded={bottomBarExpanded}
-          onCloseExpand={() => setBottomBarExpanded(false)}
-          onLogout={async () => {
-            await supabase.auth.signOut();
-            setUser(null);
+        <ModalInput
+          open={modal.open}
+          label={modal.label}
+          value={modal.value}
+          onClose={handleModalClose}
+          onSave={handleModalSave}
+          isMoney={modal.isMoney}
+        />
+        <ChoferModal
+          open={choferModal}
+          onClose={() => setChoferModal(false)}
+          onSave={(data) => {
+            setChofer(data);
+            setChoferModal(false);
           }}
         />
-      )}
-    </div>
+        {/* BottomBar solo en móviles */}
+        {isMobile && (
+          <BottomBar
+            onNavigate={setPage}
+            active={page}
+            expanded={bottomBarExpanded}
+            onCloseExpand={() => setBottomBarExpanded(false)}
+            onLogout={async () => {
+              await supabase.auth.signOut();
+              setUser(null);
+            }}
+          />
+        )}
+      </div>
+    </>
   );
 }
 
