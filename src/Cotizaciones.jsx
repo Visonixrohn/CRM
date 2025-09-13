@@ -74,6 +74,7 @@ const Cotizaciones = () => {
   ]);
   const capital = rows.reduce((acc, row) => acc + (Number(row.total) || 0), 0);
   const [prima, setPrima] = useState(0);
+  const [primaInputValue, setPrimaInputValue] = useState('');
   const [tasa, setTasa] = useState(0.02); // 2% mensual
   const [plazo, setPlazo] = useState(12);
   const [planes, setPlanes] = useState([]);
@@ -153,6 +154,11 @@ const Cotizaciones = () => {
       }
     }
   }, [planSeleccionado, planes, rows]);
+
+  // Sincronizar el valor formateado de prima cuando cambia prima
+  useEffect(() => {
+    setPrimaInputValue(prima === 0 ? '' : String(prima));
+  }, [prima]);
   const capitalFinanciar = Math.max(capital - prima, 0);
 
   // Para mostrar la cuota esperada
@@ -190,11 +196,35 @@ const Cotizaciones = () => {
           <form className={formCardStyles.formCardForm} onSubmit={e => e.preventDefault()}>
             <label>
               Capital
-              <input type="number" value={capital} readOnly style={{background:'#f3f3f3'}} />
+              <input
+                type="text"
+                inputMode="decimal"
+                value={capital === 0 ? '' : Number(capital).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                readOnly
+                style={{background:'#f3f3f3'}}
+              />
             </label>
             <label>
               Prima
-              <input type="number" value={prima} onChange={e => setPrima(Number(e.target.value))} min={0} max={capital} />
+              <input
+                type="text"
+                inputMode="decimal"
+                value={primaInputValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                onChange={e => {
+                  // Permitir solo números y punto decimal
+                  let val = e.target.value.replace(/,/g, '');
+                  // Si hay más de un punto, eliminar los extras
+                  const parts = val.split('.');
+                  if (parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
+                  setPrima(val === '' ? 0 : Number(val));
+                  setPrimaInputValue(val);
+                }}
+                min={0}
+                max={capital}
+                onBlur={() => {
+                  setPrimaInputValue(prima === 0 ? '' : Number(prima).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                }}
+              />
             </label>
             <label>
               Plan
@@ -238,9 +268,9 @@ const Cotizaciones = () => {
           </form>
           <div className={formCardStyles.formCardCuota}>
 
-            Cuota mensual estimada: <span>L {cuota}</span><br />
+            Cuota mensual estimada: <span>L {cuota.toLocaleString('en-US')}</span><br />
 
-            Total a pagar: <span>L {cuota * plazo}</span>
+            Total a pagar: <span>L {(cuota * plazo).toLocaleString('en-US')}</span>
 
         
             <br />

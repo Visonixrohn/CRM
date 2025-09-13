@@ -3,6 +3,11 @@ import styles from './GASelectorRow.module.css';
 import { supabase } from './supabaseClient';
 
 const GASelectorRow = ({ onAddRow, gaRegistros, row, setRow, gaEnabled, setGaEnabled }) => {
+  const [precioInputValue, setPrecioInputValue] = useState('');
+
+  useEffect(() => {
+    setPrecioInputValue(row.precio === 0 ? '' : String(row.precio));
+  }, [row.precio]);
   // row: { precio, depto, total }
   // gaEnabled: boolean
   // setRow: function to update row state
@@ -26,12 +31,22 @@ const GASelectorRow = ({ onAddRow, gaRegistros, row, setRow, gaEnabled, setGaEna
     <div className={styles.rowContainer}>
       <label>Precio: </label>
       <input
-        type="number"
+        type="text"
+        inputMode="decimal"
         placeholder="Precio en Lps"
-        value={row.precio}
-        onChange={e => setRow(r => ({ ...r, precio: Number(e.target.value) }))}
+        value={precioInputValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+        onChange={e => {
+          let val = e.target.value.replace(/,/g, '');
+          const parts = val.split('.');
+          if (parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
+          setRow(r => ({ ...r, precio: val === '' ? 0 : Number(val) }));
+          setPrecioInputValue(val);
+        }}
         className={styles.input}
         min={0}
+        onBlur={() => {
+          setPrecioInputValue(row.precio === 0 ? '' : Number(row.precio).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        }}
       />
       <label>Articulo: </label>
       <select
@@ -46,8 +61,8 @@ const GASelectorRow = ({ onAddRow, gaRegistros, row, setRow, gaEnabled, setGaEna
       </select>
       <label>Total: </label>
       <input
-        type="number"
-        value={row.total}
+        type="text"
+        value={row.total === 0 ? '' : row.total.toLocaleString('en-US')}
         readOnly
         className={styles.input}
         placeholder="Total"
