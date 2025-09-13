@@ -42,20 +42,17 @@ export default function Push() {
       const hoyStr = `${yyyy}-${mm}-${dd}`;
 
       // Agrupar entregas pendientes para hoy o atrasadas
-      const pendientes = entregas.filter(e => {
-        if (String(e.estatus).toLowerCase() === 'entregado') return false;
-        return e.fecha_entrega === hoyStr || e.fecha_entrega < hoyStr;
-      });
-      if (pendientes.length > 0) {
-        let body = pendientes.map(e => {
-          let estado = e.fecha_entrega === hoyStr ? 'para hoy' : 'atrasada';
-          return `${e.cliente} = ${estado}`;
-        }).join('\n');
+      const paraHoy = entregas.filter(e => String(e.estatus).toLowerCase() !== 'entregado' && e.fecha_entrega === hoyStr);
+      const atrasadas = entregas.filter(e => String(e.estatus).toLowerCase() !== 'entregado' && e.fecha_entrega < hoyStr);
+      if (paraHoy.length > 0 || atrasadas.length > 0) {
         // Crear un hash simple de la lista para evitar notificaciones duplicadas
-        const hash = pendientes.map(e => `${e.id}:${e.fecha_entrega}:${e.estatus}`).join('|');
+        const hash = [...paraHoy, ...atrasadas].map(e => `${e.id}:${e.fecha_entrega}:${e.estatus}`).join('|');
         if (hash !== lastNotifiedHash) {
+          let body = `Hola ${user.nombre || ''}, el día de hoy tienes`;
+          if (paraHoy.length > 0) body += `\n${paraHoy.length} entrega(s) para hoy`;
+          if (atrasadas.length > 0) body += `\n${atrasadas.length} atrasada(s)`;
           new Notification('CRM', {
-            body: `Hola ${user.nombre || ''}!\nTienes estas entregas pendientes:\n${body}`,
+            body,
             icon: '/public/icon-192.png',
           });
           lastNotifiedHash = hash;
