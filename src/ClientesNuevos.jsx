@@ -60,76 +60,90 @@ const ClientesNuevos = () => {
   }
   return (
     <div className="clientes-nuevos-container">
-      <h1>Clientes Nuevos</h1>
-      <div className="filtros-busqueda">
-        <button
-          onClick={() => setFiltro("todos")}
-          className={filtro === "todos" ? "activo" : ""}
-        >
-          Todos
-        </button>
-        <button
-          onClick={() => setFiltro("tomados")}
-          className={filtro === "tomados" ? "activo" : ""}
-        >
-          Tomados
-        </button>
-        <button
-          onClick={() => setFiltro("sin-tomar")}
-          className={filtro === "sin-tomar" ? "activo" : ""}
-        >
-          Sin Tomar
-        </button>
-        <input
-          type="text"
-          placeholder="Buscar por nombre o No. de Identidad"
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          className="barra-busqueda"
-        />
-      </div>
-      <div className="tabla-container">
-        <table className="clientes-nuevos-tabla">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>No. de Identidad</th>
-              <th>Celular</th>
-              <th>Estatus</th>
-            </tr>
-          </thead>
-          <tbody>
+      <h2>Clientes Nuevos</h2>
+      <div style={{width: '100%', maxWidth: 1200}}>
+        <div style={{display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16}}>
+          <button
+            onClick={() => setFiltro("todos")}
+            className={filtro === "todos" ? "clientes-nuevos-status" : ""}
+          >
+            Todos
+          </button>
+          <button
+            onClick={() => setFiltro("tomados")}
+            className={filtro === "tomados" ? "clientes-nuevos-status" : ""}
+          >
+            Tomados
+          </button>
+          <button
+            onClick={() => setFiltro("sin-tomar")}
+            className={filtro === "sin-tomar" ? "clientes-nuevos-status" : ""}
+          >
+            Sin Tomar
+          </button>
+          <input
+            type="text"
+            placeholder="Buscar por nombre o No. de Identidad"
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="search-bar"
+            style={{flex: 1, minWidth: 220}}
+          />
+        </div>
+        <div className="clientes-nuevos-table-wrapper">
+          <table className="clientes-nuevos-tabla">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>No. de Identidad</th>
+                <th>Celular</th>
+                <th>Estatus</th>
+              </tr>
+            </thead>
+            <tbody>
             {clientesFiltrados.map((cliente, index) => (
               <tr
                 key={index}
                 onClick={() => handleRowClick(cliente)}
-                className={
-                  cliente.Estatus === "Tomado"
-                    ? "status-tomado"
-                    : "status-sin-tomar"
-                }
+                style={{cursor: 'pointer'}}
               >
-                <td>{cliente.Nombre}</td>
-                <td>{cliente["No. de Identidad"]}</td>
-                <td>{cliente.Celular}</td>
-                <td>{cliente.STATUS}</td>
+                <td data-label="Nombre">{cliente.Nombre}</td>
+                <td data-label="No. de Identidad">{cliente["No. de Identidad"]}</td>
+                <td data-label="Celular">{cliente.Celular}</td>
+                <td data-label="Estatus">
+                  <span
+                    className={
+                      cliente.STATUS === "Tomado"
+                        ? "status-tomado"
+                        : "status-sin-tomar"
+                    }
+                  >
+                    {cliente.STATUS === "Tomado" ? "Tomado" : "Sin tomar"}
+                  </span>
+                </td>
               </tr>
             ))}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
       {detalle && (
-        <div className="detalle-modal">
+        <div
+          className="detalle-modal"
+          onClick={e => {
+            if (e.target.classList.contains('detalle-modal')) closeDetalle();
+          }}
+        >
           <div className="detalle-contenido">
-            <button className="cerrar-detalle" onClick={closeDetalle}>
-              Cerrar
-            </button>
+           
             <h2>Detalle del Cliente</h2>
-            {Object.entries(detalle).map(([key, value]) => (
-              <p key={key}>
-                <strong>{key}:</strong> {value}
-              </p>
-            ))}
+            <div className="detalle-lineas">
+              {Object.entries(detalle).map(([key, value]) => (
+                <div className="detalle-linea" key={key}>
+                  <strong>{key}:</strong> {value}
+                </div>
+              ))}
+            </div>
             <div className="actualizar-status">
               <button onClick={() => handleActualizarStatus("Tomado")}>Marcar como Tomado</button>
             </div>

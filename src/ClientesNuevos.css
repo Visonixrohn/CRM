@@ -1,3 +1,30 @@
+.detalle-lineas {
+  margin: 1.5rem 0;
+}
+.detalle-linea {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.5rem 0;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.detalle-linea:last-child {
+  border-bottom: none;
+}
+.clientes-nuevos-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: right;
+  background: var(--background-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  padding: 1.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 @media (max-width: 480px) {
   .clientes-nuevos-container {
     padding: 0.5rem;
@@ -16,8 +43,7 @@
 }
 /* Variables globales para un tema blanco con azul */
 :root {
-  --neon-blue: #00b7ff;
-  --neon-blue-dark: #0088cc;
+  /* --neon-blue y --neon-blue-dark eliminados */
   --background-white: #ffffff;
   --background-light: #f0f5ff;
   --text-dark: #1a1a1a;
@@ -95,32 +121,13 @@
   font-size: 2.25rem;
   font-weight: 700;
   text-align: center;
-  color: var(--neon-blue);
-  text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue-dark);
+  color: #2563eb;
+  text-shadow: none;
   margin-bottom: 2rem;
   position: relative;
-  animation: glitch-text 2s infinite;
 }
 
-@keyframes glitch-text {
-  0% {
-    transform: translate(0, 0);
-    text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue-dark);
-  }
-  2% {
-    transform: translate(1px, -1px);
-    text-shadow: -1px 1px 5px var(--neon-blue-dark),
-      1px -1px 5px var(--neon-blue);
-  }
-  4% {
-    transform: translate(-1px, 1px);
-    text-shadow: 1px -1px 5px var(--neon-blue),
-      -1px 1px 5px var(--neon-blue-dark);
-  }
-  6% {
-    transform: translate(0, 0);
-  }
-}
+
 
 /* Tabla */
 .clientes-nuevos-tabla {
@@ -143,18 +150,25 @@
   font-size: 1.1rem;
   font-weight: 600;
   letter-spacing: 0.05rem;
-  text-shadow: 0 0 5px var(--neon-blue);
+  text-shadow: none;
+  border-bottom: 2px solid #d1d5db;
+  border-right: 1px solid #e5e7eb;
 }
 
 /* Filas de la tabla */
 .clientes-nuevos-tabla td {
   padding: 1rem;
-  border-bottom: var(--border-blue);
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
   font-size: 1rem;
   color: var(--text-dark);
   text-align: center;
   position: relative;
   transition: var(--transition);
+}
+.clientes-nuevos-tabla th:last-child,
+.clientes-nuevos-tabla td:last-child {
+  border-right: none;
 }
 
 .clientes-nuevos-tabla td::after {
@@ -242,10 +256,10 @@
     position: absolute;
     left: 1rem;
     font-weight: 600;
-    color: var(--neon-blue-dark);
+    color: #2563eb;
     text-align: left;
     width: 40%;
-    text-shadow: 0 0 5px var(--neon-blue-dark);
+    text-shadow: none;
   }
 }
 
@@ -299,9 +313,9 @@
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: var(--neon-blue);
+ 
   text-align: center;
-  text-shadow: 0 0 8px var(--neon-blue);
+  
   animation: glitch-text 2.2s infinite;
 }
 
@@ -333,8 +347,8 @@
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: var(--neon-blue-dark);
-  text-shadow: 0 0 5px var(--neon-blue-dark);
+ 
+ 
 }
 
 .detalle-item span {
@@ -349,8 +363,7 @@
   top: 1rem;
   right: 1rem;
   background: transparent;
-  color: var(--neon-blue);
-  border: 2px solid var(--neon-blue);
+ 
   border-radius: 50%;
   width: 2.5rem;
   height: 2.5rem;
@@ -363,9 +376,9 @@
 }
 
 .cerrar-detalle:hover {
-  background: var(--neon-blue);
-  color: var(--background-white);
-  box-shadow: 0 0 12px var(--neon-blue);
+ 
+  color: black;
+ 
 }
 
 /* Filtros y barra de búsqueda */
@@ -381,13 +394,13 @@
   padding: 0.75rem 1.75rem;
   border: none;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--neon-blue), var(--neon-blue-dark));
+  background: #2563eb;
   color: var(--background-white);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
-  box-shadow: var(--shadow-blue);
+  box-shadow: var(--shadow-light);
   position: relative;
   overflow: hidden;
 }
@@ -421,19 +434,19 @@
 }
 
 .filtros-busqueda button.activo {
-  background: linear-gradient(135deg, var(--neon-blue-dark), #005577);
+  background: #1e40af;
   transform: scale(1.05);
 }
 
 .filtros-busqueda button:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 15px var(--neon-blue);
+  box-shadow: 0 0 15px #2563eb;
 }
 
 .barra-busqueda {
   flex: 1;
   padding: 0.75rem 1.5rem;
-  border: 2px solid var(--neon-blue);
+  border: 2px solid #2563eb;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.8);
   color: var(--text-dark);
@@ -444,28 +457,25 @@
 
 .barra-busqueda:focus {
   outline: none;
-  border-color: var(--neon-blue-dark);
-  box-shadow: 0 0 15px var(--neon-blue);
-  animation: glitch-text 2s infinite;
+  border-color: #1e40af;
+  box-shadow: 0 0 15px #2563eb;
 }
 
 /* Estados */
 .status-tomado {
-  background: linear-gradient(135deg, var(--neon-blue), #00aaff);
-  color: var(--background-white);
+  background: #22c55e;
+  color: #fff;
   padding: 0.3rem 0.75rem;
   border-radius: 6px;
-  text-shadow: 0 0 5px var(--neon-blue);
-  animation: flicker 2.5s infinite;
+  text-shadow: none;
 }
 
 .status-sin-tomar {
-  background: linear-gradient(135deg, #faf1f1, #faf5f5);
-  color: var(--background-white);
+  background: #fbbf24;
+  color: #fff;
   padding: 0.3rem 0.75rem;
   border-radius: 6px;
-  text-shadow: 0 0 5px #f0e2e2;
-  animation: flicker 3s infinite;
+  text-shadow: none;
 }
 
 @keyframes flicker {
