@@ -53,8 +53,9 @@ export default function PushMovil() {
         // Crear un hash simple de la lista para evitar notificaciones duplicadas
         const hash = pendientes.map(e => `${e.id}:${e.fecha_entrega}:${e.estatus}`).join('|');
         if (hash !== lastNotifiedHash) {
-          new Notification(`Hola ${user.nombre || ''}!`, {
-            body: `Tienes estas entregas pendientes:\n${body}`
+          new Notification('CRM', {
+            body: `Hola ${user.nombre || ''}!\nTienes estas entregas pendientes:\n${body}`,
+            icon: '/public/icon-192.png',
           });
           lastNotifiedHash = hash;
         }
