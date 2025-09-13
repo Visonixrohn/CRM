@@ -1,6 +1,7 @@
 import BottomBar from "./BottomBar";
 import "./App.css";
 import Push from "./push";
+import PushMovil from "./pushmovil";
 
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
@@ -172,6 +173,7 @@ function App() {
   return (
     <>
       <Push />
+      <PushMovil />
       <div id="app-layout" className={sidebarOpen ? "sidebar-open" : ""}>
         {!isMobile && (
           <Header onMenuClick={handleMenuClick} actions={[]} user={user} />
