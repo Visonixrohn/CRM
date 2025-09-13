@@ -245,14 +245,26 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
     if (!open) {
       setMapLoaded(false);
       setMarker(null);
+      // Calcular fecha actual y día siguiente
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const todayStr = `${yyyy}-${mm}-${dd}`;
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      const yyyy2 = tomorrow.getFullYear();
+      const mm2 = String(tomorrow.getMonth() + 1).padStart(2, '0');
+      const dd2 = String(tomorrow.getDate()).padStart(2, '0');
+      const tomorrowStr = `${yyyy2}-${mm2}-${dd2}`;
       setForm({
         cliente: "",
         factura: "",
         cel: "",
         articulo: "",
         estatus: "Pendiente",
-        fecha: "",
-        fecha_entrega: "",
+        fecha: todayStr,
+        fecha_entrega: tomorrowStr,
         ubicacion: "",
         lat: 16.3832884,
         lng: -86.4460626,
