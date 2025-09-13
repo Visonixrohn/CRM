@@ -5,6 +5,8 @@ import { supabase } from "./supabaseClient";
 
 export default function Push() {
   useEffect(() => {
+    let intervalId;
+    let notifiedIds = new Set();
     async function notify() {
       if (!("Notification" in window)) return;
       let permission = Notification.permission;
@@ -36,21 +38,26 @@ export default function Push() {
       const dd = String(hoy.getDate()).padStart(2, '0');
       const hoyStr = `${yyyy}-${mm}-${dd}`;
 
-      // Notificar por cada entrega pendiente para hoy
+      // Notificar por cada entrega pendiente para hoy o atrasada, solo una vez por id
       entregas.forEach(e => {
         if (String(e.estatus).toLowerCase() === 'entregado') return;
+        if (notifiedIds.has(e.id)) return;
         if (e.fecha_entrega === hoyStr) {
           new Notification(`Hola ${user.nombre || ''}!`, {
             body: `Tienes entrega pendiente para hoy del cliente ${e.cliente}`
           });
+          notifiedIds.add(e.id);
         } else if (e.fecha_entrega < hoyStr) {
           new Notification(`Hola ${user.nombre || ''}!`, {
             body: `Entrega atrasada: cliente ${e.cliente}`
           });
+          notifiedIds.add(e.id);
         }
       });
     }
     notify();
+    intervalId = setInterval(notify, 15000);
+    return () => clearInterval(intervalId);
   }, []);
   return null;
 }
