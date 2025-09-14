@@ -64,25 +64,23 @@ const ComisionesMobileCards = ({ meta, comisionObtenida, diferenciaMeta, diasRes
  
  
   return (
-    <div className="comisiones-mobile-cards">
+    <div className="analisis-cards-grid">
       {cards.map((card) => (
-        <div className={`com-card-mobile ${card.colorClass}`} key={card.title}>
-          <span className="com-card-mobile-icon">{card.icon}</span>
-          <span className="com-card-mobile-title">{card.title}</span>
-          <strong className="com-card-mobile-value">
+        <div className="analisis-card" key={card.title}>
+          <div className="analisis-card-title">{card.icon} {card.title}</div>
+          <div className="analisis-card-value">
             {typeof values[card.valueKey] === "number"
               ? (card.valueKey === "diasRestantes"
                   ? values[card.valueKey]
-                  : `Lps: ${values[card.valueKey].toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
+                  : `L${values[card.valueKey].toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
               : values[card.valueKey]}
-          </strong>
+          </div>
         </div>
       ))}
       {extraCards.map((card) => (
-        <div className={`com-card-mobile ${card.colorClass}`} key={card.title}>
-          <span className="com-card-mobile-icon">{card.icon}</span>
-          <span className="com-card-mobile-title">{card.title}</span>
-          <strong className="com-card-mobile-value">{card.value}</strong>
+        <div className="analisis-card" key={card.title}>
+          <div className="analisis-card-title">{card.icon} {card.title}</div>
+          <div className="analisis-card-value">{card.value}</div>
         </div>
       ))}
     </div>
