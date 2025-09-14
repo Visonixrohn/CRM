@@ -35,6 +35,8 @@ export default function ResetPassword() {
     else {
       setMsg("¡Contraseña actualizada! Redirigiendo al login...");
       setTimeout(() => {
+        localStorage.removeItem("userId");
+        localStorage.removeItem("nombre");
         window.location.href = "/";
       }, 1800);
     }

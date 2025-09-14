@@ -3,6 +3,7 @@ import "./Configuraciones.css";
 import { FaCheckCircle } from "react-icons/fa";
 
 import { useProfile } from "./hooks/useProfile";
+import { comparePassword } from "./utils/hash";
 import { supabase } from "./supabaseClient";
 
 const campos = [
@@ -36,9 +37,9 @@ export default function Configuraciones() {
   if (loadingProfile || !user) {
     return <div style={{textAlign:'center',marginTop:40}}>Cargando datos de usuario...</div>;
   }
-  // Abrir modal para cambiar contraseña
+  // Abrir modal para verificar contraseña antes de resetear
   const openPasswordChangeModal = () => {
-    setPasswordChangeModal({ open: true, newPassword: "", confirmPassword: "" });
+    setPasswordChangeConfirmModal({ open: true, password: "", newPassword: "" });
     setError("");
   };
 
@@ -63,17 +64,32 @@ export default function Configuraciones() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    await new Promise((r) => setTimeout(r, 1200));
     if (!passwordChangeConfirmModal.password) {
-      setError("Debes ingresar tu contraseña actual para guardar los cambios.");
+      setError("Debes ingresar tu contraseña actual para continuar.");
       setLoading(false);
       return;
     }
-    // Aquí deberías hacer la petición real para actualizar la contraseña
+    // Buscar el hash de la contraseña en profiles
+    const { data: profileWithPass, error } = await supabase
+      .from("profiles")
+      .select("id, contrasena, email")
+      .eq("id", userId)
+      .maybeSingle();
+    if (error || !profileWithPass) {
+      setError("Error al validar usuario.");
+      setLoading(false);
+      return;
+    }
+    const match = await comparePassword(passwordChangeConfirmModal.password, profileWithPass.contrasena);
+    if (!match) {
+      setError("Contraseña incorrecta.");
+      setLoading(false);
+      return;
+    }
     setPasswordChangeConfirmModal({ open: false, password: "", newPassword: "" });
     setLoading(false);
-    setSuccess(true);
-    setTimeout(() => setSuccess(false), 2000);
+    // Redirigir a la página de reset password con el uid
+    window.location.href = `/reset-password?uid=${userId}`;
   };
 
   // Open modal to edit field
@@ -168,35 +184,7 @@ export default function Configuraciones() {
           Cambiar contraseña
         </button>
       </div>
-      {/* Modal para cambiar contraseña */}
-      {passwordChangeModal.open && (
-        <div className="config-modal-bg" onClick={closeModals}>
-          <div className="config-modal" onClick={e => e.stopPropagation()}>
-            <h3>Cambiar contraseña</h3>
-            <form onSubmit={handlePasswordChangeSave}>
-              <input
-                type="password"
-                placeholder="Nueva contraseña"
-                value={passwordChangeModal.newPassword}
-                onChange={e => setPasswordChangeModal(m => ({ ...m, newPassword: e.target.value }))}
-                required
-              />
-              <input
-                type="password"
-                placeholder="Confirmar nueva contraseña"
-                value={passwordChangeModal.confirmPassword}
-                onChange={e => setPasswordChangeModal(m => ({ ...m, confirmPassword: e.target.value }))}
-                required
-              />
-              {error && <div className="form-error">{error}</div>}
-              <div className="modal-btns">
-                <button className="modal-btn" type="submit">Continuar</button>
-                <button className="modal-btn cancel" type="button" onClick={closeModals}>Cancelar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+
 
       {/* Modal para confirmar contraseña actual al cambiar contraseña */}
       {passwordChangeConfirmModal.open && (
