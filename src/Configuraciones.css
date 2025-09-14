@@ -1,0 +1,211 @@
+/* Main container for the cards */
+.config-user-cards {
+  max-width: 900px;
+  margin: 40px auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 0 20px;
+}
+
+/* Individual card styling */
+.config-user-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.config-user-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Card label */
+.config-user-card .label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1e3a8a; /* Dark blue for labels */
+}
+
+/* Card value */
+.config-user-card .value {
+  font-size: 1rem;
+  color: #4b5e7b; /* Muted blue for values */
+  background: #f0f4ff; /* Light blue background */
+  padding: 10px;
+  border-radius: 8px;
+  word-break: break-word;
+}
+
+/* Update button */
+.config-user-card .update-btn {
+  background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%); /* Blue gradient */
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.config-user-card .update-btn:hover {
+  background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%);
+  transform: scale(1.02);
+}
+
+.config-user-card .update-btn:disabled {
+  background: #93c5fd; /* Lighter blue for disabled */
+  cursor: not-allowed;
+}
+
+/* Modal background */
+.config-modal-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Modal content */
+.config-modal {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Modal heading */
+.config-modal h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #1e3a8a; /* Dark blue */
+  text-align: center;
+}
+
+/* Modal form inputs */
+.config-modal input {
+  padding: 12px;
+  border: 1px solid #bfdbfe; /* Light blue border */
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f0f4ff; /* Light blue background */
+  transition: border 0.2s ease;
+}
+
+.config-modal input:focus {
+  border: 1.5px solid #2563eb; /* Vibrant blue on focus */
+  outline: none;
+}
+
+/* Modal buttons container */
+.modal-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+/* Modal buttons */
+.modal-btn {
+  background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%); /* Blue gradient */
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.modal-btn:hover {
+  background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%);
+}
+
+.modal-btn.cancel {
+  background: #e5e7eb; /* Gray for cancel */
+  color: #1e3a8a; /* Dark blue text */
+}
+
+.modal-btn.cancel:hover {
+  background: #d1d5db;
+}
+
+.modal-btn:disabled {
+  background: #93c5fd; /* Lighter blue for disabled */
+  cursor: not-allowed;
+}
+
+/* Success screen */
+.config-success-screen {
+  max-width: 400px;
+  margin: 40px auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.config-success-screen .icon {
+  font-size: 2.5rem;
+  color: #22c55e; /* Green for success */
+}
+
+.config-success-screen h2 {
+  font-size: 1.5rem;
+  color: #1e3a8a; /* Dark blue */
+}
+
+.config-success-screen div {
+  font-size: 1rem;
+  color: #4b5e7b; /* Muted blue */
+}
+
+/* Error message */
+.form-error {
+  color: #dc2626; /* Red for error */
+  background: #fef2f2; /* Light red background */
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .config-user-cards {
+    grid-template-columns: 1fr;
+    padding: 0 10px;
+  }
+
+  .config-user-card {
+    padding: 16px;
+  }
+
+  .config-modal {
+    width: 95%;
+    padding: 16px;
+  }
+}

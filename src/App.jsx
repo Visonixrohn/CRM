@@ -24,6 +24,8 @@ import LoadingScreen from "./LoadingScreen";
 import Gestion from "./Gestion";
 import Cotizaciones from "./Cotizaciones";
 import ResetPassword from "./ResetPassword";
+import Configuraciones from "./Configuraciones";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 
 function App() {
   // Detectar si es móvil (debe ir antes de cualquier uso de isMobile)
@@ -55,16 +57,9 @@ function App() {
   };
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [page, setPage] = useState(() => {
-    return localStorage.getItem("crm-vista-actual") || "comisiones";
-  });
+  // Eliminar page y setPage, ya no se usan
 
-  // Guardar la vista actual en localStorage cada vez que cambia
-  useEffect(() => {
-    if (page) {
-      localStorage.setItem("crm-vista-actual", page);
-    }
-  }, [page]);
+  // Ya no se guarda la vista actual en localStorage
   const [meta, setMeta] = useState(35000);
   const [comisionObtenida, setComisionObtenida] = useState(0);
   const [ventaPorCliente, setVentaPorCliente] = useState(0);
@@ -154,7 +149,8 @@ function App() {
   }, []);
 
   // Mostrar pantalla de reset si la URL contiene /reset-password
-  if (window.location.pathname.startsWith('/reset-password')) {
+  const location = useLocation();
+  if (location.pathname.startsWith('/reset-password')) {
     return <ResetPassword />;
   }
   if (!user) return <Login onLogin={setUser} />;
@@ -186,22 +182,12 @@ function App() {
         <div className="layout-container">
           <Sidebar
             open={sidebarOpen}
-            onComisionesClick={handleComisionesClick}
-            onEntregasClick={handleEntregasClick}
-            onOrdenesClick={handleOrdenesClick}
-            onCalculadoraClick={handleCalculadoraClick}
-            onRazonesClick={handleRazonesClick}
-            onTiendasClick={handleTiendasClick}
-            onDocumentosClick={handleDocumentosClick}
-            onClientesNuevosClick={handleClientesNuevosClick}
-            onActualizacionesClick={handleActualizacionesClick}
-            onGestionClick={handleGestionClick}
-            onCotizacionesClick={handleCotizacionesClick}
             setUser={setUser}
+            closeSidebar={closeSidebar}
           />
           <div id="main-content">
-            {page === "comisiones" && (
-              <Comisiones
+            <Routes>
+              <Route path="/" element={<Comisiones
                 meta={meta}
                 setMeta={setMeta}
                 comisionObtenida={comisionObtenida}
@@ -213,19 +199,21 @@ function App() {
                 comisionHoy={comisionHoy}
                 setComisionHoy={setComisionHoy}
                 handleUpdate={() => {}}
-                setPage={setPage}
-              />
-            )}
-            {page === "entregas" && <Entregas />}
-            {page === "ordenes" && <OrdenesServicio />}
-            {page === "calculadoras" && <Calculadoras />}
-            {page === "razones" && <Razones />}
-            {page === "tiendas" && <Tiendas />}
-            {page === "documentos" && <Documentos />}
-            {page === "clientes-nuevos" && <ClientesNuevos />}
-            {page === "cotizaciones" && <Cotizaciones />}
-            {page === "actualizaciones" && <Actualizaciones />}
-            {page === "gestion" && <Gestion />}
+                setPage={() => {}}
+              />} />
+              <Route path="/entregas" element={<Entregas />} />
+              <Route path="/ordenes" element={<OrdenesServicio />} />
+              <Route path="/calculadoras" element={<Calculadoras />} />
+              <Route path="/razones" element={<Razones />} />
+              <Route path="/tiendas" element={<Tiendas />} />
+              <Route path="/documentos" element={<Documentos />} />
+              <Route path="/clientes-nuevos" element={<ClientesNuevos />} />
+              <Route path="/cotizaciones" element={<Cotizaciones />} />
+              <Route path="/actualizaciones" element={<Actualizaciones />} />
+              <Route path="/gestion" element={<Gestion />} />
+              <Route path="/configuraciones" element={<Configuraciones />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
           </div>
         </div>
         <ModalInput

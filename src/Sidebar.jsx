@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   FaDollarSign,
   FaTruck,
@@ -13,25 +13,23 @@ import {
   FaSignOutAlt,
   FaPhone,
   FaCreditCard,
+  FaCog,
 } from "react-icons/fa"; // Importing icons from react-icons
 import "./Sidebar.css";
 import { supabase } from "./supabaseClient";
 
 const Sidebar = ({
   open,
-  onComisionesClick,
-  onEntregasClick,
-  onOrdenesClick,
-  onCalculadoraClick,
-  onRazonesClick,
-  onTiendasClick,
-  onDocumentosClick,
-  onClientesNuevosClick,
-  onCotizacionesClick,
-  onActualizacionesClick,
   setUser,
-  onGestionClick,
+  closeSidebar
 }) => {
+  const location = useLocation();
+  // Detectar si es móvil
+  const isMobile = typeof window !== "undefined" ? window.innerWidth <= 768 : false;
+  // Handler para cerrar sidebar en desktop
+  const handleNavClick = () => {
+    if (!isMobile && closeSidebar) closeSidebar();
+  };
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
 
@@ -51,106 +49,128 @@ const Sidebar = ({
 
   return (
     <aside className={`sidebar${open ? " open" : ""}`}>
-      <nav className="sidebar-icons">
-        <div
+  <nav className="sidebar-icons">
+        <Link
+          to="/"
           className="sidebar-icon"
           title="Comisiones"
-          onClick={onComisionesClick}
           style={{ position: "relative" }}
+          onClick={handleNavClick}
         >
           <FaDollarSign className="icon-text" />
           <span className="sidebar-tooltip">Comisiones</span>
-        </div>
-        <div
+        </Link>
+        <Link
+          to="/entregas"
           className="sidebar-icon"
           title="Entregas"
-          onClick={onEntregasClick}
           style={{ position: "relative" }}
+          onClick={handleNavClick}
         >
           <FaTruck className="icon-text" />
           <span className="sidebar-tooltip">Entregas</span>
-        </div>
-        <div
+        </Link>
+        <Link
+          to="/ordenes"
           className="sidebar-icon"
           title="Órdenes de Servicio"
-          onClick={onOrdenesClick}
           style={{ position: "relative" }}
+          onClick={handleNavClick}
         >
           <FaBook className="icon-text" />
           <span className="sidebar-tooltip">Órdenes de Servicio</span>
-        </div>
-        <div
+        </Link>
+        <Link
+          to="/calculadoras"
           className="sidebar-icon"
           title="Calculadora"
-          onClick={onCalculadoraClick}
           style={{ position: "relative" }}
+          onClick={handleNavClick}
         >
           <FaCalculator className="icon-text" />
           <span className="sidebar-tooltip">Calculadora</span>
-        </div>
-        <div
+        </Link>
+        <Link
+          to="/razones"
           className="sidebar-icon"
           title="Razones"
-          onClick={onRazonesClick}
           style={{ position: "relative" }}
+          onClick={handleNavClick}
         >
           <FaClipboardList className="icon-text" />
           <span className="sidebar-tooltip">Razones</span>
-        </div>
-        <div
+        </Link>
+        <Link
+          to="/tiendas"
           className="sidebar-icon"
           title="Tiendas"
-          onClick={onTiendasClick}
           style={{ position: "relative" }}
+          onClick={handleNavClick}
         >
           <FaStore className="icon-text" />
           <span className="sidebar-tooltip">Tiendas</span>
-        </div>
-        <div
+        </Link>
+        <Link
+          to="/documentos"
           className="sidebar-icon"
           title="Documentos"
-          onClick={onDocumentosClick}
           style={{ position: "relative" }}
+          onClick={handleNavClick}
         >
           <FaFileAlt className="icon-text" />
           <span className="sidebar-tooltip">Documentos</span>
-        </div>
-        <div
+        </Link>
+        <Link
+          to="/gestion"
           className="sidebar-icon"
           title="Gestión"
-          onClick={onGestionClick}
           style={{ position: "relative" }}
+          onClick={handleNavClick}
         >
           <FaPhone className="icon-text" style={{ color: '#2196f3' }} />
           <span className="sidebar-tooltip">Gestión</span>
-        </div>
-        <div
+        </Link>
+        <Link
+          to="/cotizaciones"
           className="sidebar-icon"
           title="Cotizaciones"
-          onClick={onCotizacionesClick}
           style={{ position: "relative" }}
+          onClick={handleNavClick}
         >
           <FaCreditCard className="icon-text" style={{ color: '#4caf50' }} />
           <span className="sidebar-tooltip">Cotizaciones</span>
-        </div>
-        <div
+        </Link>
+        <Link
+          to="/clientes-nuevos"
           className="sidebar-icon"
           title="Clientes Nuevos"
-          onClick={onClientesNuevosClick}
           style={{ position: "relative" }}
+          onClick={handleNavClick}
         >
           <FaUserPlus className="icon-text" />
           <span className="sidebar-tooltip">Clientes Nuevos</span>
-        </div>
-        <div
+        </Link>
+        <Link
+          to="/actualizaciones"
           className="sidebar-icon"
           title="Actualizaciones"
-          onClick={onActualizacionesClick}
           style={{ position: "relative" }}
+          onClick={handleNavClick}
         >
           <FaUsers className="icon-text" />
           <span className="sidebar-tooltip">Actualizaciones</span>
-        </div>
+        </Link>
+        {/* Icono de Configuración */}
+        <Link
+          to="/configuraciones"
+          className="sidebar-icon"
+          title="Configuraciones"
+          style={{ position: "relative" }}
+          onClick={handleNavClick}
+        >
+          <FaCog className="icon-text" style={{ color: '#757575' }} />
+          <span className="sidebar-tooltip">Configuraciones</span>
+        </Link>
         <button
           className="sidebar-icon cerrar-sesion"
           title="Cerrar Sesión"
