@@ -11,7 +11,8 @@ import {
   FaUsers,
   FaSignOutAlt,
   FaPhone,
-  FaCreditCard,
+    FaCreditCard,
+    FaCog,
 } from "react-icons/fa";
 import "./BottomBar.css";
 
@@ -27,6 +28,7 @@ const ICONS = [
   { key: "cotizaciones", label: "Cotizaciones", icon: <FaCreditCard color="#2196f3" /> },
   { key: "actualizaciones", label: "Actualizaciones", icon: <FaUsers color="#2196f3" /> },
   { key: "gestion", label: "Gestión", icon: <FaPhone color="#2196f3" /> },
+    { key: "configuraciones", label: "Configuraciones", icon: <FaCog color="#2196f3" /> },
 ];
 
 const BottomBar = ({

@@ -2,6 +2,8 @@ import BottomBar from "./BottomBar";
 import "./App.css";
 import Push from "./push";
 import PushMovil from "./pushmovil";
+import { requestFirebaseNotificationPermission, onFirebaseMessage } from "./firebaseNotifications";
+import NotificationToast from "./NotificationToast";
 
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
@@ -25,41 +27,19 @@ import Gestion from "./Gestion";
 import Cotizaciones from "./Cotizaciones";
 import ResetPassword from "./ResetPassword";
 import Configuraciones from "./Configuraciones";
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate, useNavigate } from "react-router-dom";
 
 function App() {
+  const navigate = useNavigate();
   // Detectar si es móvil (debe ir antes de cualquier uso de isMobile)
   let isMobile = false;
   if (typeof window !== "undefined") {
     isMobile = window.innerWidth <= 768;
   }
 
-  // Inhabilitar botón atrás en móviles
-  useEffect(() => {
-    if (!isMobile) return;
-    const handler = (e) => {
-      e.preventDefault();
-      window.history.pushState(null, '', window.location.href);
-    };
-    window.history.pushState(null, '', window.location.href);
-    window.addEventListener('popstate', handler);
-    return () => window.removeEventListener('popstate', handler);
-  }, [isMobile]);
-
-  // Mostrar pantalla de reset si la URL contiene /reset-password
-  if (window.location.pathname.startsWith('/reset-password')) {
-    return <ResetPassword />;
-  }
-
-  const handleCotizacionesClick = () => {
-    setPage("cotizaciones");
-    if (!isMobile) closeSidebar();
-  };
+  // HOOKS SIEMPRE AL INICIO
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
-  // Eliminar page y setPage, ya no se usan
-
-  // Ya no se guarda la vista actual en localStorage
   const [meta, setMeta] = useState(35000);
   const [comisionObtenida, setComisionObtenida] = useState(0);
   const [ventaPorCliente, setVentaPorCliente] = useState(0);
@@ -74,12 +54,74 @@ function App() {
     setter: null,
     isMoney: false,
   });
-  // Handlers y helpers para navegación y sidebar (forzar redeploy)
+  const [bottomBarExpanded, setBottomBarExpanded] = useState(false);
+  const [notif, setNotif] = useState({ open: false, title: '', body: '' });
+  const [page, setPage] = useState(() => {
+    return localStorage.getItem("crm-vista-actual") || "comisiones";
+  });
+
+  // Recuperar usuario autenticado al cargar la app
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      setUser(null);
+      return;
+    }
+    (async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .maybeSingle();
+      if (error || !data) setUser(null);
+      else setUser(data);
+    })();
+  }, []);
+
+  // Inhabilitar botón atrás en móviles
+  useEffect(() => {
+    if (!isMobile) return;
+    const handler = (e) => {
+      e.preventDefault();
+      window.history.pushState(null, '', window.location.href);
+    };
+    window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', handler);
+    return () => window.removeEventListener('popstate', handler);
+  }, [isMobile]);
+
+  // Solicitar permiso de notificaciones push al cargar la app (solo Android)
+  useEffect(() => {
+    if (/android/i.test(navigator.userAgent)) {
+      requestFirebaseNotificationPermission();
+      onFirebaseMessage((payload) => {
+        setNotif({
+          open: true,
+          title: payload.notification?.title || 'Notificación',
+          body: payload.notification?.body || '',
+        });
+      });
+    }
+  }, []);
+
+  // Guardar la vista actual en localStorage cada vez que cambia
+  useEffect(() => {
+    if (page) {
+      localStorage.setItem("crm-vista-actual", page);
+    }
+  }, [page]);
+
+  // Mostrar pantalla de reset si la URL contiene /reset-password
+  const location = useLocation();
+  if (location.pathname.startsWith('/reset-password')) {
+    return <ResetPassword />;
+  }
+  if (!user) return <Login onLogin={setUser} />;
+
+  // Handlers y helpers para navegación y sidebar
   const toggleSidebar = () => setSidebarOpen((open) => !open);
   const closeSidebar = () => setSidebarOpen(false);
   const handleOverlayClick = () => closeSidebar();
-
-  // Handlers para navegación desde Sidebar (solo cierran sidebar en desktop)
   const handleComisionesClick = () => {
     setPage("comisiones");
     if (!isMobile) closeSidebar();
@@ -120,43 +162,10 @@ function App() {
     setPage("gestion");
     if (!isMobile) closeSidebar();
   };
-
-  // Handlers para ModalInput
-  const handleModalClose = () => setModal((m) => ({ ...m, open: false }));
-  const handleModalSave = () => {
-    if (modal.setter) modal.setter(modal.value);
-    setModal((m) => ({ ...m, open: false }));
+  const handleCotizacionesClick = () => {
+    setPage("cotizaciones");
+    if (!isMobile) closeSidebar();
   };
-  // Cerrar sidebar al hacer click fuera (en móvil/tablet)
-  const [bottomBarExpanded, setBottomBarExpanded] = useState(false);
-
-  // Recuperar usuario autenticado al cargar la app
-  useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      setUser(null);
-      return;
-    }
-    (async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .maybeSingle();
-      if (error || !data) setUser(null);
-      else setUser(data);
-    })();
-  }, []);
-
-  // Mostrar pantalla de reset si la URL contiene /reset-password
-  const location = useLocation();
-  if (location.pathname.startsWith('/reset-password')) {
-    return <ResetPassword />;
-  }
-  if (!user) return <Login onLogin={setUser} />;
-
-  // (isMobile ya está declarado arriba)
-
   // Handler para menú: en móvil expande BottomBar, en desktop abre sidebar
   const handleMenuClick = () => {
     if (isMobile) {
@@ -164,6 +173,12 @@ function App() {
     } else {
       toggleSidebar();
     }
+  };
+  // Handlers para ModalInput
+  const handleModalClose = () => setModal((m) => ({ ...m, open: false }));
+  const handleModalSave = () => {
+    if (modal.setter) modal.setter(modal.value);
+    setModal((m) => ({ ...m, open: false }));
   };
 
   return (
@@ -235,7 +250,10 @@ function App() {
         {/* BottomBar solo en móviles */}
         {isMobile && (
           <BottomBar
-            onNavigate={setPage}
+            onNavigate={(key) => {
+              setPage(key);
+              navigate(key === "comisiones" ? "/" : `/${key}`);
+            }}
             active={page}
             expanded={bottomBarExpanded}
             onCloseExpand={() => setBottomBarExpanded(false)}
@@ -246,6 +264,12 @@ function App() {
           />
         )}
       </div>
+      <NotificationToast
+        open={notif.open}
+        title={notif.title}
+        body={notif.body}
+        onClose={() => setNotif(n => ({ ...n, open: false }))}
+      />
     </>
   );
 }

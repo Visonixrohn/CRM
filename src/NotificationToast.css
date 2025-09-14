@@ -1,0 +1,51 @@
+.notification-toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 9999;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px #0002;
+  min-width: 280px;
+  max-width: 90vw;
+  animation: toast-in 0.3s;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.notification-toast-content {
+  padding: 18px 24px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.notification-toast-title {
+  font-weight: bold;
+  color: #1976d2;
+  font-size: 1.1em;
+}
+
+.notification-toast-body {
+  color: #333;
+  font-size: 1em;
+}
+
+.notification-toast-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.3em;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.notification-toast-close:hover {
+  color: #d32f2f;
+}
