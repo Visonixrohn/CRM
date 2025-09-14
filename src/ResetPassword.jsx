@@ -1,7 +1,9 @@
 
+
 import React, { useState } from "react";
 import { supabase } from "./supabaseClient";
 import { hashPassword } from "./utils/hash";
+import styles from "./ResetPassword.module.css";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
@@ -45,45 +47,45 @@ export default function ResetPassword() {
 
   if (!uid) {
     return (
-      <div style={{
-        maxWidth: 400, margin: "40px auto", padding: 24, background: "#fff",
-        borderRadius: 8, boxShadow: "0 2px 12px #0001", textAlign: "center"
-      }}>
-        <h2 style={{ color: "#d32f2f", marginBottom: 12 }}>No se pudo validar el usuario</h2>
-        <p style={{ color: "#555", fontSize: 16 }}>
-          El enlace de recuperación es inválido o falta el identificador de usuario.<br />
-          Por seguridad, solicita un nuevo enlace desde la página de inicio de sesión.
-        </p>
-        <a href="/" style={{
-          display: 'inline-block', marginTop: 18, padding: '10px 24px', background: '#1976d2', color: '#fff', borderRadius: 4, textDecoration: 'none', fontWeight: 'bold'
-        }}>Ir al inicio de sesión</a>
+      <div className={styles["resetpw-bg"]}>
+        <div className={styles["resetpw-card"]}>
+          <h2 className={styles["resetpw-title"]} style={{ color: "#d32f2f" }}>No se pudo validar el usuario</h2>
+          <p style={{ color: "#555", fontSize: 16 }}>
+            El enlace de recuperación es inválido o falta el identificador de usuario.<br />
+            Por seguridad, solicita un nuevo enlace desde la página de inicio de sesión.
+          </p>
+          <a href="/" className={styles["resetpw-link"]}>Ir al inicio de sesión</a>
+        </div>
       </div>
     );
   }
 
   return (
-    <div style={{maxWidth:400,margin:"40px auto",padding:24,background:"#fff",borderRadius:8,boxShadow:"0 2px 12px #0001"}}>
-      <h2>Restablecer contraseña</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="password"
-          placeholder="Nueva contraseña"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          style={{width:"100%",marginBottom:12,padding:8}}
-        />
-        <input
-          type="password"
-          placeholder="Confirmar contraseña"
-          value={confirm}
-          onChange={e => setConfirm(e.target.value)}
-          style={{width:"100%",marginBottom:12,padding:8}}
-        />
-        {msg && <div style={{color:msg.startsWith('¡')?"green":"red",marginBottom:8}}>{msg}</div>}
-        <button type="submit" disabled={loading} style={{width:"100%",padding:10,background:'#1976d2',color:'#fff',border:'none',borderRadius:4}}>
-          {loading ? "Actualizando..." : "Actualizar contraseña"}
-        </button>
-      </form>
+    <div className={styles["resetpw-bg"]}>
+      <div className={styles["resetpw-card"]}>
+        <h2 className={styles["resetpw-title"]}>Restablecer contraseña</h2>
+        <form className={styles["resetpw-form"]} onSubmit={handleSubmit}>
+          <input
+            className={styles["resetpw-input"]}
+            type="password"
+            placeholder="Nueva contraseña"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            autoFocus
+          />
+          <input
+            className={styles["resetpw-input"]}
+            type="password"
+            placeholder="Confirmar contraseña"
+            value={confirm}
+            onChange={e => setConfirm(e.target.value)}
+          />
+          {msg && <div className={msg.startsWith('¡') ? `${styles["resetpw-msg"]} ${styles["success"]}` : styles["resetpw-msg"]}>{msg}</div>}
+          <button className={styles["resetpw-btn"]} type="submit" disabled={loading}>
+            {loading ? "Actualizando..." : "Actualizar contraseña"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
