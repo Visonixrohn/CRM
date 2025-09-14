@@ -1,0 +1,29 @@
+/* Botón flotante solo visible en móvil */
+.boton-flotante-movil {
+  position: fixed;
+  bottom: 7.5rem;
+  right: 1rem;
+  background: #21508a;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 4rem;
+  height: 4rem;
+  font-size: 2rem;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.18);
+  transition: transform 0.2s, background 0.3s;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.boton-flotante-movil:hover {
+  background: #16335a;
+  transform: scale(1.08);
+}
+@media (min-width: 700px) {
+  .boton-flotante-movil {
+    display: none !important;
+  }
+}

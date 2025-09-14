@@ -12,9 +12,11 @@ import "./OrdenesServicioDetalle.css";
 import "./OrdenesServicioActualizarEstado.css";
 import "./OrdenesServicioBusqueda.css";
 import OrdenesServicioCard from "./components/OrdenesServicioCard";
+import OrdenesServicioCardMovil from "./components/OrdenesServicioCardMovil";
 import "./components/OrdenesServicioCard.css";
 import OrdenesServicioFiltroMovil from "./components/OrdenesServicioFiltroMovil";
 import "./components/OrdenesServicioFiltroMovil.css";
+import BotonFlotanteMovil from "./components/BotonFlotanteMovil";
 
 const OrdenesServicio = () => {
   const [ordenes, setOrdenes] = useState([]);
@@ -206,6 +208,8 @@ const OrdenesServicio = () => {
       <button onClick={() => setIsUpdateStateModalOpen(true)}>
         Actualizar Estado
       </button>
+      {/* Botón flotante solo móvil para agregar orden */}
+      <BotonFlotanteMovil onClick={() => setIsAddOrderModalOpen(true)} icon={"+"} label="Agregar orden" />
     </div>
   );
 
@@ -266,9 +270,11 @@ const OrdenesServicio = () => {
       </header>
 
       {/* Cards móviles */}
-      {filteredOrdenes.map((orden) => (
-        <OrdenesServicioCard key={orden.id} orden={orden} onVerDetalle={handleRowClick} />
-      ))}
+      <div className="solo-movil">
+        {filteredOrdenes.map((orden) => (
+          <OrdenesServicioCardMovil key={orden.id} orden={orden} onVerDetalle={handleRowClick} />
+        ))}
+      </div>
       {/* Tabla solo visible en desktop por CSS */}
   <div className="ordenes-servicio-table-container">
         <table className="ordenes-table">
@@ -332,10 +338,7 @@ const OrdenesServicio = () => {
       </div>
 
       {/* Botón flotante solo móvil */}
-      <button
-        className="boton-orden-movil"
-        onClick={() => setIsAddOrderModalOpen(true)}
-      >+</button>
+      <BotonFlotanteMovil onClick={() => setIsAddOrderModalOpen(true)} icon={"+"} label="Agregar orden" />
       {/* Botón fijo solo escritorio */}
       <button
         className="btn-agregar-orden-desktop"

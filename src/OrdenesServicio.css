@@ -1,3 +1,21 @@
+/* Ocultar .solo-movil en escritorio/tablet, mostrar solo en móvil */
+.solo-movil {
+  display: block;
+}
+@media (min-width: 700px) {
+  .solo-movil {
+    display: none !important;
+  }
+}
+/* Mostrar las cards móviles solo en pantallas pequeñas */
+.orden-servicio-card-movil-analisis {
+  display: block;
+}
+@media (min-width: 700px) {
+  .orden-servicio-card-movil-analisis {
+    display: none !important;
+  }
+}
 /* Colores para los botones de estado en el modal de actualización */
 /* Colores para los botones de estado en el modal de actualización */
 .estado-button.pendiente-de-visita {
@@ -265,25 +283,27 @@ body {
   transition: transform 0.2s ease-in-out, background 0.3s;
 }
 
+/* Botón flotante azul oscuro para agregar en móvil */
+.floating-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: #0a2342;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 4rem;
+  height: 4rem;
+  font-size: 1.75rem;
+  cursor: pointer;
+  box-shadow: 0 6px 12px var(--shadow-medium);
+  transition: transform 0.2s ease-in-out, background 0.3s;
+  z-index: 1000;
+}
 .floating-btn:hover {
-  background: var(--primary-dark-hover);
+  background: #16335a;
   transform: scale(1.1);
 }
-
-/* Overlay */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.55);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
-
 /* Modal */
 .modal {
   background: #fefefe;

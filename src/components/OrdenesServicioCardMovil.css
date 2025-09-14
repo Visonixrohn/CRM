@@ -1,0 +1,46 @@
+/* Card móvil de orden de servicio (solo móvil) */
+.orden-servicio-card-movil-analisis {
+  display: block;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px 0 #a5b4fc22;
+  margin-bottom: 12px;
+  padding: 1.1rem 1.2rem;
+  border: 1.5px solid #a5b4fc;
+  transition: box-shadow 0.2s, background 0.2s;
+  position: relative;
+}
+@media (min-width: 700px) {
+  .orden-servicio-card-movil-analisis {
+    display: none !important;
+  }
+}
+.orden-servicio-card-movil-analisis .analisis-card-title {
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #3730a3;
+  margin-bottom: 2px;
+}
+.orden-servicio-card-movil-analisis .analisis-card-value {
+  font-size: 1.08rem;
+  color: #64748b;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.orden-servicio-card-movil-analisis .analisis-card-value:last-child {
+  margin-bottom: 8px;
+}
+.orden-servicio-card-movil-analisis button {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.orden-servicio-card-movil-analisis button:hover {
+  background: #1e40af;
+}

@@ -38,6 +38,7 @@
   border-radius: 6px;
   padding: 2px 8px;
 }
+/* Card de servicio solo visible en escritorio/tablet */
 .orden-servicio-card-mobile {
   background: #fff;
   border-radius: 12px;
@@ -49,6 +50,11 @@
   gap: 8px;
   font-size: 1.05em;
   border: 1px solid #e0e0e0;
+}
+@media (max-width: 699px) {
+  .orden-servicio-card-mobile {
+    display: none !important;
+  }
 }
 .orden-servicio-card-header {
   font-weight: bold;
