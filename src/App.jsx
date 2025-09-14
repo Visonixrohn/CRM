@@ -31,6 +31,7 @@ import { Routes, Route, useLocation, Navigate, useNavigate } from "react-router-
 
 function App() {
   const navigate = useNavigate();
+  const location = useLocation();
   // Detectar si es móvil (debe ir antes de cualquier uso de isMobile)
   let isMobile = false;
   if (typeof window !== "undefined") {
@@ -59,6 +60,9 @@ function App() {
   const [page, setPage] = useState(() => {
     return localStorage.getItem("crm-vista-actual") || "comisiones";
   });
+  // Pantalla de carga inicial
+  const [showSplash, setShowSplash] = useState(true);
+
 
   // Recuperar usuario autenticado al cargar la app
   useEffect(() => {
@@ -77,18 +81,6 @@ function App() {
       else setUser(data);
     })();
   }, []);
-
-  // Inhabilitar botón atrás en móviles
-  useEffect(() => {
-    if (!isMobile) return;
-    const handler = (e) => {
-      e.preventDefault();
-      window.history.pushState(null, '', window.location.href);
-    };
-    window.history.pushState(null, '', window.location.href);
-    window.addEventListener('popstate', handler);
-    return () => window.removeEventListener('popstate', handler);
-  }, [isMobile]);
 
   // Solicitar permiso de notificaciones push al cargar la app (solo Android)
   useEffect(() => {
@@ -111,8 +103,14 @@ function App() {
     }
   }, [page]);
 
-  // Mostrar pantalla de reset si la URL contiene /reset-password
-  const location = useLocation();
+  // Splash screen
+  useEffect(() => {
+    const timer = setTimeout(() => setShowSplash(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // --- RETURNS CONDICIONALES ---
+  if (showSplash) return <LoadingScreen />;
   if (location.pathname.startsWith('/reset-password')) {
     return <ResetPassword />;
   }
@@ -166,6 +164,7 @@ function App() {
     setPage("cotizaciones");
     if (!isMobile) closeSidebar();
   };
+
   // Handler para menú: en móvil expande BottomBar, en desktop abre sidebar
   const handleMenuClick = () => {
     if (isMobile) {
@@ -180,6 +179,8 @@ function App() {
     if (modal.setter) modal.setter(modal.value);
     setModal((m) => ({ ...m, open: false }));
   };
+
+  if (showSplash) return <LoadingScreen />;
 
   return (
     <>
