@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import useClientesNuevos from "./useClientesNuevos";
+import useGestionResumen from "./useGestionResumen";
 import useActualizaciones from "./useActualizaciones";
 import { supabase } from "./supabaseClient";
 import Modal from "react-modal";
@@ -51,6 +52,8 @@ const ActionButton = ({ onClick, label, icon }) => (
 );
 
 const Comisiones = ({ setPage }) => {
+  // Tarjetas de gestión
+  const { gestionadosHoy, pendientes } = useGestionResumen();
   // --- Lógica para obtener entregas pendientes del usuario actual ---
   // Estado para cards de entregas
   const [entregasPendientes, setEntregasPendientes] = useState([]);
@@ -346,6 +349,9 @@ const Comisiones = ({ setPage }) => {
               <ComCard title="Diferencia a Meta" value={diferenciaMeta} colorClass="danger" icon="📊" />
               <ComCard title="Días Restantes  del Mes" value={diasRestantes} colorClass="primary" icon="📆" isNumberOnly={true} />
               <ComCard title="Meta Diaria" value={metaHoy} colorClass="neutral" icon="📈" />
+              {/* Cards de gestión */}
+              <ComCard title="Clientes Gestionados" value={gestionadosHoy} colorClass="success" icon="✅" isNumberOnly={true} />
+              <ComCard title="Clientes Pendientes" value={pendientes} colorClass="warning" icon="⏳" isNumberOnly={true} />
               {/* Cards de entregas */}
               {Array.isArray(entregasPendientes) && entregasPendientes.length > 0 && (
                 <>
