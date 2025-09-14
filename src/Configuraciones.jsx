@@ -121,12 +121,19 @@ export default function Configuraciones() {
       setLoading(false);
       return;
     }
-    // Validar contraseña con Supabase
-  const { error: loginError } = await supabase.auth.signInWithPassword({
-      email: user.email,
-      password: passwordModal.valor,
-    });
-    if (loginError) {
+    // Buscar el hash de la contraseña en profiles
+    const { data: profileWithPass, error } = await supabase
+      .from("profiles")
+      .select("id, contrasena, email")
+      .eq("id", userId)
+      .maybeSingle();
+    if (error || !profileWithPass) {
+      setError("Error al validar usuario.");
+      setLoading(false);
+      return;
+    }
+    const match = await comparePassword(passwordModal.valor, profileWithPass.contrasena);
+    if (!match) {
       setError("Contraseña incorrecta.");
       setLoading(false);
       return;
