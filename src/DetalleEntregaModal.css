@@ -96,6 +96,17 @@
   transition: background 0.2s;
 }
 
+@media (max-width: 700px) {
+  .detalle-entrega-cerrar {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.93rem;
+    border-radius: 8px;
+  }
+  .detalle-entrega-botones {
+    gap: 0.4rem;
+  }
+}
+
 .detalle-entrega-cerrar:hover {
   background: #4f46e5;
 }
