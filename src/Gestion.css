@@ -35,9 +35,17 @@
   gap: 20px;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
-  top: 90px;
-  z-index: 999;
+  /* position: sticky; */
+  /* top: 90px; */
+  /* z-index: 999; */
+}
+
+@media (min-width: 768px) {
+  .filters {
+    position: sticky;
+    top: 90px;
+    z-index: 999;
+  }
 }
 
 .filters button, .filters input {
