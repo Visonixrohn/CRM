@@ -105,7 +105,7 @@ button:disabled {
 }
 
 button.remove {
-  background: #f44336;
+  background: #0051ff;
 }
 
 button:hover {
@@ -113,7 +113,7 @@ button:hover {
 }
 
 button.remove:hover {
-  background-color: #d32f2f;
+  background-color: #0a06ee;
 }
 
 /* Filtro de búsqueda en encabezado */

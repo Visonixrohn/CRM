@@ -8,32 +8,43 @@ import useGestion from "./useGestion";
 // Componente Card para móviles
 const GestionCard = ({ cliente, onWhatsApp, onQuitar, onLink }) => (
   <div className="gestion-card-mobile">
-    <div className="gestion-card-header">{cliente.NOMBRES || cliente.nombre} {cliente.APELLIDOS || cliente.apellido}</div>
-    <div className="gestion-card-info">ID: {cliente.ID || cliente.id}</div>
-    <div className="gestion-card-info">Tienda: {cliente.TIENDA || cliente.tienda}</div>
-    <div className="gestion-card-info">Segmento: {cliente.SEGMENTO || cliente.segmento}</div>
-    <div className="gestion-card-phone">
-      {(cliente.TELEFONO || cliente.tel) && (
-        <a
-          href={`https://web.whatsapp.com/send?phone=504${(cliente.TELEFONO || cliente.tel).replace(/[^\d]/g, "")}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Chatear por WhatsApp"
-          style={{ marginRight: 8, color: '#25D366', fontSize: '1.3em', verticalAlign: 'middle', textDecoration: 'none' }}
-          onClick={ev => ev.stopPropagation()}
-        >
-          <svg width="22" height="22" viewBox="0 0 32 32" fill="currentColor" style={{verticalAlign:'middle'}}>
-            <path d="M16 3C9.373 3 4 8.373 4 15c0 2.385.832 4.584 2.236 6.393L4 29l7.824-2.05C13.41 27.633 14.686 28 16 28c6.627 0 12-5.373 12-12S22.627 3 16 3zm0 22c-1.13 0-2.238-.188-3.287-.558l-.235-.08-4.646 1.217 1.24-4.527-.153-.236C7.188 19.238 7 18.13 7 17c0-4.963 4.037-9 9-9s9 4.037 9 9-4.037 9-9 9zm5.29-6.709c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.67.85-.82 1.02-.15.17-.3.19-.56.06-.26-.13-1.09-.4-2.08-1.28-.77-.68-1.29-1.52-1.44-1.78-.15-.26-.02-.4.11-.53.11-.11.26-.29.39-.44.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.58-1.4-.8-1.92-.21-.51-.43-.44-.58-.45-.15-.01-.32-.01-.5-.01-.17 0-.45.06-.68.28-.23.22-.9.88-.9 2.15s.92 2.49 1.05 2.66c.13.17 1.81 2.77 4.39 3.78.61.21 1.09.33 1.46.42.61.13 1.16.11 1.6.07.49-.05 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.24-.17-.5-.3z"/>
-          </svg>
-        </a>
-      )}
-      <span>📞</span>
-      <a href={`tel:${cliente.TELEFONO || cliente.tel}`}>{cliente.TELEFONO || cliente.tel}</a>
-    </div>
-    <div className="gestion-card-actions">
-      <button onClick={() => onWhatsApp(cliente)} style={{background:'#25D366',color:'#fff',border:'none',borderRadius:6,padding:'6px 12px'}}>WhatsApp</button>
-      <button onClick={() => onLink(cliente)} style={{background:'#007bff',color:'#fff',border:'none',borderRadius:6,padding:'6px 12px',marginLeft:6}}>Link</button>
-      <button onClick={() => onQuitar(cliente)} className="remove">Quitar</button>
+    <div className="analisis-card">
+      <div className="analisis-card-title" style={{fontWeight:'bold',color:'#3730a3'}}>
+        {cliente.NOMBRES || cliente.nombre} {cliente.APELLIDOS || cliente.apellido}
+      </div>
+      <div className="analisis-card-value" style={{fontSize:'0.98rem',color:'#64748b',marginBottom:4}}>
+        ID: {cliente.ID || cliente.id}
+      </div>
+      <div className="analisis-card-value" style={{fontSize:'0.98rem',color:'#64748b',marginBottom:4}}>
+        Tienda: {cliente.TIENDA || cliente.tienda}
+      </div>
+      <div className="analisis-card-value" style={{fontSize:'0.98rem',color:'#64748b',marginBottom:4}}>
+        Segmento: {cliente.SEGMENTO || cliente.segmento}
+      </div>
+      <div className="analisis-card-value" style={{fontSize:'0.98rem',color:'#64748b',marginBottom:8,display:'flex',alignItems:'center',gap:6}}>
+        <span>📞</span>
+        <a href={`tel:${cliente.TELEFONO || cliente.tel}`} style={{color:'#25D366',fontWeight:'bold',textDecoration:'none',fontSize:'1.08em'}}>{cliente.TELEFONO || cliente.tel}</a>
+        {(cliente.TELEFONO || cliente.tel) && (
+          <a
+            href={`https://web.whatsapp.com/send?phone=504${(cliente.TELEFONO || cliente.tel).replace(/[^\d]/g, "")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Chatear por WhatsApp"
+            style={{ marginLeft: 8, color: '#25D366', fontSize: '1.2em', verticalAlign: 'middle', textDecoration: 'none' }}
+            onClick={ev => ev.stopPropagation()}
+          >
+            <svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" style={{verticalAlign:'middle'}}>
+              <path d="M16 3C9.373 3 4 8.373 4 15c0 2.385.832 4.584 2.236 6.393L4 29l7.824-2.05C13.41 27.633 14.686 28 16 28c6.627 0 12-5.373 12-12S22.627 3 16 3zm0 22c-1.13 0-2.238-.188-3.287-.558l-.235-.08-4.646 1.217 1.24-4.527-.153-.236C7.188 19.238 7 18.13 7 17c0-4.963 4.037-9 9-9s9 4.037 9 9-4.037 9-9 9zm5.29-6.709c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.67.85-.82 1.02-.15.17-.3.19-.56.06-.26-.13-1.09-.4-2.08-1.28-.77-.68-1.29-1.52-1.44-1.78-.15-.26-.02-.4.11-.53.11-.11.26-.29.39-.44.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.58-1.4-.8-1.92-.21-.51-.43-.44-.58-.45-.15-.01-.32-.01-.5-.01-.17 0-.45.06-.68.28-.23.22-.9.88-.9 2.15s.92 2.49 1.05 2.66c.13.17 1.81 2.77 4.39 3.78.61.21 1.09.33 1.46.42.61.13 1.16.11 1.6.07.49-.05 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.24-.17-.5-.3z"/>
+            </svg>
+          </a>
+        )}
+      </div>
+      <div style={{display:'flex',gap:8,marginTop:8,justifyContent:'center'}}>
+        <button onClick={() => onWhatsApp(cliente)} style={{background:'#25D366',color:'#fff',border:'none',borderRadius:6,padding:'6px 12px'}}>WhatsApp</button>
+        <button onClick={() => onQuitar(cliente)} className="remove">Marcar gestion</button>
+        <button onClick={() => onLink(cliente)} style={{background:'#007bff',color:'#fff',border:'none',borderRadius:6,padding:'6px 12px'}}>Link</button>
+       
+      </div>
     </div>
   </div>
 );
@@ -159,18 +170,18 @@ const Gestion = () => {
 
   return (
     <div>
-      <div className="cards">
-        <div className="card">
-          <h2>{total}</h2>
-          <p>Total Clientes</p>
+      <div className="cards" style={{display:'flex',gap:12,marginBottom:16,flexWrap:'wrap'}}>
+        <div className="analisis-card" style={{flex:'1 1 120px',minWidth:120}}>
+          <div className="analisis-card-title" style={{fontWeight:'bold',color:'#3730a3'}}>Total Clientes</div>
+          <div className="analisis-card-value" style={{fontSize:'1.3rem',color:'#0f172a',fontWeight:'bold'}}>{total}</div>
         </div>
-        <div className="card">
-          <h2>{countGestionados}</h2>
-          <p>Gestionados Hoy</p>
+        <div className="analisis-card" style={{flex:'1 1 120px',minWidth:120}}>
+          <div className="analisis-card-title" style={{fontWeight:'bold',color:'#3730a3'}}>Gestionados Hoy</div>
+          <div className="analisis-card-value" style={{fontSize:'1.3rem',color:'#0f172a',fontWeight:'bold'}}>{countGestionados}</div>
         </div>
-        <div className="card">
-          <h2>{pendientes}</h2>
-          <p>Pendientes</p>
+        <div className="analisis-card" style={{flex:'1 1 120px',minWidth:120}}>
+          <div className="analisis-card-title" style={{fontWeight:'bold',color:'#3730a3'}}>Pendientes</div>
+          <div className="analisis-card-value" style={{fontSize:'1.3rem',color:'#0f172a',fontWeight:'bold'}}>{pendientes}</div>
         </div>
       </div>
       <div className="filters">
@@ -289,7 +300,7 @@ const Gestion = () => {
                       Link
                     </button>
                     <button className="remove" onClick={() => quitarCliente(cliente)}>
-                      Quitar
+                      Marcar gestion
                     </button>
                   </td>
         {/* Modal para enviar link por WhatsApp */}

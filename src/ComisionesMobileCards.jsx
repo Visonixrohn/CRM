@@ -1,4 +1,5 @@
 import React from "react";
+import useGestionResumen from "./useGestionResumen";
 import "./ComisionesMobileCards.css";
 
 const cards = [
@@ -37,7 +38,8 @@ const cards = [
 const ComisionesMobileCards = ({ meta, comisionObtenida, diferenciaMeta, diasRestantes, metaHoy, entregasPendientesAtrasadas, entregasParaHoy, entregasNoGestionadas }) => {
   const values = { meta, comisionObtenida, diferenciaMeta, diasRestantes, metaHoy };
   const extraCards = [];
-   if (entregasParaHoy > 0) {
+ 
+  if (entregasParaHoy > 0) {
     extraCards.push({
       title: "Entregas para Hoy",
       value: entregasParaHoy,
@@ -45,9 +47,9 @@ const ComisionesMobileCards = ({ meta, comisionObtenida, diferenciaMeta, diasRes
       icon: "📅"
     });
   }
-   if (entregasNoGestionadas > 0) {
+  if (entregasNoGestionadas > 0) {
     extraCards.push({
-      title: "No Gestionadas",
+      title: "Entregas no Gestionadas",
       value: entregasNoGestionadas,
       colorClass: "info",
       icon: "🕓"
@@ -61,8 +63,20 @@ const ComisionesMobileCards = ({ meta, comisionObtenida, diferenciaMeta, diasRes
       icon: "⏰"
     });
   }
- 
- 
+   const { gestionadosHoy, pendientes } = useGestionResumen();
+  // Tarjetas de gestión
+  extraCards.push({
+    title: "Clientes Gestionados",
+    value: gestionadosHoy,
+    colorClass: "success",
+    icon: "✅"
+  });
+  extraCards.push({
+    title: "Clientes Pendientes",
+    value: pendientes,
+    colorClass: "warning",
+    icon: "⏳"
+  });
   return (
     <div className="analisis-cards-grid">
       {cards.map((card) => (
