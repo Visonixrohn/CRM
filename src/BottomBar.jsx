@@ -10,6 +10,7 @@ import {
   FaUserPlus,
   FaUsers,
   FaSignOutAlt,
+  FaSyncAlt,
   FaPhone,
     FaCreditCard,
     FaCog,
@@ -98,10 +99,18 @@ const BottomBar = ({
                 <span className="bottom-bar-label">{icon.label}</span>
               </button>
             ))}
+            
+           
+            <button className="bottom-bar-reload" onClick={() => window.location.reload()}>
+              <span className="bottom-bar-icon" aria-label="Recargar app">
+                <FaSyncAlt color="#2196f3" />
+              </span>
+              <span className="bottom-bar-label">Recargar</span>
+            </button>
             <button className="bottom-bar-close-expand" onClick={onCloseExpand}>
               Cerrar
             </button>
-            <button className="bottom-bar-logout" onClick={handleLogoutClick}>
+             <button className="bottom-bar-logout" onClick={handleLogoutClick}>
               <span className="bottom-bar-icon" aria-label="Cerrar sesión">
                 <FaSignOutAlt color="#2196f3" />
               </span>
@@ -128,6 +137,12 @@ const BottomBar = ({
             <FaSignOutAlt color="#2196f3" />
           </span>
           <span className="bottom-bar-label">Cerrar sesión</span>
+        </button>
+        <button className="bottom-bar-reload" onClick={() => window.location.reload()}>
+          <span className="bottom-bar-icon" aria-label="Recargar app">
+            <FaSyncAlt color="#2196f3" />
+          </span>
+          <span className="bottom-bar-label">Recargar app</span>
         </button>
       </nav>
     </>
