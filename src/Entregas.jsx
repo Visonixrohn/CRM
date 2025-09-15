@@ -515,15 +515,58 @@ const Entregas = () => {
   }, [user]);
 
   // Filtrar entregas según estatus y búsqueda
-  const entregasFiltradas = entregas.filter((e) => {
-    const matchesEstatus = filtroEstatus ? e.estatus === filtroEstatus : true;
-    const matchesBusqueda = busqueda
-      ? e.cliente.toLowerCase().includes(busqueda.toLowerCase()) ||
-        e.factura.toLowerCase().includes(busqueda.toLowerCase())
-      : true;
-    const matchesNoGestionados = filtroNoGestionados ? (e.gestionada || '').toLowerCase() === 'no gestionada' : true;
-    return matchesEstatus && matchesBusqueda && matchesNoGestionados;
-  });
+  const entregasFiltradas = entregas
+    .filter((e) => {
+      const matchesEstatus = filtroEstatus ? e.estatus === filtroEstatus : true;
+      const matchesBusqueda = busqueda
+        ? e.cliente.toLowerCase().includes(busqueda.toLowerCase()) ||
+          e.factura.toLowerCase().includes(busqueda.toLowerCase())
+        : true;
+      const matchesNoGestionados = filtroNoGestionados ? (e.gestionada || '').toLowerCase() === 'no gestionada' : true;
+      return matchesEstatus && matchesBusqueda && matchesNoGestionados;
+    })
+    .sort((a, b) => {
+      // 1. Entregas atrasadas (fecha_entrega < hoy y no entregado) primero
+      // 2. Entregas para hoy (fecha_entrega === hoy y no entregado)
+      // 3. No gestionadas
+      // 4. Pendientes
+      // 5. Reprogramado
+      // 6. Entregados
+      const hoy = new Date();
+      const yyyy = hoy.getFullYear();
+      const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+      const dd = String(hoy.getDate()).padStart(2, '0');
+      const hoyStr = `${yyyy}-${mm}-${dd}`;
+      const getFecha = (e) => (e.fecha_entrega ? e.fecha_entrega : '');
+      const getEstatus = (e) => (e.estatus || '').toLowerCase();
+      const getGestionada = (e) => (e.gestionada || '').toLowerCase();
+      // Atrasadas
+      const aAtrasada = getFecha(a) < hoyStr && getEstatus(a) !== 'entregado';
+      const bAtrasada = getFecha(b) < hoyStr && getEstatus(b) !== 'entregado';
+      if (aAtrasada !== bAtrasada) return bAtrasada - aAtrasada;
+      // Para hoy
+      const aHoy = getFecha(a) === hoyStr && getEstatus(a) !== 'entregado';
+      const bHoy = getFecha(b) === hoyStr && getEstatus(b) !== 'entregado';
+      if (aHoy !== bHoy) return bHoy - aHoy;
+      // No gestionadas
+      const aNoGest = getGestionada(a) === 'no gestionada';
+      const bNoGest = getGestionada(b) === 'no gestionada';
+      if (aNoGest !== bNoGest) return bNoGest - aNoGest;
+      // Pendientes
+      const aPend = getEstatus(a) === 'pendiente';
+      const bPend = getEstatus(b) === 'pendiente';
+      if (aPend !== bPend) return bPend - aPend;
+      // Reprogramado
+      const aReprog = getEstatus(a) === 'reprogramado';
+      const bReprog = getEstatus(b) === 'reprogramado';
+      if (aReprog !== bReprog) return bReprog - aReprog;
+      // Entregados
+      const aEntregado = getEstatus(a) === 'entregado';
+      const bEntregado = getEstatus(b) === 'entregado';
+      if (aEntregado !== bEntregado) return bEntregado - aEntregado;
+      // Por defecto, más reciente primero
+      return (getFecha(b) > getFecha(a)) ? 1 : -1;
+    });
 
   // Actualizar estatus en Supabase
   const handleUpdateEstatus = async (nuevo, tipoEntrega, gestionada) => {
