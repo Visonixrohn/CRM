@@ -1,5 +1,6 @@
 import React from "react";
 import useGestionResumen from "./useGestionResumen";
+import useClientesParaHoy from "./useClientesParaHoy";
 import "./ComisionesMobileCards.css";
 
 const cards = [
@@ -38,6 +39,9 @@ const cards = [
 const ComisionesMobileCards = ({ meta, comisionObtenida, diferenciaMeta, diasRestantes, metaHoy, entregasPendientesAtrasadas, entregasParaHoy, entregasNoGestionadas }) => {
   const values = { meta, comisionObtenida, diferenciaMeta, diasRestantes, metaHoy };
   const extraCards = [];
+  // Hook para clientes para hoy
+  const { cantidad: clientesParaHoy, loading: loadingClientesParaHoy, error: errorClientesParaHoy } = useClientesParaHoy();
+
  
   if (entregasParaHoy > 0) {
     extraCards.push({
@@ -76,6 +80,13 @@ const ComisionesMobileCards = ({ meta, comisionObtenida, diferenciaMeta, diasRes
     value: pendientes,
     colorClass: "warning",
     icon: "⏳"
+  });
+    // Card de clientes para hoy
+  extraCards.push({
+    title: "Clientes para hoy",
+    value: loadingClientesParaHoy ? 'Cargando...' : (errorClientesParaHoy ? 'Error' : clientesParaHoy),
+    colorClass: "info",
+    icon: "📋"
   });
   return (
     <div className="analisis-cards-grid">

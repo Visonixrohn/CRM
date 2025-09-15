@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import ModalGestionarGestion from "./ModalGestionarGestion";
 import "./Gestion.css";
 import "./GestionCard.css";
 import GestionLinkModal from "./GestionLinkModal";
@@ -58,6 +59,8 @@ import { supabase } from "./supabaseClient";
 const Gestion = () => {
   const [mensajeBase, setMensajeBase] = useState(() => localStorage.getItem("mensajeBase") || MENSAJE_DEFAULT);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalGestionarOpen, setModalGestionarOpen] = useState(false);
+  const [clienteGestionar, setClienteGestionar] = useState(null);
   const [error, setError] = useState("");
   const [filtros, setFiltros] = useState(["", "", "", "", ""]);
   const [lastRemoved, setLastRemoved] = useState(null);
@@ -88,12 +91,35 @@ const Gestion = () => {
     })
   );
 
-  // Quitar cliente
-  const quitarCliente = (cliente) => {
+  // Quitar cliente y guardar datos gestionados
+  const quitarCliente = async (cliente, datosGestion = null) => {
     const nuevo = [...gestionados, { id: cliente.id, fecha: hoy }];
     localStorage.setItem("gestionados", JSON.stringify(nuevo));
     setLastRemoved({ id: cliente.id, fecha: hoy });
     setUpdate((u) => u + 1);
+    if (datosGestion) {
+      // Guardar en Supabase tabla seguimiento
+      try {
+        const { articulo, tipo, fecha } = datosGestion;
+        const nombre = (cliente.NOMBRES || cliente.nombre || '') + ' ' + (cliente.APELLIDOS || cliente.apellido || '');
+        const dni = cliente.ID || cliente.id || '';
+        const { error: supaError } = await supabase.from('seguimiento').insert([
+          {
+            id_usuario: userId,
+            nombre_cliente: nombre.trim(),
+            dni: dni,
+            cel: cliente.TELEFONO || cliente.tel,
+            articulo,
+            tipo,
+            fecha_de_acuerdo: fecha,
+            estado: 'Gestionado',
+          }
+        ]);
+        if (supaError) setError('Error al guardar en Supabase: ' + supaError.message);
+      } catch (err) {
+        setError('Error inesperado al guardar en Supabase');
+      }
+    }
   };
 
   // Restaurar último quitado
@@ -206,7 +232,10 @@ const Gestion = () => {
               segmento: cliente.SEGMENTO || cliente.segmento
             }}
             onWhatsApp={enviarWhatsApp}
-            onQuitar={quitarCliente}
+            onQuitar={(cliente) => {
+              setClienteGestionar(cliente);
+              setModalGestionarOpen(true);
+            }}
             onLink={(c) => { setLinkCliente(c); setModalLinkOpen(true); }}
           />
         ))}
@@ -299,7 +328,10 @@ const Gestion = () => {
                     <button style={{marginLeft:4,marginRight:4}} onClick={() => { setLinkCliente(cliente); setModalLinkOpen(true); }}>
                       Link
                     </button>
-                    <button className="remove" onClick={() => quitarCliente(cliente)}>
+                    <button className="remove" onClick={() => {
+                      setClienteGestionar(cliente);
+                      setModalGestionarOpen(true);
+                    }}>
                       Marcar gestion
                     </button>
                   </td>
@@ -328,6 +360,22 @@ const Gestion = () => {
           </div>
         </div>
       )}
+      {/* Modal para gestionar cliente */}
+      <ModalGestionarGestion
+        open={modalGestionarOpen}
+        onClose={() => setModalGestionarOpen(false)}
+        initialData={{
+          articulo: clienteGestionar?.articulo || '',
+          tipo: 'CONTADO',
+          fecha: undefined
+        }}
+        onSave={(datos) => {
+          if (clienteGestionar) {
+            quitarCliente(clienteGestionar, datos);
+          }
+          setModalGestionarOpen(false);
+        }}
+      />
       {/* Mensaje de error */}
       {error && <div className="error-message">{error}</div>}
     </div>

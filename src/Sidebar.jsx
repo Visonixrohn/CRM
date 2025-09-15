@@ -14,6 +14,7 @@ import {
   FaPhone,
   FaCreditCard,
   FaCog,
+  FaSearch,
 } from "react-icons/fa"; // Importing icons from react-icons
 import "./Sidebar.css";
 import { supabase } from "./supabaseClient";
@@ -130,6 +131,16 @@ const Sidebar = ({
           <FaPhone className="icon-text" style={{ color: '#2196f3' }} />
           <span className="sidebar-tooltip">Gestión</span>
         </Link>
+         <Link
+          to="/seguimiento"
+          className="sidebar-icon"
+          title="Seguimiento"
+          style={{ position: "relative" }}
+          onClick={handleNavClick}
+        >
+          <FaSearch className="icon-text" style={{ color: '#2196f3' }} />
+          <span className="sidebar-tooltip">Seguimiento</span>
+        </Link>
         <Link
           to="/cotizaciones"
           className="sidebar-icon"
@@ -160,6 +171,7 @@ const Sidebar = ({
           <FaUsers className="icon-text" />
           <span className="sidebar-tooltip">Actualizaciones</span>
         </Link>
+       
         {/* Icono de Configuración */}
         <Link
           to="/configuraciones"

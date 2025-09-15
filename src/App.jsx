@@ -1,4 +1,5 @@
 import BottomBar from "./BottomBar";
+import Seguimiento from "./Seguimiento";
 import "./App.css";
 import Push from "./push";
 import PushMovil from "./pushmovil";
@@ -227,6 +228,7 @@ function App() {
               <Route path="/cotizaciones" element={<Cotizaciones />} />
               <Route path="/actualizaciones" element={<Actualizaciones />} />
               <Route path="/gestion" element={<Gestion />} />
+              <Route path="/seguimiento" element={<Seguimiento />} />
               <Route path="/configuraciones" element={<Configuraciones />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
