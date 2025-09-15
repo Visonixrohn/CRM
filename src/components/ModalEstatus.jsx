@@ -27,11 +27,6 @@ const ModalEstatus = ({ open, onClose, entrega, fetchEntregas }) => {
       const registroId = entrega?.id;
       // Obtener usuario autenticado
       const user = supabase.auth.getUser ? (await supabase.auth.getUser()).data.user : null;
-      console.log("DEBUG update ModalEstatus:", {
-        registroId,
-        userId,
-        authUserId: user?.id
-      });
       if (!registroId || !userId) {
         setMsg("Faltan datos para actualizar.");
         setLoading(false);

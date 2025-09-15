@@ -7,7 +7,6 @@ export async function requestFirebaseNotificationPermission() {
       vapidKey: "BMGDm4VNYmXHuc3tQ6ErywVzLTa3JqI2Q_COEYd_QHloKHzqLKxN3nA3YTwu2CAf_XXjPa1qocJkJVqlJnOX8SA"
     });
     if (currentToken) {
-      console.log("Token de notificación FCM:", currentToken);
       // Aquí puedes enviar el token a tu backend si lo necesitas
       return currentToken;
     } else {

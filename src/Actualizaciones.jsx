@@ -49,9 +49,6 @@ const Actualizaciones = () => {
     )}&status=${encodeURIComponent(status)}`;
 
     // LOGS para depuración
-    console.log("actualizarStatus -> numeroIdentidad:", numeroIdentidad);
-    console.log("actualizarStatus -> status:", status);
-    console.log("actualizarStatus -> url:", url);
 
     try {
       const response = await fetch(url);

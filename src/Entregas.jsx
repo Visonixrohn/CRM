@@ -59,7 +59,6 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
     // Usar el número del chofer de la entrega si existe, si no el global
     let telefono = (entrega.chofer_telefono || entrega.choferCel || entrega.cel_chofer || chofer?.telefono || chofer?.contacto || "").replace(/[^\d]/g, "");
     // Log para depuración
-    console.log("DEBUG WhatsApp:", { entrega, chofer, telefono });
     if (telefono.startsWith("504")) {
       telefono = telefono.slice(3);
     }
@@ -77,7 +76,6 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
       // Para escritorio: https://web.whatsapp.com/send?phone=504XXXXXXXX&text=...
       url = `https://web.whatsapp.com/send?phone=504${telefono}&text=${encodeURIComponent(mensaje)}`;
     }
-    console.log("URL WhatsApp generada:", url);
     window.open(url, "_blank");
   };
 
@@ -499,7 +497,6 @@ const Entregas = () => {
   // Obtener entregas del usuario (reutilizable)
   const fetchEntregas = async () => {
     if (!user) return;
-    console.log("user.id para entregas:", user.id);
     try {
       const { data, error } = await supabase
         .from("entregas_pendientes")
@@ -531,7 +528,6 @@ const Entregas = () => {
   // Actualizar estatus en Supabase
   const handleUpdateEstatus = async (nuevo, tipoEntrega, gestionada) => {
     if (!detalle) return;
-    console.log("DEBUG update estatus:", { detalle, detalleId: detalle.id, userId: user?.id });
     try {
       // SELECT previo para depuración
       const { data: preData, error: preError } = await supabase
@@ -539,30 +535,17 @@ const Entregas = () => {
         .select("*")
         .eq("id", detalle.id)
         .eq("usuario_id", user.id);
-      console.log("DEBUG pre-select:", { preData, preError });
       if (!preData || preData.length === 0) {
         alert("No existe ningún registro con ese id y usuario_id. Verifica los valores.");
         return;
       }
-      // Log de comparación de valores actuales vs nuevos
-      const actual = preData[0];
-      console.log("VALORES ACTUALES:", {
-        estatus: actual.estatus,
-        tipo_entrega: actual.tipo_entrega,
-        gestionada: actual.gestionada
-      });
-      console.log("VALORES NUEVOS:", {
-        estatus: nuevo,
-        tipo_entrega: tipoEntrega,
-        gestionada: gestionada
-      });
+      // const actual = preData[0];
       const { data, error } = await supabase
         .from("entregas_pendientes")
         .update({ estatus: nuevo, tipo_entrega: tipoEntrega, gestionada })
         .eq("id", detalle.id)
         .eq("usuario_id", user.id)
         .select(); // id del registro y usuario_id para seguridad
-      console.log("Supabase update result:", { data, error });
       if (error) {
         console.error("Supabase error:", error);
         alert("Error en Supabase: " + (error.message || error));

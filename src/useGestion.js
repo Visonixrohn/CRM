@@ -20,7 +20,6 @@ export default function useGestion() {
 
   useEffect(() => {
   if (!usuarioId) return;
-  console.log("usuarioId para gestión:", usuarioId);
     setLoading(true);
     const fetchData = async () => {
       try {
