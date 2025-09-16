@@ -393,49 +393,45 @@ const Gestion = () => {
             </tr>
           </thead>
           <tbody>
-            {clientesFiltrados
-              .filter((cliente) =>
-                !gestionados.some((g) => g.id === (cliente.ID || cliente.id) && g.fecha === hoy)
-              )
-              .map((cliente) => (
-                <tr key={cliente.ID || cliente.id}>
-                  <td>
-                    {String(cliente.ID || cliente.id).length === 12
-                      ? '0' + String(cliente.ID || cliente.id)
-                      : cliente.ID || cliente.id}
-                    <span
-                      className="copy-btn"
-                      title="Copiar ID"
-                      style={{ marginLeft: 5 }}
-                      onClick={(e) => {
-                        const idStr = String(cliente.ID || cliente.id);
-                        const idToCopy = idStr.length === 12 ? '0' + idStr : idStr;
-                        copyToClipboard(idToCopy, e);
-                      }}
-                    >
-                      📋
-                    </span>
-                  </td>
-                  <td>{cliente.NOMBRES || cliente.nombre}</td>
-                  <td>{cliente.APELLIDOS || cliente.apellido}</td>
-                  <td>{cliente.TELEFONO || cliente.tel}</td>
-                  <td>{cliente.TIENDA || cliente.tienda}</td>
-                  <td>
-                    <button onClick={() => enviarWhatsApp(cliente)}>
-                      Enviar
-                    </button>
-                    <button style={{marginLeft:4,marginRight:4}} onClick={() => { setLinkCliente(cliente); setModalLinkOpen(true); }}>
-                      Link
-                    </button>
-                    <button className="remove" onClick={() => {
-                      setClienteGestionar(cliente);
-                      setModalMotivoOpen(true);
-                    }}>
-                      Marcar gestion
-                    </button>
-                  </td>
-                </tr>
-              ))}
+            {clientesFiltrados.map((cliente) => (
+              <tr key={cliente.ID || cliente.id}>
+                <td>
+                  {String(cliente.ID || cliente.id).length === 12
+                    ? '0' + String(cliente.ID || cliente.id)
+                    : cliente.ID || cliente.id}
+                  <span
+                    className="copy-btn"
+                    title="Copiar ID"
+                    style={{ marginLeft: 5 }}
+                    onClick={(e) => {
+                      const idStr = String(cliente.ID || cliente.id);
+                      const idToCopy = idStr.length === 12 ? '0' + idStr : idStr;
+                      copyToClipboard(idToCopy, e);
+                    }}
+                  >
+                    📋
+                  </span>
+                </td>
+                <td>{cliente.NOMBRES || cliente.nombre}</td>
+                <td>{cliente.APELLIDOS || cliente.apellido}</td>
+                <td>{cliente.TELEFONO || cliente.tel}</td>
+                <td>{cliente.TIENDA || cliente.tienda}</td>
+                <td>
+                  <button onClick={() => enviarWhatsApp(cliente)}>
+                    Enviar
+                  </button>
+                  <button style={{marginLeft:4,marginRight:4}} onClick={() => { setLinkCliente(cliente); setModalLinkOpen(true); }}>
+                    Link
+                  </button>
+                  <button className="remove" onClick={() => {
+                    setClienteGestionar(cliente);
+                    setModalMotivoOpen(true);
+                  }}>
+                    Marcar gestion
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
