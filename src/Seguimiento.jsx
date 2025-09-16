@@ -29,6 +29,7 @@ const Seguimiento = () => {
   const [modal, setModal] = useState({ open: false, row: null });
   const [modalAgregar, setModalAgregar] = useState(false);
   const [loadingAgregar, setLoadingAgregar] = useState(false);
+  const [copiadoId, setCopiadoId] = useState(null);
   const userId = localStorage.getItem("userId");
 
   const handleAgregar = async (form) => {
@@ -215,7 +216,41 @@ const Seguimiento = () => {
                       onClick={() => handleOpenModal(row)}
                     >
                       <td style={{ padding: 10 }}>{row.nombre_cliente}</td>
-                      <td style={{ padding: 10 }}>{row.dni}</td>
+                      <td style={{ padding: 10 }}>
+                        {row.dni}
+                        <button
+                          title="Copiar DNI"
+                          style={{
+                            marginLeft: 8,
+                            background: copiadoId === row.id ? '#e0f2fe' : '#f1f5f9',
+                            border: '1.5px solid #2563eb',
+                            borderRadius: 6,
+                            cursor: 'pointer',
+                            padding: '2px 6px',
+                            verticalAlign: 'middle',
+                            transition: 'background 0.2s, border 0.2s',
+                            color: '#2563eb',
+                            outline: 'none',
+                            fontSize: 0
+                          }}
+                          onMouseOver={e => e.currentTarget.style.background = '#e0f2fe'}
+                          onMouseOut={e => e.currentTarget.style.background = copiadoId === row.id ? '#e0f2fe' : '#f1f5f9'}
+                          onClick={e => {
+                            e.stopPropagation();
+                            if (navigator && navigator.clipboard) {
+                              navigator.clipboard.writeText(row.dni);
+                              setCopiadoId(row.id);
+                              setTimeout(() => setCopiadoId(null), 1200);
+                            }
+                          }}
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{verticalAlign:'middle',display:'block'}}>
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                          </svg>
+                        </button>
+                        {copiadoId === row.id && <span style={{color:'#22c55e',fontSize:12,marginLeft:4}}>¡Copiado!</span>}
+                      </td>
                       <td style={{ padding: 10 }}>
                         {row.cel}
                         {row.cel && (
