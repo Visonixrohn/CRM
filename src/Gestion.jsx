@@ -407,7 +407,11 @@ const Gestion = () => {
                       className="copy-btn"
                       title="Copiar ID"
                       style={{ marginLeft: 5 }}
-                      onClick={(e) => copyToClipboard(cliente.ID || cliente.id, e)}
+                      onClick={(e) => {
+                        const idStr = String(cliente.ID || cliente.id);
+                        const idToCopy = idStr.length === 12 ? '0' + idStr : idStr;
+                        copyToClipboard(idToCopy, e);
+                      }}
                     >
                       📋
                     </span>
