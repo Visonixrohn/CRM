@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 
-const SHEET_ID = "1DT9s9uYmVuLctxeBApAwU8HaNfwc6UQNzO2O437Qq5s";
-const API_KEY = "AIzaSyCIUJIvnSyAxU4NEp2lotm-QodOKQ0FqFA";
-const URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Hoja 1?key=${API_KEY}`;
 
-export default function useGestion() {
+
+export default function useGestion(update) {
   const [datos, setDatos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,57 +17,39 @@ export default function useGestion() {
   }, []);
 
   useEffect(() => {
-  if (!usuarioId) return;
+    if (!usuarioId) return;
     setLoading(true);
     const fetchData = async () => {
       try {
-        const response = await fetch(URL);
-        const data = await response.json();
-        if (data.values) {
-          const headers = data.values[0];
-          const rows = data.values.slice(1);
-          // Mapear headers a claves estándar según los nombres de la hoja
-          const keyMap = {};
-          headers.forEach((h, idx) => {
-            const key = h.trim().toLowerCase();
-            if (["no. identificacion", "no identificacion", "identificacion"].includes(key)) keyMap[idx] = "id";
-            else if (["tienda fidelidad", "tienda"].includes(key)) keyMap[idx] = "tienda";
-            else if (["cadena fidelidad", "cadena"].includes(key)) keyMap[idx] = "cadena";
-            else if (["apellidos", "apellido"].includes(key)) keyMap[idx] = "apellido";
-            else if (["nombre", "nombres"].includes(key)) keyMap[idx] = "nombre";
-            else if (["departamento", "depto"].includes(key)) keyMap[idx] = "departamento";
-            else if (["municipio"].includes(key)) keyMap[idx] = "municipio";
-            else if (["telefono", "tel"].includes(key)) keyMap[idx] = "tel";
-            else if (["segmento base", "segmento"].includes(key)) keyMap[idx] = "segmento";
-            else if (["usuario"].includes(key)) keyMap[idx] = "usuario";
-            else keyMap[idx] = h; // fallback
-          });
-          const formatted = rows.map((row) => {
-            const obj = {};
-            headers.forEach((header, idx) => {
-              obj[keyMap[idx]] = row[idx] || "";
-            });
-            return obj;
-          });
-          // Filtrar por usuario (campo robusto)
-          const filtrados = formatted.filter(row => (row.usuario || row.USUARIO) && (row.usuario || row.USUARIO) === usuarioId);
-          setDatos(filtrados);
-          setTotal(filtrados.length);
-          // Pendientes: los que no tienen STATUS "Tomado"
-          setPendientes(filtrados.filter(row => (row.status || row.STATUS) !== "Tomado").length);
-        } else {
-          setDatos([]);
-          setTotal(0);
-          setPendientes(0);
-        }
-        setLoading(false);
+        const { data, error } = await supabase
+          .from('gestion')
+          .select('*')
+          .eq('usuario', usuarioId);
+        if (error) throw error;
+        // Mapear columnas de Supabase a nombres esperados en la UI
+        const mapped = (data || []).map(row => ({
+          ID: row.no_identificacion,
+          NOMBRES: row.nombre,
+          APELLIDOS: row.apellidos,
+          TELEFONO: row.telefono,
+          TIENDA: row.tienda_fidelidad,
+          estado: row.estado || '',
+          ...row // mantener el resto de campos originales
+        }));
+        setDatos(mapped);
+        setTotal((data || []).length);
+        setPendientes((data || []).filter(row => (row.status || row.STATUS) !== "Tomado").length);
       } catch (err) {
+        setDatos([]);
+        setTotal(0);
+        setPendientes(0);
         setError(err.message);
+      } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, [usuarioId]);
+  }, [usuarioId, update]);
 
   return { datos, loading, error, total, pendientes };
 }
