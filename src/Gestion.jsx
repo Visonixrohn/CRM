@@ -15,7 +15,9 @@ const GestionCard = ({ cliente, onWhatsApp, onQuitar, onLink }) => (
         {cliente.NOMBRES || cliente.nombre} {cliente.APELLIDOS || cliente.apellido}
       </div>
       <div className="analisis-card-value" style={{fontSize:'0.98rem',color:'#64748b',marginBottom:4}}>
-        ID: {cliente.ID || cliente.id}
+        ID: {String(cliente.ID || cliente.id).length === 12
+          ? '0' + String(cliente.ID || cliente.id)
+          : cliente.ID || cliente.id}
       </div>
       <div className="analisis-card-value" style={{fontSize:'0.98rem',color:'#64748b',marginBottom:4}}>
         Tienda: {cliente.TIENDA || cliente.tienda}
@@ -398,7 +400,9 @@ const Gestion = () => {
               .map((cliente) => (
                 <tr key={cliente.ID || cliente.id}>
                   <td>
-                    {cliente.ID || cliente.id}
+                    {String(cliente.ID || cliente.id).length === 12
+                      ? '0' + String(cliente.ID || cliente.id)
+                      : cliente.ID || cliente.id}
                     <span
                       className="copy-btn"
                       title="Copiar ID"
