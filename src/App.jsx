@@ -9,6 +9,7 @@ import NotificationToast from "./NotificationToast";
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import Login from "./Login";
+import LoginMobile from "./LoginMobile";
 import ModalInput from "./ModalInput";
 import Header from "./Header";
 import HeaderMovil from "./HeaderMovil";
@@ -115,7 +116,10 @@ function App() {
   if (location.pathname.startsWith('/reset-password')) {
     return <ResetPassword />;
   }
-  if (!user) return <Login onLogin={setUser} />;
+  if (!user) {
+    if (isMobile) return <LoginMobile onLogin={setUser} />;
+    return <Login onLogin={setUser} />;
+  }
 
   // Handlers y helpers para navegación y sidebar
   const toggleSidebar = () => setSidebarOpen((open) => !open);
