@@ -93,6 +93,14 @@ const Gestion = () => {
   const [linkCliente, setLinkCliente] = useState(null);
   const { datos, loading, error: errorGestion, total, pendientes } = useGestion(update);
 
+  // Actualización automática cada 15 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setUpdate(u => u + 1);
+    }, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
   // Obtener usuario actual desde localStorage
   useEffect(() => {
     const userId = localStorage.getItem("userId");
