@@ -279,14 +279,15 @@ const Gestion = () => {
         <button onClick={() => setModalOpen(true)}>Mensaje</button>
       </div>
       {/* Cards móviles */}
-      {filtroEstado === 'a_eliminar' && aEliminar.length > 0 && (
+      {filtroEstado === 'a_eliminar' && clientesFiltrados.length > 0 && (
         <div style={{display:'flex',justifyContent:'flex-end',marginBottom:12,gap:8}}>
           <button
             onClick={async () => {
               if (!window.confirm('¿Eliminar TODOS los clientes de la lista y de Supabase?')) return;
-              for (const cliente of aEliminar) {
-                await eliminarClienteSupabase(cliente);
-              }
+              // Borrado optimista: quitar del frontend primero
+              const ids = clientesFiltrados.map(c => c.ID || c.id);
+              setUpdate(u => u + 1); // Forzar recarga tras borrar
+              await Promise.all(clientesFiltrados.map(cliente => eliminarClienteSupabase(cliente)));
             }}
             style={{background:'#ef4444',color:'#fff',border:'none',borderRadius:6,padding:'8px 18px',fontWeight:700,cursor:'pointer'}}
           >Eliminar todos</button>
@@ -300,7 +301,11 @@ const Gestion = () => {
                 <div style={{fontWeight:600}}>{cliente.NOMBRES || cliente.nombre} {cliente.APELLIDOS || cliente.apellido}</div>
                 <div style={{fontSize:13,color:'#666'}}>Tel: {cliente.TELEFONO || cliente.tel}</div>
                 <button
-                  onClick={() => eliminarClienteSupabase(cliente)}
+                  onClick={async () => {
+                    // Borrado optimista: quitar del frontend primero
+                    await eliminarClienteSupabase(cliente);
+                    setUpdate(u => u + 1);
+                  }}
                   style={{
                     position: 'absolute',
                     top: 10,
