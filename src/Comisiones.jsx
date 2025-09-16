@@ -54,7 +54,9 @@ const ActionButton = ({ onClick, label, icon }) => (
 
 const Comisiones = ({ setPage }) => {
   // Tarjetas de gestión
-  const { gestionadosHoy, pendientes } = useGestionResumen();
+  const [update, setUpdate] = useState(0);
+  const { total, gestionadosHoy } = useGestionResumen(update);
+  const pendientes = total - gestionadosHoy;
   // Clientes para hoy (estado Gestionado y fecha hoy)
   const { cantidad: clientesParaHoy, loading: loadingClientesParaHoy, error: errorClientesParaHoy } = useClientesParaHoy();
   // --- Lógica para obtener entregas pendientes del usuario actual ---
@@ -346,38 +348,29 @@ const Comisiones = ({ setPage }) => {
           </header>
           {/* Cards para mobile y desktop */}
           <div className="comisiones-cards-responsive">
-            <div className="comisiones-cards-desktop">
-              <ComCard title="Meta" value={meta} colorClass="meta" icon="🎯" />
-              <ComCard title="Comisión Obtenida" value={comisionObtenida} colorClass="success" icon="💵" />
-              <ComCard title="Diferencia a Meta" value={diferenciaMeta} colorClass="danger" icon="📊" />
-              <ComCard title="Días Restantes  del Mes" value={diasRestantes} colorClass="primary" icon="📆" isNumberOnly={true} />
-              <ComCard title="Meta Diaria" value={metaHoy} colorClass="neutral" icon="📈" />
-              {/* Card de clientes para hoy */}
-             
-              {/* Cards de gestión */}
-              <ComCard title="Clientes Gestionados" value={gestionadosHoy} colorClass="success" icon="✅" isNumberOnly={true} />
-              <ComCard title="Clientes Pendientes" value={pendientes} colorClass="warning" icon="⏳" isNumberOnly={true} />
-              {/* Cards de entregas */}
-              {Array.isArray(entregasPendientes) && entregasPendientes.length > 0 && (
-                <>
-                  {entregasPendientesAtrasadas > 0 && (
-                    <ComCard title="Entregas Atrasadas" value={entregasPendientesAtrasadas} colorClass="danger" icon="⏰" isNumberOnly={true} />
-                  )}
-                  {entregasParaHoy > 0 && (
-                    <ComCard title="Entregas para Hoy" value={entregasParaHoy} colorClass="warning" icon="📅" isNumberOnly={true} />
-                  )}
-                  {entregasNoGestionadas > 0 && (
-                    <ComCard title="No Gestionadas" value={entregasNoGestionadas} colorClass="info" icon="🕓" isNumberOnly={true} />
-                  )}
-                </>
+            <div className="analisis-cards-grid comisiones-cards-destacadas" style={{
+              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+              gap: 32,
+              maxWidth: 1200,
+              marginBottom: 40
+            }}>
+              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">🎯 Meta</div><div className="analisis-card-value">L{meta.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div></div>
+              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">💵 Comisión Obtenida</div><div className="analisis-card-value">L{comisionObtenida.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div></div>
+              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">📊 Diferencia a Meta</div><div className="analisis-card-value">L{diferenciaMeta.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div></div>
+              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">📆 Días Restantes del Mes</div><div className="analisis-card-value">{diasRestantes}</div></div>
+              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">📈 Meta Diaria</div><div className="analisis-card-value">L{metaHoy.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div></div>
+              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">✅ Clientes Gestionados</div><div className="analisis-card-value">{gestionadosHoy}</div></div>
+              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">⏳ Clientes Pendientes</div><div className="analisis-card-value">{pendientes}</div></div>
+              {Array.isArray(entregasPendientes) && entregasPendientes.length > 0 && entregasPendientesAtrasadas > 0 && (
+                <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">⏰ Entregas Atrasadas</div><div className="analisis-card-value">{entregasPendientesAtrasadas}</div></div>
               )}
-               <ComCard
-                title="Clientes para hoy"
-                value={loadingClientesParaHoy ? 'Cargando...' : (errorClientesParaHoy ? 'Error' : clientesParaHoy)}
-                colorClass="info"
-                icon="📋"
-                isNumberOnly={true}
-              />
+              {Array.isArray(entregasPendientes) && entregasPendientes.length > 0 && entregasParaHoy > 0 && (
+                <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">📅 Entregas para Hoy</div><div className="analisis-card-value">{entregasParaHoy}</div></div>
+              )}
+              {Array.isArray(entregasPendientes) && entregasPendientes.length > 0 && entregasNoGestionadas > 0 && (
+                <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">🕓 No Gestionadas</div><div className="analisis-card-value">{entregasNoGestionadas}</div></div>
+              )}
+              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">📋 Clientes para hoy</div><div className="analisis-card-value">{loadingClientesParaHoy ? 'Cargando...' : (errorClientesParaHoy ? 'Error' : clientesParaHoy)}</div></div>
             </div>
             <div className="comisiones-cards-mobile">
               <ComisionesMobileCards

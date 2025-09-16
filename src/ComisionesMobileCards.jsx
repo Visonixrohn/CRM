@@ -67,20 +67,21 @@ const ComisionesMobileCards = ({ meta, comisionObtenida, diferenciaMeta, diasRes
       icon: "⏰"
     });
   }
-   const { gestionadosHoy, pendientes } = useGestionResumen();
-  // Tarjetas de gestión
-  extraCards.push({
-    title: "Clientes Gestionados",
-    value: gestionadosHoy,
-    colorClass: "success",
-    icon: "✅"
-  });
-  extraCards.push({
-    title: "Clientes Pendientes",
-    value: pendientes,
-    colorClass: "warning",
-    icon: "⏳"
-  });
+   const { total, gestionadosHoy } = useGestionResumen();
+   const pendientes = total - gestionadosHoy;
+   // Tarjetas de gestión
+   extraCards.push({
+     title: "Clientes Gestionados",
+     value: gestionadosHoy,
+     colorClass: "success",
+     icon: "✅"
+   });
+   extraCards.push({
+     title: "Clientes Pendientes",
+     value: pendientes,
+     colorClass: "warning",
+     icon: "⏳"
+   });
     // Card de clientes para hoy
   extraCards.push({
     title: "Clientes para hoy",

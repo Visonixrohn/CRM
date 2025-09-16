@@ -1,3 +1,20 @@
+.analisis-card-lg {
+  min-height: 140px;
+  padding: 2.2rem 1.2rem 1.5rem 1.2rem;
+  font-size: 1.18rem;
+  border-radius: 32px;
+  box-shadow: 0 8px 32px rgba(109,40,217,0.10), 0 2px 8px rgba(52,211,153,0.08);
+}
+.analisis-card-lg .analisis-card-title {
+  font-size: 1.18rem;
+  margin-bottom: 0.5rem;
+  color: #6d28d9;
+}
+.analisis-card-lg .analisis-card-value {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #312e81;
+}
 .com-card.warning {
   background: #fbbf24;
   color: #b45309;
@@ -92,11 +109,25 @@
 /* Cards de análisis para vista móvil y desktop */
 .analisis-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 32px;
   width: 100%;
   margin-bottom: 24px;
-  max-width: 700px;
+  max-width: 1600px;
+}
+
+@media (max-width: 900px) {
+  .analisis-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    max-width: 700px;
+  }
+}
+
+@media (max-width: 700px) {
+  .analisis-cards-grid.comisiones-cards-destacadas {
+    display: none !important;
+  }
 }
 .analisis-card {
   background: #fff;

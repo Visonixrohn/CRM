@@ -57,6 +57,7 @@ const MENSAJE_DEFAULT = `Hola 😇 {NOMBRE}`;
 
 import { useEffect as useEffectApp, useState as useStateApp } from "react";
 import { supabase } from "./supabaseClient";
+import useGestionadosHoy from "./useGestionadosHoy";
   // Eliminar cliente de Supabase y de la lista local
   const eliminarClienteSupabase = async (cliente) => {
     if (!cliente || !cliente.id && !cliente.ID) return;
@@ -111,9 +112,8 @@ const Gestion = () => {
 
   // Total clientes en Supabase
   const total = datos.length;
-  // Gestionados hoy: clientes con estado distinto de vacío y updated_at de hoy
-  const hoy = new Date().toISOString().slice(0, 10);
-  const countGestionados = datos.filter(c => c.estado && c.updated_at && c.updated_at.slice(0, 10) === hoy).length;
+  // Gestionados hoy: hook reutilizable
+  const countGestionados = useGestionadosHoy(update);
   // Pendientes: total - gestionados hoy
   const pendientes = total - countGestionados;
 
