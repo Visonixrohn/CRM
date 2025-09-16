@@ -93,7 +93,7 @@ const Gestion = () => {
   const [userId, setUserId] = useState(null);
   const [modalLinkOpen, setModalLinkOpen] = useState(false);
   const [linkCliente, setLinkCliente] = useState(null);
-  const { datos, loading, error: errorGestion, total, pendientes } = useGestion(update);
+  const { datos, loading, error: errorGestion } = useGestion(update);
 
   // Actualización automática cada 15 segundos
   useEffect(() => {
@@ -109,23 +109,31 @@ const Gestion = () => {
     if (userId) setUserId(userId);
   }, []);
 
-  // Gestionados hoy
-  const hoy = new Date().toLocaleDateString();
-  const gestionados = JSON.parse(localStorage.getItem("gestionados") || "[]");
-  const countGestionados = gestionados.filter((g) => g.fecha === hoy).length;
+  // Total clientes en Supabase
+  const total = datos.length;
+  // Gestionados hoy: clientes con estado distinto de vacío y updated_at de hoy
+  const hoy = new Date().toISOString().slice(0, 10);
+  const countGestionados = datos.filter(c => c.estado && c.updated_at && c.updated_at.slice(0, 10) === hoy).length;
+  // Pendientes: total - gestionados hoy
+  const pendientes = total - countGestionados;
 
   // Filtrar clientes: solo mostrar los del usuario autenticado y aplicar filtros
-  let clientesFiltrados = datos.filter((c) =>
-    filtros.every((f, i) => {
-      if (!f) return true;
-      const val = [c.ID || c.id, c.NOMBRES || c.nombre, c.APELLIDOS || c.apellido, c.TELEFONO || c.tel, c.TIENDA || c.tienda][i] || "";
-      return val.toLowerCase().includes(f.toLowerCase());
-    })
-  );
+  let filtrosActivos = filtros.some(f => f && f.trim() !== '');
+  let clientesFiltrados = datos;
   if (filtroEstado === 'no_contestan') clientesFiltrados = datos.filter(c => (c.estado || '').toLowerCase() === 'no_contestan');
   else if (filtroEstado === 'no_quiere') clientesFiltrados = datos.filter(c => (c.estado || '').toLowerCase() === 'no_quiere');
   else if (filtroEstado === 'si_quiere') clientesFiltrados = datos.filter(c => (c.estado || '').toLowerCase() === 'si_quiere');
   else if (filtroEstado === 'a_eliminar') clientesFiltrados = datos.filter(c => (c.estado || '').toLowerCase() === 'a_eliminar');
+  else if (!filtrosActivos) clientesFiltrados = datos.filter(c => !c.estado);
+  else {
+    clientesFiltrados = datos.filter((c) =>
+      filtros.every((f, i) => {
+        if (!f) return true;
+        const val = [c.ID || c.id, c.NOMBRES || c.nombre, c.APELLIDOS || c.apellido, c.TELEFONO || c.tel, c.TIENDA || c.tienda][i] || "";
+        return val.toLowerCase().includes(f.toLowerCase());
+      })
+    );
+  }
 
   // Quitar cliente y guardar datos gestionados
   const quitarCliente = async (cliente, datosGestion = null) => {
@@ -285,9 +293,6 @@ const Gestion = () => {
         </div>
       )}
       {clientesFiltrados
-        .filter((cliente) =>
-          !gestionados.some((g) => g.id === (cliente.ID || cliente.id) && g.fecha === hoy)
-        )
         .map((cliente) => (
           <div key={cliente.ID || cliente.id} style={{ position: 'relative' }}>
             {filtroEstado === 'a_eliminar' ? (
@@ -457,9 +462,10 @@ const Gestion = () => {
           // Actualizar estado en Supabase
           if (clienteGestionar) {
             const id = clienteGestionar.ID || clienteGestionar.id;
+            const now = new Date().toISOString();
             const { error } = await supabase
               .from('gestion')
-              .update({ estado: motivo })
+              .update({ estado: motivo, updated_at: now })
               .eq('no_identificacion', id);
             if (error) setError('Error al actualizar estado: ' + error.message);
             setUpdate(u => u + 1); // Forzar recarga
