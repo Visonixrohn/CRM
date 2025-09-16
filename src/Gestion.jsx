@@ -97,7 +97,7 @@ const Gestion = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setUpdate(u => u + 1);
-    }, 15000);
+    }, 10000);
     return () => clearInterval(interval);
   }, []);
 
