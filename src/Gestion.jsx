@@ -354,51 +354,11 @@ const Gestion = () => {
         <table id="clientesTable">
           <thead>
             <tr>
-              <th>
-                ID
-                <br />
-                <input
-                  type="text"
-                  value={filtros[0]}
-                  onChange={(e) => handleFiltro(0, e.target.value)}
-                />
-              </th>
-              <th>
-                Nombres
-                <br />
-                <input
-                  type="text"
-                  value={filtros[1]}
-                  onChange={(e) => handleFiltro(1, e.target.value)}
-                />
-              </th>
-              <th>
-                Apellidos
-                <br />
-                <input
-                  type="text"
-                  value={filtros[2]}
-                  onChange={(e) => handleFiltro(2, e.target.value)}
-                />
-              </th>
-              <th>
-                Teléfono
-                <br />
-                <input
-                  type="text"
-                  value={filtros[3]}
-                  onChange={(e) => handleFiltro(3, e.target.value)}
-                />
-              </th>
-              <th>
-                Tienda
-                <br />
-                <input
-                  type="text"
-                  value={filtros[4]}
-                  onChange={(e) => handleFiltro(4, e.target.value)}
-                />
-              </th>
+              <th>ID</th>
+              <th>Nombres</th>
+              <th>Apellidos</th>
+              <th>Teléfono</th>
+              <th>Tienda</th>
               <th>Acción</th>
             </tr>
           </thead>
