@@ -10,6 +10,7 @@ export default function useGestion(update) {
   const [usuarioId, setUsuarioId] = useState(null);
   const [miTienda, setMiTienda] = useState(null);
   const [total, setTotal] = useState(0);
+  const [gestionadosHoy, setGestionadosHoy] = useState(0);
   const [pendientes, setPendientes] = useState(0);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ export default function useGestion(update) {
     setLoading(true);
     const fetchData = async () => {
       try {
-        // Filtrar: usuario = usuario actual o NULL, y tienda_fidelidad = mi_tienda
+        // 1. Traer todos los datos filtrados por usuario y tienda
         const { data, error } = await supabase
           .from('gestion')
           .select('*')
@@ -47,14 +48,34 @@ export default function useGestion(update) {
           TELEFONO: row.telefono,
           TIENDA: row.tienda_fidelidad,
           estado: row.estado || '',
+          updated_at: row.updated_at,
+          usuario: row.usuario,
           ...row
         }));
         setDatos(mapped);
-        setTotal((data || []).length);
-        setPendientes((data || []).filter(row => (row.status || row.STATUS) !== "Tomado").length);
+        setTotal(mapped.length);
+
+        // 2. Gestionados hoy: usuario=usuario, tienda=mi_tienda, updated_at=fecha de hoy (dd/mm/aaaa)
+        const hoy = new Date();
+        const dd = String(hoy.getDate()).padStart(2, '0');
+        const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+        const yyyy = hoy.getFullYear();
+        const fechaHoy = `${dd}/${mm}/${yyyy}`;
+        const { count: gestionadosCount, error: errorGestionados } = await supabase
+          .from('gestion')
+          .select('id', { count: 'exact', head: true })
+          .eq('usuario', usuarioId)
+          .eq('tienda_fidelidad', miTienda)
+          .eq('updated_at', fechaHoy);
+        if (errorGestionados) throw errorGestionados;
+        setGestionadosHoy(gestionadosCount || 0);
+
+        // 3. Pendientes: total - gestionados hoy
+        setPendientes(mapped.length - (gestionadosCount || 0));
       } catch (err) {
         setDatos([]);
         setTotal(0);
+        setGestionadosHoy(0);
         setPendientes(0);
         setError(err.message);
       } finally {
@@ -64,5 +85,5 @@ export default function useGestion(update) {
     fetchData();
   }, [usuarioId, miTienda, update]);
 
-  return { datos, loading, error, total, pendientes };
+  return { datos, loading, error, total, gestionadosHoy, pendientes };
 }

@@ -94,7 +94,7 @@ const Gestion = () => {
   const [userId, setUserId] = useState(null);
   const [modalLinkOpen, setModalLinkOpen] = useState(false);
   const [linkCliente, setLinkCliente] = useState(null);
-  const { datos, loading, error: errorGestion } = useGestion(update);
+  const { datos, loading, error: errorGestion, total, gestionadosHoy, pendientes } = useGestion(update);
 
   // Actualización automática cada 15 segundos
   useEffect(() => {
@@ -110,12 +110,7 @@ const Gestion = () => {
     if (userId) setUserId(userId);
   }, []);
 
-  // Total clientes en Supabase
-  const total = datos.length;
-  // Gestionados hoy: hook reutilizable
-  const countGestionados = useGestionadosHoy(update);
-  // Pendientes: total - gestionados hoy
-  const pendientes = total - countGestionados;
+  // Ahora total, gestionadosHoy y pendientes vienen del hook useGestion
 
   // Filtrar clientes: solo mostrar los del usuario autenticado y aplicar filtros
   let filtrosActivos = filtros.some(f => f && f.trim() !== '');
@@ -247,7 +242,7 @@ const Gestion = () => {
         </div>
         <div className="analisis-card" style={{flex:'1 1 120px',minWidth:120}}>
           <div className="analisis-card-title" style={{fontWeight:'bold',color:'#3730a3'}}>Gestionados Hoy</div>
-          <div className="analisis-card-value" style={{fontSize:'1.3rem',color:'#0f172a',fontWeight:'bold'}}>{countGestionados}</div>
+          <div className="analisis-card-value" style={{fontSize:'1.3rem',color:'#0f172a',fontWeight:'bold'}}>{gestionadosHoy}</div>
         </div>
         <div className="analisis-card" style={{flex:'1 1 120px',minWidth:120}}>
           <div className="analisis-card-title" style={{fontWeight:'bold',color:'#3730a3'}}>Pendientes</div>
@@ -427,11 +422,16 @@ const Gestion = () => {
           // Actualizar estado y usuario en Supabase
           if (clienteGestionar) {
             const id = clienteGestionar.ID || clienteGestionar.id;
-            const now = new Date().toISOString();
+            // Guardar fecha en formato dd/mm/aaaa como texto
+            const now = new Date();
+            const dia = String(now.getDate()).padStart(2, '0');
+            const mes = String(now.getMonth() + 1).padStart(2, '0');
+            const anio = now.getFullYear();
+            const fechaTexto = `${dia}/${mes}/${anio}`;
             const usuarioActual = userId || localStorage.getItem("userId");
             const { error } = await supabase
               .from('gestion')
-              .update({ estado: motivo, updated_at: now, usuario: usuarioActual })
+              .update({ estado: motivo, updated_at: fechaTexto, usuario: usuarioActual })
               .eq('no_identificacion', id);
             if (error) setError('Error al actualizar estado: ' + error.message);
             setUpdate(u => u + 1); // Forzar recarga
