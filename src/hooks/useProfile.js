@@ -12,7 +12,7 @@ export function useProfile() {
     setError("");
     const { data, error } = await supabase
       .from("profiles")
-      .select("nombre,email,telefono")
+      .select("nombre,email,telefono,mi_tienda")
       .eq("id", id)
       .maybeSingle();
     if (error) setError("Error al leer perfil");

@@ -424,13 +424,14 @@ const Gestion = () => {
         onClose={() => setModalMotivoOpen(false)}
         onSelect={async motivo => {
           setMotivoGestion(motivo);
-          // Actualizar estado en Supabase
+          // Actualizar estado y usuario en Supabase
           if (clienteGestionar) {
             const id = clienteGestionar.ID || clienteGestionar.id;
             const now = new Date().toISOString();
+            const usuarioActual = userId || localStorage.getItem("userId");
             const { error } = await supabase
               .from('gestion')
-              .update({ estado: motivo, updated_at: now })
+              .update({ estado: motivo, updated_at: now, usuario: usuarioActual })
               .eq('no_identificacion', id);
             if (error) setError('Error al actualizar estado: ' + error.message);
             setUpdate(u => u + 1); // Forzar recarga

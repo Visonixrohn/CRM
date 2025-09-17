@@ -8,25 +8,38 @@ export default function useGestion(update) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [usuarioId, setUsuarioId] = useState(null);
+  const [miTienda, setMiTienda] = useState(null);
   const [total, setTotal] = useState(0);
   const [pendientes, setPendientes] = useState(0);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     if (userId) setUsuarioId(userId);
+    // Obtener mi_tienda del usuario logueado
+    const fetchTienda = async () => {
+      if (!userId) return;
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("mi_tienda")
+        .eq("id", userId)
+        .maybeSingle();
+      if (data && data.mi_tienda) setMiTienda(data.mi_tienda);
+    };
+    fetchTienda();
   }, []);
 
   useEffect(() => {
-    if (!usuarioId) return;
+    if (!usuarioId || !miTienda) return;
     setLoading(true);
     const fetchData = async () => {
       try {
+        // Filtrar: usuario = usuario actual o NULL, y tienda_fidelidad = mi_tienda
         const { data, error } = await supabase
           .from('gestion')
           .select('*')
-          .eq('usuario', usuarioId);
+          .or(`usuario.eq.${usuarioId},usuario.is.null`)
+          .eq('tienda_fidelidad', miTienda);
         if (error) throw error;
-        // Mapear columnas de Supabase a nombres esperados en la UI
         const mapped = (data || []).map(row => ({
           ID: row.no_identificacion,
           NOMBRES: row.nombre,
@@ -34,7 +47,7 @@ export default function useGestion(update) {
           TELEFONO: row.telefono,
           TIENDA: row.tienda_fidelidad,
           estado: row.estado || '',
-          ...row // mantener el resto de campos originales
+          ...row
         }));
         setDatos(mapped);
         setTotal((data || []).length);
@@ -49,7 +62,7 @@ export default function useGestion(update) {
       }
     };
     fetchData();
-  }, [usuarioId, update]);
+  }, [usuarioId, miTienda, update]);
 
   return { datos, loading, error, total, pendientes };
 }

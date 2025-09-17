@@ -35,6 +35,7 @@ function Login({ onLogin }) {
   const [identidad, setIdentidad] = useState("");
   const [telefono, setTelefono] = useState("");
   const [nombre, setNombre] = useState("");
+  const [miTienda, setMiTienda] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
@@ -43,6 +44,134 @@ function Login({ onLogin }) {
   const [resetIdentidad, setResetIdentidad] = useState("");
   const [resetTelefono, setResetTelefono] = useState("");
   const [resetMsg, setResetMsg] = useState("");
+  const tiendas = [
+    "C1C 1A. CALLE",
+    "CAL ALTARA SPS",
+    "CAP AEROPLAZA",
+    "CBL BELEN",
+    "CCB CEIBA",
+    "CCH CHOLUTECA",
+    "CCM CITY MALL SPS",
+    "CCO COMAYAGUA CENTRO",
+    "CCT CENTRAL TEGUCIGALPA",
+    "CCV CIRCUNVALACION SPS",
+    "CCY CITY MALL TEG",
+    "CDN DANLI",
+    "CEP EL PARAISO",
+    "CES LA ESPERANZA",
+    "CJT JUTICALPA",
+    "CKN KENNEDY",
+    "CLC MALL LAS CASCADAS",
+    "CLE LA ENTRADA COPAN",
+    "CLL LAS LOMAS",
+    "CLM CHOLOMA",
+    "CLP LOS PROCERES",
+    "CLR LARACH",
+    "CMC MEGAPLAZA CEIBA",
+    "CME MEGAPLAZA EL PROGRESO",
+    "CMF MIRAFLORES",
+    "CMG MEGA MALL SPS",
+    "CMJ MALL PREMIER JUTICALPA",
+    "CMP MALL PREMIER",
+    "CNA NACAOME",
+    "COL OLANCHITO",
+    "CPA LA PAZ",
+    "CPC PUERTO CORTES",
+    "CPP PLAZA PREMIER",
+    "CPR PROGRESO",
+    "CPZ PLAZA 105",
+    "CRT ROATAN",
+    "CSB SANTA BARBARA",
+    "CSG SIGUATEPEQUE",
+    "CSI SAN ISIDRO",
+    "CSL SAN LORENZO",
+    "CSR SANTA ROSA DE COPAN",
+    "CTC CATACAMAS",
+    "CTL TELA",
+    "CTO TOCOA",
+    "CUC UNIMALL CHOLUTECA",
+    "CVL VILLANUEVA",
+    "FSB CASH SANTA BARBARA",
+    "LOP OFICINA PRINCIPAL USADOS",
+    "OAL ALTARA SPS",
+    "OCC CIRCUNVALACION SPS",
+    "OCM MALL PREMIER COMAYAGUA",
+    "OCS CITY MALL SPS",
+    "OCY CITY MALL TEG",
+    "OGV GALERIA DEL VALLE",
+    "OLC MALL LAS CASCADAS",
+    "OLL LAS LOMAS",
+    "OMC MEGAPLAZA CEIBA",
+    "OMF MIRAFLORES",
+    "OMG MEGA MALL SPS",
+    "OMJ MALL PREMIER JUTICALPA",
+    "OMM METRO MALL",
+    "OMP MALL PREMIER TG",
+    "OPR EL PROGRESO",
+    "OSR SANTA ROSA DE COPAN",
+    "OUM UNIMALL CHOLUTECA",
+    "RAL ALTARA SPS",
+    "RCC CIRCUNVALACION SPS",
+    "RCD CORNER DANLI",
+    "RCM CITY MALL SPS",
+    "RCP CORNER CORTES",
+    "RCT CENTRO",
+    "RCY CITY MALL TEG",
+    "RLC MALL LAS CASCADAS",
+    "RLL LAS LOMAS",
+    "RMC MEGAPLAZA CEIBA",
+    "RMF MIRAFLORES",
+    "RMG MEGA MALL SPS",
+    "RMM METRO MALL TEG",
+    "RMP MULTIPLAZA S.P.S.",
+    "RMT MALL MULTIPLAZA TEGA.",
+    "RPC MALL PREMIER COMAYAGUA",
+    "RPM MALL PREMIER",
+    "RPZ PLAZA 105",
+    "RSC HN AVE SAN ISIDRO CEIBA",
+    "RUC UNIMALL CHOLUTECA",
+    "T2A SEGUNDA AVENIDA",
+    "TCB CEIBA",
+    "TCC CATACAMAS",
+    "TCH CHOLUTECA",
+    "TCM COMAYAGUA",
+    "TCT BELEN",
+    "TCT CENTRAL TEGUCIGALPA",
+    "TDL DANLI",
+    "TEP EL PARAISO",
+    "TGC GRAN CENTRAL METROPOLITANA",
+    "TGR GRACIAS",
+    "TJN JUNIOR",
+    "TJT JUTICALPA",
+    "TLE LA ENTRADA COPAN",
+    "TLM CHOLOMA",
+    "TMC TROPIMOTORS CEIBA",
+    "TMD TROPIMOTORS DANLI",
+    "TME TROPIMOTORS PROGRESO",
+    "TMF MIRAFLORES",
+    "TMG TROPIMOTORS MEGA MALL SPS",
+    "TMO TROPIMOTORS SAN MARCOS OCOTEPEQUE",
+    "TMP MALL PREMIER",
+    "TMV TROPIMOTORS VILLANUEVA",
+    "TNA NACAOME",
+    "TOL OLANCHITO",
+    "TPC TROPIMOTORS PUERTO CORTES",
+    "TPR PROGRESO",
+    "TPS PLAZA DEL SOL",
+    "TPT TROPIMOTORS TOCOA",
+    "TSC SANTA CRUZ",
+    "TSF SANTA FE",
+    "TSG SIGUATEPEQUE",
+    "TSL SAN LORENZO",
+    "TSM SAN MIGUEL",
+    "TSO SAN MARCOS OCOTEPEQUE",
+    "TSR SANTA ROSA",
+    "TSS TROPIMOTORS SANTA ROSA DE COPAN",
+    "TSY SUYAPA",
+    "TTG TALANGA",
+    "TTL TELA",
+    "TVL VILLANUEVA"
+  ];
 
   const { fetchProfile: fetchProfileLogin } = useProfileByEmail(email);
   const handleSubmit = async (e) => {
@@ -50,8 +179,8 @@ function Login({ onLogin }) {
     setLoading(true);
     setError("");
     if (isRegister) {
-      if (!identidad || !telefono || !nombre) {
-        setError("Debes ingresar nombre, número de identidad y teléfono");
+      if (!identidad || !telefono || !nombre || !miTienda || !email || !password) {
+        setError("Debes ingresar todos los campos, incluyendo tienda");
         setLoading(false);
         return;
       }
@@ -64,6 +193,7 @@ function Login({ onLogin }) {
         telefono,
         email,
         nombre,
+        mi_tienda: miTienda,
         contrasena: hash
       });
       if (error) {
@@ -215,6 +345,18 @@ function Login({ onLogin }) {
                       onChange={e => setTelefono(e.target.value)}
                       required
                     />
+                  </div>
+                  <div className="input-group">
+                    <select
+                      value={miTienda}
+                      onChange={e => setMiTienda(e.target.value)}
+                      required
+                    >
+                      <option value="">Selecciona tu tienda</option>
+                      {tiendas.map((t, i) => (
+                        <option key={i} value={t}>{t}</option>
+                      ))}
+                    </select>
                   </div>
                 </>
               )}
