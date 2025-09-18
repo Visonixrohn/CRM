@@ -1,0 +1,25 @@
+/*
+  Mostrar solo en desktop:
+  .solo-desktop { display: block; }
+  .solo-movil { display: none; }
+
+  Mostrar solo en móvil:
+  @media (max-width: 768px) {
+    .solo-desktop { display: none !important; }
+    .solo-movil { display: block !important; }
+  }
+*/
+.solo-desktop {
+  display: block;
+}
+.solo-movil {
+  display: none;
+}
+@media (max-width: 768px) {
+  .solo-desktop {
+    display: none !important;
+  }
+  .solo-movil {
+    display: block !important;
+  }
+}
