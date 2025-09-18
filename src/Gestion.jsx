@@ -7,6 +7,7 @@ import "./GestionCard.css";
 import GestionLinkModal from "./GestionLinkModal";
 import GestionLinkModalMobile from "./GestionLinkModalMobile";
 import useGestion from "./useGestion";
+import useTablaGestion from "./useTablaGestion";
 
 // Componente Card para móviles
 const GestionCard = ({ cliente, onWhatsApp, onQuitar, onLink }) => (
@@ -67,7 +68,7 @@ import useGestionadosHoy from "./useGestionadosHoy";
     if (!error) {
       setAEliminar(prev => prev.filter(c => (c.ID || c.id) !== id));
       // También refrescar datos si es necesario
-      setUpdate(u => u + 1);
+      setUpdate(Date.now()); 
     } else {
       setError('Error al eliminar: ' + error.message);
     }
@@ -96,11 +97,19 @@ const Gestion = () => {
   const [modalLinkOpen, setModalLinkOpen] = useState(false);
   const [linkCliente, setLinkCliente] = useState(null);
   const { datos, loading, error: errorGestion, total, gestionadosHoy, pendientes } = useGestion(update);
+  const [modalMotivoSaving, setModalMotivoSaving] = useState(false);
+  const { clientes: clientesTabla, loading: loadingTabla, error: errorTabla } = useTablaGestion(update);
+  const [clientesOcultos, setClientesOcultos] = useState([]);
+
+  // Limpiar ocultos al recargar datos de la tabla
+  useEffect(() => {
+    setClientesOcultos([]);
+  }, [clientesTabla]);
 
   // Actualización automática cada 15 segundos
   useEffect(() => {
     const interval = setInterval(() => {
-      setUpdate(u => u + 1);
+      setUpdate(Date.now());
     }, 10000);
     return () => clearInterval(interval);
   }, []);
@@ -113,13 +122,12 @@ const Gestion = () => {
 
   // Ahora total, gestionadosHoy y pendientes vienen del hook useGestion
 
-  // Mostrar solo filas con estado vacío o sin datos
-  let clientesFiltrados = datos.filter(c => {
-    const estado = (c.estado || '').toLowerCase().trim();
+  // Mostrar solo filas de la tabla gestion, filtrando los ocultos
+  let clientesFiltrados = clientesTabla.filter(c => {
     const id = c.ID || c.id;
-    const nombre = c.NOMBRES || c.nombre;
-    if (!id || !nombre) return false;
-    return !estado;
+    if (!id) return false;
+    if (clientesOcultos.includes(id)) return false;
+    return true;
   });
   // 2. Filtrar por texto si hay filtros activos
   const filtrosActivos = filtros.some(f => f && f.trim() !== '');
@@ -144,7 +152,7 @@ const Gestion = () => {
     const nuevo = [...gestionados, { id: cliente.id, fecha: hoy }];
     localStorage.setItem("gestionados", JSON.stringify(nuevo));
     setLastRemoved({ id: cliente.id, fecha: hoy });
-    setUpdate((u) => u + 1);
+  setUpdate(Date.now());
     if (datosGestion) {
       // Guardar en Supabase tabla seguimiento
       try {
@@ -178,7 +186,7 @@ const Gestion = () => {
       );
       localStorage.setItem("gestionados", JSON.stringify(nuevo));
       setLastRemoved(null);
-      setUpdate((u) => u + 1);
+  setUpdate(Date.now());
     } else {
       setError("No hay filas para restaurar.");
     }
@@ -388,12 +396,12 @@ const Gestion = () => {
       <ModalSeleccionMotivo
         open={modalMotivoOpen}
         onClose={() => setModalMotivoOpen(false)}
-        onSelect={async motivo => {
+        loading={modalMotivoSaving}
+        onSave={async motivo => {
           setMotivoGestion(motivo);
-          // Actualizar estado y usuario en Supabase
+          setModalMotivoSaving(true);
           if (clienteGestionar) {
             const id = clienteGestionar.ID || clienteGestionar.id;
-            // Guardar fecha en formato dd/mm/aaaa como texto
             const now = new Date();
             const dia = String(now.getDate()).padStart(2, '0');
             const mes = String(now.getMonth() + 1).padStart(2, '0');
@@ -405,11 +413,15 @@ const Gestion = () => {
               .update({ estado: motivo, updated_at: fechaTexto, usuario: usuarioActual })
               .eq('no_identificacion', id);
             if (error) setError('Error al actualizar estado: ' + error.message);
-            else setUpdate(u => u + 1); // Forzar recarga inmediata solo si no hay error
-          }
-          setModalMotivoOpen(false);
-          if (motivo === 'si_quiere') {
-            setTimeout(() => setModalGestionarOpen(true), 200);
+            if (!error) setUpdate(Date.now()); // Recargar tabla antes de cerrar modal
+            setModalMotivoSaving(false);
+            setModalMotivoOpen(false);
+            if (!error && motivo === 'si_quiere') {
+              setTimeout(() => setModalGestionarOpen(true), 200);
+            }
+          } else {
+            setModalMotivoSaving(false);
+            setModalMotivoOpen(false);
           }
         }}
       />

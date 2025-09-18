@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useState } from "react";
 
 const motivos = [
   { key: "no_contestan", label: "No contesta", color: "#fbbf24", bg: "#fef3c7" },
@@ -7,7 +8,8 @@ const motivos = [
   { key: "a_eliminar", label: "A eliminar", color: "#334155", bg: "#e0e7ef" }
 ];
 
-export default function ModalSeleccionMotivo({ open, onClose, onSelect }) {
+export default function ModalSeleccionMotivo({ open, onClose, onSave, loading }) {
+  const [motivo, setMotivo] = useState(null);
   if (!open) return null;
   return (
     <div style={{
@@ -34,26 +36,37 @@ export default function ModalSeleccionMotivo({ open, onClose, onSelect }) {
       }}>
         <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 18, background: 'none', border: 'none', fontSize: 26, cursor: 'pointer', color: '#64748b' }}>&times;</button>
         <h3 style={{ marginBottom: 28, color: '#1e293b', fontWeight: 700 }}>Selecciona el motivo</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-          {motivos.map(motivo => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18, marginBottom: 24 }}>
+          {motivos.map(m => (
             <button
-              key={motivo.key}
-              onClick={() => onSelect(motivo.key)}
+              key={m.key}
+              onClick={() => setMotivo(m.key)}
               style={{
                 padding: '14px 0',
                 borderRadius: 10,
-                border: `1.5px solid ${motivo.color}`,
-                background: motivo.bg,
-                color: motivo.color,
+                border: `1.5px solid ${m.color}`,
+                background: motivo === m.key ? m.color : m.bg,
+                color: motivo === m.key ? '#fff' : m.color,
                 fontWeight: 600,
                 fontSize: 17,
                 cursor: 'pointer',
                 transition: 'background 0.2s, color 0.2s',
+                outline: motivo === m.key ? '2px solid #6366f1' : 'none',
               }}
             >
-              {motivo.label}
+              {m.label}
             </button>
           ))}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 18 }}>
+          <button onClick={onClose} style={{ padding: '10px 24px', borderRadius: 8, border: 'none', background: '#e5e7eb', color: '#334155', fontWeight: 600, fontSize: 16 }}>Cancelar</button>
+          <button
+            onClick={() => motivo && onSave(motivo)}
+            disabled={!motivo || loading}
+            style={{ padding: '10px 24px', borderRadius: 8, border: 'none', background: motivo ? '#6366f1' : '#cbd5e1', color: '#fff', fontWeight: 600, fontSize: 16, opacity: loading ? 0.7 : 1, cursor: motivo && !loading ? 'pointer' : 'not-allowed' }}
+          >
+            {loading ? 'Guardando...' : 'Guardar'}
+          </button>
         </div>
       </div>
     </div>
