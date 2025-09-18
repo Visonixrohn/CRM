@@ -281,10 +281,6 @@ const Gestion = () => {
           <div className="analisis-card-title" style={{fontWeight:'bold',color:'#15803d'}}>Sí quiere</div>
           <div className="analisis-card-value" style={{fontSize:'1.3rem',color:'#15803d',fontWeight:'bold'}}>{datos.filter(c => (c.estado || '').toLowerCase() === 'si_quiere').length}</div>
         </div>
-        <div className="analisis-card" style={{flex:'1 1 120px',minWidth:120,background:'#e0e7ef',cursor:'pointer'}} onClick={() => navigate('/gestion/a_eliminar')}>
-          <div className="analisis-card-title" style={{fontWeight:'bold',color:'#334155'}}>A eliminar</div>
-          <div className="analisis-card-value" style={{fontSize:'1.3rem',color:'#334155',fontWeight:'bold'}}>{datos.filter(c => (c.estado || '').toLowerCase() === 'a_eliminar').length}</div>
-        </div>
       </div>
       {/* Modal para mostrar lista de clientes */}
 

@@ -5,7 +5,6 @@ const motivos = [
   { key: "no_contestan", label: "No contesta", color: "#fbbf24", bg: "#fef3c7" },
   { key: "no_quiere", label: "No quiere", color: "#ef4444", bg: "#fee2e2" },
   { key: "si_quiere", label: "Sí quiere", color: "#22c55e", bg: "#bbf7d0" },
-  { key: "a_eliminar", label: "A eliminar", color: "#334155", bg: "#e0e7ef" }
 ];
 
 export default function ModalSeleccionMotivo({ open, onClose, onSave, loading }) {

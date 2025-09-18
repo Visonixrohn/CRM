@@ -1,9 +1,13 @@
 
 import React, { useState, useEffect } from "react";
 import ModalSeleccionMotivo from "./ModalSeleccionMotivo";
+import GestionLinkModalMobile from "./GestionLinkModalMobile";
 import useGestion from "./useGestion";
+import { supabase } from "./supabaseClient";
 
 export default function TablaFiltradaPorEstado({ estado }) {
+  const [modalLinkOpen, setModalLinkOpen] = useState(false);
+  const [linkCliente, setLinkCliente] = useState(null);
   const [modalMotivoOpen, setModalMotivoOpen] = useState(false);
   const [clienteGestionar, setClienteGestionar] = useState(null);
   const [update, setUpdate] = useState(0);
@@ -14,10 +18,40 @@ export default function TablaFiltradaPorEstado({ estado }) {
     (c) => (c.estado || "").toLowerCase() === estado.toLowerCase()
   );
 
+
   // Lógica para guardar motivo
   const handleGuardarMotivo = async (motivo) => {
+    if (!clienteGestionar) {
+      setModalMotivoOpen(false);
+      return;
+    }
+    const id = clienteGestionar.ID || clienteGestionar.id;
+    const now = new Date();
+    const dia = String(now.getDate()).padStart(2, '0');
+    const mes = String(now.getMonth() + 1).padStart(2, '0');
+    const anio = now.getFullYear();
+    const fechaTexto = `${dia}/${mes}/${anio}`;
+    const usuarioActual = clienteGestionar.usuario || localStorage.getItem("userId");
+    const { error } = await supabase
+      .from('gestion')
+      .update({ estado: motivo, updated_at: fechaTexto, usuario: usuarioActual })
+      .eq('no_identificacion', id);
+    if (error) {
+      alert('Error al actualizar estado: ' + error.message);
+    } else {
+      setUpdate(Date.now());
+    }
     setModalMotivoOpen(false);
-    setUpdate(Date.now());
+  };
+
+  // Función para enviar WhatsApp
+  const enviarWhatsApp = (cliente) => {
+    const mensajeBase = "Hola 😇 {NOMBRE}";
+    const texto = encodeURIComponent(
+      mensajeBase.replace("{NOMBRE}", cliente.NOMBRES || cliente.nombre || "")
+    );
+    const url = `https://wa.me/504${(cliente.TELEFONO || cliente.tel || "").replace(/[^\d]/g, "")}?text=${texto}`;
+    window.open(url, "_blank");
   };
 
   if (loading) return <div>Cargando...</div>;
@@ -86,17 +120,13 @@ export default function TablaFiltradaPorEstado({ estado }) {
                 <td>{cliente.TELEFONO || cliente.tel}</td>
                 <td>{cliente.TIENDA || cliente.tienda}</td>
                 <td>
-                  <button
-                    className="remove"
-                    style={{
-                      background: "#f59e42",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: 6,
-                      padding: "6px 12px",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                    }}
+                  <button onClick={() => enviarWhatsApp(cliente)}>
+                    Enviar
+                  </button>
+                  <button style={{marginLeft:4,marginRight:4}} onClick={() => { setLinkCliente(cliente); setModalLinkOpen(true); }}>
+                    Link
+                  </button>
+                  <button className="remove" style={{background: "#f59e42", color: "#fff", border: "none", borderRadius: 6, padding: "6px 12px", fontWeight: 600, cursor: "pointer"}}
                     onClick={() => {
                       setClienteGestionar(cliente);
                       setModalMotivoOpen(true);
@@ -122,6 +152,13 @@ export default function TablaFiltradaPorEstado({ estado }) {
         open={modalMotivoOpen}
         onClose={() => setModalMotivoOpen(false)}
         onSave={handleGuardarMotivo}
+      />
+      {/* Modal para enviar link por WhatsApp */}
+      <GestionLinkModalMobile
+        open={modalLinkOpen}
+        onClose={() => setModalLinkOpen(false)}
+        usuarioId={linkCliente?.usuario}
+        telefono={(linkCliente?.TELEFONO || linkCliente?.tel || "").replace(/[^\d]/g, "")}
       />
     </div>
   );
