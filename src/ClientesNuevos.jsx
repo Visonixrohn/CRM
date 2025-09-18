@@ -148,7 +148,17 @@ const ClientesNuevos = () => {
            
             <h2>Detalle del Cliente</h2>
             <div className="detalle-lineas">
-              {Object.entries(detalle).map(([key, value]) => {
+              {Object.entries(detalle).filter(([key]) => {
+                const ocultar = [
+                  "ref persona 1 tel casa",
+                  "ref persona 2 tel casa",
+                  "ref familiar 1 tel casa",
+                  "ref familiar 2 tel casa",
+                  "usuario"
+                ];
+                const normalizado = key.trim().toLowerCase().replace(/:$/, "");
+                return !ocultar.includes(normalizado);
+              }).map(([key, value]) => {
                 // Detectar si es campo de ubicación
                 const esUbicacion =
                   key.trim().toLowerCase() === "ubicación del domicilio" ||
@@ -157,9 +167,9 @@ const ClientesNuevos = () => {
                 if (esUbicacion && value && typeof value === 'string' && value.trim().length > 0) {
                   urlMaps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(value)}`;
                 }
-                return (
-                  <div className="detalle-linea" key={key}>
-                    <strong>{key}:</strong> {value}
+                  return (
+                    <div className="detalle-linea" key={key}>
+                      <span className="detalle-label">{key}</span>: <span className="detalle-value">{value}</span>
                     {urlMaps && (
                       <a
                         href={urlMaps}
