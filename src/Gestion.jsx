@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import ModalSeleccionMotivo from "./ModalSeleccionMotivo";
 import ModalGestionarGestion from "./ModalGestionarGestion";
 import "./Gestion.css";
@@ -83,7 +84,7 @@ const Gestion = () => {
   const [noContestan, setNoContestan] = useState([]);
   const [noQuiere, setNoQuiere] = useState([]);
   // const [modalLista, setModalLista] = useState({ open: false, tipo: null });
-  const [filtroEstado, setFiltroEstado] = useState(null); // 'no_contestan', 'no_quiere', 'si_quiere', 'a_eliminar', null
+  // El filtro de estado solo se controla por el select (useRef)
   const [aEliminar, setAEliminar] = useState([]);
   const [siQuiere, setSiQuiere] = useState([]);
   const [error, setError] = useState("");
@@ -112,19 +113,27 @@ const Gestion = () => {
 
   // Ahora total, gestionadosHoy y pendientes vienen del hook useGestion
 
-  // Filtrar clientes: solo mostrar los del usuario autenticado y aplicar filtros
-  let filtrosActivos = filtros.some(f => f && f.trim() !== '');
-  let clientesFiltrados = datos;
-  if (filtroEstado === 'no_contestan') clientesFiltrados = datos.filter(c => (c.estado || '').toLowerCase() === 'no_contestan');
-  else if (filtroEstado === 'no_quiere') clientesFiltrados = datos.filter(c => (c.estado || '').toLowerCase() === 'no_quiere');
-  else if (filtroEstado === 'si_quiere') clientesFiltrados = datos.filter(c => (c.estado || '').toLowerCase() === 'si_quiere');
-  else if (filtroEstado === 'a_eliminar') clientesFiltrados = datos.filter(c => (c.estado || '').toLowerCase() === 'a_eliminar');
-  else if (!filtrosActivos) clientesFiltrados = datos.filter(c => !c.estado);
-  else {
-    clientesFiltrados = datos.filter((c) =>
+  // Mostrar solo filas con estado vacío o sin datos
+  let clientesFiltrados = datos.filter(c => {
+    const estado = (c.estado || '').toLowerCase().trim();
+    const id = c.ID || c.id;
+    const nombre = c.NOMBRES || c.nombre;
+    if (!id || !nombre) return false;
+    return !estado;
+  });
+  // 2. Filtrar por texto si hay filtros activos
+  const filtrosActivos = filtros.some(f => f && f.trim() !== '');
+  if (filtrosActivos) {
+    clientesFiltrados = clientesFiltrados.filter((c) =>
       filtros.every((f, i) => {
         if (!f) return true;
-        const val = [c.ID || c.id, c.NOMBRES || c.nombre, c.APELLIDOS || c.apellido, c.TELEFONO || c.tel, c.TIENDA || c.tienda][i] || "";
+        const val = String([
+          c.ID || c.id,
+          c.NOMBRES || c.nombre,
+          c.APELLIDOS || c.apellido,
+          c.TELEFONO || c.tel,
+          c.TIENDA || c.tienda
+        ][i] || "");
         return val.toLowerCase().includes(f.toLowerCase());
       })
     );
@@ -233,6 +242,7 @@ const Gestion = () => {
     // Forzar re-render al cambiar gestionados
   }, [update]);
 
+  const navigate = useNavigate();
   return (
     <div>
       <div className="cards" style={{display:'flex',gap:12,marginBottom:16,flexWrap:'wrap'}}>
@@ -251,90 +261,51 @@ const Gestion = () => {
       </div>
       {/* Cards de No contestan, No quiere, Sí quiere y A eliminar */}
       <div className="cards" style={{display:'flex',gap:12,marginBottom:16,flexWrap:'wrap'}}>
-        <div className="analisis-card" style={{flex:'1 1 120px',minWidth:120,cursor:'pointer',background:'#fef3c7',boxShadow:filtroEstado==='no_contestan'? '0 0 0 2px #fbbf24':'none'}} onClick={()=>setFiltroEstado(filtroEstado==='no_contestan'?null:'no_contestan')}>
+        <div className="analisis-card" style={{flex:'1 1 120px',minWidth:120,background:'#fef3c7',cursor:'pointer'}} onClick={() => navigate('/gestion/no_contestan')}>
           <div className="analisis-card-title" style={{fontWeight:'bold',color:'#b45309'}}>No contestan</div>
           <div className="analisis-card-value" style={{fontSize:'1.3rem',color:'#b45309',fontWeight:'bold'}}>{datos.filter(c => (c.estado || '').toLowerCase() === 'no_contestan').length}</div>
         </div>
-        <div className="analisis-card" style={{flex:'1 1 120px',minWidth:120,cursor:'pointer',background:'#fee2e2',boxShadow:filtroEstado==='no_quiere'? '0 0 0 2px #ef4444':'none'}} onClick={()=>setFiltroEstado(filtroEstado==='no_quiere'?null:'no_quiere')}>
+        <div className="analisis-card" style={{flex:'1 1 120px',minWidth:120,background:'#fee2e2',cursor:'pointer'}} onClick={() => navigate('/gestion/no_quiere')}>
           <div className="analisis-card-title" style={{fontWeight:'bold',color:'#b91c1c'}}>No quiere</div>
           <div className="analisis-card-value" style={{fontSize:'1.3rem',color:'#b91c1c',fontWeight:'bold'}}>{datos.filter(c => (c.estado || '').toLowerCase() === 'no_quiere').length}</div>
         </div>
-        <div className="analisis-card" style={{flex:'1 1 120px',minWidth:120,cursor:'pointer',background:'#bbf7d0',boxShadow:filtroEstado==='si_quiere'? '0 0 0 2px #22c55e':'none'}} onClick={()=>setFiltroEstado(filtroEstado==='si_quiere'?null:'si_quiere')}>
+        <div className="analisis-card" style={{flex:'1 1 120px',minWidth:120,background:'#bbf7d0',cursor:'pointer'}} onClick={() => navigate('/gestion/si_quiere')}>
           <div className="analisis-card-title" style={{fontWeight:'bold',color:'#15803d'}}>Sí quiere</div>
           <div className="analisis-card-value" style={{fontSize:'1.3rem',color:'#15803d',fontWeight:'bold'}}>{datos.filter(c => (c.estado || '').toLowerCase() === 'si_quiere').length}</div>
         </div>
-        <div className="analisis-card" style={{flex:'1 1 120px',minWidth:120,cursor:'pointer',background:'#e0e7ef',boxShadow:filtroEstado==='a_eliminar'? '0 0 0 2px #334155':'none'}} onClick={()=>setFiltroEstado(filtroEstado==='a_eliminar'?null:'a_eliminar')}>
+        <div className="analisis-card" style={{flex:'1 1 120px',minWidth:120,background:'#e0e7ef',cursor:'pointer'}} onClick={() => navigate('/gestion/a_eliminar')}>
           <div className="analisis-card-title" style={{fontWeight:'bold',color:'#334155'}}>A eliminar</div>
           <div className="analisis-card-value" style={{fontSize:'1.3rem',color:'#334155',fontWeight:'bold'}}>{datos.filter(c => (c.estado || '').toLowerCase() === 'a_eliminar').length}</div>
         </div>
       </div>
       {/* Modal para mostrar lista de clientes */}
 
-      <div className="filters">
+      <div className="filters" style={{display:'flex',alignItems:'center',gap:12,marginBottom:16}}>
         <button onClick={() => setModalOpen(true)}>Mensaje</button>
+        {/* El filtro por estado ha sido eliminado, la tabla se actualiza automáticamente */}
       </div>
       {/* Cards móviles */}
-      {filtroEstado === 'a_eliminar' && clientesFiltrados.length > 0 && (
-        <div style={{display:'flex',justifyContent:'flex-end',marginBottom:12,gap:8}}>
-          <button
-            onClick={async () => {
-              if (!window.confirm('¿Eliminar TODOS los clientes de la lista y de Supabase?')) return;
-              // Borrado optimista: quitar del frontend primero
-              const ids = clientesFiltrados.map(c => c.ID || c.id);
-              setUpdate(u => u + 1); // Forzar recarga tras borrar
-              await Promise.all(clientesFiltrados.map(cliente => eliminarClienteSupabase(cliente)));
-            }}
-            style={{background:'#ef4444',color:'#fff',border:'none',borderRadius:6,padding:'8px 18px',fontWeight:700,cursor:'pointer'}}
-          >Eliminar todos</button>
-        </div>
-      )}
+  {/* Eliminar todos solo aplica si el filtro es por estado a_eliminar, pero ahora nunca se muestra */}
       {clientesFiltrados
         .map((cliente) => (
           <div key={cliente.ID || cliente.id} style={{ position: 'relative' }}>
-            {filtroEstado === 'a_eliminar' ? (
-              <div style={{position:'relative',border:'1px solid #eee',borderRadius:8,padding:12,marginBottom:10,background:'#fff'}}>
-                <div style={{fontWeight:600}}>{cliente.NOMBRES || cliente.nombre} {cliente.APELLIDOS || cliente.apellido}</div>
-                <div style={{fontSize:13,color:'#666'}}>Tel: {cliente.TELEFONO || cliente.tel}</div>
-                <button
-                  onClick={async () => {
-                    // Borrado optimista: quitar del frontend primero
-                    await eliminarClienteSupabase(cliente);
-                    setUpdate(u => u + 1);
-                  }}
-                  style={{
-                    position: 'absolute',
-                    top: 10,
-                    right: 10,
-                    background: '#ef4444',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: 6,
-                    padding: '6px 14px',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    zIndex: 10
-                  }}
-                >Eliminar</button>
-              </div>
-            ) : (
-              <GestionCard
-                cliente={{
-                  ...cliente,
-                  id: cliente.ID || cliente.id,
-                  nombre: cliente.NOMBRES || cliente.nombre,
-                  apellido: cliente.APELLIDOS || cliente.apellido,
-                  tel: cliente.TELEFONO || cliente.tel,
-                  tienda: cliente.TIENDA || cliente.tienda,
-                  segmento: cliente.SEGMENTO || cliente.segmento
-                }}
-                onWhatsApp={enviarWhatsApp}
-                onQuitar={(cliente) => {
-                  setClienteGestionar(cliente);
-                  setModalMotivoOpen(true);
-                }}
-                onLink={(c) => { setLinkCliente(c); setModalLinkOpen(true); }}
-              />
-            )}
+            <GestionCard
+              cliente={{
+                ...cliente,
+                id: cliente.ID || cliente.id,
+                nombre: cliente.NOMBRES || cliente.nombre,
+                apellido: cliente.APELLIDOS || cliente.apellido,
+                tel: cliente.TELEFONO || cliente.tel,
+                tienda: cliente.TIENDA || cliente.tienda,
+                segmento: cliente.SEGMENTO || cliente.segmento
+              }}
+              onWhatsApp={enviarWhatsApp}
+              onQuitar={(cliente) => {
+                setClienteGestionar(cliente);
+                setModalMotivoOpen(true);
+              }}
+              onLink={(c) => { setLinkCliente(c); setModalLinkOpen(true); }}
+            />
           </div>
         ))}
       {/* Modal para enviar link por WhatsApp en móvil */}
@@ -434,7 +405,7 @@ const Gestion = () => {
               .update({ estado: motivo, updated_at: fechaTexto, usuario: usuarioActual })
               .eq('no_identificacion', id);
             if (error) setError('Error al actualizar estado: ' + error.message);
-            setUpdate(u => u + 1); // Forzar recarga
+            else setUpdate(u => u + 1); // Forzar recarga inmediata solo si no hay error
           }
           setModalMotivoOpen(false);
           if (motivo === 'si_quiere') {

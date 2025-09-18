@@ -26,6 +26,7 @@ import ClientesNuevos from "./ClientesNuevos";
 import Actualizaciones from "./Actualizaciones";
 import LoadingScreen from "./LoadingScreen";
 import Gestion from "./Gestion";
+import TablaFiltradaPorEstado from "./TablaFiltradaPorEstado";
 import Cotizaciones from "./Cotizaciones";
 import ResetPassword from "./ResetPassword";
 import Configuraciones from "./Configuraciones";
@@ -232,6 +233,10 @@ function App() {
               <Route path="/cotizaciones" element={<Cotizaciones />} />
               <Route path="/actualizaciones" element={<Actualizaciones />} />
               <Route path="/gestion" element={<Gestion />} />
+              <Route path="/gestion/no_contestan" element={<TablaFiltradaPorEstado estado="no_contestan" />} />
+              <Route path="/gestion/no_quiere" element={<TablaFiltradaPorEstado estado="no_quiere" />} />
+              <Route path="/gestion/si_quiere" element={<TablaFiltradaPorEstado estado="si_quiere" />} />
+              <Route path="/gestion/a_eliminar" element={<TablaFiltradaPorEstado estado="a_eliminar" />} />
               <Route path="/seguimiento" element={<Seguimiento />} />
               <Route path="/configuraciones" element={<Configuraciones />} />
               <Route path="*" element={<Navigate to="/" replace />} />
