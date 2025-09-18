@@ -41,6 +41,8 @@ export default function useGestion(update) {
           .or(`usuario.eq.${usuarioId},usuario.is.null`)
           .eq('tienda_fidelidad', miTienda);
         if (error) throw error;
+        // Filtrar duplicados por no_identificacion (ID)
+        const seen = new Set();
         const mapped = (data || []).map(row => ({
           ID: row.no_identificacion,
           NOMBRES: row.nombre,
@@ -51,7 +53,11 @@ export default function useGestion(update) {
           updated_at: row.updated_at,
           usuario: row.usuario,
           ...row
-        }));
+        })).filter(row => {
+          if (seen.has(row.ID)) return false;
+          seen.add(row.ID);
+          return true;
+        });
         setDatos(mapped);
         setTotal(mapped.length);
 

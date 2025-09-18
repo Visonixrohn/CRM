@@ -20,7 +20,9 @@ import BotonFlotanteMovil from "./components/BotonFlotanteMovil";
 
 const OrdenesServicio = () => {
   const [ordenes, setOrdenes] = useState([]);
+  const [miTienda, setMiTienda] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [gestor, setGestor] = useState("");
   const [formData, setFormData] = useState({
     fecha: "",
     cliente: "",
@@ -55,11 +57,30 @@ const OrdenesServicio = () => {
     "ANULADA",
   ];
 
+  // Obtener tienda y nombre del usuario logueado
   useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+    (async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("mi_tienda, nombre")
+        .eq("id", userId)
+        .maybeSingle();
+      if (!error && data) {
+        if (data.mi_tienda) setMiTienda(data.mi_tienda);
+        if (data.nombre) setGestor(data.nombre);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!miTienda) return;
     const fetchOrdenes = async () => {
       const { data, error } = await supabase
         .from("ordenes_servicio")
-        .select("*");
+        .select("*")
+        .eq("tienda_usuario", miTienda);
       if (error) {
         console.error("Error fetching ordenes:", error);
       } else {
@@ -67,7 +88,7 @@ const OrdenesServicio = () => {
       }
     };
     fetchOrdenes();
-  }, []);
+  }, [miTienda]);
 
   const handleAddOrder = async (e) => {
     e.preventDefault();
@@ -105,10 +126,14 @@ const OrdenesServicio = () => {
       archivoUrl = uploadData.path;
     }
 
+    const userId = localStorage.getItem("userId");
     const { error } = await supabase.from("ordenes_servicio").insert([
       {
         ...newOrder,
         archivo: archivoUrl,
+        tienda_usuario: miTienda,
+        user_id: userId,
+        gestor: gestor,
       },
     ]);
 
@@ -225,7 +250,9 @@ const OrdenesServicio = () => {
       orden.cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
       orden.numero_orden.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterState ? orden.estado === filterState : true;
-    return matchesSearch && matchesFilter;
+    // Solo mostrar órdenes de la tienda del usuario
+    const matchesTienda = miTienda ? orden.tienda_usuario === miTienda : true;
+    return matchesSearch && matchesFilter && matchesTienda;
   });
 
   return (
@@ -272,7 +299,7 @@ const OrdenesServicio = () => {
       {/* Cards móviles */}
       <div className="solo-movil">
         {filteredOrdenes.map((orden) => (
-          <OrdenesServicioCardMovil key={orden.id} orden={orden} onVerDetalle={handleRowClick} />
+          <OrdenesServicioCardMovil key={orden.id} orden={orden} onVerDetalle={handleRowClick} gestor={orden.gestor} />
         ))}
       </div>
       {/* Tabla solo visible en desktop por CSS */}
@@ -286,6 +313,7 @@ const OrdenesServicio = () => {
               <th>ARTÍCULO</th>
               <th>ESTADO</th>
               <th>DIAS</th>
+              <th>GESTOR</th>
             </tr>
           </thead>
           <tbody>
@@ -331,6 +359,7 @@ const OrdenesServicio = () => {
                   {orden.estado}
                 </td>
                 <td data-label="Días">{calculateDaysElapsed(orden.fecha)}</td>
+                <td data-label="Gestor">{orden.gestor}</td>
               </tr>
             ))}
           </tbody>

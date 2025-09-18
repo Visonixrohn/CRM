@@ -15,6 +15,9 @@ const OrdenesServicioCard = ({ orden, onVerDetalle }) => (
     <div className="analisis-card-value">
       Estado: {orden.estado}
     </div>
+    <div className="analisis-card-value">
+      Gestor: {orden.gestor}
+    </div>
     <div style={{display:'flex',gap:8,justifyContent:'center'}}>
       <button onClick={() => onVerDetalle && onVerDetalle(orden)}>
         Ver Detalle
