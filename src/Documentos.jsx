@@ -57,7 +57,7 @@ const Documentos = () => {
         .insert({
           nombre,
           archivo: archivoSubido.path,
-          user_id: user.id,
+          user_id: userId,
         })
         .select("id");
 
