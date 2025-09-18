@@ -3,7 +3,7 @@ import { supabase } from "./supabaseClient";
 
 
 
-export default function useGestion(update, filtroEstado = null) {
+export default function useGestion(update) {
   const [datos, setDatos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,16 +34,12 @@ export default function useGestion(update, filtroEstado = null) {
     setLoading(true);
     const fetchData = async () => {
       try {
-        // 1. Traer todos los datos filtrados por usuario, tienda y estado (si aplica)
-        let query = supabase
+        // 1. Traer todos los datos filtrados por usuario y tienda
+        const { data, error } = await supabase
           .from('gestion')
           .select('*')
           .or(`usuario.eq.${usuarioId},usuario.is.null`)
           .eq('tienda_fidelidad', miTienda);
-        if (filtroEstado !== null && filtroEstado !== undefined) {
-          query = query.eq('estado', filtroEstado);
-        }
-        const { data, error } = await query;
         if (error) throw error;
         const mapped = (data || []).map(row => ({
           ID: row.no_identificacion,
@@ -87,7 +83,7 @@ export default function useGestion(update, filtroEstado = null) {
       }
     };
     fetchData();
-  }, [usuarioId, miTienda, update, filtroEstado]);
+  }, [usuarioId, miTienda, update]);
 
   return { datos, loading, error, total, gestionadosHoy, pendientes };
 }
