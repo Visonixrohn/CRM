@@ -572,6 +572,8 @@ const Entregas = () => {
   // Filtrar entregas según estatus y búsqueda
   const entregasFiltradas = entregas
     .filter((e) => {
+      // Ocultar entregados salvo que el filtro sea 'Entregado'
+      if ((!filtroEstatus || filtroEstatus === "") && e.estatus === "Entregado") return false;
       const matchesEstatus = filtroEstatus ? e.estatus === filtroEstatus : true;
       const matchesBusqueda = busqueda
         ? e.cliente.toLowerCase().includes(busqueda.toLowerCase()) ||
