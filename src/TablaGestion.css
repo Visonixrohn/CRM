@@ -1,0 +1,67 @@
+.tabla-gestion-container {
+  width: 100%;
+  overflow-x: auto;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  padding: 1.2rem 0.5rem;
+}
+
+.tabla-gestion {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  background: #fff;
+}
+
+.tabla-gestion th, .tabla-gestion td {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tabla-gestion th {
+  background: #f3f4f6;
+  color: #3730a3;
+  font-weight: 600;
+}
+
+.tabla-gestion tr:last-child td {
+  border-bottom: none;
+}
+
+.copy-btn {
+  cursor: pointer;
+  color: #2563eb;
+  font-size: 1.1em;
+  vertical-align: middle;
+}
+
+.tabla-gestion button {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  margin: 0 2px;
+  font-size: 0.97em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.tabla-gestion button.remove {
+  background: #dc2626;
+}
+.tabla-gestion button:hover {
+  background: #1e40af;
+}
+.tabla-gestion button.remove:hover {
+  background: #b91c1c;
+}
+
+@media (max-width: 700px) {
+  .tabla-gestion th, .tabla-gestion td {
+    padding: 7px 4px;
+    font-size: 0.97em;
+  }
+}

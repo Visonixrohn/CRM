@@ -2,7 +2,6 @@ import ModalEstatus from "./components/ModalEstatus";
 import "./EntregasBusqueda.css";
 import React, { useState, useEffect } from "react";
 import EditFieldModal from "./EditFieldModal";
-import EditUbicacionModal from "./EditUbicacionModal";
 import EntregaCard from "./components/EntregaCard";
 import { createPortal } from "react-dom";
 import { supabase } from "./supabaseClient";
@@ -34,7 +33,6 @@ function tiempoTranscurrido(fecha, estatus) {
 }
 
 const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEntregas }) => {
-  const [editUbicacion, setEditUbicacion] = useState(false);
   const [showEstatus, setShowEstatus] = useState(false);
   const [editField, setEditField] = useState(null); // 'cliente', 'factura', 'cel', 'articulo'
   const [editValue, setEditValue] = useState("");
@@ -53,22 +51,6 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
       if (typeof fetchEntregas === 'function') fetchEntregas();
     } catch (e) {
       alert("Error al actualizar en Supabase: " + (e.message || e));
-    }
-  };
-
-  // Guardar nueva ubicación en Supabase
-  const handleSaveUbicacion = async (nuevaUbicacion) => {
-    try {
-      const { error } = await supabase
-        .from("entregas_pendientes")
-        .update({ ubicacion: nuevaUbicacion })
-        .eq("id", entrega.id);
-      if (error) throw error;
-      entrega.ubicacion = nuevaUbicacion;
-      setEditUbicacion(false);
-      if (typeof fetchEntregas === 'function') fetchEntregas();
-    } catch (e) {
-      alert("Error al actualizar ubicación: " + (e.message || e));
     }
   };
 
@@ -133,13 +115,6 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
         onClose={() => setEditField(null)}
         onSave={handleSaveEdit}
       />
-      {/* Modal de edición de ubicación, fuera del modal de entrega */}
-      <EditUbicacionModal
-        open={editUbicacion}
-        ubicacion={entrega.ubicacion}
-        onSave={handleSaveUbicacion}
-        onClose={() => setEditUbicacion(false)}
-      />
       <div
         className="detalle-entrega-modal-bg"
         onClick={onClose}
@@ -186,19 +161,12 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
             <div className="detalle-entrega-item"><span className="detalle-entrega-label">Fecha:</span> <span className="detalle-entrega-valor">{entrega.fecha}</span></div>
             <div className="detalle-entrega-item"><span className="detalle-entrega-label">Fecha entrega:</span> <span className="detalle-entrega-valor">{entrega.fecha_entrega}</span></div>
             <div className="detalle-entrega-item"><span className="detalle-entrega-label">Estatus:</span> <span className="detalle-entrega-valor">{entrega.estatus}</span></div>
-            <div className="detalle-entrega-item">
-              <span className="detalle-entrega-label">Ubicación:</span>
-              {urlMaps ? (
-                <>
-                  <a className="detalle-entrega-valor" href={urlMaps} target="_blank" rel="noopener noreferrer">Ver en Google Maps</a>
-                </>
-              ) : (
-                <span className="detalle-entrega-valor">No definida</span>
-              )}
-              <button style={{marginLeft:8}} title="Editar Ubicación" onClick={() => setEditUbicacion(true)}>
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M4 21h17" stroke="#555" strokeWidth="2" strokeLinecap="round"/><path d="M12.5 7.5l4 4M3 17.25V21h3.75l11.06-11.06a1.5 1.5 0 0 0 0-2.12l-1.63-1.63a1.5 1.5 0 0 0-2.12 0L3 17.25z" stroke="#555" strokeWidth="2"/></svg>
-              </button>
-            </div>
+            {urlMaps && (
+              <div className="detalle-entrega-item">
+                <span className="detalle-entrega-label">Ubicación:</span>
+                <a className="detalle-entrega-valor" href={urlMaps} target="_blank" rel="noopener noreferrer">Ver en Google Maps</a>
+              </div>
+            )}
           </div>
           <div style={{color:'#25D366',fontWeight:'bold',marginBottom:8}}>
             Cel. chofer: {telefonoDebug ? `+504 ${telefonoDebug}` : 'No detectado'}
@@ -604,8 +572,6 @@ const Entregas = () => {
   // Filtrar entregas según estatus y búsqueda
   const entregasFiltradas = entregas
     .filter((e) => {
-      // Ocultar entregados salvo que el filtro sea 'Entregado'
-      if ((!filtroEstatus || filtroEstatus === "") && e.estatus === "Entregado") return false;
       const matchesEstatus = filtroEstatus ? e.estatus === filtroEstatus : true;
       const matchesBusqueda = busqueda
         ? e.cliente.toLowerCase().includes(busqueda.toLowerCase()) ||
