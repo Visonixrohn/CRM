@@ -1,3 +1,41 @@
+      {/* Tabla simple de clientes */}
+      <div className="table-container" style={{overflowX:'auto',margin:'20px 0'}}>
+        <table style={{width:'100%',borderCollapse:'collapse',background:'#fff',borderRadius:8,boxShadow:'0 2px 12px rgba(0,0,0,0.06)'}}>
+          <thead>
+            <tr style={{background:'#f3f4f6',color:'#3730a3',fontWeight:600}}>
+              <th style={{padding:'10px 8px',borderBottom:'1px solid #e5e7eb'}}>ID</th>
+              <th style={{padding:'10px 8px',borderBottom:'1px solid #e5e7eb'}}>Nombres</th>
+              <th style={{padding:'10px 8px',borderBottom:'1px solid #e5e7eb'}}>Apellidos</th>
+              <th style={{padding:'10px 8px',borderBottom:'1px solid #e5e7eb'}}>Teléfono</th>
+              <th style={{padding:'10px 8px',borderBottom:'1px solid #e5e7eb'}}>Tienda</th>
+              <th style={{padding:'10px 8px',borderBottom:'1px solid #e5e7eb'}}>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {clientesFiltrados.map(cliente => {
+              const estadoMap = {
+                0: 'No contestan',
+                1: 'No quiere',
+                2: 'Sí quiere',
+                3: 'A eliminar',
+                null: '',
+                undefined: ''
+              };
+              const estadoTxt = estadoMap[cliente.estado];
+              return (
+                <tr key={cliente.ID || cliente.id}>
+                  <td style={{padding:'10px 8px',borderBottom:'1px solid #e5e7eb'}}>{cliente.ID || cliente.id}</td>
+                  <td style={{padding:'10px 8px',borderBottom:'1px solid #e5e7eb'}}>{cliente.NOMBRES || cliente.nombre}</td>
+                  <td style={{padding:'10px 8px',borderBottom:'1px solid #e5e7eb'}}>{cliente.APELLIDOS || cliente.apellido}</td>
+                  <td style={{padding:'10px 8px',borderBottom:'1px solid #e5e7eb'}}>{cliente.TELEFONO || cliente.tel}</td>
+                  <td style={{padding:'10px 8px',borderBottom:'1px solid #e5e7eb'}}>{cliente.TIENDA || cliente.tienda}</td>
+                  <td style={{padding:'10px 8px',borderBottom:'1px solid #e5e7eb'}}>{estadoTxt}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
 import React, { useEffect, useState, useRef } from "react";
 import ModalSeleccionMotivo from "./ModalSeleccionMotivo";
 import ModalGestionarGestion from "./ModalGestionarGestion";
@@ -6,8 +44,7 @@ import "./GestionCard.css";
 import GestionLinkModal from "./GestionLinkModal";
 import GestionLinkModalMobile from "./GestionLinkModalMobile";
 import useGestion from "./useGestion";
-import TablaGestion from "./TablaGestion";
-import "./TablaGestion.css";
+
 
 // Componente Card para móviles
 const GestionCard = ({ cliente, onWhatsApp, onQuitar, onLink }) => (
@@ -96,7 +133,7 @@ const Gestion = () => {
   const [userId, setUserId] = useState(null);
   const [modalLinkOpen, setModalLinkOpen] = useState(false);
   const [linkCliente, setLinkCliente] = useState(null);
-  const { datos, loading, error: errorGestion, total, gestionadosHoy, pendientes } = useGestion(update);
+  const { datos, loading, error: errorGestion, total, gestionadosHoy, pendientes } = useGestion(update, typeof filtroEstado === 'number' ? filtroEstado : filtroEstado !== null && filtroEstado !== undefined ? parseInt(filtroEstado, 10) : null);
 
   // Actualización automática cada 15 segundos
   useEffect(() => {
@@ -117,12 +154,9 @@ const Gestion = () => {
   // Filtrar clientes: solo mostrar los del usuario autenticado y aplicar filtros
   let filtrosActivos = filtros.some(f => f && f.trim() !== '');
   let clientesFiltrados = datos;
-  if (filtroEstado === 0) clientesFiltrados = datos.filter(c => c.estado === 0);
-  else if (filtroEstado === 1) clientesFiltrados = datos.filter(c => c.estado === 1);
-  else if (filtroEstado === 2) clientesFiltrados = datos.filter(c => c.estado === 2);
-  else if (filtroEstado === 3) clientesFiltrados = datos.filter(c => c.estado === 3);
-  else if (!filtrosActivos) clientesFiltrados = datos.filter(c => c.estado === null || c.estado === undefined);
-  else {
+  if (!filtrosActivos) {
+    clientesFiltrados = datos;
+  } else {
     clientesFiltrados = datos.filter((c) =>
       filtros.every((f, i) => {
         if (!f) return true;
@@ -347,16 +381,7 @@ const Gestion = () => {
         usuarioId={userId}
         telefono={(linkCliente?.TELEFONO || linkCliente?.tel || "").replace(/[^\d]/g, "")}
       />
-      {/* Tabla solo visible en desktop por CSS */}
-      <div className="table-container">
-        <TablaGestion
-          clientes={clientesFiltrados}
-          onCopyId={copyToClipboard}
-          onWhatsApp={enviarWhatsApp}
-          onLink={cliente => { setLinkCliente(cliente); setModalLinkOpen(true); }}
-          onMarcarGestion={cliente => { setClienteGestionar(cliente); setModalMotivoOpen(true); }}
-        />
-      </div>
+      {/* Tabla eliminada, solo cards móviles */}
       {/* Modal para mensaje */}
       {modalOpen && (
         <div className="modal" style={{ display: "flex" }}>

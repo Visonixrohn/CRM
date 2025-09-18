@@ -1,3 +1,4 @@
+// Archivo eliminado
 import React from "react";
 import "./TablaGestion.css";
 
