@@ -1,6 +1,7 @@
 import ModalEstatus from "./components/ModalEstatus";
 import "./EntregasBusqueda.css";
 import React, { useState, useEffect } from "react";
+import EditFieldModal from "./EditFieldModal";
 import EntregaCard from "./components/EntregaCard";
 import { createPortal } from "react-dom";
 import { supabase } from "./supabaseClient";
@@ -33,6 +34,25 @@ function tiempoTranscurrido(fecha, estatus) {
 
 const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEntregas }) => {
   const [showEstatus, setShowEstatus] = useState(false);
+  const [editField, setEditField] = useState(null); // 'cliente', 'factura', 'cel', 'articulo'
+  const [editValue, setEditValue] = useState("");
+
+  // Actualizar el campo editado en Supabase
+  const handleSaveEdit = async () => {
+    if (!editField) return;
+    try {
+      const { error } = await supabase
+        .from("entregas_pendientes")
+        .update({ [editField]: editValue })
+        .eq("id", entrega.id);
+      if (error) throw error;
+      entrega[editField] = editValue; // Actualiza en memoria para feedback inmediato
+      setEditField(null);
+      if (typeof fetchEntregas === 'function') fetchEntregas();
+    } catch (e) {
+      alert("Error al actualizar en Supabase: " + (e.message || e));
+    }
+  };
 
   if (!open || !entrega) return null;
 
@@ -85,69 +105,104 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
     telefonoDebug = telefonoDebug.slice(3);
   }
   return (
-    <div
-      className="detalle-entrega-modal-bg"
-      onClick={onClose}
-      role="presentation"
-      tabIndex={-1}
-      aria-modal="true"
-    >
+    <>
+      {/* Modal de edición por campo, fuera del modal de entrega */}
+      <EditFieldModal
+        open={!!editField}
+        field={editField}
+        value={editValue}
+        onChange={setEditValue}
+        onClose={() => setEditField(null)}
+        onSave={handleSaveEdit}
+      />
       <div
-        className="detalle-entrega-modal"
-        onClick={e => e.stopPropagation()}
-        role="dialog"
-        tabIndex={0}
+        className="detalle-entrega-modal-bg"
+        onClick={onClose}
+        role="presentation"
+        tabIndex={-1}
+        aria-modal="true"
       >
-        <div className="detalle-entrega-titulo">Detalle de Entrega</div>
-        <div className="detalle-entrega-lista">
-          <div className="detalle-entrega-item"><span className="detalle-entrega-label">Cliente:</span> <span className="detalle-entrega-valor">{entrega.cliente}</span></div>
-          <div className="detalle-entrega-item"><span className="detalle-entrega-label">Factura:</span> <span className="detalle-entrega-valor">{entrega.factura}</span></div>
-          <div className="detalle-entrega-item"><span className="detalle-entrega-label">Teléfono:</span> <span className="detalle-entrega-valor">{entrega.cel}</span></div>
-          <div className="detalle-entrega-item"><span className="detalle-entrega-label">Artículo:</span> <span className="detalle-entrega-valor">{entrega.articulo}</span></div>
-          <div className="detalle-entrega-item"><span className="detalle-entrega-label">Fecha:</span> <span className="detalle-entrega-valor">{entrega.fecha}</span></div>
-          <div className="detalle-entrega-item"><span className="detalle-entrega-label">Fecha entrega:</span> <span className="detalle-entrega-valor">{entrega.fecha_entrega}</span></div>
-          <div className="detalle-entrega-item"><span className="detalle-entrega-label">Estatus:</span> <span className="detalle-entrega-valor">{entrega.estatus}</span></div>
-          {urlMaps && (
+        <div
+          className="detalle-entrega-modal"
+          onClick={e => e.stopPropagation()}
+          role="dialog"
+          tabIndex={0}
+        >
+          <div className="detalle-entrega-titulo">Detalle de Entrega</div>
+          <div className="detalle-entrega-lista">
             <div className="detalle-entrega-item">
-              <span className="detalle-entrega-label">Ubicación:</span>
-              <a className="detalle-entrega-valor" href={urlMaps} target="_blank" rel="noopener noreferrer">Ver en Google Maps</a>
+              <span className="detalle-entrega-label">Cliente:</span>
+              <span className="detalle-entrega-valor">{entrega.cliente}</span>
+              <button style={{marginLeft:8}} title="Editar Cliente" onClick={() => {setEditField('cliente'); setEditValue(entrega.cliente);}}>
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M4 21h17" stroke="#555" strokeWidth="2" strokeLinecap="round"/><path d="M12.5 7.5l4 4M3 17.25V21h3.75l11.06-11.06a1.5 1.5 0 0 0 0-2.12l-1.63-1.63a1.5 1.5 0 0 0-2.12 0L3 17.25z" stroke="#555" strokeWidth="2"/></svg>
+              </button>
             </div>
+            <div className="detalle-entrega-item">
+              <span className="detalle-entrega-label">Factura:</span>
+              <span className="detalle-entrega-valor">{entrega.factura}</span>
+              <button style={{marginLeft:8}} title="Editar Factura" onClick={() => {setEditField('factura'); setEditValue(entrega.factura);}}>
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M4 21h17" stroke="#555" strokeWidth="2" strokeLinecap="round"/><path d="M12.5 7.5l4 4M3 17.25V21h3.75l11.06-11.06a1.5 1.5 0 0 0 0-2.12l-1.63-1.63a1.5 1.5 0 0 0-2.12 0L3 17.25z" stroke="#555" strokeWidth="2"/></svg>
+              </button>
+            </div>
+            <div className="detalle-entrega-item">
+              <span className="detalle-entrega-label">Teléfono:</span>
+              <span className="detalle-entrega-valor">{entrega.cel}</span>
+              <button style={{marginLeft:8}} title="Editar Teléfono" onClick={() => {setEditField('cel'); setEditValue(entrega.cel);}}>
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M4 21h17" stroke="#555" strokeWidth="2" strokeLinecap="round"/><path d="M12.5 7.5l4 4M3 17.25V21h3.75l11.06-11.06a1.5 1.5 0 0 0 0-2.12l-1.63-1.63a1.5 1.5 0 0 0-2.12 0L3 17.25z" stroke="#555" strokeWidth="2"/></svg>
+              </button>
+            </div>
+            <div className="detalle-entrega-item">
+              <span className="detalle-entrega-label">Artículo:</span>
+              <span className="detalle-entrega-valor">{entrega.articulo}</span>
+              <button style={{marginLeft:8}} title="Editar Artículo" onClick={() => {setEditField('articulo'); setEditValue(entrega.articulo);}}>
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M4 21h17" stroke="#555" strokeWidth="2" strokeLinecap="round"/><path d="M12.5 7.5l4 4M3 17.25V21h3.75l11.06-11.06a1.5 1.5 0 0 0 0-2.12l-1.63-1.63a1.5 1.5 0 0 0-2.12 0L3 17.25z" stroke="#555" strokeWidth="2"/></svg>
+              </button>
+            </div>
+            <div className="detalle-entrega-item"><span className="detalle-entrega-label">Fecha:</span> <span className="detalle-entrega-valor">{entrega.fecha}</span></div>
+            <div className="detalle-entrega-item"><span className="detalle-entrega-label">Fecha entrega:</span> <span className="detalle-entrega-valor">{entrega.fecha_entrega}</span></div>
+            <div className="detalle-entrega-item"><span className="detalle-entrega-label">Estatus:</span> <span className="detalle-entrega-valor">{entrega.estatus}</span></div>
+            {urlMaps && (
+              <div className="detalle-entrega-item">
+                <span className="detalle-entrega-label">Ubicación:</span>
+                <a className="detalle-entrega-valor" href={urlMaps} target="_blank" rel="noopener noreferrer">Ver en Google Maps</a>
+              </div>
+            )}
+          </div>
+          <div style={{color:'#25D366',fontWeight:'bold',marginBottom:8}}>
+            Cel. chofer: {telefonoDebug ? `+504 ${telefonoDebug}` : 'No detectado'}
+          </div>
+          <div className="detalle-entrega-botones">
+            <button className="detalle-entrega-cerrar" onClick={onClose}>Cerrar</button>
+            <button
+              className="detalle-entrega-cerrar"
+              style={{ background: "#4f46e5" }}
+              onClick={() => setShowEstatus(true)}
+            >
+              Actualizar estatus
+            </button>
+            <button
+              className="detalle-entrega-cerrar"
+              style={{ background: "#25D366" }}
+              onClick={handleEnviarDatos}
+            >
+              Enviar por WhatsApp
+            </button>
+          </div>
+          {showEstatus && (
+            <ModalEstatus
+              open={showEstatus}
+              onClose={() => setShowEstatus(false)}
+              entrega={entrega}
+              fetchEntregas={fetchEntregas}
+              onSave={async (nuevoEstatus, nuevoTipo, nuevaGestionada) => {
+                await onUpdateEstatus(nuevoEstatus, nuevoTipo, nuevaGestionada);
+                setShowEstatus(false);
+              }}
+            />
           )}
         </div>
-        <div style={{color:'#25D366',fontWeight:'bold',marginBottom:8}}>
-          Cel. chofer: {telefonoDebug ? `+504 ${telefonoDebug}` : 'No detectado'}
-        </div>
-        <div className="detalle-entrega-botones">
-          <button className="detalle-entrega-cerrar" onClick={onClose}>Cerrar</button>
-          <button
-            className="detalle-entrega-cerrar"
-            style={{ background: "#4f46e5" }}
-            onClick={() => setShowEstatus(true)}
-          >
-            Actualizar estatus
-          </button>
-          <button
-            className="detalle-entrega-cerrar"
-            style={{ background: "#25D366" }}
-            onClick={handleEnviarDatos}
-          >
-            Enviar por WhatsApp
-          </button>
-        </div>
-        {showEstatus && (
-          <ModalEstatus
-            open={showEstatus}
-            onClose={() => setShowEstatus(false)}
-            entrega={entrega}
-            fetchEntregas={fetchEntregas}
-            onSave={async (nuevoEstatus, nuevoTipo, nuevaGestionada) => {
-              await onUpdateEstatus(nuevoEstatus, nuevoTipo, nuevaGestionada);
-              setShowEstatus(false);
-            }}
-          />
-        )}
       </div>
-    </div>
+    </>
   );
 };
 
