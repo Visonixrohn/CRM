@@ -47,7 +47,7 @@ export default function useGestion(update) {
           APELLIDOS: row.apellidos,
           TELEFONO: row.telefono,
           TIENDA: row.tienda_fidelidad,
-          estado: row.estado || '',
+          estado: row.estado !== null && row.estado !== undefined ? row.estado : null,
           updated_at: row.updated_at,
           usuario: row.usuario,
           ...row
