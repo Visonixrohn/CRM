@@ -54,7 +54,7 @@ const CotizacionWhatsappModal = ({ open, onClose, usuarioId, plazo, prima, cuota
   if (isMobileScreen) {
     window.open(`https://wa.me/${cel}?text=${mensaje}`, "_blank");
   } else {
-    window.open(`https://web.whatsapp.com/send?phone=${cel}&text=${mensaje}`, "_blank");
+    window.open(`https://web.whatsapp.com/send?phone=504${cel}&text=${mensaje}`, "_blank");
   }
 };
 
