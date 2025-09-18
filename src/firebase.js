@@ -4,7 +4,7 @@ import { getAnalytics } from "firebase/analytics";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBRkOtit8t4q4PGgli0CgHQrcMS039i_8c",
+  apiKey: "AIzaSyDwQ_-OBFVwLjlzvj95k0NSJweSApAGZbo",
   authDomain: "crm-miguel.firebaseapp.com",
   projectId: "crm-miguel",
   storageBucket: "crm-miguel.firebasestorage.app",

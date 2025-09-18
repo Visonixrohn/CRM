@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 
 const SHEET_ID = "1MmVZkubwhL4goX3wptmRZGvMFJtRBhJnb2TEwVwUNbk";
-const API_KEY = "AIzaSyCIUJIvnSyAxU4NEp2lotm-QodOKQ0FqFA";
+const API_KEY = "AIzaSyDwQ_-OBFVwLjlzvj95k0NSJweSApAGZbo";
 const URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/SolicitudesCredito?key=${API_KEY}`;
 
 export default function useClientesNuevos() {
