@@ -27,7 +27,7 @@
   max-width: 100%;
   margin: 0 auto;
   display: flex;
-  justify-content: right;
+  justify-content: center;
   background: var(--background-white);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-light);
@@ -288,7 +288,7 @@
 /* Contenido del modal */
 .detalle-contenido {
   background: var(--background-white);
-  padding: 2rem;
+  padding: 2rem 2rem 2rem 3.5rem;
   border-radius: var(--border-radius);
   width: min(95vw, 1400px);
   max-height: 85vh;

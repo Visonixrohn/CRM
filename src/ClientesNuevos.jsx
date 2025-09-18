@@ -71,7 +71,7 @@ const ClientesNuevos = () => {
         <ModalExito mensaje="Actualización exitosa" onClose={() => setExito(false)} />
       )}
       <h2>Clientes Nuevos</h2>
-      <div style={{width: '100%', maxWidth: 1200}}>
+  <div style={{width: '100%', maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
         <div style={{display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16}}>
           <button
             onClick={() => setFiltro("todos")}
