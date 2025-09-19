@@ -31,6 +31,7 @@ import React, { useState, useEffect } from "react";
     }
   };
 import ModalSeleccionMotivo from "./ModalSeleccionMotivo";
+import ModalGestionarGestion from "./ModalGestionarGestion";
 import GestionLinkModalMobile from "./GestionLinkModalMobile";
 import useGestion from "./useGestion";
 import CardsFiltradasPorEstado from "./CardsFiltradasPorEstado";
@@ -42,6 +43,7 @@ export default function TablaFiltradaPorEstado({ estado }) {
   const [linkCliente, setLinkCliente] = useState(null);
   const [modalMotivoOpen, setModalMotivoOpen] = useState(false);
   const [clienteGestionar, setClienteGestionar] = useState(null);
+  const [modalGestionarOpen, setModalGestionarOpen] = useState(false);
   const [update, setUpdate] = useState(0);
   const { datos, loading, error } = useGestion(update);
 
@@ -72,6 +74,9 @@ export default function TablaFiltradaPorEstado({ estado }) {
       alert('Error al actualizar estado: ' + error.message);
     } else {
       setUpdate(Date.now());
+      if (motivo === 'si_quiere') {
+        setTimeout(() => setModalGestionarOpen(true), 200);
+      }
     }
     setModalMotivoOpen(false);
   };
@@ -213,6 +218,20 @@ export default function TablaFiltradaPorEstado({ estado }) {
             open={modalMotivoOpen}
             onClose={() => setModalMotivoOpen(false)}
             onSave={handleGuardarMotivo}
+          />
+          {/* Modal para gestionar cliente */}
+          <ModalGestionarGestion
+            open={modalGestionarOpen}
+            onClose={() => setModalGestionarOpen(false)}
+            initialData={{
+              articulo: clienteGestionar?.articulo || '',
+              tipo: 'CONTADO',
+              fecha: undefined
+            }}
+            onSave={(datos) => {
+              // Aquí puedes guardar los datos si lo necesitas
+              setModalGestionarOpen(false);
+            }}
           />
           {/* Modal para enviar link por WhatsApp */}
           <GestionLinkModalMobile
