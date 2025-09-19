@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 
 const SHEET_ID = "1MmVZkubwhL4goX3wptmRZGvMFJtRBhJnb2TEwVwUNbk";
-const API_KEY = "AIzaSyDwQ_-OBFVwLjlzvj95k0NSJweSApAGZbo";
+const API_KEY = "AIzaSyA-Jv8AMyTySXYsd8rY2kEdNhhotdNWolg";
 const URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/SolicitudesCredito?key=${API_KEY}`;
 
 export default function useClientesNuevos() {
@@ -32,9 +32,10 @@ export default function useClientesNuevos() {
           });
           return obj;
         });
-        // Filtrar por usuario
-        const filtrados = formatted.filter(row => row.usuario && row.usuario === usuarioId);
-        setClientes(filtrados);
+  // Mostrar todos los clientes sin filtrar por usuario
+  // Filtrar por usuario
+  const filtrados = formatted.filter(row => row.usuario && row.usuario === usuarioId);
+  setClientes(filtrados);
       } else {
         setClientes([]);
       }
