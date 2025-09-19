@@ -111,12 +111,20 @@ const Documentos = () => {
     setPdfUrl("");
   };
 
+  // Obtener usuario de localStorage
+  let user = null;
+  try {
+    user = JSON.parse(localStorage.getItem("user"));
+  } catch {}
+
   return (
     <div className="documentos-container">
       <h1>Documentos</h1>
-      <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
-        Agregar Documento
-      </button>
+      {(user && (user.rol === 'admin' || user.rol === 'superadmin')) && (
+        <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
+          Agregar Documento
+        </button>
+      )}
 
       <div className="documentos-grid">
         {documentos.map((doc) => (

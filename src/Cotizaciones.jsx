@@ -176,14 +176,22 @@ const Cotizaciones = () => {
                 <GASelectorRows />
               </div>
 
+  // Obtener usuario de localStorage
+  let user = null;
+  try {
+    user = JSON.parse(localStorage.getItem("user"));
+  } catch {}
+
   return (
     <div className={styles.cotizacionesContainer}>
       <div className={styles.cotizacionesHeader}>
         <h2>COTIZACIONES</h2>
         <div style={{display: 'flex', gap: 12}}>
-          <button className={styles.cotizacionesAddBtn} onClick={() => setModalOpen(true)}>
-            + Registrar nuevo plan
-          </button>
+          {(user && (user.rol === 'admin' || user.rol === 'superadmin')) && (
+            <button className={styles.cotizacionesAddBtn} onClick={() => setModalOpen(true)}>
+              + Registrar nuevo plan
+            </button>
+          )}
           <button className={styles.cotizacionesAddBtn} style={{background: '#25d366'}} onClick={() => setModalWhatsappOpen(true)}>
             WhatsApp Cotización
           </button>
@@ -276,9 +284,11 @@ const Cotizaciones = () => {
         
             <br />
             <div style={{display:'flex', gap:8, marginTop:8}}>
-              <button type="button" style={{background:'#1976d2', color:'#fff', border:'none', borderRadius:4, padding:'4px 12px', cursor:'pointer'}} onClick={() => setModalGAOpen(true)}>
-                Registrar GA %
-              </button>
+              {(user && (user.rol === 'admin' || user.rol === 'superadmin')) && (
+                <button type="button" style={{background:'#1976d2', color:'#fff', border:'none', borderRadius:4, padding:'4px 12px', cursor:'pointer'}} onClick={() => setModalGAOpen(true)}>
+                  Registrar GA %
+                </button>
+              )}
               <button type="button" style={{background:'#43a047', color:'#fff', border:'none', borderRadius:4, padding:'4px 12px', cursor:'pointer'}} onClick={() => setModalPPlusOpen(true)}>
                 Agregar roductos 
               </button>

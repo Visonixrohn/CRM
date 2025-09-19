@@ -31,6 +31,7 @@ import Cotizaciones from "./Cotizaciones";
 import ResetPassword from "./ResetPassword";
 import Configuraciones from "./Configuraciones";
 import { Routes, Route, useLocation, Navigate, useNavigate } from "react-router-dom";
+import Admin from "./Admin";
 
 function App() {
   const navigate = useNavigate();
@@ -81,7 +82,10 @@ function App() {
         .eq("id", userId)
         .maybeSingle();
       if (error || !data) setUser(null);
-      else setUser(data);
+      else {
+        setUser(data);
+        localStorage.setItem("user", JSON.stringify(data));
+      }
     })();
   }, []);
 
@@ -238,6 +242,9 @@ function App() {
               <Route path="/gestion/si_quiere" element={<TablaFiltradaPorEstado estado="si_quiere" />} />
               <Route path="/gestion/a_eliminar" element={<TablaFiltradaPorEstado estado="a_eliminar" />} />
               <Route path="/seguimiento" element={<Seguimiento />} />
+              {user && user.rol === "superadmin" && (
+                <Route path="/admin" element={<Admin />} />
+              )}
               <Route path="/configuraciones" element={<Configuraciones />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
@@ -272,6 +279,7 @@ function App() {
             onLogout={async () => {
               await supabase.auth.signOut();
               setUser(null);
+              localStorage.removeItem("user");
             }}
           />
         )}

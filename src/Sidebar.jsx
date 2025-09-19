@@ -15,7 +15,8 @@ import {
   FaCreditCard,
   FaCog,
   FaSearch,
-} from "react-icons/fa"; // Importing icons from react-icons
+  FaUserShield
+} from "react-icons/fa";
 import "./Sidebar.css";
 import { supabase } from "./supabaseClient";
 
@@ -24,6 +25,11 @@ const Sidebar = ({
   setUser,
   closeSidebar
 }) => {
+  // Obtener usuario actual de localStorage
+  let user = null;
+  try {
+    user = JSON.parse(localStorage.getItem("user"));
+  } catch {}
   const location = useLocation();
   // Detectar si es móvil
   const isMobile = typeof window !== "undefined" ? window.innerWidth <= 768 : false;
@@ -172,6 +178,19 @@ const Sidebar = ({
           <span className="sidebar-tooltip">Actualizaciones</span>
         </Link>
        
+        {/* Icono de Admin solo para superadmin */}
+        {user && user.rol === "superadmin" && (
+          <Link
+            to="/admin"
+            className="sidebar-icon"
+            title="Admin"
+            style={{ position: "relative" }}
+            onClick={handleNavClick}
+          >
+            <FaUserShield className="icon-text" style={{ color: '#8e24aa' }} />
+            <span className="sidebar-tooltip">Admin</span>
+          </Link>
+        )}
         {/* Icono de Configuración */}
         <Link
           to="/configuraciones"

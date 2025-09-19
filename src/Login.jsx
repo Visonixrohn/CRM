@@ -194,7 +194,9 @@ function Login({ onLogin }) {
         email,
         nombre,
         mi_tienda: miTienda,
-        contrasena: hash
+        contrasena: hash,
+        rol: "usuario",
+        acceso: "permitido"
       });
       if (error) {
         console.error('Error Supabase:', error);
@@ -211,11 +213,16 @@ function Login({ onLogin }) {
       // El hook no trae la contraseña, así que hay que pedirla
       const { data: profileWithPass, error } = await supabase
         .from("profiles")
-        .select("id, contrasena, email, identidad, telefono, nombre")
+        .select("id, contrasena, email, identidad, telefono, nombre, acceso, rol")
         .eq("email", email.trim())
         .maybeSingle();
       if (error || !profileWithPass) {
         setError("Usuario o contraseña incorrectos");
+        setLoading(false);
+        return;
+      }
+      if (profileWithPass.acceso !== "permitido") {
+        setError("Tu acceso ha sido restringido. Contacta al administrador.");
         setLoading(false);
         return;
       }
