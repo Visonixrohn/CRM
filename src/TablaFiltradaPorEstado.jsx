@@ -1,5 +1,25 @@
 
 import React, { useState, useEffect } from "react";
+import ModalSeleccionMotivo from "./ModalSeleccionMotivo";
+import ModalGestionarGestion from "./ModalGestionarGestion";
+import GestionLinkModalMobile from "./GestionLinkModalMobile";
+import useGestion from "./useGestion";
+import CardsFiltradasPorEstado from "./CardsFiltradasPorEstado";
+import "./TablaFiltradaPorEstado.css";
+import { supabase } from "./supabaseClient";
+
+
+export default function TablaFiltradaPorEstado({ estado }) {
+  // Hooks y funciones deben estar dentro del componente
+  const [modalLinkOpen, setModalLinkOpen] = useState(false);
+  const [linkCliente, setLinkCliente] = useState(null);
+  const [modalMotivoOpen, setModalMotivoOpen] = useState(false);
+  const [clienteGestionar, setClienteGestionar] = useState(null);
+  const [update, setUpdate] = useState(0);
+  const [modalGestionarOpen, setModalGestionarOpen] = useState(false);
+  const [clienteGestionarDatos, setClienteGestionarDatos] = useState(null);
+  const { datos, loading, error } = useGestion(update);
+
   // Función para copiar al portapapeles
   const copyToClipboard = (text, e) => {
     if (navigator.clipboard && window.isSecureContext) {
@@ -30,22 +50,35 @@ import React, { useState, useEffect } from "react";
       }
     }
   };
-import ModalSeleccionMotivo from "./ModalSeleccionMotivo";
-import ModalGestionarGestion from "./ModalGestionarGestion";
-import GestionLinkModalMobile from "./GestionLinkModalMobile";
-import useGestion from "./useGestion";
-import CardsFiltradasPorEstado from "./CardsFiltradasPorEstado";
-import "./TablaFiltradaPorEstado.css";
-import { supabase } from "./supabaseClient";
 
-export default function TablaFiltradaPorEstado({ estado }) {
-  const [modalLinkOpen, setModalLinkOpen] = useState(false);
-  const [linkCliente, setLinkCliente] = useState(null);
-  const [modalMotivoOpen, setModalMotivoOpen] = useState(false);
-  const [clienteGestionar, setClienteGestionar] = useState(null);
-  const [modalGestionarOpen, setModalGestionarOpen] = useState(false);
-  const [update, setUpdate] = useState(0);
-  const { datos, loading, error } = useGestion(update);
+  // Guardar datos en tabla seguimiento
+  const handleGuardarGestion = async (datos) => {
+    if (!clienteGestionarDatos) return;
+    try {
+      const nombre = (clienteGestionarDatos.NOMBRES || clienteGestionarDatos.nombre || '') + ' ' + (clienteGestionarDatos.APELLIDOS || clienteGestionarDatos.apellido || '');
+      const dni = clienteGestionarDatos.ID || clienteGestionarDatos.id || '';
+      const cel = clienteGestionarDatos.TELEFONO || clienteGestionarDatos.tel || '';
+      const userId = localStorage.getItem("userId");
+      const { articulo, tipo, fecha } = datos;
+      const { error } = await supabase.from('seguimiento').insert([
+        {
+          id_usuario: userId,
+          nombre_cliente: nombre.trim(),
+          dni: dni,
+          cel: cel,
+          articulo,
+          tipo,
+          fecha_de_acuerdo: fecha,
+          estado: 'Gestionado',
+        }
+      ]);
+      if (error) alert('Error al guardar en seguimiento: ' + error.message);
+      setModalGestionarOpen(false);
+      setClienteGestionarDatos(null);
+    } catch (err) {
+      alert('Error inesperado al guardar en seguimiento');
+    }
+  };
 
   // Filtrar por estado, usuario y tienda ya lo hace useGestion
   const filas = datos.filter(
@@ -74,9 +107,6 @@ export default function TablaFiltradaPorEstado({ estado }) {
       alert('Error al actualizar estado: ' + error.message);
     } else {
       setUpdate(Date.now());
-      if (motivo === 'si_quiere') {
-        setTimeout(() => setModalGestionarOpen(true), 200);
-      }
     }
     setModalMotivoOpen(false);
   };
@@ -185,20 +215,36 @@ export default function TablaFiltradaPorEstado({ estado }) {
                       <td>{cliente.TELEFONO || cliente.tel}</td>
                       <td>{cliente.TIENDA || cliente.tienda}</td>
                       <td>
-                        <button onClick={() => enviarWhatsApp(cliente)}>
-                          Enviar
+                       
+                        <button style={{marginLeft:4,marginRight:4,background:'#15803d',color:'#fff',border:'none',borderRadius:6,padding:'6px 12px'}}
+                          onClick={() => {
+                            setClienteGestionarDatos(cliente);
+                            setModalGestionarOpen(true);
+                          }}
+                        >
+                          Crear seguimiento
                         </button>
-                        <button style={{marginLeft:4,marginRight:4}} onClick={() => { setLinkCliente(cliente); setModalLinkOpen(true); }}>
-                          Link
-                        </button>
-                        <button className="remove" style={{background: "#f59e42", color: "#fff", border: "none", borderRadius: 6, padding: "6px 12px", fontWeight: 600, cursor: "pointer"}}
+                          <button className="remove" style={{background: "#f59e42", color: "#fff", border: "none", borderRadius: 6, padding: "6px 12px", fontWeight: 600, cursor: "pointer"}}
                           onClick={() => {
                             setClienteGestionar(cliente);
                             setModalMotivoOpen(true);
                           }}
                         >
-                          Marcar gestión
+                          Cambiar status
+                        </button> <button onClick={() => enviarWhatsApp(cliente)}>
+                          Enviar Whatsaap
                         </button>
+          {/* Modal para gestionar cliente */}
+          <ModalGestionarGestion
+            open={modalGestionarOpen}
+            onClose={() => { setModalGestionarOpen(false); setClienteGestionarDatos(null); }}
+            initialData={{ articulo: '', tipo: 'CONTADO', fecha: undefined }}
+            onSave={handleGuardarGestion}
+          />
+                        <button style={{marginLeft:4,marginRight:4}} onClick={() => { setLinkCliente(cliente); setModalLinkOpen(true); }}>
+                          Link de solicitud
+                        </button>
+                      
                       </td>
                     </tr>
                   );
@@ -218,20 +264,6 @@ export default function TablaFiltradaPorEstado({ estado }) {
             open={modalMotivoOpen}
             onClose={() => setModalMotivoOpen(false)}
             onSave={handleGuardarMotivo}
-          />
-          {/* Modal para gestionar cliente */}
-          <ModalGestionarGestion
-            open={modalGestionarOpen}
-            onClose={() => setModalGestionarOpen(false)}
-            initialData={{
-              articulo: clienteGestionar?.articulo || '',
-              tipo: 'CONTADO',
-              fecha: undefined
-            }}
-            onSave={(datos) => {
-              // Aquí puedes guardar los datos si lo necesitas
-              setModalGestionarOpen(false);
-            }}
           />
           {/* Modal para enviar link por WhatsApp */}
           <GestionLinkModalMobile
