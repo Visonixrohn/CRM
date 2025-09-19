@@ -17,10 +17,22 @@ export default function CardsFiltradasPorEstado({ filas }) {
   // Función para enviar WhatsApp
   const enviarWhatsApp = (cliente) => {
     const mensajeBase = "Hola 😇 {NOMBRE}";
+    const numeroRaw = cliente.TELEFONO || cliente.tel || "";
+    const numero = String(numeroRaw).replace(/[^\d]/g, "");
+    if (!numero) {
+      alert("El cliente no tiene número de teléfono válido.");
+      return;
+    }
     const texto = encodeURIComponent(
       mensajeBase.replace("{NOMBRE}", cliente.NOMBRES || cliente.nombre || "")
     );
-    const url = `https://wa.me/504${(cliente.TELEFONO || cliente.tel || "").replace(/[^\d]/g, "")}?text=${texto}`;
+    const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+    let url = "";
+    if (isMobile) {
+      url = `https://wa.me/504${numero}?text=${texto}`;
+    } else {
+      url = `https://web.whatsapp.com/send?phone=504${numero}&text=${texto}`;
+    }
     window.open(url, "_blank");
   };
 
