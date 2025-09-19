@@ -1,4 +1,12 @@
 
+// Registro de elementos de Chart.js
+ChartJS.register(ArcElement, Tooltip, Legend);
+// Función utilitaria para calcular los días restantes del mes
+function getDiasRestantesMes() {
+  const hoy = new Date();
+  const ultimoDia = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+  return ultimoDia.getDate() - hoy.getDate();
+}
 import React, { useState, useEffect } from "react";
 import useClientesNuevos from "./useClientesNuevos";
 import useGestionResumen from "./useGestionResumen";
@@ -16,18 +24,6 @@ import {
   Legend,
 } from "chart.js";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
-
-// Función utilitaria para calcular los días restantes del mes
-function getDiasRestantesMes() {
-  const hoy = new Date();
-  const ultimoDia = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
-  return ultimoDia.getDate() - hoy.getDate();
-}
-
-// ...existing code...
-
-// Reusable Card Component
 const ComCard = ({ title, value, colorClass, icon, isNumberOnly }) => (
   <div className={`com-card ${colorClass}`}>
     <span className="com-card-icon">{icon}</span>
@@ -53,6 +49,29 @@ const ActionButton = ({ onClick, label, icon }) => (
 );
 
 const Comisiones = ({ setPage }) => {
+  // Función para actualizar o insertar el gasto mensual del usuario actual
+  const upsertGastoMensualInSupabase = async (gastoValue) => {
+    try {
+      const { data } = await supabase
+        .from("comisiones")
+        .select("id")
+        .eq("usuario", usuario)
+        .single();
+
+      const payload = { gasto_mensual: Number(gastoValue), usuario };
+      if (data) {
+        await supabase
+          .from("comisiones")
+          .update({ gasto_mensual: Number(gastoValue) })
+          .eq("usuario", usuario);
+      } else {
+        await supabase.from("comisiones").insert(payload);
+      }
+    } catch (err) {
+      console.error("Error en upsertGastoMensualInSupabase:", err);
+      setError("Error al actualizar el gasto mensual");
+    }
+  };
   // Tarjetas de gestión
   const [update, setUpdate] = useState(0);
   const { total, gestionadosHoy } = useGestionResumen(update);
@@ -94,6 +113,7 @@ const Comisiones = ({ setPage }) => {
   const [currentAction, setCurrentAction] = useState(null);
   const [meta, setMeta] = useState(0);
   const [comisionObtenida, setComisionObtenida] = useState(0);
+  const [gastoMensual, setGastoMensual] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -126,7 +146,7 @@ const Comisiones = ({ setPage }) => {
         }
         const { data, error } = await supabase
           .from("comisiones")
-          .select("meta, comision_obtenida")
+          .select("meta, comision_obtenida, gasto_mensual")
           .eq("usuario", userId)
           .single();
         if (error && error.code !== "PGRST116") {
@@ -137,6 +157,7 @@ const Comisiones = ({ setPage }) => {
         } else {
           setMeta(data.meta);
           setComisionObtenida(data.comision_obtenida);
+          setGastoMensual(data.gasto_mensual || 0);
           setNoData(false);
         }
       } catch (err) {
@@ -275,6 +296,9 @@ const Comisiones = ({ setPage }) => {
     } else if (currentAction === "comision") {
       await upsertComisionObtenidaInSupabase(modalInputValue);
       setComisionObtenida(Number(modalInputValue));
+    } else if (currentAction === "gasto_mensual") {
+      await upsertGastoMensualInSupabase(modalInputValue);
+      setGastoMensual(Number(modalInputValue));
     }
     closeModal();
   };
@@ -359,6 +383,7 @@ const Comisiones = ({ setPage }) => {
               <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">📊 Diferencia a Meta</div><div className="analisis-card-value">L{diferenciaMeta.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div></div>
               <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">📆 Días Restantes del Mes</div><div className="analisis-card-value">{diasRestantes}</div></div>
               <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">📈 Meta Diaria</div><div className="analisis-card-value">L{metaHoy.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div></div>
+              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">💳 Mi gasto mensual</div><div className="analisis-card-value">L{gastoMensual.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div></div>
               <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">✅ Clientes Gestionados</div><div className="analisis-card-value">{gestionadosHoy}</div></div>
               <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">⏳ Clientes Pendientes</div><div className="analisis-card-value">{pendientes}</div></div>
               {Array.isArray(entregasPendientes) && entregasPendientes.length > 0 && entregasPendientesAtrasadas > 0 && (
@@ -382,10 +407,27 @@ const Comisiones = ({ setPage }) => {
                 entregasPendientesAtrasadas={entregasPendientesAtrasadas}
                 entregasParaHoy={entregasParaHoy}
                 entregasNoGestionadas={entregasNoGestionadas}
+                gastoMensual={gastoMensual}
               />
             </div>
           </div>
           <div className="comisiones-actions-header" style={{ marginBottom: 24, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <ActionButton
+              onClick={() => openModal("meta")}
+              label="Actualizar Meta"
+              icon="🎯"
+            />
+            <ActionButton
+              onClick={() => openModal("comision")}
+              label="Actualizar Comisión"
+              icon="💵"
+            />
+            <ActionButton
+              onClick={() => openModal("gasto_mensual")}
+              label="Mis gasto mensual"
+              icon="💳"
+              style={{ background: '#a21caf', color: '#fff' }}
+            />
             <ActionButton
               onClick={() => openModal("meta")}
               label="Actualizar Meta"
@@ -451,6 +493,14 @@ const Comisiones = ({ setPage }) => {
               <div className="analisis-card">
                 <div className="analisis-card-title">Monto vendido</div>
                 <div className="analisis-card-value">L{comisionObtenida.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div>
+              </div>
+              <div className="analisis-card">
+                <div className="analisis-card-title">Cobertura de gasto mensual</div>
+                <div className="analisis-card-value">L{(comisionObtenida - gastoMensual).toLocaleString("en-US", { minimumFractionDigits: 2 })}</div>
+              </div>
+              <div className="analisis-card">
+                <div className="analisis-card-title">% de cobertura de gasto mensual</div>
+                <div className="analisis-card-value">{gastoMensual > 0 ? ((comisionObtenida / gastoMensual) * 100).toFixed(1) : 0}%</div>
               </div>
               <div className="analisis-card">
                 <div className="analisis-card-title">Monto proyectado de hoy</div>
@@ -594,6 +644,7 @@ const Comisiones = ({ setPage }) => {
           </Modal>
         </div>
       )}
+
     </>
   );
 }

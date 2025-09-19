@@ -21,7 +21,26 @@ const cards = [
     valueKey: "diferenciaMeta",
     colorClass: "danger",
     icon: "📊",
-  },{
+  },
+  {
+    title: "Gasto mensual",
+    valueKey: "gastoMensual",
+    colorClass: "warning",
+    icon: "💳",
+  },
+  {
+    title: "Cobertura de gasto mensual",
+    valueKey: "coberturaGastoMensual",
+    colorClass: "success",
+    icon: "🛡️",
+  },
+  {
+    title: "% de cobertura de gasto mensual",
+    valueKey: "porcentajeCoberturaGastoMensual",
+    colorClass: "info",
+    icon: "📈",
+  },
+  {
     title: "Meta Diaria",
     valueKey: "metaHoy",
     colorClass: "neutral",
@@ -33,11 +52,21 @@ const cards = [
     colorClass: "primary",
     icon: "📆",
   },
-  
 ];
 
-const ComisionesMobileCards = ({ meta, comisionObtenida, diferenciaMeta, diasRestantes, metaHoy, entregasPendientesAtrasadas, entregasParaHoy, entregasNoGestionadas }) => {
-  const values = { meta, comisionObtenida, diferenciaMeta, diasRestantes, metaHoy };
+const ComisionesMobileCards = ({ meta, comisionObtenida, diferenciaMeta, diasRestantes, metaHoy, entregasPendientesAtrasadas, entregasParaHoy, entregasNoGestionadas, gastoMensual }) => {
+  const coberturaGastoMensual = comisionObtenida - (gastoMensual || 0);
+  const porcentajeCoberturaGastoMensual = gastoMensual > 0 ? (comisionObtenida / gastoMensual) * 100 : 0;
+  const values = {
+    meta,
+    comisionObtenida,
+    diferenciaMeta,
+    diasRestantes,
+    metaHoy,
+    gastoMensual,
+    coberturaGastoMensual,
+    porcentajeCoberturaGastoMensual
+  };
   const extraCards = [];
   // Hook para clientes para hoy
   const { cantidad: clientesParaHoy, loading: loadingClientesParaHoy, error: errorClientesParaHoy } = useClientesParaHoy();
