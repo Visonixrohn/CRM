@@ -1,5 +1,6 @@
 
-import React, { useEffect } from "react";
+
+import React, { useEffect, useState } from "react";
 import "./EditUbicacionModal.css";
 import { useGoogleMap } from "./useGoogleMap";
 
@@ -16,7 +17,20 @@ const EditUbicacionModal = ({ open, ubicacion, onSave, onClose }) => {
     }
   }
 
-  const { isLoaded, loadError, selectedCoords, MapComponent } = useGoogleMap(apiKey, initialCoords);
+  const [mapType, setMapType] = useState("satellite");
+  const [zoom, setZoom] = useState(13);
+  const { isLoaded, selectedCoords, MapComponent } = useGoogleMap(
+    apiKey,
+    initialCoords,
+    mapType,
+    zoom,
+    (coords, newZoom) => {
+      // No actualizamos estado externo aquí, solo para visualización
+      if (typeof newZoom === 'number') setZoom(newZoom);
+    }
+  );
+  const handleMapTypeChange = (e) => setMapType(e.target.value);
+  const handleZoomChange = (e) => setZoom(Number(e.target.value));
 
   useEffect(() => {
     // Si se abre el modal y hay ubicación previa, setearla como seleccionada
@@ -28,6 +42,19 @@ const EditUbicacionModal = ({ open, ubicacion, onSave, onClose }) => {
     <div className="edit-ubicacion-modal-bg">
       <div className="edit-ubicacion-modal">
         <h3 className="edit-ubicacion-modal-title">Editar Ubicación</h3>
+        <div style={{ display: 'flex', gap: 12, marginBottom: 8, alignItems: 'center' }}>
+          <label>Tipo de mapa:
+            <select value={mapType} onChange={handleMapTypeChange} style={{ marginLeft: 8 }}>
+              <option value="roadmap">Normal</option>
+              <option value="satellite">Satélite</option>
+            </select>
+          </label>
+          <label style={{ marginLeft: 16 }}>
+            Zoom:
+            <input type="range" min={8} max={20} value={zoom} onChange={handleZoomChange} style={{ marginLeft: 8 }} />
+            <span style={{ marginLeft: 4 }}>{zoom}</span>
+          </label>
+        </div>
         <div className="edit-ubicacion-actions">
           <button className="edit-ubicacion-cancel" onClick={onClose}>Cancelar</button>
           <button className="edit-ubicacion-save" onClick={() => {
@@ -36,7 +63,7 @@ const EditUbicacionModal = ({ open, ubicacion, onSave, onClose }) => {
           }}>Guardar</button>
         </div>
         <div className="edit-ubicacion-map">
-          {isLoaded ? <MapComponent /> : <div>Cargando mapa...</div>}
+          {isLoaded ? <MapComponent mapType={mapType} zoom={zoom} /> : <div>Cargando mapa...</div>}
         </div>
         <div className="edit-ubicacion-coords">
           Lat: {selectedCoords ? selectedCoords.lat.toFixed(6) : initialCoords.lat.toFixed(6)}<br />
