@@ -1,5 +1,35 @@
 
 import React, { useState, useEffect } from "react";
+  // Función para copiar al portapapeles
+  const copyToClipboard = (text, e) => {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(() => {
+        if (e && e.target) {
+          e.target.innerHTML = "✔";
+          setTimeout(() => {
+            e.target.innerHTML = "📋";
+          }, 2000);
+        }
+      });
+    } else {
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        if (e && e.target) {
+          e.target.innerHTML = "✔";
+          setTimeout(() => {
+            e.target.innerHTML = "📋";
+          }, 2000);
+        }
+      } catch (err) {
+        alert("Error al copiar el ID: Copia no soportada en este navegador.");
+      }
+    }
+  };
 import ModalSeleccionMotivo from "./ModalSeleccionMotivo";
 import GestionLinkModalMobile from "./GestionLinkModalMobile";
 import useGestion from "./useGestion";
@@ -129,31 +159,45 @@ export default function TablaFiltradaPorEstado({ estado }) {
                 </tr>
               </thead>
               <tbody>
-                {filas.map((cliente) => (
-                  <tr key={cliente.ID || cliente.id}>
-                    <td>{cliente.ID || cliente.id}</td>
-                    <td>{cliente.NOMBRES || cliente.nombre}</td>
-                    <td>{cliente.APELLIDOS || cliente.apellido}</td>
-                    <td>{cliente.TELEFONO || cliente.tel}</td>
-                    <td>{cliente.TIENDA || cliente.tienda}</td>
-                    <td>
-                      <button onClick={() => enviarWhatsApp(cliente)}>
-                        Enviar
-                      </button>
-                      <button style={{marginLeft:4,marginRight:4}} onClick={() => { setLinkCliente(cliente); setModalLinkOpen(true); }}>
-                        Link
-                      </button>
-                      <button className="remove" style={{background: "#f59e42", color: "#fff", border: "none", borderRadius: 6, padding: "6px 12px", fontWeight: 600, cursor: "pointer"}}
-                        onClick={() => {
-                          setClienteGestionar(cliente);
-                          setModalMotivoOpen(true);
-                        }}
-                      >
-                        Marcar gestión
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {filas.map((cliente) => {
+                  const idStr = String(cliente.ID || cliente.id);
+                  const idToCopy = idStr.length === 12 ? '0' + idStr : idStr;
+                  return (
+                    <tr key={cliente.ID || cliente.id}>
+                      <td>
+                        {idToCopy}
+                        <span
+                          className="copy-btn"
+                          title="Copiar ID"
+                          style={{ marginLeft: 5, cursor: 'pointer' }}
+                          onClick={(e) => copyToClipboard(idToCopy, e)}
+                        >
+                          📋
+                        </span>
+                      </td>
+                      <td>{cliente.NOMBRES || cliente.nombre}</td>
+                      <td>{cliente.APELLIDOS || cliente.apellido}</td>
+                      <td>{cliente.TELEFONO || cliente.tel}</td>
+                      <td>{cliente.TIENDA || cliente.tienda}</td>
+                      <td>
+                        <button onClick={() => enviarWhatsApp(cliente)}>
+                          Enviar
+                        </button>
+                        <button style={{marginLeft:4,marginRight:4}} onClick={() => { setLinkCliente(cliente); setModalLinkOpen(true); }}>
+                          Link
+                        </button>
+                        <button className="remove" style={{background: "#f59e42", color: "#fff", border: "none", borderRadius: 6, padding: "6px 12px", fontWeight: 600, cursor: "pointer"}}
+                          onClick={() => {
+                            setClienteGestionar(cliente);
+                            setModalMotivoOpen(true);
+                          }}
+                        >
+                          Marcar gestión
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
                 {filas.length === 0 && (
                   <tr>
                     <td colSpan={6} style={{ textAlign: "center", color: "#64748b", padding: 24 }}>
