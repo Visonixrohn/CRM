@@ -221,11 +221,24 @@ const Gestion = () => {
 
   // Enviar WhatsApp
   const enviarWhatsApp = (cliente) => {
+    // Obtener el número de teléfono, quitando caracteres no numéricos
+    const numeroRaw = cliente.TELEFONO || cliente.tel || "";
+    const numero = String(numeroRaw).replace(/[^\d]/g, "");
+    if (!numero) {
+      alert("El cliente no tiene número de teléfono válido.");
+      return;
+    }
     const texto = encodeURIComponent(
-      mensajeBase.replace("{NOMBRE}", cliente.nombre)
+      mensajeBase.replace("{NOMBRE}", cliente.NOMBRES || cliente.nombre || "")
     );
-    // Usar wa.me para abrir WhatsApp directamente en el teléfono
-    const url = `https://wa.me/504${cliente.tel}?text=${texto}`;
+    // Detectar si es móvil
+    const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+    let url = "";
+    if (isMobile) {
+      url = `https://wa.me/504${numero}?text=${texto}`;
+    } else {
+      url = `https://web.whatsapp.com/send?phone=504${numero}&text=${texto}`;
+    }
     window.open(url, "_blank");
   };
 
