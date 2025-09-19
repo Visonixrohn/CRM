@@ -15,24 +15,36 @@ import {
   FaCreditCard,
   FaCog,
   FaSearch,
+  FaUserShield
 } from "react-icons/fa";
 import "./BottomBar.css";
 
-const ICONS = [
-  { key: "comisiones", label: "Comisiones", icon: <FaDollarSign color="#2196f3" /> },
-  { key: "entregas", label: "Entregas", icon: <FaTruck color="#2196f3" /> },
-  { key: "ordenes", label: "Órdenes", icon: <FaBook color="#2196f3" /> },
-  { key: "calculadoras", label: "Calculadoras", icon: <FaCalculator color="#2196f3" /> },
-  { key: "razones", label: "Razones", icon: <FaClipboardList color="#2196f3" /> },
-  { key: "tiendas", label: "Tiendas", icon: <FaStore color="#2196f3" /> },
-  { key: "documentos", label: "Documentos", icon: <FaFileAlt color="#2196f3" /> },
-  { key: "clientes-nuevos", label: "Clientes Nuevos", icon: <FaUserPlus color="#2196f3" /> },
-  { key: "cotizaciones", label: "Cotizaciones", icon: <FaCreditCard color="#2196f3" /> },
-  { key: "actualizaciones", label: "Actualizaciones", icon: <FaUsers color="#2196f3" /> },
-  { key: "gestion", label: "Gestión", icon: <FaPhone color="#2196f3" /> },
-  { key: "seguimiento", label: "Seguimiento", icon: <FaSearch color="#2196f3" /> },
-  { key: "configuraciones", label: "Configuraciones", icon: <FaCog color="#2196f3" /> },
-];
+
+function getIconsWithAdmin() {
+  let user = null;
+  try {
+    user = JSON.parse(localStorage.getItem("user"));
+  } catch {}
+  const icons = [
+    { key: "comisiones", label: "Comisiones", icon: <FaDollarSign color="#2196f3" /> },
+    { key: "entregas", label: "Entregas", icon: <FaTruck color="#2196f3" /> },
+    { key: "ordenes", label: "Órdenes", icon: <FaBook color="#2196f3" /> },
+    { key: "calculadoras", label: "Calculadoras", icon: <FaCalculator color="#2196f3" /> },
+    { key: "razones", label: "Razones", icon: <FaClipboardList color="#2196f3" /> },
+    { key: "tiendas", label: "Tiendas", icon: <FaStore color="#2196f3" /> },
+    { key: "documentos", label: "Documentos", icon: <FaFileAlt color="#2196f3" /> },
+    { key: "clientes-nuevos", label: "Clientes Nuevos", icon: <FaUserPlus color="#2196f3" /> },
+    { key: "cotizaciones", label: "Cotizaciones", icon: <FaCreditCard color="#2196f3" /> },
+    { key: "actualizaciones", label: "Actualizaciones", icon: <FaUsers color="#2196f3" /> },
+    { key: "gestion", label: "Gestión", icon: <FaPhone color="#2196f3" /> },
+    { key: "seguimiento", label: "Seguimiento", icon: <FaSearch color="#2196f3" /> },
+    { key: "configuraciones", label: "Configuraciones", icon: <FaCog color="#2196f3" /> },
+  ];
+  if (user && (user.rol === "admin" || user.rol === "superadmin")) {
+    icons.push({ key: "admin", label: "Admin", icon: <FaUserShield color="#8e24aa" /> });
+  }
+  return icons;
+}
 
 const BottomBar = ({
   onNavigate,
@@ -43,6 +55,7 @@ const BottomBar = ({
 }) => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   // Mostrar solo los primeros 5 iconos si no está expandido
+  const ICONS = getIconsWithAdmin();
   const visibleIcons = expanded ? ICONS : ICONS.slice(0, 5);
 
   const handleLogoutClick = (e) => {
@@ -87,19 +100,21 @@ const BottomBar = ({
             onClick={(e) => e.stopPropagation()}
           >
             {ICONS.map((icon) => (
-              <button
-                key={icon.key}
-                className={active === icon.key ? "active" : ""}
-                onClick={() => {
-                  onNavigate(icon.key);
-                  onCloseExpand();
-                }}
-              >
-                <span className="bottom-bar-icon" aria-label={icon.label}>
-                  {icon.icon}
-                </span>
-                <span className="bottom-bar-label">{icon.label}</span>
-              </button>
+              (icon.key !== "admin" || (icon.key === "admin" && (JSON.parse(localStorage.getItem("user"))?.rol === "admin" || JSON.parse(localStorage.getItem("user"))?.rol === "superadmin"))) && (
+                <button
+                  key={icon.key}
+                  className={active === icon.key ? "active" : ""}
+                  onClick={() => {
+                    onNavigate(icon.key);
+                    onCloseExpand();
+                  }}
+                >
+                  <span className="bottom-bar-icon" aria-label={icon.label}>
+                    {icon.icon}
+                  </span>
+                  <span className="bottom-bar-label">{icon.label}</span>
+                </button>
+              )
             ))}
             
            

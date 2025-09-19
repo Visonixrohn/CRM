@@ -1,9 +1,23 @@
 import React, { useEffect, useState } from "react";
+import AdminCard from "./AdminCard";
 import { supabase } from "./supabaseClient";
 import ModalEditarUsuario from "./ModalEditarUsuario";
 import { hashPassword } from "./utils/hash";
 
 const ROLES = ["usuario", "Admin", "superadmin"];
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 900);
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  return isMobile;
+}
 
 export default function Admin() {
   const [usuarios, setUsuarios] = useState([]);
@@ -82,6 +96,7 @@ export default function Admin() {
   // Obtener todas las llaves de la tabla (columnas)
   const columnas = usuarios.length > 0 ? Object.keys(usuarios[0]) : [];
 
+  const isMobile = useIsMobile();
   return (
   <div style={{ padding: 32, maxWidth: '78vw', margin: '0 auto' }}>
       <h1 style={{ fontWeight: 800, color: '#3730a3', marginBottom: 24 }}>Administración de Usuarios</h1>
@@ -98,87 +113,98 @@ export default function Admin() {
       {loading && <div style={{ margin: '16px 0' }}>Cargando...</div>}
       {error && <div style={{ color: "#b91c1c", margin: '12px 0' }}>{error}</div>}
       {success && <div style={{ color: "#15803d", margin: '12px 0' }}>{success}</div>}
-      <div style={{
-        overflowX: 'auto',
-        background: '#fff',
-        borderRadius: 12,
-        boxShadow: '0 2px 12px #e0e7ff',
-        marginTop: 16,
-        maxWidth: '100vw',
-        padding: 0,
-        WebkitOverflowScrolling: 'touch',
-      }}>
-        <table style={{
-          width: '1800px',
-          minWidth: '1200px',
-          borderCollapse: 'collapse',
-          tableLayout: 'auto',
+      {/* Solo mostrar tabla en escritorio */}
+      {!isMobile && (
+        <div style={{
+          overflowX: 'auto',
+          background: '#fff',
+          borderRadius: 12,
+          boxShadow: '0 2px 12px #e0e7ff',
+          marginTop: 16,
+          maxWidth: '100vw',
+          padding: 0,
+          WebkitOverflowScrolling: 'touch',
         }}>
-          <thead>
-            <tr style={{ background: '#6366f1', color: '#fff' }}>
-              {columnas.map(col => (
-                <th key={col} style={{ padding: '12px 8px', fontWeight: 700 }}>{col}</th>
-              ))}
-              <th style={{ padding: '12px 8px', fontWeight: 700 }}>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usuariosFiltrados.map((u, idx) => (
-              <tr key={u.id} style={{ background: idx % 2 === 0 ? '#f1f5f9' : '#fff', transition: 'background 0.2s' }}>
+          <table style={{
+            width: '1800px',
+            minWidth: '1200px',
+            borderCollapse: 'collapse',
+            tableLayout: 'auto',
+          }}>
+            <thead>
+              <tr style={{ background: '#6366f1', color: '#fff' }}>
                 {columnas.map(col => (
-                  <td key={col} style={{ padding: '10px 8px' }}>
-                    {usuarioEdit === u.id ? (
-                      col === 'rol' ? (
-                        <select
-                          name="rol"
-                          value={editData.rol || ""}
-                          onChange={handleEditChange}
-                          style={{ padding: 6, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 15 }}
-                        >
-                          <option value="">Seleccionar</option>
-                          {ROLES.map((r) => (
-                            <option key={r} value={r}>{r}</option>
-                          ))}
-                        </select>
-                      ) : col === 'acceso' ? (
-                        <select
-                          name="acceso"
-                          value={editData.acceso || ""}
-                          onChange={handleEditChange}
-                          style={{ padding: 6, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 15 }}
-                        >
-                          <option value="">Seleccionar</option>
-                          <option value="permitido">Permitido</option>
-                          <option value="denegado">Denegado</option>
-                        </select>
+                  <th key={col} style={{ padding: '12px 8px', fontWeight: 700 }}>{col}</th>
+                ))}
+                <th style={{ padding: '12px 8px', fontWeight: 700 }}>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {usuariosFiltrados.map((u, idx) => (
+                <tr key={u.id} style={{ background: idx % 2 === 0 ? '#f1f5f9' : '#fff', transition: 'background 0.2s' }}>
+                  {columnas.map(col => (
+                    <td key={col} style={{ padding: '10px 8px' }}>
+                      {usuarioEdit === u.id ? (
+                        col === 'rol' ? (
+                          <select
+                            name="rol"
+                            value={editData.rol || ""}
+                            onChange={handleEditChange}
+                            style={{ padding: 6, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 15 }}
+                          >
+                            <option value="">Seleccionar</option>
+                            {ROLES.map((r) => (
+                              <option key={r} value={r}>{r}</option>
+                            ))}
+                          </select>
+                        ) : col === 'acceso' ? (
+                          <select
+                            name="acceso"
+                            value={editData.acceso || ""}
+                            onChange={handleEditChange}
+                            style={{ padding: 6, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 15 }}
+                          >
+                            <option value="">Seleccionar</option>
+                            <option value="permitido">Permitido</option>
+                            <option value="denegado">Denegado</option>
+                          </select>
+                        ) : (
+                          <input
+                            name={col}
+                            value={editData[col] || ""}
+                            onChange={handleEditChange}
+                            style={{ padding: 6, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 15 }}
+                          />
+                        )
                       ) : (
-                        <input
-                          name={col}
-                          value={editData[col] || ""}
-                          onChange={handleEditChange}
-                          style={{ padding: 6, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 15 }}
-                        />
-                      )
+                        typeof u[col] === 'boolean' ? (u[col] ? 'Sí' : 'No') : (u[col] || '-')
+                      )}
+                    </td>
+                  ))}
+                  <td style={{ padding: '10px 8px' }}>
+                    {usuarioEdit === u.id ? (
+                      <>
+                        <button onClick={handleGuardar} disabled={loading} style={{ background: '#22c55e', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 14px', marginRight: 6, fontWeight: 600, cursor: 'pointer' }}>Guardar</button>
+                        <button onClick={() => setUsuarioEdit(null)} disabled={loading} style={{ background: '#e5e7eb', color: '#334155', border: 'none', borderRadius: 6, padding: '6px 14px', fontWeight: 600, cursor: 'pointer' }}>Cancelar</button>
+                      </>
                     ) : (
-                      typeof u[col] === 'boolean' ? (u[col] ? 'Sí' : 'No') : (u[col] || '-')
+                      <button onClick={() => handleEditClick(u)} style={{ background: '#6366f1', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 14px', fontWeight: 600, cursor: 'pointer' }}>Editar</button>
                     )}
                   </td>
-                ))}
-                <td style={{ padding: '10px 8px' }}>
-                  {usuarioEdit === u.id ? (
-                    <>
-                      <button onClick={handleGuardar} disabled={loading} style={{ background: '#22c55e', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 14px', marginRight: 6, fontWeight: 600, cursor: 'pointer' }}>Guardar</button>
-                      <button onClick={() => setUsuarioEdit(null)} disabled={loading} style={{ background: '#e5e7eb', color: '#334155', border: 'none', borderRadius: 6, padding: '6px 14px', fontWeight: 600, cursor: 'pointer' }}>Cancelar</button>
-                    </>
-                  ) : (
-                    <button onClick={() => handleEditClick(u)} style={{ background: '#6366f1', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 14px', fontWeight: 600, cursor: 'pointer' }}>Editar</button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {/* Mostrar cards en móviles */}
+      {isMobile && (
+        <div>
+          {usuariosFiltrados.map((u) => (
+            <AdminCard key={u.id} usuario={u} onEdit={handleEditClick} />
+          ))}
+        </div>
+      )}
       <ModalEditarUsuario
         open={!!usuarioEdit}
         usuario={editData}
