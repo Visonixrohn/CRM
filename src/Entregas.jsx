@@ -1,6 +1,7 @@
 import ModalEstatus from "./components/ModalEstatus";
 import "./EntregasBusqueda.css";
 import React, { useState, useEffect } from "react";
+import { useGoogleMap } from "./useGoogleMap";
 import EditFieldModal from "./EditFieldModal";
 import EditUbicacionModal from "./EditUbicacionModal";
 import EntregaCard from "./components/EntregaCard";
@@ -265,71 +266,36 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
     tipo_entrega: "TIENDA",
     gestionada: "NO GESTIONADA",
   });
-  const [mapCenter, setMapCenter] = useState({
-    lat: 16.3832884,
-    lng: -86.4460626,
-  });
-  const [mapLoaded, setMapLoaded] = useState(false);
-  const [marker, setMarker] = useState(null);
+  // Eliminado: mapCenter, mapLoaded, marker
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [step, setStep] = useState(0);
-  const mapRef = React.useRef(null);
+  // Eliminado: mapRef
 
-  useEffect(() => {
-    if (!open || !window.google?.maps || !mapRef.current || step !== 2) return;
-    let map = null;
-    let localMarker = null;
-    // Inicializar mapa
-    map = new window.google.maps.Map(mapRef.current, {
-      center: { lat: form.lat, lng: form.lng },
-      zoom: 13,
-      mapTypeId: "satellite",
-      gestureHandling: "greedy"
-    });
-    // Crear marcador arrastrable
-    localMarker = new window.google.maps.Marker({
-      position: { lat: form.lat, lng: form.lng },
-      map,
-      draggable: true,
-      icon: {
-        url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-        scaledSize: new window.google.maps.Size(40, 40),
-      },
-    });
-    setMarker(localMarker);
-    // Al hacer click/tap en el mapa, mover el marcador
-    const clickListener = map.addListener("click", (e) => {
-      localMarker.setPosition(e.latLng);
-      setForm((f) => ({
+  // --- MAPA GOOGLE ---
+  const [mapType, setMapType] = useState("satellite");
+  const [zoom, setZoom] = useState(13);
+  const apiKey = "AIzaSyDwQ_-OBFVwLjlzvj95k0NSJweSApAGZbo";
+  const { isLoaded, selectedCoords, MapComponent } = useGoogleMap(
+    apiKey,
+    { lat: form.lat, lng: form.lng },
+    mapType,
+    zoom,
+    (coords, newZoom) => {
+      setForm(f => ({
         ...f,
-        lat: e.latLng.lat(),
-        lng: e.latLng.lng(),
-        ubicacion: `https://www.google.com/maps/@${e.latLng.lat()},${e.latLng.lng()},18z`,
+        lat: coords.lat,
+        lng: coords.lng,
+        ubicacion: `https://www.google.com/maps/@${coords.lat},${coords.lng},18z`,
       }));
-    });
-    // Al arrastrar el marcador
-    const dragListener = localMarker.addListener("dragend", (e) => {
-      setForm((f) => ({
-        ...f,
-        lat: e.latLng.lat(),
-        lng: e.latLng.lng(),
-        ubicacion: `https://www.google.com/maps/@${e.latLng.lat()},${e.latLng.lng()},18z`,
-      }));
-    });
-    setMapLoaded(true);
-    return () => {
-      window.google.maps.event.removeListener(clickListener);
-      window.google.maps.event.removeListener(dragListener);
-      if (localMarker) localMarker.setMap(null);
-    };
-    // eslint-disable-next-line
-  }, [open, step]);
+      if (typeof newZoom === 'number') setZoom(newZoom);
+    }
+  );
+  const handleMapTypeChange = (e) => setMapType(e.target.value);
+  const handleZoomChange = (e) => setZoom(Number(e.target.value));
 
   useEffect(() => {
     if (!open) {
-      setMapLoaded(false);
-      setMarker(null);
       // Calcular fecha actual y día siguiente
       const today = new Date();
       const yyyy = today.getFullYear();
@@ -471,8 +437,21 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
                   <input type="text" value={form.ubicacion} readOnly required style={touched.lat && touched.lng && (!form.lat || !form.lng) ? { borderColor: "#ef4444" } : {}} />
                   <label className={form.ubicacion ? "active" : ""}>Ubicación (se selecciona en el mapa)</label>
                 </div>
-                <div className="mapa-entrega">
-                  <div ref={mapRef} style={{ width: "100%", height: "100%" }}></div>
+                <div style={{ display: 'flex', gap: 12, marginBottom: 8, alignItems: 'center' }}>
+                  <label>Tipo de mapa:
+                    <select value={mapType} onChange={handleMapTypeChange} style={{ marginLeft: 8 }}>
+                      <option value="roadmap">Normal</option>
+                      <option value="satellite">Satélite</option>
+                    </select>
+                  </label>
+                  <label style={{ marginLeft: 16 }}>
+                    Zoom:
+                    <input type="range" min={8} max={20} value={zoom} onChange={handleZoomChange} style={{ marginLeft: 8 }} />
+                    <span style={{ marginLeft: 4 }}>{zoom}</span>
+                  </label>
+                </div>
+                <div className="mapa-entrega" style={{ width: '100%', maxWidth: 350, height: 300, borderRadius: 10, border: '1.5px solid #a5b4fc', background: '#e0e7ff', boxShadow: '0 1px 4px #6366f11a', marginBottom: 18 }}>
+                  {isLoaded ? <MapComponent mapType={mapType} zoom={zoom} /> : <div>Cargando mapa...</div>}
                 </div>
                 <div style={{ fontSize: 12, color: "#6366f1", marginTop: 4, textAlign: "center" }}>
                   Haz click en el mapa para seleccionar ubicación

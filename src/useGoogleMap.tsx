@@ -3,16 +3,28 @@ import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 
 const containerStyle = {
   width: '100%',
-  height: '100vh',
+  height: '100%',
+  minHeight: 180,
+  maxWidth: 350,
+  maxHeight: 400,
 };
+
 
 const centerInicial = {
   lat: 16.316667,
-  lng: -86.5, // Islas de la Bahía
+  lng: -86.5,
 };
 
-export function useGoogleMap(apiKey, initialCoords) {
-  const [selectedCoords, setSelectedCoords] = useState(initialCoords || null);
+export function useGoogleMap(
+  apiKey,
+  initialCoords,
+  mapType = "satellite",
+  zoom = 13,
+  onSelect
+) {
+  const [selectedCoords, setSelectedCoords] = useState(initialCoords || centerInicial);
+  const [currentZoom, setCurrentZoom] = useState(zoom);
+  const [currentMapType, setCurrentMapType] = useState(mapType);
 
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: apiKey,
@@ -20,25 +32,26 @@ export function useGoogleMap(apiKey, initialCoords) {
 
   const onMapClick = useCallback((e) => {
     if (e.latLng) {
-      setSelectedCoords({
+      const coords = {
         lat: e.latLng.lat(),
         lng: e.latLng.lng(),
-      });
+      };
+      setSelectedCoords(coords);
+      if (onSelect) onSelect(coords, currentZoom);
     }
-  }, []);
+  }, [onSelect, currentZoom]);
 
-  const MapComponent = () => (
+
+  const MapComponent = (props) => (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={selectedCoords || initialCoords || centerInicial}
-      zoom={12}
-      mapTypeId="satellite"
+      center={selectedCoords}
+      zoom={props.zoom || currentZoom}
+      mapTypeId={props.mapType || currentMapType}
       onClick={onMapClick}
       options={{ gestureHandling: "greedy" }}
     >
-      {(selectedCoords || initialCoords || centerInicial) && (
-        <Marker position={selectedCoords || initialCoords || centerInicial} />
-      )}
+      <Marker position={selectedCoords} draggable={true} onDragEnd={onMapClick} />
     </GoogleMap>
   );
 
@@ -46,6 +59,8 @@ export function useGoogleMap(apiKey, initialCoords) {
     isLoaded,
     loadError,
     selectedCoords,
+    currentZoom,
+    currentMapType,
     MapComponent,
   };
 }
