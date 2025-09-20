@@ -50,13 +50,9 @@ export default function PushMovil() {
           let estado = e.fecha_entrega === hoyStr ? 'para hoy' : 'atrasada';
           return `${e.cliente} = ${estado}`;
         }).join('\n');
-        // Crear un hash simple de la lista para evitar notificaciones duplicadas
         const hash = pendientes.map(e => `${e.id}:${e.fecha_entrega}:${e.estatus}`).join('|');
-        if (hash !== lastNotifiedHash) {
-          new Notification('CRM', {
-            body: `Hola ${user.nombre || ''}!\nTienes estas entregas pendientes:\n${body}`,
-            icon: '/public/icon-192.png',
-          });
+        if (hash !== lastNotifiedHash && window.setNotif) {
+          window.setNotif({ open: true, title: 'Entregas pendientes', body: `Hola ${user.nombre || ''}!\nTienes estas entregas pendientes:\n${body}` });
           lastNotifiedHash = hash;
         }
       } else {

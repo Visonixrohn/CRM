@@ -16,16 +16,7 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage(function(payload) {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: '/icon-192.png'
-  };
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
+// Notificaciones push desactivadas. Todo se maneja dentro de la app.
 
 // Cuando el usuario toca la notificación, abrir la vista entregas
 self.addEventListener('notificationclick', function(event) {

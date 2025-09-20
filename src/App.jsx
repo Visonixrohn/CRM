@@ -61,6 +61,51 @@ function App() {
   });
   const [bottomBarExpanded, setBottomBarExpanded] = useState(false);
   const [notif, setNotif] = useState({ open: false, title: '', body: '' });
+  // Exponer setNotif global para que push.js y pushmovil.js puedan disparar notificaciones internas
+  useEffect(() => {
+    window.setNotif = setNotif;
+    return () => { window.setNotif = null; };
+  }, []);
+
+  // Mostrar notificación de entregas pendientes al recargar la app
+  useEffect(() => {
+    async function checkEntregasPendientes() {
+      const userId = localStorage.getItem("userId");
+      if (!userId) return;
+      const { data: user, error: userError } = await supabase
+        .from("profiles")
+        .select("id, nombre")
+        .eq("id", userId)
+        .maybeSingle();
+      if (userError || !user) return;
+      const hoy = new Date();
+      const yyyy = hoy.getFullYear();
+      const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+      const dd = String(hoy.getDate()).padStart(2, '0');
+      const hoyStr = `${yyyy}-${mm}-${dd}`;
+      const { data: entregas, error: entregasError } = await supabase
+        .from("entregas_pendientes")
+        .select("id, cliente, fecha_entrega, estatus")
+        .eq("usuario_id", user.id);
+      if (entregasError || !entregas) return;
+      const pendientes = entregas.filter(e => {
+        if (String(e.estatus).toLowerCase() === 'entregado') return false;
+        return e.fecha_entrega === hoyStr || e.fecha_entrega < hoyStr;
+      });
+      if (pendientes.length > 0) {
+        let body = pendientes.map(e => {
+          let estado = e.fecha_entrega === hoyStr ? 'para hoy' : 'atrasada';
+          return `${e.cliente} = ${estado}`;
+        }).join('\n');
+        setNotif({
+          open: true,
+          title: 'Entregas pendientes',
+          body: `Hola ${user.nombre || ''}!\nTienes estas entregas pendientes:\n${body}`
+        });
+      }
+    }
+    checkEntregasPendientes();
+  }, []);
   const [page, setPage] = useState(() => {
     return localStorage.getItem("crm-vista-actual") || "comisiones";
   });
@@ -297,6 +342,10 @@ function App() {
         title={notif.title}
         body={notif.body}
         onClose={() => setNotif(n => ({ ...n, open: false }))}
+        onViewEntregas={() => {
+          setNotif(n => ({ ...n, open: false }));
+          navigate('/entregas');
+        }}
       />
     </>
   );

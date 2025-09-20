@@ -45,16 +45,12 @@ export default function Push() {
       const paraHoy = entregas.filter(e => String(e.estatus).toLowerCase() !== 'entregado' && e.fecha_entrega === hoyStr);
       const atrasadas = entregas.filter(e => String(e.estatus).toLowerCase() !== 'entregado' && e.fecha_entrega < hoyStr);
       if (paraHoy.length > 0 || atrasadas.length > 0) {
-        // Crear un hash simple de la lista para evitar notificaciones duplicadas
         const hash = [...paraHoy, ...atrasadas].map(e => `${e.id}:${e.fecha_entrega}:${e.estatus}`).join('|');
-        if (hash !== lastNotifiedHash) {
+        if (hash !== lastNotifiedHash && window.setNotif) {
           let body = `Hola ${user.nombre || ''}, el día de hoy tienes`;
           if (paraHoy.length > 0) body += `\n${paraHoy.length} entrega(s) para hoy`;
           if (atrasadas.length > 0) body += `\n${atrasadas.length} atrasada(s)`;
-          new Notification('CRM', {
-            body,
-            icon: '/icon-192.png',
-          });
+          window.setNotif({ open: true, title: 'Entregas pendientes', body });
           lastNotifiedHash = hash;
         }
       } else {
