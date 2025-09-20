@@ -12,13 +12,11 @@ export default function useClientesParaHoy() {
       setError(null);
       try {
         const userId = localStorage.getItem("userId");
-        const hoy = new Date().toISOString().slice(0, 10);
         const { data, error } = await supabase
           .from("seguimiento")
           .select("id")
           .eq("id_usuario", userId)
-          .eq("estado", "Gestionado")
-          .eq("fecha_de_acuerdo", hoy);
+          .eq("estado", "Gestionado");
         if (error) throw error;
         setCantidad(data.length);
       } catch (e) {
