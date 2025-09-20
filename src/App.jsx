@@ -116,6 +116,14 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+
+  // Si la URL contiene ?fromNotif=1, navega a /entregas (solo una vez)
+  useEffect(() => {
+    if (location.search.includes('fromNotif=1') && location.pathname !== '/entregas') {
+      navigate('/entregas', { replace: true });
+    }
+  }, [location, navigate]);
+
   // --- RETURNS CONDICIONALES ---
   if (showSplash) return <LoadingScreen />;
   if (location.pathname.startsWith('/reset-password')) {
