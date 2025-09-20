@@ -1,12 +1,4 @@
 
-// Registro de elementos de Chart.js
-ChartJS.register(ArcElement, Tooltip, Legend);
-// Función utilitaria para calcular los días restantes del mes
-function getDiasRestantesMes() {
-  const hoy = new Date();
-  const ultimoDia = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
-  return ultimoDia.getDate() - hoy.getDate();
-}
 import React, { useState, useEffect } from "react";
 import useClientesNuevos from "./useClientesNuevos";
 import useGestionResumen from "./useGestionResumen";
@@ -17,29 +9,18 @@ import Modal from "react-modal";
 import "./Comisiones.css";
 import ComisionesMobileCards from "./ComisionesMobileCards";
 import { Doughnut } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import ComCard from "./ComCard";
+import "./ComCard.css";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
-const ComCard = ({ title, value, colorClass, icon, isNumberOnly }) => (
-  <div className={`com-card ${colorClass}`}>
-    <span className="com-card-icon">{icon}</span>
-    <span className="com-card-title">{title}</span>
-    <strong className="com-card-value">
-      {isNumberOnly
-        ? value
-        : typeof value === "number"
-        ? `L${value.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}`
-        : value}
-    </strong>
-  </div>
-);
+// Registro de elementos de Chart.js
+ChartJS.register(ArcElement, Tooltip, Legend);
+// Función utilitaria para calcular los días restantes del mes
+function getDiasRestantesMes() {
+  const hoy = new Date();
+  const ultimoDia = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+  return ultimoDia.getDate() - hoy.getDate();
+     return value}
 
 // Reusable Button Component
 const ActionButton = ({ onClick, label, icon }) => (
@@ -372,30 +353,25 @@ const Comisiones = ({ setPage }) => {
           </header>
           {/* Cards para mobile y desktop */}
           <div className="comisiones-cards-responsive">
-            <div className="analisis-cards-grid comisiones-cards-destacadas" style={{
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: 32,
-              maxWidth: 1200,
-              marginBottom: 40
-            }}>
-              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">🎯 Meta</div><div className="analisis-card-value">L{meta.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div></div>
-              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">💵 Comisión Obtenida</div><div className="analisis-card-value">L{comisionObtenida.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div></div>
-              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">📊 Diferencia a Meta</div><div className="analisis-card-value">L{diferenciaMeta.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div></div>
-              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">📆 Días Restantes del Mes</div><div className="analisis-card-value">{diasRestantes}</div></div>
-              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">📈 Meta Diaria</div><div className="analisis-card-value">L{metaHoy.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div></div>
-              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">💳 Mi gasto mensual</div><div className="analisis-card-value">L{gastoMensual.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div></div>
-              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">✅ Clientes Gestionados</div><div className="analisis-card-value">{gestionadosHoy}</div></div>
-              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">⏳ Clientes Pendientes</div><div className="analisis-card-value">{pendientes}</div></div>
+            <div className="comisiones-cards-desktop">
+              <ComCard title="Meta" value={`L${meta.toLocaleString('en-US', { minimumFractionDigits: 2 })}`} icon="🎯" />
+              <ComCard title="Comisión Obtenida" value={`L${comisionObtenida.toLocaleString('en-US', { minimumFractionDigits: 2 })}`} icon="💵" />
+              <ComCard title="Diferencia a Meta" value={`L${diferenciaMeta.toLocaleString('en-US', { minimumFractionDigits: 2 })}`} icon="📊" />
+              <ComCard title="Días Restantes del Mes" value={diasRestantes} icon="📆" />
+              <ComCard title="Meta Diaria" value={`L${metaHoy.toLocaleString('en-US', { minimumFractionDigits: 2 })}`} icon="📈" />
+              <ComCard title="Mi gasto mensual" value={`L${gastoMensual.toLocaleString('en-US', { minimumFractionDigits: 2 })}`} icon="💳" />
+              <ComCard title="Clientes Gestionados" value={gestionadosHoy} icon="✅" />
+              <ComCard title="Clientes Pendientes" value={pendientes} icon="⏳" />
               {Array.isArray(entregasPendientes) && entregasPendientes.length > 0 && entregasPendientesAtrasadas > 0 && (
-                <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">⏰ Entregas Atrasadas</div><div className="analisis-card-value">{entregasPendientesAtrasadas}</div></div>
+                <ComCard title="Entregas Atrasadas" value={entregasPendientesAtrasadas} icon="⏰" className="warning" />
               )}
               {Array.isArray(entregasPendientes) && entregasPendientes.length > 0 && entregasParaHoy > 0 && (
-                <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">📅 Entregas para Hoy</div><div className="analisis-card-value">{entregasParaHoy}</div></div>
+                <ComCard title="Entregas para Hoy" value={entregasParaHoy} icon="📅" className="info" />
               )}
               {Array.isArray(entregasPendientes) && entregasPendientes.length > 0 && entregasNoGestionadas > 0 && (
-                <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">🕓 No Gestionadas</div><div className="analisis-card-value">{entregasNoGestionadas}</div></div>
+                <ComCard title="No Gestionadas" value={entregasNoGestionadas} icon="🕓" className="danger" />
               )}
-              <div className="analisis-card analisis-card-lg"><div className="analisis-card-title">📋 Clientes para hoy</div><div className="analisis-card-value">{loadingClientesParaHoy ? 'Cargando...' : (errorClientesParaHoy ? 'Error' : clientesParaHoy)}</div></div>
+              <ComCard title="Clientes para hoy" value={loadingClientesParaHoy ? 'Cargando...' : (errorClientesParaHoy ? 'Error' : clientesParaHoy)} icon="📋" />
             </div>
             <div className="comisiones-cards-mobile">
               <ComisionesMobileCards
