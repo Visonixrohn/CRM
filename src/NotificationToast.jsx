@@ -13,7 +13,7 @@ export default function NotificationToast({ open, title, body, onClose, onViewEn
     // Extraer nombre del saludo
     const match = sal.match(/Hola ([^!]+)!/);
     nombre = match ? match[1] : "";
-    saludo = `Bienvenido${nombre ? ' ' + nombre : ''} te notifico :`;
+    saludo = `Bienvenido${nombre ? ' ' + nombre : ''} ! -- Aquí tienes tu actualización sobre las entregas:`;
     entregas = lista.trim().split('\n').filter(Boolean);
   }
   return (
