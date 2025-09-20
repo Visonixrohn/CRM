@@ -247,8 +247,6 @@ function App() {
 
   return (
     <>
-      <Push />
-      <PushMovil />
       <div id="app-layout" className={sidebarOpen ? "sidebar-open" : ""}>
         {!isMobile && (
           <Header onMenuClick={handleMenuClick} actions={[]} user={user} />
