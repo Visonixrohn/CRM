@@ -21,6 +21,7 @@ const estados = ["Pendiente", "Entregado", "Rechazado", "Reprogramado"];
 
 function tiempoTranscurrido(fecha, estatus) {
   if (estatus && estatus.toLowerCase() === "entregado") return "✔️";
+  if (estatus && estatus.toLowerCase() === "rechazado") return "Rechazado";
   if (!fecha) return "-";
   const fechaEntrega = new Date(fecha);
   const ahora = new Date();
@@ -583,8 +584,8 @@ const Entregas = () => {
   // Filtrar entregas según estatus y búsqueda
   const entregasFiltradas = entregas
     .filter((e) => {
-      // Ocultar entregados salvo que el filtro sea 'Entregado'
-      if ((!filtroEstatus || filtroEstatus === "") && e.estatus === "Entregado") return false;
+      // Ocultar entregados y rechazados salvo que el filtro sea 'Entregado' o 'Rechazado'
+      if ((!filtroEstatus || filtroEstatus === "") && (e.estatus === "Entregado" || e.estatus === "Rechazado")) return false;
       const matchesEstatus = filtroEstatus ? e.estatus === filtroEstatus : true;
       const matchesBusqueda = busqueda
         ? e.cliente.toLowerCase().includes(busqueda.toLowerCase()) ||
