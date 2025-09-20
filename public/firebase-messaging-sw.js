@@ -26,3 +26,25 @@ messaging.onBackgroundMessage(function(payload) {
 
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
+
+// Cuando el usuario toca la notificación, abrir la vista entregas
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+      for (let i = 0; i < clientList.length; i++) {
+        const client = clientList[i];
+        // Si ya hay una ventana abierta, enfócala y navega a /entregas
+        if (client.url && 'focus' in client) {
+          client.focus();
+          client.navigate && client.navigate('/entregas');
+          return;
+        }
+      }
+      // Si no hay ventana, abre una nueva en /entregas
+      if (self.clients.openWindow) {
+        return self.clients.openWindow('/entregas');
+      }
+    })
+  );
+});
