@@ -404,16 +404,6 @@ const Comisiones = ({ setPage }) => {
               icon="💳"
               style={{ background: '#a21caf', color: '#fff' }}
             />
-            <ActionButton
-              onClick={() => openModal("meta")}
-              label="Actualizar Meta"
-              icon="🎯"
-            />
-            <ActionButton
-              onClick={() => openModal("comision")}
-              label="Actualizar Comisión"
-              icon="💵"
-            />
             {clientesNuevosSinTomar > 0 && (
               <button
                 className="header-round-btn info"
