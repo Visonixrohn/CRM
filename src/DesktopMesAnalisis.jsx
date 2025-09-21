@@ -51,7 +51,7 @@ const DesktopMesAnalisis = ({
   };
 
   return (
-    <div className="desktop-analisis-flex">
+    <div className="desktop-analisis-row">
       <div className="desktop-analisis-block">
         <h2 className="desktop-analisis-title">Análisis Avanzado del Mes</h2>
         <div className="desktop-analisis-bar-container">
