@@ -7,7 +7,9 @@ import tablaStyles from "./TablaAmortizacion.module.css";
 import formCardStyles from "./FormCard.module.css";
 import RegistrarPlanMobile from "./RegistrarPlanMobile";
 import cardMobileStyles from "./CardMobile.module.css";
+
 import CotizacionWhatsappModal from "./CotizacionWhatsappModal";
+import AmortizacionCardsMobile from "./AmortizacionCardsMobile";
 
 
 import GASelectorRows from "./GASelectorRows";
@@ -293,26 +295,25 @@ const Cotizaciones = () => {
               </div>
             </label>
           </form>
-          <div className={formCardStyles.formCardCuota}>
-
-
-            Cuota mensual estimada: <span>L {cuota.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><br />
-
-            Total a pagar: <span>L {(cuota * plazo).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-
-        
-            <br />
-            <div style={{display:'flex', gap:8, marginTop:8}}>
-              {(user && (user.rol === 'admin' || user.rol === 'superadmin')) && (
-                <button type="button" style={{background:'#1976d2', color:'#fff', border:'none', borderRadius:4, padding:'4px 12px', cursor:'pointer'}} onClick={() => setModalGAOpen(true)}>
-                  Registrar GA %
+          {(planSeleccionado || true) && (
+            <div className={formCardStyles.formCardCuota}>
+              {planSeleccionado && <>
+                Cuota mensual estimada: <span>L {cuota.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><br />
+                Total a pagar: <span>L {(cuota * plazo).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <br />
+              </>}
+              <div style={{display:'flex', gap:8, marginTop:8}}>
+                {(user && (user.rol === 'admin' || user.rol === 'superadmin')) && planSeleccionado && (
+                  <button type="button" style={{background:'#1976d2', color:'#fff', border:'none', borderRadius:4, padding:'4px 12px', cursor:'pointer'}} onClick={() => setModalGAOpen(true)}>
+                    Registrar GA %
+                  </button>
+                )}
+                <button type="button" style={{background:'#43a047', color:'#fff', border:'none', borderRadius:4, padding:'4px 12px', cursor:'pointer'}} onClick={() => setModalPPlusOpen(true)}>
+                  Agregar roductos 
                 </button>
-              )}
-              <button type="button" style={{background:'#43a047', color:'#fff', border:'none', borderRadius:4, padding:'4px 12px', cursor:'pointer'}} onClick={() => setModalPPlusOpen(true)}>
-                Agregar roductos 
-              </button>
+              </div>
             </div>
-          </div>
+          )}
           {modalGAOpen && (
             <div style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',background:'#0008',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
               <div>
@@ -335,16 +336,31 @@ const Cotizaciones = () => {
             ) : null;
           })()}
         </div>
-        <div className={`${styles.cotizacionesTableWrap} ${cardMobileStyles.cardMobile}`} style={{marginTop: 0}}>
-          <div className={cardMobileStyles.cardMobileTitle}>Tabla de Amortización</div>
-          <TablaAmortizacion
-            capital={capital}
-            prima={prima}
-            tasa={tasa}
-            planNombre={(planes.find(p => p.id === Number(planSeleccionado))?.plan) || ''}
-            plazoSeleccionado={plazo}
-          />
-        </div>
+        {/* Solo desktop: tabla */}
+        {planSeleccionado && (
+          <div className={`showOnlyDesktop ${styles.cotizacionesTableWrap} ${cardMobileStyles.cardMobile}`} style={{marginTop: 0}}>
+            <div className={cardMobileStyles.cardMobileTitle}>Tabla de Amortización</div>
+            <TablaAmortizacion
+              capital={capital}
+              prima={prima}
+              tasa={tasa}
+              planNombre={(planes.find(p => p.id === Number(planSeleccionado))?.plan) || ''}
+              plazoSeleccionado={plazo}
+            />
+          </div>
+        )}
+        {/* Solo móvil: cards */}
+        {planSeleccionado && (
+          <div className="showOnlyMobile">
+            <AmortizacionCardsMobile
+              capital={capital}
+              prima={prima}
+              tasa={tasa}
+              planNombre={(planes.find(p => p.id === Number(planSeleccionado))?.plan) || ''}
+              plazoSeleccionado={plazo}
+            />
+          </div>
+        )}
       </div>
   {modalPlan}
       {/* Modal solo para desktop */}

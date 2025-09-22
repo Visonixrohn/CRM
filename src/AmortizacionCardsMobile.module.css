@@ -1,0 +1,25 @@
+.cardsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 12px;
+}
+.card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px #1976d211;
+  padding: 16px 18px;
+  border: 1.5px solid #e0e0e0;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.selectedCard {
+  background: #1976d2;
+  color: #fff;
+  border: 2.5px solid #1976d2;
+  font-weight: bold;
+  box-shadow: 0 4px 16px #1976d233;
+}
+.cardRow {
+  margin-bottom: 6px;
+  font-size: 1.08rem;
+}

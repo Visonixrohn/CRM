@@ -1,3 +1,19 @@
+/* Mostrar solo en desktop o solo en móvil */
+.showOnlyDesktop {
+  display: block;
+}
+.showOnlyMobile {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .showOnlyDesktop {
+    display: none !important;
+  }
+  .showOnlyMobile {
+    display: block !important;
+  }
+}
 .cotizacionesContainer {
   padding: 32px 16px;
   max-width: 100%;
