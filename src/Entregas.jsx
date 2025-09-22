@@ -12,6 +12,11 @@ import ChoferDetalleModal from "./ChoferDetalleModal";
 import ActualizarTipoEntregaModal from "./components/ActualizarTipoEntregaModal";
 import ActualizarGestionadaModal from "./components/ActualizarGestionadaModal";
 import ActualizarEstatusModal from "./components/ActualizarEstatusModal";
+import ActualizarFechaEntregaModal from "./components/ActualizarFechaEntregaModal";
+
+// ...existing code...
+
+
 import "./BotonesBar.css";
 import "./FiltrosBar.css";
 import "./AgregarEntregaForm.css";
@@ -495,6 +500,24 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
 };
 
 const Entregas = () => {
+  // Estado para el modal de actualizar fecha de entrega
+  const [fechaEntregaModal, setFechaEntregaModal] = useState({open:false, entrega:null});
+
+  // Función para actualizar la fecha de entrega en Supabase
+  const handleActualizarFechaEntrega = async (nuevaFecha) => {
+    if (!fechaEntregaModal.entrega) return;
+    try {
+      const { error } = await supabase
+        .from("entregas_pendientes")
+        .update({ fecha_entrega: nuevaFecha })
+        .eq("id", fechaEntregaModal.entrega.id);
+      if (error) throw error;
+      if (typeof fetchEntregas === 'function') fetchEntregas();
+    } catch (e) {
+      alert("Error al actualizar la fecha de entrega: " + (e.message || e));
+    }
+    setFechaEntregaModal({open:false, entrega:null});
+  };
   const [entregas, setEntregas] = useState([]);
   const [detalle, setDetalle] = useState(null);
   const [showAgregar, setShowAgregar] = useState(false);
@@ -884,30 +907,45 @@ const Entregas = () => {
                 <td data-label="Artículo">{e.articulo}</td>
                 
                 <td data-label="Fecha entrega">
-                  {(() => {
-                    const hoy = new Date();
-                    const yyyy = hoy.getFullYear();
-                    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-                    const dd = String(hoy.getDate()).padStart(2, '0');
-                    const hoyStr = `${yyyy}-${mm}-${dd}`;
-                    const fechaEntrega = e.fecha_entrega;
-                    const estatusLower = String(e.estatus).toLowerCase();
-                    if (fechaEntrega === hoyStr && estatusLower !== 'entregado') {
-                      return (
-                        <span style={{background:'#fbbf24',color:'#b45309',padding:'2px 8px',borderRadius:6,fontWeight:'bold'}}>
-                          ENTREGA PARA HOY
-                        </span>
-                      );
-                    }
-                    if (fechaEntrega < hoyStr && estatusLower !== 'entregado') {
-                      return (
-                        <span style={{background:'#ef4444',color:'#fff',padding:'2px 8px',borderRadius:6,fontWeight:'bold'}}>
-                          ENTREGA ATRASADA
-                        </span>
-                      );
-                    }
-                    return fechaEntrega;
-                  })()}
+                  <span style={{display:'flex',alignItems:'center',gap:8}}>
+                    {(() => {
+                      const hoy = new Date();
+                      const yyyy = hoy.getFullYear();
+                      const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+                      const dd = String(hoy.getDate()).padStart(2, '0');
+                      const hoyStr = `${yyyy}-${mm}-${dd}`;
+                      const fechaEntrega = e.fecha_entrega;
+                      const estatusLower = String(e.estatus).toLowerCase();
+                      if (fechaEntrega === hoyStr && estatusLower !== 'entregado') {
+                        return (
+                          <span style={{background:'#fbbf24',color:'#b45309',padding:'2px 8px',borderRadius:6,fontWeight:'bold'}}>
+                            ENTREGA PARA HOY
+                          </span>
+                        );
+                      }
+                      if (fechaEntrega < hoyStr && estatusLower !== 'entregado') {
+                        return (
+                          <span style={{background:'#ef4444',color:'#fff',padding:'2px 8px',borderRadius:6,fontWeight:'bold'}}>
+                            ENTREGA ATRASADA
+                          </span>
+                        );
+                      }
+                      return fechaEntrega;
+                    })()}
+                    <button
+                      title="Actualizar fecha de entrega"
+                      style={{background:'none',border:'none',cursor:'pointer',padding:0,margin:0,verticalAlign:'middle'}}
+                      onClick={ev => {
+                        ev.stopPropagation();
+                        setFechaEntregaModal({open:true, entrega:e});
+                      }}
+                    >
+                      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{color:'#6366f1'}}>
+                        <rect x="3" y="4" width="18" height="18" rx="4" strokeWidth="2" stroke="currentColor" fill="#fff"/>
+                        <path d="M16 2v4M8 2v4M3 10h18" strokeWidth="2" stroke="currentColor"/>
+                      </svg>
+                    </button>
+                  </span>
                 </td>
                 <td data-label="Tipo de entrega">
                   <button
@@ -997,6 +1035,13 @@ const Entregas = () => {
         fetchEntregas={fetchEntregas}
       />
       {typeof window !== 'undefined' && (
+        <ActualizarFechaEntregaModal
+          open={!!fechaEntregaModal.open}
+          entrega={fechaEntregaModal.entrega}
+          onClose={() => setFechaEntregaModal({open:false, entrega:null})}
+          onUpdated={handleActualizarFechaEntrega}
+        />
+      )}
         <ActualizarTipoEntregaModal
           open={!!entregaTipoModal?.open}
           entrega={entregaTipoModal?.entrega}
