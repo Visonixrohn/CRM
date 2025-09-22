@@ -372,7 +372,7 @@ const Cotizaciones = () => {
         plazo={plazo}
         prima={prima}
         cuota={cuota}
-        productoDefault={rows.map(r => r.depto || '').filter(Boolean).join(', ')}
+        productoDefault={rows.map(r => r.articulo || '').filter(Boolean).join(', ')}
       />
     </div>
   );

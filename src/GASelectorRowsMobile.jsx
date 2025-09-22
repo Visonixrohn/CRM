@@ -39,15 +39,13 @@ const GASelectorRowsMobile = ({ rows, setRows }) => {
   return (
     <div className={styles.mobileContainer}>
       {rows.map((row, idx) => (
-        <div key={idx} className={styles.mobileRow}>
-          <label>Precio:</label>
+        <div key={idx} className={styles.mobileRow} style={{background:'#f8fafc',borderRadius:8,padding:12,boxShadow:'0 1px 6px #0001',marginBottom:12}}>
+          <label style={{fontWeight:'bold',color:'#1976d2'}}>Precio:</label>
           <input
             type="text"
             value={row.precio === 0 ? '' : Number(row.precio).toLocaleString('en-US')}
             onChange={e => {
-              // Eliminar comas y dejar solo números
               let val = e.target.value.replace(/,/g, '');
-              // Si no es número, dejar vacío
               if (!/^\d*$/.test(val)) return;
               setRow(idx)(r => ({ ...r, precio: val === '' ? 0 : Number(val) }));
             }}
@@ -56,25 +54,36 @@ const GASelectorRowsMobile = ({ rows, setRows }) => {
             inputMode="numeric"
             pattern="[0-9,]*"
             placeholder="Precio"
+            style={{marginBottom:6}}
           />
-          <label>Depto:</label>
+          <label style={{fontWeight:'bold',color:'#1976d2'}}>Articulo:</label>
+          <input
+            type="text"
+            placeholder="Nombre del artículo"
+            value={row.articulo || ''}
+            onChange={e => setRow(idx)(r => ({ ...r, articulo: e.target.value }))}
+            className={styles.input}
+            style={{marginBottom:6}}
+          />
+          <label style={{fontWeight:'bold',color:'#1976d2'}}>GA:</label>
           <select
             value={row.depto}
             onChange={e => setRow(idx)(r => ({ ...r, depto: e.target.value }))}
             className={styles.select}
           >
-            <option value="">Depto</option>
+            <option value="">Selecciona GA</option>
             {gaRegistros.map(g => (
               <option key={g.id} value={g.depto}>{g.depto}</option>
             ))}
           </select>
-          <label>Total:</label>
+          <label style={{fontWeight:'bold',color:'#1976d2'}}>Total:</label>
           <input
             type="number"
             value={row.total}
             readOnly
             className={styles.input}
             placeholder="Total"
+            style={{marginBottom:6}}
           />
           <label className={styles.switchLabel}>
             <span>GA</span>

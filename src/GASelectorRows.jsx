@@ -28,8 +28,8 @@ const GASelectorRow = ({ onAddRow, gaRegistros, row, setRow, gaEnabled, setGaEna
   }, [row.precio, row.depto, gaEnabled, gaRegistros]);
 
   return (
-    <div className={styles.rowContainer}>
-      <label>Precio: </label>
+    <div className={styles.rowContainer} style={{background:'#f8fafc',borderRadius:8,padding:12,boxShadow:'0 1px 6px #0001',marginBottom:12}}>
+      <label style={{fontWeight:'bold',color:'#1976d2'}}>Precio:</label>
       <input
         type="text"
         inputMode="decimal"
@@ -44,28 +44,39 @@ const GASelectorRow = ({ onAddRow, gaRegistros, row, setRow, gaEnabled, setGaEna
         }}
         className={styles.input}
         min={0}
+        style={{marginRight:8}}
         onBlur={() => {
           setPrecioInputValue(row.precio === 0 ? '' : Number(row.precio).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
         }}
       />
-      <label>Articulo: </label>
+      <label style={{fontWeight:'bold',color:'#1976d2'}}>Articulo:</label>
+      <input
+        type="text"
+        placeholder="Nombre del artículo"
+        value={row.articulo || ''}
+        onChange={e => setRow(r => ({ ...r, articulo: e.target.value }))}
+        className={styles.input}
+        style={{marginRight:8}}
+      />
+      <label style={{fontWeight:'bold',color:'#1976d2'}}>GA:</label>
       <select
         value={row.depto}
         onChange={e => setRow(r => ({ ...r, depto: e.target.value }))}
         className={styles.select}
       >
-        <option value="">Depto</option>
+        <option value="">Selecciona GA</option>
         {gaRegistros.map(g => (
           <option key={g.id} value={g.depto}>{g.depto}</option>
         ))}
       </select>
-      <label>Total: </label>
+      <label style={{fontWeight:'bold',color:'#1976d2'}}>Total:</label>
       <input
         type="text"
         value={row.total === 0 ? '' : row.total.toLocaleString('en-US')}
         readOnly
         className={styles.input}
         placeholder="Total"
+        style={{marginRight:8}}
       />
       <label className={styles.switchLabel} style={{display:'flex',alignItems:'center',gap:4}}>
         <span>GA</span>
