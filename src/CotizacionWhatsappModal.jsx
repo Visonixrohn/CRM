@@ -38,16 +38,25 @@ const CotizacionWhatsappModal = ({ open, onClose, usuarioId, plazo, prima, cuota
   const url = `${baseUrl}?usuario=${encodeURIComponent(usuarioId)}&name=${encodeURIComponent(nombre)}`;
 
   // Codificar toda la URL para WhatsApp
+  // Formatear valores
+  const formatNumber = n => Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  // Calcular años y meses
+  const years = Math.floor(Number(plazo) / 12);
+  const months = Number(plazo) % 12;
+  let plazoTexto = `${plazo} meses`;
+  if (years > 0) {
+    plazoTexto += ` (${years} año${years > 1 ? 's' : ''}${months > 0 ? ' y ' + months + ' mes' + (months > 1 ? 'es' : '') : ''})`;
+  }
+  const total = Number(cuota) * Number(plazo);
   const mensaje =
-    `Hola te saluda ${nombre},%0A` +
-    `tu cotización de ${producto}%0A` +
-    `es la siguiente:%0A` +
-    `plazo: ${plazo} meses%0A` +
-    `prima: ${prima}%0A` +
-    `cuota mensual: ${cuota} estimada%0A` +
-    `total de: ${Number(cuota) * Number(plazo)}%0A%0A` +
+    `*Hola, te saluda ${nombre}.*%0A%0A` +
+    `Tu cotización de *${producto}* es la siguiente:%0A` +
+    `Plazo: *${plazoTexto}*%0A` +
+    `Prima: L ${formatNumber(prima)}%0A` +
+    `Cuota mensual: L ${formatNumber(cuota)}%0A` +
+    `Total a pagar: L ${formatNumber(total)}%0A%0A` +
     `Llena este link para avanzar con el ingreso de la solicitud:%0A` +
-    encodeURIComponent(url); // ✅ aquí está la clave
+    encodeURIComponent(url);
 
   // Abrir WhatsApp según dispositivo
   const isMobileScreen = typeof window !== "undefined" && window.innerWidth < 900;

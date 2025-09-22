@@ -42,11 +42,20 @@ const GASelectorRowsMobile = ({ rows, setRows }) => {
         <div key={idx} className={styles.mobileRow}>
           <label>Precio:</label>
           <input
-            type="number"
-            value={row.precio}
-            onChange={e => setRow(idx)(r => ({ ...r, precio: Number(e.target.value) }))}
+            type="text"
+            value={row.precio === 0 ? '' : Number(row.precio).toLocaleString('en-US')}
+            onChange={e => {
+              // Eliminar comas y dejar solo números
+              let val = e.target.value.replace(/,/g, '');
+              // Si no es número, dejar vacío
+              if (!/^\d*$/.test(val)) return;
+              setRow(idx)(r => ({ ...r, precio: val === '' ? 0 : Number(val) }));
+            }}
             className={styles.input}
             min={0}
+            inputMode="numeric"
+            pattern="[0-9,]*"
+            placeholder="Precio"
           />
           <label>Depto:</label>
           <select
