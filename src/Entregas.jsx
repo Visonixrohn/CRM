@@ -9,6 +9,9 @@ import { createPortal } from "react-dom";
 import { supabase } from "./supabaseClient";
 import ChoferModal from "./ChoferModal";
 import ChoferDetalleModal from "./ChoferDetalleModal";
+import ActualizarTipoEntregaModal from "./components/ActualizarTipoEntregaModal";
+import ActualizarGestionadaModal from "./components/ActualizarGestionadaModal";
+import ActualizarEstatusModal from "./components/ActualizarEstatusModal";
 import "./BotonesBar.css";
 import "./FiltrosBar.css";
 import "./AgregarEntregaForm.css";
@@ -492,8 +495,6 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
 };
 
 const Entregas = () => {
-
-  // --- Declarar todos los useState ANTES de cualquier useEffect ---
   const [entregas, setEntregas] = useState([]);
   const [detalle, setDetalle] = useState(null);
   const [showAgregar, setShowAgregar] = useState(false);
@@ -504,6 +505,9 @@ const Entregas = () => {
   const [filtroEstatus, setFiltroEstatus] = useState("");
   const [filtroNoGestionados, setFiltroNoGestionados] = useState(false);
   const [busqueda, setBusqueda] = useState("");
+  const [entregaTipoModal, setEntregaTipoModal] = useState({open:false, entrega:null});
+  const [gestionadaModal, setGestionadaModal] = useState({open:false, entrega:null});
+  const [estatusModal, setEstatusModal] = useState({open:false, entrega:null});
 
   // Handler para el botón Chofer
   const handleChoferButtonClick = () => {
@@ -820,6 +824,7 @@ const Entregas = () => {
         <table className="tabla-entregas">
           <thead>
             <tr>
+              <th>Edit</th>
               <th>Fecha</th>
               <th>Cliente</th>
               <th>Documento</th>
@@ -834,7 +839,12 @@ const Entregas = () => {
           </thead>
           <tbody>
             {entregasFiltradas.map((e) => (
-              <tr key={e.id} onClick={() => setDetalle(e)}>
+              <tr key={e.id}>
+                <td data-label="Editar" style={{textAlign:'center'}}>
+                  <span title="Editar" style={{cursor:'pointer',fontSize:'1.2em',color:'#6366f1',verticalAlign:'middle'}} onClick={ev => {ev.stopPropagation(); setDetalle(e);}}>
+                    ✏️
+                  </span>
+                </td>
                 <td data-label="Fecha">{e.fecha}</td>
                 <td data-label="Cliente">{e.cliente}</td>
                 <td data-label="Factura">
@@ -900,14 +910,77 @@ const Entregas = () => {
                   })()}
                 </td>
                 <td data-label="Tipo de entrega">
-                  <span className={`modern-tipoentrega modern-tipoentrega-${(e.tipo_entrega || '').toLowerCase().replace(/\s/g, '-')}`}>{e.tipo_entrega}</span>
+                  <button
+                    type="button"
+                    style={{
+                      background: e.tipo_entrega ? 'linear-gradient(90deg,#6366f1 60%,#2563eb 100%)' : '#e0e7ff',
+                      color: e.tipo_entrega ? '#fff' : '#1976d2',
+                      border: 'none',
+                      borderRadius: 8,
+                      padding: '6px 14px',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      fontSize: '1em',
+                      boxShadow: e.tipo_entrega ? '0 2px 8px #6366f122' : 'none',
+                      transition: 'all .2s',
+                      outline: e.tipo_entrega ? '2px solid #6366f1' : 'none',
+                    }}
+                    onClick={ev => {
+                      ev.stopPropagation();
+                      setEntregaTipoModal({open:true, entrega:e});
+                    }}
+                  >
+                    {e.tipo_entrega || 'Seleccionar'}
+                  </button>
                 </td>
                 <td data-label="Gestionada">
-                  <span className={`modern-gestionada modern-gestionada-${(e.gestionada || '').toLowerCase().replace(/\s/g, '-')}`}>{e.gestionada}</span>
+                  <button
+                    type="button"
+                    style={{
+                      background: e.gestionada === 'Gestionada' ? 'linear-gradient(90deg,#22c55e 60%,#16a34a 100%)' : (e.gestionada === 'No gestionada' ? 'linear-gradient(90deg,#fbbf24 60%,#f59e42 100%)' : '#e0e7ff'),
+                      color: e.gestionada === 'Gestionada' ? '#fff' : (e.gestionada === 'No gestionada' ? '#fff' : '#1976d2'),
+                      border: 'none',
+                      borderRadius: 8,
+                      padding: '6px 14px',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      fontSize: '1em',
+                      boxShadow: e.gestionada ? '0 2px 8px #22c55e22' : 'none',
+                      transition: 'all .2s',
+                      outline: e.gestionada ? '2px solid #22c55e' : 'none',
+                    }}
+                    onClick={ev => {
+                      ev.stopPropagation();
+                      setGestionadaModal({open:true, entrega:e});
+                    }}
+                  >
+                    {e.gestionada || 'Seleccionar'}
+                  </button>
                 </td>
                 <td data-label="Tiempo">{tiempoTranscurrido(e.fecha, e.estatus)}</td>
                 <td data-label="Estatus">
-                  <span className={`modern-status modern-${e.estatus?.toLowerCase?.()}`}>{e.estatus}</span>
+                  <button
+                    type="button"
+                    style={{
+                      background: e.estatus === 'Entregado' ? 'linear-gradient(90deg,#38bdf8 60%,#0ea5e9 100%)' : (e.estatus === 'Pendiente' ? 'linear-gradient(90deg,#fbbf24 60%,#f59e42 100%)' : (e.estatus ? 'linear-gradient(90deg,#f472b6 60%,#be185d 100%)' : '#e0e7ff')),
+                      color: e.estatus ? '#fff' : '#1976d2',
+                      border: 'none',
+                      borderRadius: 8,
+                      padding: '6px 14px',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      fontSize: '1em',
+                      boxShadow: e.estatus ? '0 2px 8px #0ea5e922' : 'none',
+                      transition: 'all .2s',
+                      outline: e.estatus ? '2px solid #0ea5e9' : 'none',
+                    }}
+                    onClick={ev => {
+                      ev.stopPropagation();
+                      setEstatusModal({open:true, entrega:e});
+                    }}
+                  >
+                    {e.estatus || 'Seleccionar'}
+                  </button>
                 </td>
               </tr>
             ))}
@@ -923,6 +996,39 @@ const Entregas = () => {
         chofer={chofer}
         fetchEntregas={fetchEntregas}
       />
+      {typeof window !== 'undefined' && (
+        <ActualizarTipoEntregaModal
+          open={!!entregaTipoModal?.open}
+          entrega={entregaTipoModal?.entrega}
+          onClose={() => setEntregaTipoModal({open:false, entrega:null})}
+          onUpdated={() => {
+            setEntregaTipoModal({open:false, entrega:null});
+            fetchEntregas();
+          }}
+        />
+      )}
+      {typeof window !== 'undefined' && (
+        <ActualizarGestionadaModal
+          open={!!gestionadaModal?.open}
+          entrega={gestionadaModal?.entrega}
+          onClose={() => setGestionadaModal({open:false, entrega:null})}
+          onUpdated={() => {
+            setGestionadaModal({open:false, entrega:null});
+            fetchEntregas();
+          }}
+        />
+      )}
+      {typeof window !== 'undefined' && (
+        <ActualizarEstatusModal
+          open={!!estatusModal?.open}
+          entrega={estatusModal?.entrega}
+          onClose={() => setEstatusModal({open:false, entrega:null})}
+          onUpdated={() => {
+            setEstatusModal({open:false, entrega:null});
+            fetchEntregas();
+          }}
+        />
+      )}
       <ModalAgregar
         open={showAgregar}
         onClose={() => setShowAgregar(false)}

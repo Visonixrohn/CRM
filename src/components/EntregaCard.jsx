@@ -28,7 +28,12 @@ const EntregaCard = ({ entrega, onEdit, onDelete }) => {
 
   return (
     <div className="entrega-card">
-      {alertaEntrega}
+      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4}}>
+        <span title="Editar" style={{cursor:'pointer',fontSize:'1.2em',color:'#6366f1',verticalAlign:'middle'}} onClick={ev => {ev.stopPropagation(); onEdit(entrega);}}>
+          ✏️
+        </span>
+        {alertaEntrega}
+      </div>
       <div className="entrega-card-row">
         <span className="entrega-card-label">Cliente:</span>
         <span className="entrega-card-value">{entrega.cliente}</span>
