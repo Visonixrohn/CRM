@@ -1,3 +1,8 @@
+.selectedRow {
+  background: #1976d2 !important;
+  color: #fff;
+  font-weight: bold;
+}
 .tablaAmortizacion {
   width: 100%;
   border-collapse: collapse;

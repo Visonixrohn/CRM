@@ -17,27 +17,46 @@ import GASelectorRowsMobileModal from "./GASelectorRowsMobileModal";
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 
-function TablaAmortizacion({ capital, tasa, plazo }) {
-  const tabla = generarTablaAmortizacion(capital, tasa, plazo);
+function TablaAmortizacion({ capital, prima, tasa, planNombre, plazoSeleccionado }) {
+  // Plazos a mostrar
+  const plazos = [3, 6, 9, 12, 15, 18, 24, 36];
+  if (planNombre && planNombre.trim().toUpperCase() === 'LC MOTO') {
+    plazos.push(48);
+  }
+  const capitalFinanciar = Math.max(capital - prima, 0);
+  // Generar filas para cada plazo
+  const filas = plazos.map(pz => {
+    const cuotaMensual = (capitalFinanciar > 0 && pz > 0 && tasa > 0)
+      ? Math.round((capitalFinanciar * tasa) / (1 - Math.pow(1 + tasa, -pz)))
+      : 0;
+    const totalPagar = cuotaMensual * pz;
+    return {
+      plazo: pz,
+      prima,
+      cuotaMensual,
+      totalPagar
+    };
+  });
   return (
     <table className={tablaStyles.tablaAmortizacion}>
       <thead>
         <tr>
-          <th>Mes</th>
-          <th>Cuota</th>
-          <th>Interés</th>
-          <th>Capital</th>
-          <th>Saldo</th>
+          <th>Tiempo</th>
+          <th>Prima</th>
+          <th>Cuota mensual</th>
+          <th>Total a pagar</th>
         </tr>
       </thead>
       <tbody>
-        {tabla.map((fila) => (
-          <tr key={fila.mes}>
-            <td>{fila.mes}</td>
-            <td>L {fila.cuota}</td>
-            <td>L {fila.interes}</td>
-            <td>L {fila.capital}</td>
-            <td>L {fila.saldo}</td>
+        {filas.map(fila => (
+          <tr
+            key={fila.plazo}
+            className={fila.plazo === plazoSeleccionado ? tablaStyles.selectedRow : ''}
+          >
+            <td>{fila.plazo} meses</td>
+            <td>L {Number(fila.prima).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td>L {fila.cuotaMensual.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td>L {fila.totalPagar.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           </tr>
         ))}
       </tbody>
@@ -318,7 +337,13 @@ const Cotizaciones = () => {
         </div>
         <div className={`${styles.cotizacionesTableWrap} ${cardMobileStyles.cardMobile}`} style={{marginTop: 0}}>
           <div className={cardMobileStyles.cardMobileTitle}>Tabla de Amortización</div>
-          <TablaAmortizacion capital={capitalFinanciar} tasa={tasa} plazo={plazo} />
+          <TablaAmortizacion
+            capital={capital}
+            prima={prima}
+            tasa={tasa}
+            planNombre={(planes.find(p => p.id === Number(planSeleccionado))?.plan) || ''}
+            plazoSeleccionado={plazo}
+          />
         </div>
       </div>
   {modalPlan}
