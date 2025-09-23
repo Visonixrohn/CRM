@@ -1051,7 +1051,7 @@ const Entregas = () => {
             fetchEntregas();
           }}
         />
-      )}
+      
       {typeof window !== 'undefined' && (
         <ActualizarGestionadaModal
           open={!!gestionadaModal?.open}
