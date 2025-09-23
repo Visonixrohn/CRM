@@ -146,45 +146,54 @@ const ClientesNuevos = () => {
         >
           <div className="detalle-contenido">
            
-            <h2>Detalle del Cliente</h2>
-            <div className="detalle-lineas">
-              {Object.entries(detalle).filter(([key]) => {
-                const ocultar = [
-                  "ref persona 1 tel casa",
-                  "ref persona 2 tel casa",
-                  "ref familiar 1 tel casa",
-                  "ref familiar 2 tel casa",
-                  "usuario"
-                ];
-                const normalizado = key.trim().toLowerCase().replace(/:$/, "");
-                return !ocultar.includes(normalizado);
-              }).map(([key, value]) => {
-                // Detectar si es campo de ubicación
-                const esUbicacion =
-                  key.trim().toLowerCase() === "ubicación del domicilio" ||
-                  key.trim().toLowerCase() === "ubicación del trabajo";
-                let urlMaps = null;
-                if (esUbicacion && value && typeof value === 'string' && value.trim().length > 0) {
-                  urlMaps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(value)}`;
-                }
-                  return (
-                    <div className="detalle-linea" key={key}>
-                      <span className="detalle-label">{key}</span>: <span className="detalle-value">{value}</span>
-                    {urlMaps && (
-                      <a
-                        href={urlMaps}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="Ver en Google Maps"
-                        style={{ marginLeft: 8, verticalAlign: 'middle', color: '#1976d2', fontSize: 18 }}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                      </a>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+            <h2 style={{marginBottom:24, fontWeight:700, fontSize:28, textAlign:'center', letterSpacing:1}}>Ficha del Cliente</h2>
+            <table style={{width:'100%',borderCollapse:'collapse',margin:'0 auto',background:'#fff'}}>
+              <tbody>
+                {Object.entries(detalle)
+                  .filter(([key, value]) => {
+                    const ocultar = [
+                      "ref persona 1 tel casa",
+                      "ref persona 2 tel casa",
+                      "ref familiar 1 tel casa",
+                      "ref familiar 2 tel casa",
+                      "usuario"
+                    ];
+                    const normalizado = key.trim().toLowerCase().replace(/:$/, "");
+                    // Ocultar campos vacíos o nulos
+                    if (value === null || value === undefined || String(value).trim() === "") return false;
+                    return !ocultar.includes(normalizado);
+                  })
+                  .map(([key, value]) => {
+                    // Detectar si es campo de ubicación
+                    const esUbicacion =
+                      key.trim().toLowerCase() === "ubicación del domicilio" ||
+                      key.trim().toLowerCase() === "ubicación del trabajo";
+                    let urlMaps = null;
+                    if (esUbicacion && value && typeof value === 'string' && value.trim().length > 0) {
+                      urlMaps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(value)}`;
+                    }
+                    return (
+                      <tr key={key} style={{borderBottom:'1px solid #e5e7eb'}}>
+                        <td style={{fontWeight:'bold',padding:'10px 8px',color:'#2563eb',width:'35%',verticalAlign:'top'}}>{key}</td>
+                        <td style={{padding:'10px 8px',fontSize:16}}>
+                          {value}
+                          {urlMaps && (
+                            <a
+                              href={urlMaps}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title="Ver en Google Maps"
+                              style={{ marginLeft: 8, verticalAlign: 'middle', color: '#1976d2', fontSize: 18, display:'inline-block' }}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                            </a>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
             <div className="actualizar-status">
               <button onClick={() => handleActualizarStatus("Tomado")}>Marcar como Tomado</button>
             </div>
