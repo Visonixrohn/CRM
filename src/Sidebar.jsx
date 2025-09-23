@@ -191,25 +191,6 @@ const Sidebar = ({
             <span className="sidebar-tooltip">Admin</span>
           </Link>
         )}
-        {/* Icono de Configuración */}
-        <Link
-          to="/configuraciones"
-          className="sidebar-icon"
-          title="Configuraciones"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
-          <FaCog className="icon-text" style={{ color: '#757575' }} />
-          <span className="sidebar-tooltip">Configuraciones</span>
-        </Link>
-        <button
-          className="sidebar-icon cerrar-sesion"
-          title="Cerrar Sesión"
-          onClick={() => setShowLogoutModal(true)}
-        >
-          <FaSignOutAlt className="icon-text" />
-          <span className="sidebar-tooltip">Cerrar Sesión</span>
-        </button>
       </nav>
       {showLogoutModal && (
         <div
