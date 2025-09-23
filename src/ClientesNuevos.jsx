@@ -1,17 +1,12 @@
 import React, { useState } from "react";
+import { eliminarSolicitudSupabase } from "./supabaseDeleteSolicitud";
 import "./ClientesNuevos.css";
-import useClientesNuevos from "./useClientesNuevos";
+import useClientesNuevosSupabase from "./useClientesNuevosSupabase";
 import ModalExito from "./ModalExito";
 
 const actualizarStatus = async (identidad, nuevoStatus) => {
-  const url = `https://script.google.com/macros/s/AKfycbybKQScf_PZaGm0_OZKsKgw4RVZirPsS2iC-qc3OSuLL0duwFd8_HjycLbWaPMZTbnP/exec?identidad=${identidad}&status=${nuevoStatus}`;
-
-  try {
-    const response = await fetch(url, { method: "GET" });
-    const data = await response.json();
-  } catch (error) {
-    console.error("Error al actualizar status:", error);
-  }
+  // Ya no se usa Google Sheets, se actualiza en Supabase
+  // Esta función queda obsoleta, la lógica se mueve a handleActualizarStatus
 };
 
 
@@ -20,7 +15,7 @@ const ClientesNuevos = () => {
   const [filtro, setFiltro] = useState("todos");
   const [busqueda, setBusqueda] = useState("");
   const [exito, setExito] = useState(false);
-  const { clientes, loading, error, refetch } = useClientesNuevos();
+  const { clientes, loading, error, refetch } = useClientesNuevosSupabase();
 
   const handleRowClick = (cliente) => {
     setDetalle(cliente);
@@ -32,14 +27,47 @@ const ClientesNuevos = () => {
 
   const handleActualizarStatus = async (nuevoStatus) => {
     if (detalle) {
-      await actualizarStatus(detalle["No. de Identidad"], nuevoStatus);
-      setExito(true);
-      if (typeof refetch === 'function') {
-        setTimeout(() => {
-          refetch();
-        }, 500);
+      try {
+        const idSupabase = detalle.id;
+        if (!idSupabase) {
+          alert("Error: ID único inválido para actualizar STATUS.");
+          return;
+        }
+        // Importar la función
+        const { actualizarStatusSupabase } = await import("./supabaseUpdateSolicitud.js");
+        await actualizarStatusSupabase(idSupabase, nuevoStatus);
+        setExito(true);
+        if (typeof refetch === 'function') {
+          setTimeout(() => {
+            refetch();
+          }, 500);
+        }
+        closeDetalle();
+      } catch (err) {
+        alert("Error al actualizar STATUS: " + err.message);
       }
-      closeDetalle();
+    }
+  };
+
+  const handleEliminarSolicitud = async () => {
+    if (detalle) {
+      try {
+        const idSupabase = detalle.id;
+        if (!idSupabase) {
+          alert("Error: ID único inválido para eliminar.");
+          return;
+        }
+        await eliminarSolicitudSupabase(idSupabase);
+        setExito(true);
+        if (typeof refetch === 'function') {
+          setTimeout(() => {
+            refetch();
+          }, 500);
+        }
+        closeDetalle();
+      } catch (err) {
+        alert("Error al eliminar: " + err.message);
+      }
     }
   };
 
@@ -202,8 +230,9 @@ const ClientesNuevos = () => {
                
               </div>
             </div>
-            <div className="actualizar-status">
+            <div className="actualizar-status" style={{display:'flex',gap:12}}>
               <button onClick={() => handleActualizarStatus("Tomado")}>Marcar como Tomado</button>
+              <button onClick={handleEliminarSolicitud} style={{background:'#e63946',color:'#fff'}}>Eliminar solicitud</button>
             </div>
           </div>
         </div>

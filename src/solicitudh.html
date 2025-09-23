@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solicitud de Crédito</title>
+     <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="https://i.imgur.com/6zP8rxG.jpeg">
+  <!-- Metadatos Open Graph para WhatsApp, Facebook, etc. -->
+  <meta property="og:title" content="Solicitud de credito">
+  <meta property="og:description" content="Solicitud de credito">
+  <meta property="og:image" content="https://i.imgur.com/6zP8rxG.jpeg">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tu-sitio.com/tu-formulario.html">
+
+  <!-- Opcional para Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Solicitud de credito">
+  <meta name="twitter:description" content="Solicitud de credito">
+  <meta name="twitter:image" content="https://i.imgur.com/6zP8rxG.jpeg">
+
+  <!-- Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwQ_-OBFVwLjlzvj95k0NSJweSApAGZbo"></script>
+    <style>
+      /* === RESET === */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background: linear-gradient(135deg, #e6f0fa 0%, #f5f7fa 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .form-container {
+        background: #ffffff;
+        padding: 30px 25px;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 520px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        animation: slideUp 0.6s ease-out;
+        position: relative;
+        overflow: hidden;
+      }
+
+      h2 {
+        text-align: center;
+        color: #1a73e8;
+        margin-bottom: 20px;
+        font-size: 24px;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+      }
+      h3 {
+        text-align: center;
+        color: #1a73e8;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+      }
+
+      label {
+        display: block;
+        margin-top: 15px;
+        font-weight: 500;
+        font-size: 14px;
+        color: #2c3e50;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 14px;
+        margin-top: 8px;
+        border-radius: 10px;
+        border: 1px solid #dfe6e9;
+        font-size: 15px;
+        background: #f9fbfc;
+        transition: all 0.3s ease;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: #1a73e8;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+        background: #fff;
+      }
+
+      .currency-input {
+        position: relative;
+      }
+
+      .currency-input::before {
+        content: "LPS";
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #636e72;
+        font-size: 15px;
+        font-weight: 500;
+      }
+
+      .currency-input input {
+        padding-left: 50px;
+      }
+
+      .btn {
+        padding: 14px;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex: 1;
+        transform: translateY(0);
+      }
+
+      .btn-primary {
+        background: #1a73e8;
+        color: white;
+      }
+      .btn-primary:hover {
+        background: #1565c0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+      }
+
+      .btn-secondary {
+        background: #eceff1;
+        color: #2c3e50;
+      }
+      .btn-secondary:hover {
+        background: #dfe6e9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .btns {
+        display: flex;
+        gap: 12px;
+        margin-top: 25px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .step {
+        display: none;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .step.active {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .progress {
+        height: 10px;
+        background: #eceff1;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        overflow: hidden;
+        position: relative;
+      }
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #1a73e8, #4dabf7);
+        width: 0%;
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      #map,
+      #mapTrabajo {
+        height: 240px;
+        margin-top: 12px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      small {
+        color: #636e72;
+        font-size: 12px;
+        display: block;
+        margin-top: 6px;
+      }
+
+      h4 {
+        font-size: 16px;
+        margin-top: 20px;
+        margin-bottom: 8px;
+        color: #1a73e8;
+        font-weight: 500;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20%,
+        60% {
+          transform: translateX(-5px);
+        }
+        40%,
+        80% {
+          transform: translateX(5px);
+        }
+      }
+
+      /* Loading Screen Styles */
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.75);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        transition: opacity 0.5s ease;
+      }
+
+      .loading-spinner {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #1a73e8;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 0.8s linear infinite;
+        margin-right: 20px;
+      }
+
+      .loading-text {
+        color: white;
+        font-size: 20px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        animation: pulse 1.5s infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .form-container {
+          padding: 25px 20px;
+        }
+        h2 {
+          font-size: 22px;
+        }
+        label {
+          font-size: 13px;
+        }
+        input,
+        select {
+          font-size: 14px;
+          padding: 12px;
+        }
+        .currency-input::before {
+          font-size: 14px;
+        }
+        .currency-input input {
+          padding-left: 45px;
+        }
+        .btn {
+          font-size: 15px;
+          padding: 12px;
+        }
+        #map,
+        #mapTrabajo {
+          height: 200px;
+        }
+        .loading-text {
+          font-size: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <span class="loading-text">Iniciando Solicitud...</span>
+    </div>
+
+    <div class="form-container">
+      <button id="resetFormBtn" type="button" style="display:block;margin:0 auto 18px auto;background:#3945e6;color:#fff;border:none;padding:14px 22px;border-radius:30px;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,0.15);cursor:pointer;">Limpiar e iniciar de nuevo</button>
+      <h2>Solicitud de Crédito</h2> <br/>
+<h3 id="asesorNombre">Asesor:</h3>
+     
+        <!-- Modal de confirmación para limpiar -->
+        <div id="modalConfirmReset" style="display:none;position:fixed;z-index:2000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.45);justify-content:center;align-items:center;">
+          <div style="background:#fff;padding:32px 24px 24px 24px;border-radius:16px;max-width:340px;width:90vw;box-shadow:0 4px 24px rgba(0,0,0,0.18);text-align:center;">
+            <h3 style="color:#e63946;margin-bottom:18px;font-size:20px;">¿Borrar todo y empezar de nuevo?</h3>
+            <p style="margin-bottom:24px;color:#444;font-size:15px;">Esta acción eliminará todos los datos ingresados en el formulario.</p>
+            <button id="confirmResetBtn" style="background:#e63946;color:#fff;border:none;padding:10px 22px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;margin-right:10px;">Sí, borrar</button>
+            <button id="cancelResetBtn" style="background:#eceff1;color:#2c3e50;border:none;padding:10px 22px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;">Cancelar</button>
+          </div>
+        </div>
+      <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <form id="creditoForm">
+        <script>
+    // Botón para limpiar e iniciar de nuevo
+      // Modal personalizado para limpiar e iniciar de nuevo
+      const resetFormBtn = document.getElementById('resetFormBtn');
+      const modalConfirmReset = document.getElementById('modalConfirmReset');
+      const confirmResetBtn = document.getElementById('confirmResetBtn');
+      const cancelResetBtn = document.getElementById('cancelResetBtn');
+
+      resetFormBtn.onclick = function() {
+        modalConfirmReset.style.display = 'flex';
+      };
+      cancelResetBtn.onclick = function() {
+        modalConfirmReset.style.display = 'none';
+      };
+      confirmResetBtn.onclick = function() {
+        localStorage.removeItem('formData');
+        localStorage.removeItem('currentStep');
+        modalConfirmReset.style.display = 'none';
+        window.location.reload();
+      };
+        // Guardar y restaurar valores del formulario en localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+          const form = document.getElementById('creditoForm');
+          // Restaurar valores
+          const saved = localStorage.getItem('formData');
+          if (saved) {
+            const data = JSON.parse(saved);
+            Object.keys(data).forEach(function(key) {
+              const field = form.elements.namedItem(key);
+              if (field) field.value = data[key];
+            });
+          }
+          // Guardar en cada cambio
+          form.addEventListener('input', function() {
+            const data = {};
+            Array.from(form.elements).forEach(function(el) {
+              if (el.name) data[el.name] = el.value;
+            });
+            localStorage.setItem('formData', JSON.stringify(data));
+          });
+        });
+        </script>
+        <!-- PASO 1 -->
+        <div class="step active">
+          <label>Tu nombre:</label>
+          <input type="text" name="Nombre"  placeholder="Ejemplo: Juan Perez Bonilla Serrano" required />
+          <label>No. de Identidad:</label>
+          <input
+            type="tel"
+            name="Identidad"
+            required
+            maxlength="15"
+            pattern="\d{4}-\d{4}-\d{5}"
+            placeholder="1234-5678-90123"
+          />
+          <label>Nacionalidad:</label>
+          <select name="Nacionalidad" required>
+            <option value="Hondureña" selected>Hondureña</option>
+        
+            <option value="Otra">Otra</option>
+          </select>
+        </div>
+
+        <div class="step">
+          <label>Fecha de Nacimiento:</label>
+          <input
+            type="date"
+            name="Fecha de Nacimiento"
+            id="fechaNacimiento"
+            required
+          />
+
+          <label>Edad:</label>
+          <input
+            type="number"
+            name="Edad"
+            id="edad"
+            required
+            min="0"
+            readonly
+          />
+
+          <label>No. de Dependientes:</label>
+          <input type="number" name="Dependientes" required min="0"  placeholder="Ejemplo: 1"/>
+        </div>
+
+        <!-- PASO 3 -->
+        <div class="step">
+          <label>Estado Civil:</label>
+          <select
+            name="Estado Civil"
+            id="estadoCivil"
+            required
+            onchange="toggleConyuge()"
+             
+          >
+            <option value="">Seleccione</option>
+            <option value="Soltero">Soltero</option>
+            <option value="Casado">Casado</option>
+            <option value="Union Libre">Unión Libre</option>
+            <option value="Divorciado">Divorciado</option>
+            <option value="Viudo">Viudo</option>
+          </select>
+
+
+
+
+
+       
+
+          <div id="conyugeStep" class="hidden">
+            <label>Nombre del Cónyuge:</label>
+            <input type="text" name="Conyuge Nombre" id="conyugeNombre" placeholder="Ejemplo: Nombre completo de su pareja" />
+            <label>No. de Identidad del Cónyuge:</label>
+            <input
+              type="tel"
+              name="Conyuge Identidad"
+              id="conyugeIdentidad"
+              maxlength="15"
+              pattern="\d{4}-\d{4}-\d{5}"
+              placeholder="Ejemplo  Identidad de su pareja 1234-5678-90123"
+            />
+            <label>Teléfono</label>
+            <input
+              type="tel"
+              name="Conyuge Teléfono"
+              id="conyugeTelefono"
+              maxlength="9"
+              pattern="\d{4}-\d{4}"
+              placeholder="Telefono de su pareja :1234-5678"
+            />
+          </div>
+        
+
+          <label>Profesión u Oficio:</label>
+          <input type="text" name="Profesión" placeholder="Ejemplo: Albañil,Abogado,Doctor" required />
+          <label>Se dedica a:</label>
+          <input type="text" name="Ocupación" placeholder="Ejemplo: Construccioon,Ventas,Educar" required />
+        </div>
+
+        <!-- PASO 4 -->
+        <div class="step">
+          <label>Correo Electrónico:</label>
+          <input type="email" name="Correo" placeholder="Ejemplo: tucorreo@gmail.com o no tengo" required />
+          <label>Domicilio:</label>
+          <input type="text" name="Domicilio" placeholder="Ejemplo: Ceiba, calle 7, 2 cuadra de polperia Nori,  mi casa Colo cafe." required />
+          <label>Vive en casa:</label>
+          <select name="Tipo Vivienda" required>
+            <option value="">Seleccione</option>
+            <option value="Familiar">Familiar</option>
+            <option value="Propia">Propia</option>
+            <option value="Alquiler">Alquiler</option>
+            <option value="Pagándola">Pagándola</option>
+          </select>
+        </div>
+
+        <!-- PASO 5 -->
+        <div class="step">
+          <label>Tiempo de residir en años:</label>
+          <input
+            type="number"
+            name="Tiempo Residencia"
+            required
+            min="0"
+            max="99"
+            maxlength="2"
+            placeholder="Ej: 10"
+          />
+
+          <label>Tu numero celular:</label>
+          <input
+            type="tel"
+            name="Celular"
+            required
+            maxlength="9"
+            pattern="\d{4}-\d{4}"
+            placeholder="1234-5678"
+          />
+        </div>
+
+        <!-- PASO 6 -->
+        <div class="step">
+          <label>Ubicación de tu Domicilio: (Favor seleccionar su ubicacion para realizar un croquis)</label>
+          <small>Haz clic en el mapa para marcar tu domicilio</small>
+          <div id="map"></div>
+          <input
+            type="hidden"
+            name="Ubicación Domicilio"
+            id="domicilioCoords"
+          />
+        </div>
+
+        <!-- PASO 8 -->
+        <div class="step">
+          <label>Nombre de la Empresa:</label>
+          <input type="text" name="Empresa"  placeholder="Ejemplo: Ferreteria 2 Hermanos O Trabajo propio" required />
+          <label>Negocio Propio:</label>
+          <select name="Negocio Propio" required>
+            <option value="">Seleccione</option>
+            <option value="Sí">Sí</option>
+            <option value="No">No</option>
+          </select>
+          <label>Giro de la Empresa o Negocio:</label>
+          <input type="text" name="Giro Empresa" placeholder="Ejemplo: La empresa o negocio se dedica a Construccion" required />
+        </div>
+
+        <!-- PASO 9 -->
+        <div class="step">
+          <label>Dirección de la Empresa / Negocio:</label>
+          <input type="text" name="Dirección Empresa" placeholder="Ejemplo: La empresa o negocio se ubica en Utila calle principal,ferreteia 2 hermanos" required />
+          <label>Cargo:</label>
+          <input type="text" name="Cargo"  placeholder="Ejemplo: Mi cargo es vendedor ect..."required />
+        
+        </div>
+
+        <!-- PASO 10 -->
+        <div class="step">
+          <label>Antigüedad Laboral en años:</label>
+          <input type="text" name="Antigüedad" placeholder="Ejemplo: 1 año" required />
+          <label>Nombre y Cargo Jefe Inmediato:</label>
+          <input type="text" name="Jefe Inmediato" placeholder="Ejemplo: Juan Perez" required />
+          <label>Salario:</label>
+          <div class="currency-input">
+            <input
+              type="number"
+              name="Salario"
+              required
+              min="0"
+              step="0.01"
+              placeholder="Ejemplo: 5,000"
+            />
+          </div>
+        </div>
+
+        <!-- PASO 11 -->
+        <div class="step">
+          <label>Ubicación del Trabajo: (Favor seleccionar bien la ubicacion para realizar un croquis )</label>
+          <small>Haz clic en el mapa para marcar tu lugar de trabajo</small>
+          <div id="mapTrabajo"></div>
+          <input type="hidden" name="Ubicación Trabajo" id="trabajoCoords" />
+        </div>
+
+        <!-- PASO 12 -->
+        <div class="step">
+          <h4>Referencia Personal 1</h4>
+          <input
+            type="text"
+            name="Ref Persona 1 Nombre"
+            placeholder="Nombre del amigo o familiar"
+            required
+          />
+          <input
+            type="tel"
+            name="Ref Persona 1 Tel Trabajo"
+            placeholder="Tel"
+            required
+            maxlength="9"
+            pattern="\d{4}-\d{4}"
+            placeholder="1234-5678"
+          />
+          <h4>Referencia Personal 2</h4>
+          <input
+            type="text"
+            name="Ref Persona 2 Nombre"
+           placeholder="Nombre del amigo o familiar"
+            required
+          />
+          <input
+            type="tel"
+            name="Ref Persona 2 Tel Trabajo"
+            placeholder="Tel"
+            required
+            maxlength="9"
+            pattern="\d{4}-\d{4}"
+            placeholder="1234-5678"
+          />
+        </div>
+
+        <!-- PASO 13 -->
+        <div class="step">
+          <h4>Referencia Familiar 1</h4>
+          <input
+            type="text"
+            name="Ref Familiar 1 Nombre"
+            placeholder="Nombre del familiar"
+            required
+          />
+          <input
+            type="text"
+            name="Ref Familiar 1 Parentesco"
+            placeholder="Parentesco  Ejemplo: Hermano, Primo"
+            required
+          />
+          <input
+            type="tel"
+            name="Ref Familiar 1 Tel Trabajo"
+            placeholder="Tel"
+            required
+            maxlength="9"
+            pattern="\d{4}-\d{4}"
+            placeholder="1234-5678"
+          />
+          <h4>Referencia Familiar 2</h4>
+          <input
+            type="text"
+            name="Ref Familiar 2 Nombre"
+            placeholder="Nombre del familiar"
+            required
+          />
+          <input
+            type="text"
+            name="Ref Familiar 2 Parentesco"
+            placeholder="Parentesco  Ejemplo: Hermano, Primo"
+            required
+          />
+          <input
+            type="tel"
+            name="Ref Familiar 2 Tel Trabajo"
+            placeholder="Tel"
+            required
+            maxlength="9"
+            pattern="\d{4}-\d{4}"
+            placeholder="1234-5678"
+          />
+        </div>
+
+        <!-- BOTONES -->
+        <div class="btns">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            id="prevBtn"
+            onclick="nextPrev(-1)"
+          >
+            Atrás
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            id="nextBtn"
+            onclick="nextPrev(1)"
+          >
+            Siguiente
+          </button>
+        </div>
+      </form>
+    </div>
+
+  <!-- Google Maps reemplaza Leaflet -->
+    <script>
+ // Mostrar el nombre del asesor usando el parámetro "name" de la URL
+document.addEventListener("DOMContentLoaded", () => {
+  const h3Asesor = document.getElementById("asesorNombre");
+  const urlParams = new URLSearchParams(window.location.search);
+  const nombreAsesor = urlParams.get("name"); // obtiene ?name=...
+
+  if (nombreAsesor) {
+    h3Asesor.textContent = `Asesor: ${decodeURIComponent(nombreAsesor)}`;
+  }
+});
+
+
+      let currentStep = 0;
+      let steps = document.querySelectorAll(".step");
+      let progressBar = document.getElementById("progressBar");
+      let nextBtn = document.getElementById("nextBtn");
+      let prevBtn = document.getElementById("prevBtn");
+      let loadingOverlay = document.getElementById("loadingOverlay");
+
+      // Format identity number (1234-5678-90123)
+      function formatIdentity(input) {
+        let value = input.value.replace(/\D/g, "");
+        if (value.length > 4) value = value.slice(0, 4) + "-" + value.slice(4);
+        if (value.length > 9)
+          value = value.slice(0, 9) + "-" + value.slice(9, 14);
+        input.value = value.slice(0, 15);
+      }
+
+      // Format phone number (1234-5678)
+      function formatPhone(input) {
+        let value = input.value.replace(/\D/g, "");
+        if (value.length > 4)
+          value = value.slice(0, 4) + "-" + value.slice(4, 8);
+        input.value = value.slice(0, 9);
+      }
+
+      // Apply formatting to identity and phone inputs
+      document
+        .querySelectorAll(
+          'input[name="Identidad"], input[name="Conyuge Identidad"]'
+        )
+        .forEach((input) => {
+          input.addEventListener("input", () => formatIdentity(input));
+        });
+
+      document
+        .querySelectorAll(
+          'input[name="Teléfono Domicilio"], input[name="Celular"], input[name="Conyuge Teléfono"], input[name$="Tel Casa"], input[name$="Tel Trabajo"]'
+        )
+        .forEach((input) => {
+          input.addEventListener("input", () => formatPhone(input));
+        });
+
+      // Show loading screen on page load
+      window.addEventListener("load", function () {
+        setTimeout(() => {
+          loadingOverlay.style.opacity = "0";
+          setTimeout(() => {
+            loadingOverlay.style.display = "none";
+          }, 500);
+        }, 1200);
+      });
+
+
+
+      // MAPA DOMICILIO - Google Maps con geolocalización
+      let map, markerDomicilio;
+      function initMapDomicilio() {
+        // Intentar obtener la ubicación del usuario
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function (position) {
+              const userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              };
+              crearMapaDomicilio(userLocation);
+            },
+            function () {
+              // Si falla, usar centro por defecto
+              crearMapaDomicilio({ lat: 16.3, lng: -86.55 });
+            }
+          );
+        } else {
+          crearMapaDomicilio({ lat: 16.3, lng: -86.55 });
+        }
+      }
+
+      function crearMapaDomicilio(center) {
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: center,
+          zoom: 12,
+          mapTypeId: "satellite",
+          zoomControl: true,
+          scrollwheel: true,
+          gestureHandling: "auto"
+        });
+        // Colocar marcador inicial
+        markerDomicilio = new google.maps.Marker({
+          position: center,
+          map: map,
+          draggable: true,
+        });
+        document.getElementById("domicilioCoords").value = center.lat + "," + center.lng;
+        markerDomicilio.addListener("dragend", function (evt) {
+          document.getElementById("domicilioCoords").value =
+            evt.latLng.lat() + "," + evt.latLng.lng();
+        });
+        map.addListener("click", function (e) {
+          markerDomicilio.setPosition(e.latLng);
+          document.getElementById("domicilioCoords").value =
+            e.latLng.lat() + "," + e.latLng.lng();
+        });
+      }
+
+      // MAPA TRABAJO - Google Maps con geolocalización
+      let mapTrabajo, markerTrabajo;
+      function initMapTrabajo() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function (position) {
+              const userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              };
+              crearMapaTrabajo(userLocation);
+            },
+            function () {
+              crearMapaTrabajo({ lat: 16.3, lng: -86.55 });
+            }
+          );
+        } else {
+          crearMapaTrabajo({ lat: 16.3, lng: -86.55 });
+        }
+      }
+
+      function crearMapaTrabajo(center) {
+        mapTrabajo = new google.maps.Map(document.getElementById("mapTrabajo"), {
+          center: center,
+          zoom: 12,
+          mapTypeId: "satellite",
+          zoomControl: true,
+          scrollwheel: true,
+          gestureHandling: "auto"
+        });
+        // Colocar marcador inicial
+        markerTrabajo = new google.maps.Marker({
+          position: center,
+          map: mapTrabajo,
+          draggable: true,
+        });
+        document.getElementById("trabajoCoords").value = center.lat + "," + center.lng;
+        markerTrabajo.addListener("dragend", function (evt) {
+          document.getElementById("trabajoCoords").value =
+            evt.latLng.lat() + "," + evt.latLng.lng();
+        });
+        mapTrabajo.addListener("click", function (e) {
+          markerTrabajo.setPosition(e.latLng);
+          document.getElementById("trabajoCoords").value =
+            e.latLng.lat() + "," + e.latLng.lng();
+        });
+      }
+
+      // Inicializar ambos mapas cuando el DOM esté listo
+      document.addEventListener("DOMContentLoaded", function () {
+        if (document.getElementById("map")) initMapDomicilio();
+        if (document.getElementById("mapTrabajo")) initMapTrabajo();
+      });
+
+      showStep(currentStep);
+      function showStep(n) {
+        steps.forEach((step) => step.classList.remove("active"));
+        steps[n].classList.add("active");
+
+        // Inicializar mapa de domicilio si el paso contiene el mapa
+        if (steps[n].querySelector("#map")) {
+          setTimeout(() => {
+            if (typeof google !== "undefined" && google.maps) {
+              initMapDomicilio();
+            }
+          }, 200);
+        }
+        // Inicializar mapa de trabajo si el paso contiene el mapa
+        if (steps[n].querySelector("#mapTrabajo")) {
+          setTimeout(() => {
+            if (typeof google !== "undefined" && google.maps) {
+              initMapTrabajo();
+            }
+          }, 200);
+        }
+
+        prevBtn.style.display = n === 0 ? "none" : "block";
+
+        let progress = ((n + 1) / steps.length) * 100;
+        progressBar.style.width = progress + "%";
+
+        nextBtn.innerText = n === steps.length - 1 ? "Enviar Solicitud" : "Siguiente";
+      }
+
+      function nextPrev(n) {
+        if (n === 1 && !validateForm()) return;
+        currentStep += n;
+
+        if (currentStep >= steps.length) {
+          enviarForm();
+          return;
+        }
+        showStep(currentStep);
+      }
+
+      function validateForm() {
+        let inputs = steps[currentStep].querySelectorAll("input, select");
+        let isValid = true;
+        let estadoCivil = document.getElementById("estadoCivil").value;
+
+        for (let input of inputs) {
+          // Skip validation for Cónyuge fields if Estado Civil is Soltero
+          if (
+            estadoCivil === "Soltero" &&
+            (input.id === "conyugeNombre" ||
+              input.id === "conyugeIdentidad" ||
+              input.id === "conyugeTrabajo" ||
+              input.id === "conyugeCargo" ||
+              input.id === "conyugeTelefono")
+          ) {
+            continue;
+          }
+
+          if (input.hasAttribute("required") && input.value === "") {
+            input.style.borderColor = "#e63946";
+            input.style.animation = "shake 0.3s";
+            setTimeout(() => (input.style.animation = ""), 300);
+            isValid = false;
+          } else if (
+            input.name === "Identidad" ||
+            input.name === "Conyuge Identidad"
+          ) {
+            if (input.value && !/^\d{4}-\d{4}-\d{5}$/.test(input.value)) {
+              input.style.borderColor = "#e63946";
+              input.style.animation = "shake 0.3s";
+              setTimeout(() => (input.style.animation = ""), 300);
+              isValid = false;
+            } else {
+              input.style.borderColor = "#dfe6e9";
+            }
+          } else if (
+            input.type === "tel" &&
+            input.hasAttribute("required") &&
+            input.value
+          ) {
+            if (!/^\d{4}-\d{4}$/.test(input.value)) {
+              input.style.borderColor = "#e63946";
+              input.style.animation = "shake 0.3s";
+              setTimeout(() => (input.style.animation = ""), 300);
+              isValid = false;
+            } else {
+              input.style.borderColor = "#dfe6e9";
+            }
+          } else if (input.name === "Salario" && input.value < 0) {
+            input.style.borderColor = "#e63946";
+            input.style.animation = "shake 0.3s";
+            setTimeout(() => (input.style.animation = ""), 300);
+            isValid = false;
+          } else {
+            input.style.borderColor = "#dfe6e9";
+          }
+        }
+        return isValid;
+      }
+
+      function toggleConyuge() {
+        let estado = document.getElementById("estadoCivil").value;
+        let conyugeStep = document.getElementById("conyugeStep");
+        let conyugeInputs = conyugeStep.querySelectorAll("input");
+
+        conyugeStep.classList.toggle(
+          "hidden",
+          !(estado === "Casado" || estado === "Union Libre")
+        );
+        steps = document.querySelectorAll(".step");
+
+        // Toggle required attribute for Cónyuge fields
+        conyugeInputs.forEach((input) => {
+          if (estado === "Casado" || estado === "Union Libre") {
+            input.setAttribute("required", "");
+          } else {
+            input.removeAttribute("required");
+          }
+        });
+      }
+
+   
+  async function enviarForm() {
+    loadingOverlay.style.display = "flex";
+    loadingOverlay.style.opacity = "1";
+    loadingOverlay.querySelector(".loading-text").textContent = "Enviando datos...";
+
+    let form = document.getElementById("creditoForm");
+    let data = new FormData(form);
+    // Mapeo de nombres del formulario a los nombres de la tabla
+    const fieldMap = {
+      "Nombre": "Nombre",
+      "Identidad": "No. de Identidad",
+      "Nacionalidad": "Nacionalidad",
+      "Fecha de Nacimiento": "Fecha de Nacimiento",
+      "Edad": "Edad",
+      "Dependientes": "No. de Dependientes",
+      "Estado Civil": "Estado Civil",
+      "Profesión": "Profesión u Oficio",
+      "Ocupación": "Ocupación",
+      "Correo": "Correo Electrónico",
+      "Domicilio": "Domicilio",
+      "Tipo Vivienda": "Tipo de Vivienda",
+      "Tiempo Residencia": "Tiempo de Residencia",
+      "Teléfono Domicilio": "Teléfono de Domicilio",
+      "Celular": "Celular",
+      "Ubicación Domicilio": "Ubicación del Domicilio",
+      "Conyuge Nombre": "Nombre del Cónyuge",
+      "Conyuge Identidad": "No. de Identidad del Cónyuge",
+      "Conyuge Trabajo": "Lugar de Trabajo del Cónyuge",
+      "Conyuge Cargo": "Cargo del Cónyuge",
+      "Conyuge Teléfono": "Teléfono de Trabajo del Cónyuge",
+      "Empresa": "Nombre de la Empresa",
+      "Negocio Propio": "Negocio Propio",
+      "Giro Empresa": "Giro de la Empresa o Negocio",
+      "Dirección Empresa": "Dirección de la Empresa / Negocio",
+      "Cargo": "Cargo",
+      "Departamento": "Departamento / Sección",
+      "Antigüedad": "Antigüedad Laboral",
+      "Jefe Inmediato": "Nombre y Cargo Jefe Inmediato",
+      "Salario": "Salario",
+      "Ubicación Trabajo": "Ubicación del Trabajo",
+      "Ref Persona 1 Nombre": "Ref Persona 1 Nombre",
+      "Ref Persona 1 Tel Casa": "Ref Persona 1 Tel Casa",
+      "Ref Persona 1 Tel Trabajo": "Ref Persona 1 Tel Trabajo",
+      "Ref Persona 2 Nombre": "Ref Persona 2 Nombre",
+      "Ref Persona 2 Tel Casa": "Ref Persona 2 Tel Casa",
+      "Ref Persona 2 Tel Trabajo": "Ref Persona 2 Tel Trabajo",
+      "Ref Familiar 1 Nombre": "Ref Familiar 1 Nombre",
+      "Ref Familiar 1 Parentesco": "Ref Familiar 1 Parentesco",
+      "Ref Familiar 1 Tel Casa": "Ref Familiar 1 Tel Casa",
+      "Ref Familiar 1 Tel Trabajo": "Ref Familiar 1 Tel Trabajo",
+      "Ref Familiar 2 Nombre": "Ref Familiar 2 Nombre",
+      "Ref Familiar 2 Parentesco": "Ref Familiar 2 Parentesco",
+      "Ref Familiar 2 Tel Casa": "Ref Familiar 2 Tel Casa",
+      "Ref Familiar 2 Tel Trabajo": "Ref Familiar 2 Tel Trabajo"
+      // "usuario" y "STATUS" se agregan desde la URL o lógica extra
+    };
+    let body = {};
+    for (let [key, value] of data.entries()) {
+      if (key === "Jefe Inmediato") continue; // No enviar campo si no existe en Supabase
+      if (value !== null && value !== undefined && String(value).trim() !== "") {
+        const mappedKey = fieldMap[key] || key;
+        body[mappedKey] = value;
+      }
+    }
+    // Capturar parámetros de la URL (ejemplo: ?usuario=2113)
+    let urlParams = new URLSearchParams(window.location.search);
+    for (let [key, value] of urlParams.entries()) {
+      // Ignorar el parámetro 'name' porque no existe en la tabla de Supabase
+      if (key === "name") continue;
+      if (value !== null && value !== undefined && String(value).trim() !== "") {
+        body[key] = value;
+      }
+    }
+
+    try {
+      const resp = await fetch("https://ydowdpcladycccauvmob.supabase.co/rest/v1/datos_personales", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlkb3dkcGNsYWR5Y2NjYXV2bW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NTgxMTksImV4cCI6MjA3NDIzNDExOX0.W9FLueZVyuPXmEg7cx4qs4qWf8QspvdeO9Q9k97UALM",
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlkb3dkcGNsYWR5Y2NjYXV2bW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NTgxMTksImV4cCI6MjA3NDIzNDExOX0.W9FLueZVyuPXmEg7cx4qs4qWf8QspvdeO9Q9k97UALM"
+        },
+        body: JSON.stringify([body])
+      });
+      let errorText = "";
+      if (!resp.ok) {
+        try {
+          const errorJson = await resp.json();
+          errorText = JSON.stringify(errorJson);
+        } catch(e) {
+          errorText = await resp.text();
+        }
+        console.error("Error Supabase:", errorText);
+        loadingOverlay.querySelector(".loading-text").textContent = `Error: ${errorText}`;
+        // No recargar la página, solo mostrar el error
+        return;
+      }
+      localStorage.removeItem('formData');
+      loadingOverlay.querySelector(".loading-text").textContent = "Datos enviados correctamente. El asesor se contactará pronto con usted. Gracias.";
+      setTimeout(() => {
+        localStorage.removeItem('currentStep');
+        window.location.reload();
+      }, 1500);
+    } catch (err) {
+      console.error("Error JS:", err);
+      localStorage.removeItem('formData');
+      loadingOverlay.querySelector(".loading-text").textContent = `Error: ${err.message}`;
+      // No recargar la página, solo mostrar el error
+      return;
+    }
+  }
+
+
+      // Escuchar cambios en la fecha de nacimiento
+      document
+        .getElementById("fechaNacimiento")
+        .addEventListener("change", function () {
+          const fechaNac = new Date(this.value);
+          const hoy = new Date();
+          let edad = hoy.getFullYear() - fechaNac.getFullYear();
+          const mes = hoy.getMonth() - fechaNac.getMonth();
+
+          // Ajuste si aún no cumplió años este año
+          if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+            edad--;
+          }
+
+          document.getElementById("edad").value = edad >= 0 ? edad : "";
+        });
+    </script>
+    </script>
+  </body>
+</html>
+
+
