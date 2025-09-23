@@ -11,6 +11,12 @@ const actualizarStatus = async (identidad, nuevoStatus) => {
 
 
 const ClientesNuevos = () => {
+  // Botón para recargar la tabla
+  const handleRecargarTabla = () => {
+    if (typeof refetch === 'function') {
+      refetch();
+    }
+  };
   const [detalle, setDetalle] = useState(null);
   const [filtro, setFiltro] = useState("todos");
   const [busqueda, setBusqueda] = useState("");
@@ -99,7 +105,11 @@ const ClientesNuevos = () => {
         <ModalExito mensaje="Actualización exitosa" onClose={() => setExito(false)} />
       )}
       <h2>Clientes Nuevos</h2>
-  <div style={{width: '100%', maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+      <div style={{width: '100%', maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+        {/* Botón recargar tabla */}
+        <div style={{width: '100%', display: 'flex', justifyContent: 'flex-start', marginBottom: 8}}>
+          <button onClick={handleRecargarTabla} style={{padding: '8px 18px', borderRadius: '8px', background: '#1a73e8', color: '#fff', fontWeight: '600', border: 'none', cursor: 'pointer'}}>Recargar tabla</button>
+        </div>
         <div style={{display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16}}>
           <button
             onClick={() => setFiltro("todos")}
