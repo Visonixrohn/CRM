@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import useClientesNuevos from "./useClientesNuevos";
+import useClientesNuevosSupabase from "./useClientesNuevosSupabase";
 import useGestionResumen from "./useGestionResumen";
 import useClientesParaHoy from "./useClientesParaHoy";
 import useActualizaciones from "./useActualizaciones";
@@ -287,7 +287,7 @@ const Comisiones = ({ setPage }) => {
   };
 
   // Obtener datos de clientes nuevos y actualizaciones
-  const { clientes: clientesNuevos = [] } = useClientesNuevos();
+  const { clientes: clientesNuevos = [] } = useClientesNuevosSupabase();
   const { datos: actualizaciones = [] } = useActualizaciones();
   const clientesNuevosSinTomar = clientesNuevos.filter(c => c.STATUS !== "Tomado").length;
   const actualizacionesSinTomar = actualizaciones.filter(a => a.STATUS !== "Tomado").length;
