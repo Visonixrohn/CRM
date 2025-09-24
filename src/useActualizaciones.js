@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { supabase } from "./supabaseClient";
+import { createClient } from '@supabase/supabase-js';
 
-const SHEET_ID = "1MmVZkubwhL4goX3wptmRZGvMFJtRBhJnb2TEwVwUNbk";
-const API_KEY = "AIzaSyA-Jv8AMyTySXYsd8rY2kEdNhhotdNWolg";
-const URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/ACT?key=${API_KEY}`;
+// Cliente exclusivo para actualizacion_datos
+const actualizacionesUrl = 'https://ydowdpcladycccauvmob.supabase.co';
+const actualizacionesKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlkb3dkcGNsYWR5Y2NjYXV2bW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NTgxMTksImV4cCI6MjA3NDIzNDExOX0.W9FLueZVyuPXmEg7cx4qs4qWf8QspvdeO9Q9k97UALM';
+const supabaseActualizaciones = createClient(actualizacionesUrl, actualizacionesKey);
+
+
 
 export default function useActualizaciones() {
   const [datos, setDatos] = useState([]);
@@ -13,6 +16,7 @@ export default function useActualizaciones() {
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
+    console.log('ID de usuario logueado:', userId);
     if (userId) setUsuarioId(userId);
   }, []);
 
@@ -20,24 +24,13 @@ export default function useActualizaciones() {
     if (!usuarioId) return;
     setLoading(true);
     try {
-      const response = await fetch(URL);
-      const data = await response.json();
-      if (data.values) {
-        const headers = data.values[0];
-        const rows = data.values.slice(1);
-        const formatted = rows.map((row) => {
-          const obj = {};
-          headers.forEach((header, idx) => {
-            obj[header] = row[idx] || "";
-          });
-          return obj;
-        });
-        // Filtrar por usuario (acepta USUARIO o usuario)
-        const filtrados = formatted.filter(row => (row.USUARIO && row.USUARIO === usuarioId) || (row.usuario && row.usuario === usuarioId));
-        setDatos(filtrados);
-      } else {
-        setDatos([]);
-      }
+        const { data, error } = await supabaseActualizaciones
+        .from("actualizacion_datos")
+        .select()
+        .eq("usuario_id", usuarioId);
+      if (error) throw new Error(error.message);
+  console.log('Datos recibidos de Supabase actualizacion_datos:', data);
+  setDatos(data || []);
       setLoading(false);
     } catch (err) {
       setError(err.message);

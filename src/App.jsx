@@ -276,7 +276,7 @@ function App() {
                 comisionHoy={comisionHoy}
                 setComisionHoy={setComisionHoy}
                 handleUpdate={() => {}}
-                setPage={() => {}}
+                setPage={setPage}
               />} />
               <Route path="/entregas" element={<Entregas />} />
               <Route path="/ordenes" element={<OrdenesServicio />} />
