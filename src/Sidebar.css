@@ -22,7 +22,7 @@
 
 /* Sidebar container */
 .sidebar {
-  width: 80px;
+  width: 0px;
   background: var(--background-white);
   height: 100vh;
   position: relative; /* Cambiado de fixed a relative */
@@ -34,7 +34,7 @@
 }
 
 .sidebar.open {
-  width: 150px; /* Ajustar el ancho cuando está abierto */
+  width: 90px; /* Ajustar el ancho cuando está abierto */
   overflow-y: hidden; /* Asegurar que no haya scroll vertical al abrir el sidebar */
 }
 
