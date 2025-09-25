@@ -1,7 +1,8 @@
 import React from "react";
 import "./OrdenesServicioCardMovil.css";
 
-const OrdenesServicioCard = ({ orden, onVerDetalle }) => (
+
+const OrdenesServicioCard = ({ orden, onVerDetalle, ext }) => (
   <div className="orden-servicio-card-movil-analisis solo-movil">
     <div className="analisis-card-title">
       Orden #{orden.numero_orden}
@@ -17,6 +18,16 @@ const OrdenesServicioCard = ({ orden, onVerDetalle }) => (
     </div>
     <div className="analisis-card-value">
       Gestor: {orden.gestor}
+    </div>
+    {/* Datos externos */}
+    <div className="analisis-card-value">
+      Modelo: {ext === undefined ? 'Cargando...' : ext && ext.model ? ext.model : (ext === null ? 'Error' : '')}
+    </div>
+    <div className="analisis-card-value">
+      Marca: {ext === undefined ? 'Cargando...' : ext && ext.brand ? ext.brand : (ext === null ? 'Error' : '')}
+    </div>
+    <div className="analisis-card-value">
+      Status: {ext === undefined ? 'Cargando...' : ext && ext.status ? ext.status : (ext === null ? 'Error' : '')}
     </div>
     <div style={{display:'flex',gap:8,justifyContent:'center'}}>
       <button onClick={() => onVerDetalle && onVerDetalle(orden)}>

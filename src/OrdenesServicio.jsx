@@ -314,9 +314,19 @@ const OrdenesServicio = () => {
 
       {/* Cards móviles */}
       <div className="solo-movil">
-        {filteredOrdenes.map((orden) => (
-          <OrdenesServicioCardMovil key={orden.id} orden={orden} onVerDetalle={handleRowClick} gestor={orden.gestor} />
-        ))}
+        {filteredOrdenes.map((orden) => {
+          const ext = corOneData.hasOwnProperty(orden.numero_orden)
+            ? corOneData[orden.numero_orden]
+            : undefined;
+          return (
+            <OrdenesServicioCardMovil
+              key={orden.id}
+              orden={orden}
+              onVerDetalle={handleRowClick}
+              ext={ext}
+            />
+          );
+        })}
       </div>
       {/* Tabla solo visible en desktop por CSS */}
       <div className="ordenes-servicio-table-container">
