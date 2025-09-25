@@ -1,7 +1,7 @@
-// /api/orden.js - Función serverless para Vercel
-import axios from 'axios';
+// /api/orden.js para Vercel (CommonJS)
+const axios = require('axios');
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Método no permitido' });
   }
@@ -35,4 +35,4 @@ export default async function handler(req, res) {
   } catch (err) {
     return res.status(500).json({ error: 'Error al consultar el endpoint', details: err.message });
   }
-}
+};
