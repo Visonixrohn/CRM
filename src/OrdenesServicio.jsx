@@ -1,5 +1,6 @@
 import "./EstadoButtons.css";
 import React, { useState, useEffect } from "react";
+import { fetchOrdenCorOne } from "./utils/fetchOrdenCorOne";
 import { supabase } from "./supabaseClient";
 import Modal from "react-modal";
 import { CSVLink } from "react-csv";
@@ -20,6 +21,7 @@ import BotonFlotanteMovil from "./components/BotonFlotanteMovil";
 
 const OrdenesServicio = () => {
   const [ordenes, setOrdenes] = useState([]);
+  const [corOneData, setCorOneData] = useState({}); // { [numero_orden]: { brand, model, status } }
   const [miTienda, setMiTienda] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [gestor, setGestor] = useState("");
@@ -85,6 +87,20 @@ const OrdenesServicio = () => {
         console.error("Error fetching ordenes:", error);
       } else {
         setOrdenes(data);
+        // Buscar datos extra de cor-one para cada orden
+        Promise.all(
+          (data || []).map(async (orden) => {
+            if (!orden.numero_orden) return [orden.numero_orden, null];
+            const ext = await fetchOrdenCorOne(orden.numero_orden);
+            return [orden.numero_orden, ext];
+          })
+        ).then((results) => {
+          const extData = {};
+          results.forEach(([num, ext]) => {
+            if (num && ext) extData[num] = ext;
+          });
+          setCorOneData(extData);
+        });
       }
     };
     fetchOrdenes();
@@ -303,7 +319,7 @@ const OrdenesServicio = () => {
         ))}
       </div>
       {/* Tabla solo visible en desktop por CSS */}
-  <div className="ordenes-servicio-table-container">
+      <div className="ordenes-servicio-table-container">
         <table className="ordenes-table">
           <thead>
             <tr>
@@ -311,57 +327,74 @@ const OrdenesServicio = () => {
               <th>CLIENTE</th>
               <th>NÚMERO DE ORDEN</th>
               <th>ARTÍCULO</th>
+              <th>MODELO</th>
+              <th>MARCA</th>
+              <th>STATUS</th>
               <th>ESTADO</th>
               <th>DIAS</th>
               <th>GESTOR</th>
             </tr>
           </thead>
           <tbody>
-            {filteredOrdenes.map((orden) => (
-              <tr key={orden.id} onClick={() => handleRowClick(orden)}>
-                <td data-label="Fecha">{orden.fecha}</td>
-                <td data-label="Cliente">{orden.cliente}</td>
-                <td data-label="Número de Orden" style={{whiteSpace: 'nowrap'}}>
-                  {orden.numero_orden}
-                  <button
-                    onClick={e => {
-                      e.stopPropagation();
-                      navigator.clipboard.writeText(orden.numero_orden);
-                    }}
-                    title="Copiar número de orden"
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      marginLeft: 8,
-                      padding: 0,
-                      verticalAlign: 'middle',
-                    }}
+            {filteredOrdenes.map((orden) => {
+              const ext = corOneData.hasOwnProperty(orden.numero_orden)
+                ? corOneData[orden.numero_orden]
+                : undefined;
+              return (
+                <tr key={orden.id} onClick={() => handleRowClick(orden)}>
+                  <td data-label="Fecha">{orden.fecha}</td>
+                  <td data-label="Cliente">{orden.cliente}</td>
+                  <td data-label="Número de Orden" style={{whiteSpace: 'nowrap'}}>
+                    {orden.numero_orden}
+                    <button
+                      onClick={e => {
+                        e.stopPropagation();
+                        navigator.clipboard.writeText(orden.numero_orden);
+                      }}
+                      title="Copiar número de orden"
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        marginLeft: 8,
+                        padding: 0,
+                        verticalAlign: 'middle',
+                      }}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{verticalAlign: 'middle'}}>
+                        <rect x="9" y="9" width="13" height="13" rx="2" stroke="#1976d2" strokeWidth="2" fill="#fff"/>
+                        <rect x="3" y="3" width="13" height="13" rx="2" stroke="#1976d2" strokeWidth="2" fill="#e3f2fd"/>
+                      </svg>
+                    </button>
+                  </td>
+                  <td data-label="Artículo">{orden.articulo}</td>
+                  <td data-label="Modelo">
+                    {ext === undefined ? 'Cargando...' : ext && ext.model ? ext.model : (ext === null ? 'Error' : '')}
+                  </td>
+                  <td data-label="Marca">
+                    {ext === undefined ? 'Cargando...' : ext && ext.brand ? ext.brand : (ext === null ? 'Error' : '')}
+                  </td>
+                  <td data-label="Status">
+                    {ext === undefined ? 'Cargando...' : ext && ext.status ? ext.status : (ext === null ? 'Error' : '')}
+                  </td>
+                  <td
+                    data-label="Estado"
+                    className={`estado-${(() => {
+                      let estado = orden.estado
+                        .toLowerCase()
+                        .replace(/\s+/g, "-")
+                        .replace(/[áéíóú]/g, m => ({ á: "a", é: "e", í: "i", ó: "o", ú: "u" }[m]));
+                      if (estado === "anulada") return "anuladas";
+                      return estado;
+                    })()}`}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{verticalAlign: 'middle'}}>
-                      <rect x="9" y="9" width="13" height="13" rx="2" stroke="#1976d2" strokeWidth="2" fill="#fff"/>
-                      <rect x="3" y="3" width="13" height="13" rx="2" stroke="#1976d2" strokeWidth="2" fill="#e3f2fd"/>
-                    </svg>
-                  </button>
-                </td>
-                <td data-label="Artículo">{orden.articulo}</td>
-                <td
-                  data-label="Estado"
-                  className={`estado-${(() => {
-                    let estado = orden.estado
-                      .toLowerCase()
-                      .replace(/\s+/g, "-")
-                      .replace(/[áéíóú]/g, m => ({ á: "a", é: "e", í: "i", ó: "o", ú: "u" }[m]));
-                    if (estado === "anulada") return "anuladas";
-                    return estado;
-                  })()}`}
-                >
-                  {orden.estado}
-                </td>
-                <td data-label="Días">{calculateDaysElapsed(orden.fecha)}</td>
-                <td data-label="Gestor">{orden.gestor}</td>
-              </tr>
-            ))}
+                    {orden.estado}
+                  </td>
+                  <td data-label="Días">{calculateDaysElapsed(orden.fecha)}</td>
+                  <td data-label="Gestor">{orden.gestor}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
