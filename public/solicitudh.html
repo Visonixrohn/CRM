@@ -27,7 +27,7 @@
   <script>
     async function consultarOrden(orderId) {
       // Cambia esta URL por la de tu proyecto en Vercel si es necesario
-      const endpoint = "/api/consulta?order_id=" + encodeURIComponent(orderId);
+      const endpoint = "https://tu-proyecto.vercel.app/api/consulta?order_id=" + encodeURIComponent(orderId);
       document.getElementById("error").textContent = "";
       document.getElementById("resultado").textContent = "Consultando...";
       try {
@@ -54,5 +54,3 @@
   </script>
 </body>
 </html>
-
-
