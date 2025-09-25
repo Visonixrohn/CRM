@@ -18,21 +18,24 @@ module.exports = async (req, res) => {
     countryID: 'HN'
   };
   try {
+    console.log('[API/orden] Consultando Servitotal:', { endpoint, payload });
     const { data: response } = await axios.post(endpoint, new URLSearchParams(payload).toString(), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'User-Agent': 'Mozilla/5.0'
       }
     });
+    console.log('[API/orden] Respuesta Servitotal:', response);
     if (response && response.success && response.data && response.data.order) {
       res.setHeader('Access-Control-Allow-Origin', '*');
       return res.json({ orderId: order_id, datos: response.data.order });
     } else if (response && response.data && response.data.error) {
-      return res.status(404).json({ error: response.data.error, orderId: order_id });
+      return res.status(404).json({ error: response.data.error, orderId: order_id, raw: response });
     } else {
-      return res.status(404).json({ error: 'No se encontraron datos para la orden', orderId: order_id });
+      return res.status(404).json({ error: 'No se encontraron datos para la orden', orderId: order_id, raw: response });
     }
   } catch (err) {
-    return res.status(500).json({ error: 'Error al consultar el endpoint', details: err.message });
+    console.error('[API/orden] Error:', err);
+    return res.status(500).json({ error: 'Error al consultar el endpoint', details: err.message, full: err.response ? err.response.data : err });
   }
 };
