@@ -1,7 +1,7 @@
-// /api/orden.js para Vercel (CommonJS)
-const axios = require('axios');
+// /api/orden.js para Vercel (ES Modules)
+import axios from 'axios';
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Método no permitido' });
   }
@@ -38,4 +38,4 @@ module.exports = async (req, res) => {
     console.error('[API/orden] Error:', err);
     return res.status(500).json({ error: 'Error al consultar el endpoint', details: err.message, full: err.response ? err.response.data : err });
   }
-};
+}
