@@ -37,11 +37,11 @@ const OrdenesServicio = () => {
   const [selectedOrden, setSelectedOrden] = useState(null);
   const [isAddOrderModalOpen, setIsAddOrderModalOpen] = useState(false);
   const [newOrder, setNewOrder] = useState({
-    fecha: new Date().toISOString().split("T")[0], // Fecha por defecto: hoy
-    cliente: "",
-    numero_orden: "",
-    estado: "PENDIENTE DE VISITA",
-    archivo: null,
+  fecha: new Date().toISOString().split("T")[0], // Fecha por defecto: hoy
+  cliente: "",
+  numero_orden: "",
+  estado: "PENDIENTE DE VISITA",
+  archivo: null,
   });
   const [isLoading, setIsLoading] = useState(false);
   // Eliminado isSuccessModalOpen
@@ -119,7 +119,6 @@ const OrdenesServicio = () => {
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from("archivos")
         .upload(uniqueFileName, newOrder.archivo);
-
       if (uploadError) {
         console.error("Error al subir el archivo:", uploadError);
         // Refrescar la tabla y limpiar estado
@@ -133,12 +132,11 @@ const OrdenesServicio = () => {
           fecha: new Date().toISOString().split("T")[0],
           cliente: "",
           numero_orden: "",
-          estado: "",
+          estado: "PENDIENTE DE VISITA",
           archivo: null,
         });
         return;
       }
-
       archivoUrl = uploadData.path;
     }
 
@@ -146,8 +144,8 @@ const OrdenesServicio = () => {
     const { error } = await supabase.from("ordenes_servicio").insert([
       {
         ...newOrder,
-        articulo: null,
-        archivo: archivoUrl,
+        articulo: "articulo",
+        archivo: archivoUrl || null,
         tienda_usuario: miTienda,
         user_id: userId,
         gestor: gestor,
@@ -170,7 +168,7 @@ const OrdenesServicio = () => {
       fecha: new Date().toISOString().split("T")[0],
       cliente: "",
       numero_orden: "",
-      estado: "",
+      estado: "PENDIENTE DE VISITA",
       archivo: null,
     });
   };
