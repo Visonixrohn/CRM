@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect } from "react";
-import useClientesNuevosSupabase from "./useClientesNuevosSupabase";
 import useGestionResumen from "./useGestionResumen";
 import useClientesParaHoy from "./useClientesParaHoy";
-import useActualizaciones from "./useActualizaciones";
+// import useActualizaciones from "./useActualizaciones";
+import NotificacionesSinTomar from "./NotificacionesSinTomar";
 import { supabase } from "./supabaseClient";
 import Modal from "react-modal";
 import "./Comisiones.css";
@@ -286,11 +286,7 @@ const Comisiones = ({ setPage }) => {
     closeModal();
   };
 
-  // Obtener datos de clientes nuevos y actualizaciones
-  const { clientes: clientesNuevos = [] } = useClientesNuevosSupabase();
-  const { datos: actualizaciones = [] } = useActualizaciones();
-  const clientesNuevosSinTomar = clientesNuevos.filter(c => c.STATUS !== "Tomado").length;
-  const actualizacionesSinTomar = actualizaciones.filter(a => a.STATUS !== "Tomado").length;
+
 
   // Return principal del componente
   return (
@@ -406,24 +402,10 @@ const Comisiones = ({ setPage }) => {
               icon="💳"
               style={{ background: '#a21caf', color: '#fff' }}
             />
-            {clientesNuevosSinTomar > 0 && (
-              <button
-                className="header-round-btn info"
-                style={{background:'#2563eb',color:'#fff'}} 
-                onClick={() => setPage && setPage('clientes-nuevos')}
-              >
-                Clientes nuevos: {clientesNuevosSinTomar}
-              </button>
-            )}
-            {actualizacionesSinTomar > 0 && (
-              <button
-                className="header-round-btn warning"
-                style={{background:'#fbbf24',color:'#fff'}} 
-                onClick={() => setPage && setPage('actualizaciones')}
-              >
-                Actualizaciones: {actualizacionesSinTomar}
-              </button>
-            )}
+              <NotificacionesSinTomar
+                onClickClientes={() => setPage && setPage('clientes-nuevos')}
+                onClickActualizaciones={() => setPage && setPage('actualizaciones')}
+              />
           </div>
           {/* Bloque de análisis visual */}
           {/* Solo visible en móviles */}

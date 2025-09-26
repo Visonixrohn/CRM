@@ -1,4 +1,5 @@
 import React from "react";
+import NotificacionesSinTomarHeader from "./NotificacionesSinTomarHeader";
 import "./Header.css";
 import { useState } from "react";
 import useTiendaUsuario from "./hooks/useTiendaUsuario";
@@ -16,6 +17,9 @@ const Header = ({ onMenuClick, actions, user }) => {
     navigate('/configuraciones');
     setShowUser(false);
   };
+  // Navegación para notificaciones
+  const goToClientesNuevos = () => navigate('/clientes-nuevos');
+  const goToActualizaciones = () => navigate('/actualizaciones');
   return (
     <header className="header" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
       <button className="menu-btn modern" aria-label="Menú" onClick={onMenuClick}>
@@ -29,6 +33,10 @@ const Header = ({ onMenuClick, actions, user }) => {
         CRM{user && user.nombre ? ` - ${user.nombre}` : ""}
       </span>
       <div style={{display: 'flex', alignItems: 'center', gap: 16}}>
+        <NotificacionesSinTomarHeader
+          onClickClientes={goToClientesNuevos}
+          onClickActualizaciones={goToActualizaciones}
+        />
         {/* Botón usuario */}
         <button
           aria-label="Usuario"
