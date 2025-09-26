@@ -1,5 +1,6 @@
 import "./EstadoButtons.css";
 import React, { useState, useEffect } from "react";
+import EditarOrdenModal from "./EditarOrdenModal";
 import { fetchOrdenCorOne } from "./utils/fetchOrdenCorOne";
 import { supabase } from "./supabaseClient";
 import Modal from "react-modal";
@@ -36,12 +37,14 @@ const OrdenesServicio = () => {
   });
   const [selectedOrden, setSelectedOrden] = useState(null);
   const [isAddOrderModalOpen, setIsAddOrderModalOpen] = useState(false);
+  const [isEditOrderModalOpen, setIsEditOrderModalOpen] = useState(false);
+  const [ordenAEditar, setOrdenAEditar] = useState(null);
   const [newOrder, setNewOrder] = useState({
   fecha: new Date().toISOString().split("T")[0], // Fecha por defecto: hoy
   cliente: "",
   numero_orden: "",
   estado: "PENDIENTE DE VISITA",
-  archivo: null,
+  archivo: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   // Eliminado isSuccessModalOpen
@@ -113,39 +116,15 @@ const OrdenesServicio = () => {
 
     setIsLoading(true);
 
-    let archivoUrl = null;
-    if (newOrder.archivo) {
-      const uniqueFileName = `ordenes/${Date.now()}-${newOrder.archivo.name}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("archivos")
-        .upload(uniqueFileName, newOrder.archivo);
-      if (uploadError) {
-        console.error("Error al subir el archivo:", uploadError);
-        // Refrescar la tabla y limpiar estado
-        const { data: ordenesActualizadas } = await supabase
-          .from("ordenes_servicio")
-          .select("*");
-        setOrdenes(ordenesActualizadas);
-        setIsAddOrderModalOpen(false);
-        setIsLoading(false);
-        setNewOrder({
-          fecha: new Date().toISOString().split("T")[0],
-          cliente: "",
-          numero_orden: "",
-          estado: "PENDIENTE DE VISITA",
-          archivo: null,
-        });
-        return;
-      }
-      archivoUrl = uploadData.path;
-    }
+    // Ya no se sube archivo, solo se guarda la URL escrita
+    const archivoUrl = newOrder.archivo || null;
 
     const userId = localStorage.getItem("userId");
     const { error } = await supabase.from("ordenes_servicio").insert([
       {
         ...newOrder,
         articulo: "articulo",
-        archivo: archivoUrl || null,
+        archivo: archivoUrl,
         tienda_usuario: miTienda,
         user_id: userId,
         gestor: gestor,
@@ -165,11 +144,11 @@ const OrdenesServicio = () => {
     setOrdenes(ordenesActualizadas);
     setIsLoading(false);
     setNewOrder({
-      fecha: new Date().toISOString().split("T")[0],
-      cliente: "",
-      numero_orden: "",
-      estado: "PENDIENTE DE VISITA",
-      archivo: null,
+  fecha: new Date().toISOString().split("T")[0],
+  cliente: "",
+  numero_orden: "",
+  estado: "PENDIENTE DE VISITA",
+  archivo: "",
     });
   };
 
@@ -205,6 +184,29 @@ const OrdenesServicio = () => {
     const orderDate = new Date(fecha);
     const timeDiff = today - orderDate;
     return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  };
+
+  // Guardar cambios de edición
+  const handleSaveEditOrder = async (form) => {
+    if (!ordenAEditar) return;
+    setIsLoading(true);
+    const { id, ...rest } = form;
+    const { error } = await supabase
+      .from("ordenes_servicio")
+      .update(rest)
+      .eq("id", ordenAEditar.id);
+    if (!error) {
+      // Refrescar órdenes
+      const { data: ordenesActualizadas } = await supabase
+        .from("ordenes_servicio")
+        .select("*");
+      setOrdenes(ordenesActualizadas);
+      setIsEditOrderModalOpen(false);
+      setOrdenAEditar(null);
+    } else {
+      alert("Error al actualizar la orden");
+    }
+    setIsLoading(false);
   };
 
   const renderOrderDetails = (order) => {
@@ -243,18 +245,16 @@ const OrdenesServicio = () => {
           <strong>Estado:</strong> {order.estado}
         </p>
         {order.archivo && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: "10px",
-            }}
-          >
-            <iframe
-              src={`https://caqukltkvvsfairqphjf.supabase.co/storage/v1/object/public/archivos/${order.archivo}`}
-            />
+          <div style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}>
+            {/* Si es una URL http(s), mostrar link, si no, mostrar como antes */}
+            {order.archivo.startsWith("http") ? (
+              <a href={order.archivo} target="_blank" rel="noopener noreferrer">Ver archivo</a>
+            ) : (
+              <iframe src={`https://caqukltkvvsfairqphjf.supabase.co/storage/v1/object/public/archivos/${order.archivo}`} />
+            )}
           </div>
         )}
+        <button onClick={() => { setIsEditOrderModalOpen(true); setOrdenAEditar(order); }}>Editar</button>
         <button onClick={() => setIsUpdateStateModalOpen(true)}>
           Actualizar Estado
         </button>
@@ -493,6 +493,13 @@ const OrdenesServicio = () => {
             {renderOrderDetails(selectedOrden)}
             <button onClick={() => setSelectedOrden(null)}>Cerrar</button>
           </div>
+          {/* Modal de edición */}
+          <EditarOrdenModal
+            isOpen={isEditOrderModalOpen}
+            onClose={() => { setIsEditOrderModalOpen(false); setOrdenAEditar(null); }}
+            orden={selectedOrden}
+            onSave={(form) => { setOrdenAEditar(selectedOrden); handleSaveEditOrder(form); }}
+          />
         </div>
       )}
 
@@ -542,11 +549,10 @@ const OrdenesServicio = () => {
                 ))}
               </select>
               <input
-                type="file"
-                accept="application/pdf"
-                onChange={(e) =>
-                  handleInputChange("archivo", e.target.files[0])
-                }
+                type="text"
+                placeholder="URL del archivo (opcional)"
+                value={newOrder.archivo || ""}
+                onChange={(e) => handleInputChange("archivo", e.target.value)}
               />
               <div className="form-actions">
                 <button type="submit" disabled={isLoading}>
