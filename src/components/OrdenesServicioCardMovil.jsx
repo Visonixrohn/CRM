@@ -31,7 +31,7 @@ const OrdenesServicioCard = ({ orden, onVerDetalle, ext, onConsultarCorOne, load
         Marca: {mostrarResuelto ? 'RESUELTO' : loadingCorOne ? 'Cargando...' : ext === undefined ? '' : ext && ext.brand ? ext.brand : (ext === null ? 'Error' : '')}
       </div>
       <div className="analisis-card-value">
-        Falla: {mostrarResuelto ? 'RESUELTO' : loadingCorOne ? 'Cargando...' : ext === undefined ? '' : ext && ext.damage ? ext.damage : (ext === null ? 'Error' : '')}
+        Falla: {mostrarResuelto ? 'RESUELTO' : loadingCorOne ? 'Cargando...' : ext === undefined ? '' : ext === null ? 'Error' : ((ext.damage && ext.damage.trim()) ? ext.damage : (ext.reportedDamage && ext.reportedDamage.trim() ? ext.reportedDamage : 'Sin información'))}
       </div>
       <div className="analisis-card-value">
         Status: {mostrarResuelto ? 'RESUELTO' : loadingCorOne ? 'Cargando...' : ext === undefined ? '' : ext && ext.status ? ext.status : (ext === null ? 'Error' : '')}

@@ -233,7 +233,7 @@ const OrdenesServicio = () => {
           <strong>Marca:</strong> {mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.brand ? ext.brand : (ext === null ? 'Error' : ''))}
         </p>
         <p>
-          <strong>Falla:</strong> {mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.damage ? ext.damage : (ext === null ? 'Error' : ''))}
+          <strong>Falla:</strong> {mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext === null ? 'Error' : ((ext.damage && ext.damage.trim()) ? ext.damage : (ext.reportedDamage && ext.reportedDamage.trim() ? ext.reportedDamage : 'Sin información')))}
         </p>
         <p>
           <strong>Status:</strong> {mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.status ? ext.status : (ext === null ? 'Error' : ''))}
@@ -254,9 +254,7 @@ const OrdenesServicio = () => {
           >
             <iframe
               src={`https://caqukltkvvsfairqphjf.supabase.co/storage/v1/object/public/archivos/${order.archivo}`}
-              title="Vista previa del archivo"
-              className="order-details-iframe"
-            ></iframe>
+            />
           </div>
         )}
         <button onClick={() => setIsUpdateStateModalOpen(true)}>
@@ -438,11 +436,14 @@ const OrdenesServicio = () => {
                     })()}
                   </td>
                   <td data-label="Falla">
-                    {(() => {
-                      if (mostrarResuelto) return 'RESUELTO';
-                      if (loadingCorOne[orden.numero_orden]) return 'Cargando...';
-                      return ext === undefined ? '' : ext && ext.damage ? ext.damage : (ext === null ? 'Error' : '');
-                    })()}
+                      {(() => {
+                        if (mostrarResuelto) return 'RESUELTO';
+                        if (loadingCorOne[orden.numero_orden]) return 'Cargando...';
+                        if (ext === undefined) return '';
+                        if (ext === null) return 'Error';
+                        const dmg = ext.damage && ext.damage.trim() ? ext.damage : (ext.reportedDamage && ext.reportedDamage.trim() ? ext.reportedDamage : 'Sin información');
+                        return dmg;
+                      })()}
                   </td>
                   <td data-label="Status">
                     {(() => {
