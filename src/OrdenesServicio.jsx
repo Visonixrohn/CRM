@@ -233,6 +233,9 @@ const OrdenesServicio = () => {
           <strong>Marca:</strong> {mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.brand ? ext.brand : (ext === null ? 'Error' : ''))}
         </p>
         <p>
+          <strong>Falla:</strong> {mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.damage ? ext.damage : (ext === null ? 'Error' : ''))}
+        </p>
+        <p>
           <strong>Status:</strong> {mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.status ? ext.status : (ext === null ? 'Error' : ''))}
         </p>
         <p>
@@ -356,6 +359,7 @@ const OrdenesServicio = () => {
               {/* <th>ARTÍCULO</th> */}
               <th>MODELO</th>
               <th>MARCA</th>
+              <th>FALLA</th>
               <th>STATUS</th>
               <th>ESTADO</th>
               <th>DIAS</th>
@@ -431,6 +435,13 @@ const OrdenesServicio = () => {
                       if (mostrarResuelto) return 'RESUELTO';
                       if (loadingCorOne[orden.numero_orden]) return 'Cargando...';
                       return ext === undefined ? '' : ext && ext.brand ? ext.brand : (ext === null ? 'Error' : '');
+                    })()}
+                  </td>
+                  <td data-label="Falla">
+                    {(() => {
+                      if (mostrarResuelto) return 'RESUELTO';
+                      if (loadingCorOne[orden.numero_orden]) return 'Cargando...';
+                      return ext === undefined ? '' : ext && ext.damage ? ext.damage : (ext === null ? 'Error' : '');
                     })()}
                   </td>
                   <td data-label="Status">
