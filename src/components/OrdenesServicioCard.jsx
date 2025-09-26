@@ -20,6 +20,7 @@ const OrdenesServicioCard = ({ orden, onVerDetalle }) => (
     <div className={`orden-servicio-card-info estado-card ${getEstadoClass(orden.estado)}`}>
       Estado: {orden.estado}
     </div>
+    {/* Aquí podrías agregar modelo, marca, status si lo deseas en desktop */}
     <button className="orden-servicio-card-btn" onClick={() => onVerDetalle && onVerDetalle(orden)}>
       Ver Detalle
     </button>

@@ -30,7 +30,6 @@ const OrdenesServicio = () => {
     cliente: "",
     numero_orden: "",
     archivo: null,
-    articulo: "",
     dias_trascurridos: 0,
     estado: "",
   });
@@ -40,7 +39,6 @@ const OrdenesServicio = () => {
     fecha: new Date().toISOString().split("T")[0], // Fecha por defecto: hoy
     cliente: "",
     numero_orden: "",
-    articulo: "",
     estado: "",
     archivo: null,
   });
@@ -87,10 +85,15 @@ const OrdenesServicio = () => {
         console.error("Error fetching ordenes:", error);
       } else {
         setOrdenes(data);
-        // Buscar datos extra de cor-one para cada orden
+        // Buscar datos extra de cor-one solo para estados permitidos
+        const estadosPermitidos = [
+          "PENDIENTE DE VISITA",
+          "PENDIENTE DE REPUESTO"
+        ];
         Promise.all(
           (data || []).map(async (orden) => {
             if (!orden.numero_orden) return [orden.numero_orden, null];
+            if (!estadosPermitidos.includes(orden.estado)) return [orden.numero_orden, null];
             const ext = await fetchOrdenCorOne(orden.numero_orden);
             return [orden.numero_orden, ext];
           })
@@ -132,7 +135,6 @@ const OrdenesServicio = () => {
           fecha: new Date().toISOString().split("T")[0],
           cliente: "",
           numero_orden: "",
-          articulo: "",
           estado: "",
           archivo: null,
         });
@@ -146,13 +148,13 @@ const OrdenesServicio = () => {
     const { error } = await supabase.from("ordenes_servicio").insert([
       {
         ...newOrder,
+        articulo: null,
         archivo: archivoUrl,
         tienda_usuario: miTienda,
         user_id: userId,
         gestor: gestor,
       },
     ]);
-
 
     if (error) {
       console.error("Error al guardar la orden:", error);
@@ -170,7 +172,6 @@ const OrdenesServicio = () => {
       fecha: new Date().toISOString().split("T")[0],
       cliente: "",
       numero_orden: "",
-      articulo: "",
       estado: "",
       archivo: null,
     });
@@ -210,54 +211,68 @@ const OrdenesServicio = () => {
     return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
   };
 
-  const renderOrderDetails = (order) => (
-    <div className="order-details">
-      <h3>Detalles de la Orden</h3>
-      <p>
-        <strong>Fecha:</strong> {order.fecha}
-      </p>
-      <p>
-        <strong>Cliente:</strong> {order.cliente}
-      </p>
-      <p>
-        <strong>Número de Orden:</strong> {order.numero_orden}
-      </p>
-      <p>
-        <strong>Artículo:</strong> {order.articulo}
-      </p>
-      <p>
-        <strong>Días Transcurridos:</strong> {calculateDaysElapsed(order.fecha)}
-      </p>
-      <p>
-        <strong>Estado:</strong> {order.estado}
-      </p>
-      {order.archivo && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "10px",
-          }}
-        >
-          <iframe
-            src={`https://caqukltkvvsfairqphjf.supabase.co/storage/v1/object/public/archivos/${order.archivo}`}
-            title="Vista previa del archivo"
-            className="order-details-iframe"
-          ></iframe>
-        </div>
-      )}
-      <button onClick={() => setIsUpdateStateModalOpen(true)}>
-        Actualizar Estado
-      </button>
-      {/* Botón flotante solo móvil para agregar orden */}
-      <BotonFlotanteMovil onClick={() => setIsAddOrderModalOpen(true)} icon={"+"} label="Agregar orden" />
-    </div>
-  );
+  const renderOrderDetails = (order) => {
+    // Obtener datos externos si existen
+    const ext = corOneData && order.numero_orden ? corOneData[order.numero_orden] : undefined;
+    const estadosPermitidos = ["PENDIENTE DE VISITA", "PENDIENTE DE REPUESTO"];
+    const mostrarResuelto = !estadosPermitidos.includes(order.estado);
+    return (
+      <div className="order-details">
+        <h3>Detalles de la Orden</h3>
+        <p>
+          <strong>Fecha:</strong> {order.fecha}
+        </p>
+        <p>
+          <strong>Cliente:</strong> {order.cliente}
+        </p>
+        <p>
+          <strong>Número de Orden:</strong> {order.numero_orden}
+        </p>
+        <p>
+          <strong>Modelo:</strong> {mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.model ? ext.model : (ext === null ? 'Error' : ''))}
+        </p>
+        <p>
+          <strong>Marca:</strong> {mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.brand ? ext.brand : (ext === null ? 'Error' : ''))}
+        </p>
+        <p>
+          <strong>Status:</strong> {mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.status ? ext.status : (ext === null ? 'Error' : ''))}
+        </p>
+        <p>
+          <strong>Días Transcurridos:</strong> {calculateDaysElapsed(order.fecha)}
+        </p>
+        <p>
+          <strong>Estado:</strong> {order.estado}
+        </p>
+        {order.archivo && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "10px",
+            }}
+          >
+            <iframe
+              src={`https://caqukltkvvsfairqphjf.supabase.co/storage/v1/object/public/archivos/${order.archivo}`}
+              title="Vista previa del archivo"
+              className="order-details-iframe"
+            ></iframe>
+          </div>
+        )}
+        <button onClick={() => setIsUpdateStateModalOpen(true)}>
+          Actualizar Estado
+        </button>
+        {/* Botón flotante solo móvil para agregar orden */}
+        <BotonFlotanteMovil onClick={() => setIsAddOrderModalOpen(true)} icon={"+"} label="Agregar orden" />
+      </div>
+    );
+  };
 
   const handleInputChange = (field, value) => {
     if (field === "dias_trascurridos" && isNaN(value)) {
       value = 0;
     }
+    // Ignorar cambios en "articulo"
+    if (field === "articulo") return;
     setNewOrder({ ...newOrder, [field]: value });
   };
 
@@ -318,12 +333,14 @@ const OrdenesServicio = () => {
           const ext = corOneData.hasOwnProperty(orden.numero_orden)
             ? corOneData[orden.numero_orden]
             : undefined;
+          const estadosPermitidos = ["PENDIENTE DE VISITA", "PENDIENTE DE REPUESTO"];
+          const mostrarResuelto = !estadosPermitidos.includes(orden.estado);
           return (
             <OrdenesServicioCardMovil
               key={orden.id}
               orden={orden}
               onVerDetalle={handleRowClick}
-              ext={ext}
+              ext={mostrarResuelto ? { model: 'RESUELTO', brand: 'RESUELTO', status: 'RESUELTO' } : ext}
             />
           );
         })}
@@ -336,7 +353,7 @@ const OrdenesServicio = () => {
               <th>FECHA</th>
               <th>CLIENTE</th>
               <th>NÚMERO DE ORDEN</th>
-              <th>ARTÍCULO</th>
+              {/* <th>ARTÍCULO</th> */}
               <th>MODELO</th>
               <th>MARCA</th>
               <th>STATUS</th>
@@ -377,15 +394,27 @@ const OrdenesServicio = () => {
                       </svg>
                     </button>
                   </td>
-                  <td data-label="Artículo">{orden.articulo}</td>
+                  {/* <td data-label="Artículo">{orden.articulo}</td> */}
                   <td data-label="Modelo">
-                    {ext === undefined ? 'Cargando...' : ext && ext.model ? ext.model : (ext === null ? 'Error' : '')}
+                    {(() => {
+                      const estadosPermitidos = ["PENDIENTE DE VISITA", "PENDIENTE DE REPUESTO"];
+                      if (!estadosPermitidos.includes(orden.estado)) return 'RESUELTO';
+                      return ext === undefined ? 'Cargando...' : ext && ext.model ? ext.model : (ext === null ? 'Error' : '');
+                    })()}
                   </td>
                   <td data-label="Marca">
-                    {ext === undefined ? 'Cargando...' : ext && ext.brand ? ext.brand : (ext === null ? 'Error' : '')}
+                    {(() => {
+                      const estadosPermitidos = ["PENDIENTE DE VISITA", "PENDIENTE DE REPUESTO"];
+                      if (!estadosPermitidos.includes(orden.estado)) return 'RESUELTO';
+                      return ext === undefined ? 'Cargando...' : ext && ext.brand ? ext.brand : (ext === null ? 'Error' : '');
+                    })()}
                   </td>
                   <td data-label="Status">
-                    {ext === undefined ? 'Cargando...' : ext && ext.status ? ext.status : (ext === null ? 'Error' : '')}
+                    {(() => {
+                      const estadosPermitidos = ["PENDIENTE DE VISITA", "PENDIENTE DE REPUESTO"];
+                      if (!estadosPermitidos.includes(orden.estado)) return 'RESUELTO';
+                      return ext === undefined ? 'Cargando...' : ext && ext.status ? ext.status : (ext === null ? 'Error' : '');
+                    })()}
                   </td>
                   <td
                     data-label="Estado"
@@ -466,13 +495,6 @@ const OrdenesServicio = () => {
                 onChange={(e) =>
                   handleInputChange("numero_orden", e.target.value)
                 }
-                required
-              />
-              <input
-                type="text"
-                placeholder="Artículo"
-                value={newOrder.articulo || ""}
-                onChange={(e) => handleInputChange("articulo", e.target.value)}
                 required
               />
               <select
