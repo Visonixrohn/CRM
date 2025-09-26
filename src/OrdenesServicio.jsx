@@ -40,7 +40,7 @@ const OrdenesServicio = () => {
     fecha: new Date().toISOString().split("T")[0], // Fecha por defecto: hoy
     cliente: "",
     numero_orden: "",
-    estado: "",
+    estado: "PENDIENTE DE VISITA",
     archivo: null,
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -534,13 +534,9 @@ const OrdenesServicio = () => {
                 required
               />
               <select
-                value={newOrder.estado || ""}
+                value={newOrder.estado || "PENDIENTE DE VISITA"}
                 onChange={(e) => handleInputChange("estado", e.target.value)}
-                required
               >
-                <option value="" disabled>
-                  Selecciona un estado
-                </option>
                 {estados.map((estado) => (
                   <option key={estado} value={estado}>
                     {estado}
@@ -553,7 +549,6 @@ const OrdenesServicio = () => {
                 onChange={(e) =>
                   handleInputChange("archivo", e.target.files[0])
                 }
-                required
               />
               <div className="form-actions">
                 <button type="submit" disabled={isLoading}>
