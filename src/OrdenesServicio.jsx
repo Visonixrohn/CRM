@@ -22,6 +22,7 @@ import BotonFlotanteMovil from "./components/BotonFlotanteMovil";
 const OrdenesServicio = () => {
   const [ordenes, setOrdenes] = useState([]);
   const [corOneData, setCorOneData] = useState({}); // { [numero_orden]: { brand, model, status } }
+  const [loadingCorOne, setLoadingCorOne] = useState({}); // { [numero_orden]: boolean }
   const [miTienda, setMiTienda] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [gestor, setGestor] = useState("");
@@ -85,29 +86,26 @@ const OrdenesServicio = () => {
         console.error("Error fetching ordenes:", error);
       } else {
         setOrdenes(data);
-        // Buscar datos extra de cor-one solo para estados permitidos
-        const estadosPermitidos = [
-          "PENDIENTE DE VISITA",
-          "PENDIENTE DE REPUESTO"
-        ];
-        Promise.all(
-          (data || []).map(async (orden) => {
-            if (!orden.numero_orden) return [orden.numero_orden, null];
-            if (!estadosPermitidos.includes(orden.estado)) return [orden.numero_orden, null];
-            const ext = await fetchOrdenCorOne(orden.numero_orden);
-            return [orden.numero_orden, ext];
-          })
-        ).then((results) => {
-          const extData = {};
-          results.forEach(([num, ext]) => {
-            if (num && ext) extData[num] = ext;
-          });
-          setCorOneData(extData);
-        });
+        // Ya no se consulta cor-one automáticamente
+        setCorOneData({});
+        setLoadingCorOne({});
       }
     };
     fetchOrdenes();
   }, [miTienda]);
+
+  // Consulta bajo demanda
+  const handleConsultarCorOne = async (numero_orden) => {
+    setLoadingCorOne(prev => ({ ...prev, [numero_orden]: true }));
+    try {
+      const ext = await fetchOrdenCorOne(numero_orden);
+      setCorOneData(prev => ({ ...prev, [numero_orden]: ext }));
+    } catch (e) {
+      setCorOneData(prev => ({ ...prev, [numero_orden]: null }));
+    } finally {
+      setLoadingCorOne(prev => ({ ...prev, [numero_orden]: false }));
+    }
+  };
 
   const handleAddOrder = async (e) => {
     e.preventDefault();
@@ -341,6 +339,8 @@ const OrdenesServicio = () => {
               orden={orden}
               onVerDetalle={handleRowClick}
               ext={mostrarResuelto ? { model: 'RESUELTO', brand: 'RESUELTO', status: 'RESUELTO' } : ext}
+              onConsultarCorOne={() => handleConsultarCorOne(orden.numero_orden)}
+              loadingCorOne={!!loadingCorOne[orden.numero_orden]}
             />
           );
         })}
@@ -367,6 +367,8 @@ const OrdenesServicio = () => {
               const ext = corOneData.hasOwnProperty(orden.numero_orden)
                 ? corOneData[orden.numero_orden]
                 : undefined;
+              const estadosPermitidos = ["PENDIENTE DE VISITA", "PENDIENTE DE REPUESTO"];
+              const mostrarResuelto = !estadosPermitidos.includes(orden.estado);
               return (
                 <tr key={orden.id} onClick={() => handleRowClick(orden)}>
                   <td data-label="Fecha">{orden.fecha}</td>
@@ -393,27 +395,49 @@ const OrdenesServicio = () => {
                         <rect x="3" y="3" width="13" height="13" rx="2" stroke="#1976d2" strokeWidth="2" fill="#e3f2fd"/>
                       </svg>
                     </button>
+                    <button
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleConsultarCorOne(orden.numero_orden);
+                      }}
+                      title="Consultar modelo, marca y status"
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        marginLeft: 4,
+                        padding: 0,
+                        verticalAlign: 'middle',
+                      }}
+                    >
+                      {/* Icono lupa */}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{verticalAlign: 'middle'}}>
+                        <circle cx="11" cy="11" r="7" stroke="#6366f1" strokeWidth="2" fill="#fff"/>
+                        <line x1="16" y1="16" x2="21" y2="21" stroke="#6366f1" strokeWidth="2"/>
+                      </svg>
+                      {loadingCorOne[orden.numero_orden] && <span style={{marginLeft:4, fontSize:10}}>...</span>}
+                    </button>
                   </td>
                   {/* <td data-label="Artículo">{orden.articulo}</td> */}
                   <td data-label="Modelo">
                     {(() => {
-                      const estadosPermitidos = ["PENDIENTE DE VISITA", "PENDIENTE DE REPUESTO"];
-                      if (!estadosPermitidos.includes(orden.estado)) return 'RESUELTO';
-                      return ext === undefined ? 'Cargando...' : ext && ext.model ? ext.model : (ext === null ? 'Error' : '');
+                      if (mostrarResuelto) return 'RESUELTO';
+                      if (loadingCorOne[orden.numero_orden]) return 'Cargando...';
+                      return ext === undefined ? '' : ext && ext.model ? ext.model : (ext === null ? 'Error' : '');
                     })()}
                   </td>
                   <td data-label="Marca">
                     {(() => {
-                      const estadosPermitidos = ["PENDIENTE DE VISITA", "PENDIENTE DE REPUESTO"];
-                      if (!estadosPermitidos.includes(orden.estado)) return 'RESUELTO';
-                      return ext === undefined ? 'Cargando...' : ext && ext.brand ? ext.brand : (ext === null ? 'Error' : '');
+                      if (mostrarResuelto) return 'RESUELTO';
+                      if (loadingCorOne[orden.numero_orden]) return 'Cargando...';
+                      return ext === undefined ? '' : ext && ext.brand ? ext.brand : (ext === null ? 'Error' : '');
                     })()}
                   </td>
                   <td data-label="Status">
                     {(() => {
-                      const estadosPermitidos = ["PENDIENTE DE VISITA", "PENDIENTE DE REPUESTO"];
-                      if (!estadosPermitidos.includes(orden.estado)) return 'RESUELTO';
-                      return ext === undefined ? 'Cargando...' : ext && ext.status ? ext.status : (ext === null ? 'Error' : '');
+                      if (mostrarResuelto) return 'RESUELTO';
+                      if (loadingCorOne[orden.numero_orden]) return 'Cargando...';
+                      return ext === undefined ? '' : ext && ext.status ? ext.status : (ext === null ? 'Error' : '');
                     })()}
                   </td>
                   <td
