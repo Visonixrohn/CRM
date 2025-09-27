@@ -337,7 +337,7 @@ const Cotizaciones = () => {
           })()}
         </div>
         {/* Solo desktop: tabla */}
-        {planSeleccionado && (
+        {(planSeleccionado && capital > 0 && prima > 0) && (
           <div className={`showOnlyDesktop ${styles.cotizacionesTableWrap} ${cardMobileStyles.cardMobile}`} style={{marginTop: 0}}>
             <div className={cardMobileStyles.cardMobileTitle}>Tabla de Amortización</div>
             <TablaAmortizacion
@@ -350,7 +350,7 @@ const Cotizaciones = () => {
           </div>
         )}
         {/* Solo móvil: cards */}
-        {planSeleccionado && (
+        {(planSeleccionado && capital > 0 && prima > 0) && (
           <div className="showOnlyMobile">
             <AmortizacionCardsMobile
               capital={capital}
