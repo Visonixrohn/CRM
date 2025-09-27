@@ -33,6 +33,8 @@ import ResetPassword from "./ResetPassword";
 import Configuraciones from "./Configuraciones";
 import { Routes, Route, useLocation, Navigate, useNavigate } from "react-router-dom";
 import Admin from "./Admin";
+import Aprendisaje from "./Aprendisaje";
+import AprendisajeMovil from "./AprendisajeMovil";
 
 function App() {
   const navigate = useNavigate();
@@ -299,6 +301,7 @@ function App() {
                 <Route path="/admin" element={<Admin />} />
               )}
               <Route path="/configuraciones" element={<Configuraciones />} />
+              <Route path="/aprendisaje" element={isMobile ? <AprendisajeMovil /> : <Aprendisaje />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>

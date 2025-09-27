@@ -188,6 +188,16 @@ const Sidebar = ({
           <FaPercent className="icon-text" style={{ color: '#ff9800' }} />
           <span className="sidebar-tooltip">Promedios</span>
         </Link>
+        <Link
+          to="/aprendisaje"
+          className="sidebar-icon"
+          title="Aprendisaje"
+          style={{ position: "relative" }}
+          onClick={handleNavClick}
+        >
+          <FaBook className="icon-text" style={{ color: '#009688' }} />
+          <span className="sidebar-tooltip">Aprendisaje</span>
+        </Link>
        
         {/* Icono de Admin solo para superadmin */}
         {user && user.rol === "superadmin" && (

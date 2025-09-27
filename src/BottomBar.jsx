@@ -41,6 +41,7 @@ function getIconsWithAdmin() {
     { key: "gestion", label: "Gestión", icon: <FaPhone color="#2196f3" /> },
     { key: "seguimiento", label: "Seguimiento", icon: <FaSearch color="#2196f3" /> },
     { key: "configuraciones", label: "Configuraciones", icon: <FaCog color="#2196f3" /> },
+    { key: "aprendisaje", label: "Aprendisaje", icon: <FaBook color="#009688" /> },
   ];
   if (user && (user.rol === "admin" || user.rol === "superadmin")) {
     icons.push({ key: "admin", label: "Admin", icon: <FaUserShield color="#8e24aa" /> });
