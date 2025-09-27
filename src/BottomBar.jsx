@@ -15,7 +15,8 @@ import {
   FaCreditCard,
   FaCog,
   FaSearch,
-  FaUserShield
+  FaUserShield,
+  FaPercent
 } from "react-icons/fa";
 import "./BottomBar.css";
 
@@ -31,6 +32,7 @@ function getIconsWithAdmin() {
     { key: "ordenes", label: "Órdenes", icon: <FaBook color="#2196f3" /> },
     { key: "calculadoras", label: "Calculadoras", icon: <FaCalculator color="#2196f3" /> },
     { key: "razones", label: "Razones", icon: <FaClipboardList color="#2196f3" /> },
+    { key: "promedios", label: "Promedios", icon: <FaPercent color="#ff9800" /> },
     { key: "tiendas", label: "Tiendas", icon: <FaStore color="#2196f3" /> },
     { key: "documentos", label: "Documentos", icon: <FaFileAlt color="#2196f3" /> },
     { key: "clientes-nuevos", label: "Clientes Nuevos", icon: <FaUserPlus color="#2196f3" /> },
