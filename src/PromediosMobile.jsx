@@ -36,17 +36,18 @@ const inputStyle = {
   outline: "none",
 };
 const buttonStyle = {
-  padding: "10px 18px",
-  borderRadius: 10,
-  background: "linear-gradient(90deg,#2196f3,#00b7ff)",
-  color: "#fff",
-  border: "none",
-  fontWeight: "bold",
-  fontSize: 17,
-  boxShadow: "0 2px 8px #2196f322",
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
+  padding: "10px 16px",
+  borderRadius: 8,
+  border: "1.5px solid #90caf9",
+  fontSize: 18,
+  background: "#f7fafd",
+  color: "#1976d2",
+  fontWeight: 700,
+  outline: "none",
+  marginTop: 6,
+  fontFamily: 'inherit',
+  fontStyle: 'normal',
+  letterSpacing: '0.5px',
 };
 
 const PromediosMobile = () => {
@@ -145,7 +146,7 @@ const PromediosMobile = () => {
           min={1}
           value={meses}
           onChange={e => setMeses(Number(e.target.value))}
-          style={inputStyle}
+          style={{ ...inputStyle, color: '#1976d2', fontWeight: 700 }}
         />
         <label style={{ fontWeight: 600, color: "#1976d2", fontSize: 15, marginBottom: 2, letterSpacing: 0.5, marginTop: 10 }}>Porcentaje</label>
         <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
@@ -155,7 +156,7 @@ const PromediosMobile = () => {
             max={100}
             value={porcentaje}
             onChange={e => setPorcentaje(Number(e.target.value))}
-            style={{ ...inputStyle, paddingRight: 28 }}
+            style={{ ...inputStyle, paddingRight: 28, color: '#1976d2', fontWeight: 700 }}
           />
           <span style={{ position: "absolute", right: 12, color: "#1976d2", fontWeight: 600, fontSize: 15 }}>%</span>
         </div>
@@ -165,7 +166,7 @@ const PromediosMobile = () => {
           type="number"
           value={cuotaUtilizada}
           onChange={e => setCuotaUtilizada(e.target.value)}
-          style={{ ...inputStyle, minWidth: 120 }}
+          style={{ ...inputStyle, minWidth: 120, color: '#1976d2', fontWeight: 700 }}
           placeholder="Ingrese la cuota"
         />
         <label style={{ fontWeight: 600, color: "#1976d2", fontSize: 15, marginBottom: 2, letterSpacing: 0.5, marginTop: 10 }}>Nuevo ingreso</label>
@@ -175,7 +176,7 @@ const PromediosMobile = () => {
             placeholder="Nuevo ingreso"
             value={nuevoIngreso}
             onChange={e => setNuevoIngreso(e.target.value)}
-            style={{ ...inputStyle, width: "100%" }}
+            style={{ ...inputStyle, width: "100%", color: '#1976d2', fontWeight: 700 }}
           />
           <button onClick={agregarIngreso} style={buttonStyle}><FaPlus style={{ marginRight: 6 }} />Agregar</button>
         </div>

@@ -17,17 +17,20 @@ const cardStyle = {
 
 const inputStyle = {
   width: 120,
-  padding: "12px 16px",
-  borderRadius: 12,
-  border: "2px solid #90caf9",
+  padding: "10px 16px",
+  borderRadius: 8,
+  border: "1.5px solid #90caf9",
   fontSize: 18,
-  background: "linear-gradient(90deg,#f7fafd 80%,#e3f2fd 100%)",
-  marginTop: 8,
-  marginBottom: 6,
-  boxShadow: "0 2px 12px #90caf922",
+  background: "#f7fafd",
+  color: "#1976d2",
+  fontWeight: 700,
   outline: "none",
-  transition: "border 0.2s, box-shadow 0.2s",
-};
+  marginTop: 6,
+  fontFamily: 'inherit',
+  fontStyle: 'normal',
+  letterSpacing: '0.5px',
+}
+
 
 const buttonStyle = {
   padding: "10px 24px",
@@ -165,7 +168,7 @@ const Promedios = () => {
               min={1}
               value={meses}
               onChange={e => setMeses(Number(e.target.value))}
-              style={inputStyle}
+              style={{ ...inputStyle, color: '#1976d2', fontWeight: 700 }}
             />
           </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", background: "#fff3e0", borderRadius: 14, padding: "18px 20px", boxShadow: "0 2px 8px #ff980011", minWidth: 180 }}>
@@ -177,7 +180,7 @@ const Promedios = () => {
                 max={100}
                 value={porcentaje}
                 onChange={e => setPorcentaje(Number(e.target.value))}
-                style={{ ...inputStyle, paddingRight: 28 }}
+                style={{ ...inputStyle, paddingRight: 28, color: '#1976d2', fontWeight: 700 }}
               />
               <span style={{ position: "absolute", right: 12, color: "#1976d2", fontWeight: 600, fontSize: 16 }}>%</span>
             </div>
@@ -189,7 +192,7 @@ const Promedios = () => {
               type="number"
               value={cuotaUtilizada}
               onChange={e => setCuotaUtilizada(e.target.value)}
-              style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid #ccc', fontSize: 16, minWidth: 120 }}
+              style={{ ...inputStyle, minWidth: 120, color: '#1976d2', fontWeight: 700 }}
               placeholder="Ingrese la cuota"
             />
             <label style={{ fontWeight: 600, color: "#1976d2", fontSize: 16, marginBottom: 2, letterSpacing: 0.5, marginTop: 12 }}>Nuevo ingreso</label>
@@ -199,7 +202,7 @@ const Promedios = () => {
                  placeholder="Nuevo ingreso"
                  value={nuevoIngreso}
                  onChange={e => setNuevoIngreso(e.target.value)}
-                 style={{ ...inputStyle, width: 180 }}
+                 style={{ ...inputStyle, width: 180, color: '#1976d2', fontWeight: 700 }}
               />
               <button onClick={agregarIngreso} style={buttonStyle}><FaPlus style={{ marginRight: 8 }} />Agregar</button>
             </div>
