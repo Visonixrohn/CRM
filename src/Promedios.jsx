@@ -171,6 +171,20 @@ const Promedios = () => {
               <button onClick={agregarIngreso} style={buttonStyle}>Agregar</button>
             </div>
           </div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "flex-end" }}>
+            <label style={{ visibility: "hidden" }}>Limpiar</label>
+            <button
+              onClick={() => {
+                setIngresos([]);
+                setMeses(1);
+                setPorcentaje(0);
+                setNuevoIngreso("");
+              }}
+              style={{ ...buttonStyle, background: "linear-gradient(90deg,#ff5252,#2196f3)", marginTop: 2 }}
+            >
+              Limpiar
+            </button>
+          </div>
         </div>
       </div>
       {/* Columna derecha: Tabla */}
