@@ -31,6 +31,7 @@ import Cotizaciones from "./Cotizaciones";
 import ResetPassword from "./ResetPassword";
 import Configuraciones from "./Configuraciones";
 import { Routes, Route, useLocation, Navigate, useNavigate } from "react-router-dom";
+import Promedios from "./Promedios";
 import Admin from "./Admin";
 
 function App() {
@@ -287,6 +288,7 @@ function App() {
               <Route path="/clientes-nuevos" element={<ClientesNuevos />} />
               <Route path="/cotizaciones" element={<Cotizaciones />} />
               <Route path="/actualizaciones" element={<Actualizaciones />} />
+              <Route path="/promedios" element={<Promedios />} />
               <Route path="/gestion" element={<Gestion />} />
               <Route path="/gestion/no_contestan" element={<TablaFiltradaPorEstado estado="no_contestan" />} />
               <Route path="/gestion/no_quiere" element={<TablaFiltradaPorEstado estado="no_quiere" />} />

@@ -15,7 +15,8 @@ import {
   FaCreditCard,
   FaCog,
   FaSearch,
-  FaUserShield
+  FaUserShield,
+  FaPercent
 } from "react-icons/fa";
 import "./Sidebar.css";
 import { supabase } from "./supabaseClient";
@@ -176,6 +177,16 @@ const Sidebar = ({
         >
           <FaUsers className="icon-text" />
           <span className="sidebar-tooltip">Actualizaciones</span>
+        </Link>
+        <Link
+          to="/promedios"
+          className="sidebar-icon"
+          title="Promedios"
+          style={{ position: "relative" }}
+          onClick={handleNavClick}
+        >
+          <FaPercent className="icon-text" style={{ color: '#ff9800' }} />
+          <span className="sidebar-tooltip">Promedios</span>
         </Link>
        
         {/* Icono de Admin solo para superadmin */}
