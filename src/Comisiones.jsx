@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from "react";
+import useClientesNuevosSupabase from "./useClientesNuevosSupabase";
 import useGestionResumen from "./useGestionResumen";
 import useClientesParaHoy from "./useClientesParaHoy";
-// import useActualizaciones from "./useActualizaciones";
-import NotificacionesSinTomar from "./NotificacionesSinTomar";
+import useActualizaciones from "./useActualizaciones";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabaseClient";
 import Modal from "react-modal";
 import "./Comisiones.css";
@@ -32,6 +33,7 @@ const ActionButton = ({ onClick, label, icon }) => (
 );
 
 const Comisiones = ({ setPage }) => {
+  const navigate = useNavigate();
   // Función para actualizar o insertar el gasto mensual del usuario actual
   const upsertGastoMensualInSupabase = async (gastoValue) => {
     try {
@@ -286,7 +288,11 @@ const Comisiones = ({ setPage }) => {
     closeModal();
   };
 
-
+  // Obtener datos de clientes nuevos y actualizaciones
+  const { clientes: clientesNuevos = [] } = useClientesNuevosSupabase();
+  const { datos: actualizaciones = [] } = useActualizaciones();
+  const clientesNuevosSinTomar = clientesNuevos.filter(c => c.STATUS !== "Tomado").length;
+  const actualizacionesSinTomar = actualizaciones.filter(a => !a.status || a.status === "" || a.status === "Sin tomar" || a.status === undefined || a.status === null).length;
 
   // Return principal del componente
   return (
@@ -402,10 +408,30 @@ const Comisiones = ({ setPage }) => {
               icon="💳"
               style={{ background: '#a21caf', color: '#fff' }}
             />
-              <NotificacionesSinTomar
-                onClickClientes={() => setPage && setPage('clientes-nuevos')}
-                onClickActualizaciones={() => setPage && setPage('actualizaciones')}
-              />
+            {clientesNuevosSinTomar > 0 && (
+              <button
+                className="header-round-btn info"
+                style={{background:'#2563eb',color:'#fff'}} 
+                onClick={() => {
+                  if (typeof setPage === 'function') setPage('clientes-nuevos');
+                  navigate('/clientes-nuevos');
+                }}
+              >
+                Clientes nuevos: {clientesNuevosSinTomar}
+              </button>
+            )}
+            {actualizacionesSinTomar > 0 && (
+              <button
+                className="header-round-btn warning"
+                style={{background:'#fbbf24',color:'#fff'}} 
+                onClick={() => {
+                  if (typeof setPage === 'function') setPage('actualizaciones');
+                  navigate('/actualizaciones');
+                }}
+              >
+                Actualizaciones: {actualizacionesSinTomar}
+              </button>
+            )}
           </div>
           {/* Bloque de análisis visual */}
           {/* Solo visible en móviles */}

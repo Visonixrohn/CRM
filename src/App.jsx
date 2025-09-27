@@ -24,6 +24,7 @@ import Tiendas from "./Tiendas";
 import Documentos from "./Documentos";
 import ClientesNuevos from "./ClientesNuevos";
 import Actualizaciones from "./Actualizaciones";
+import Promedios from "./Promedios";
 import LoadingScreen from "./LoadingScreen";
 import Gestion from "./Gestion";
 import TablaFiltradaPorEstado from "./TablaFiltradaPorEstado";
@@ -31,7 +32,6 @@ import Cotizaciones from "./Cotizaciones";
 import ResetPassword from "./ResetPassword";
 import Configuraciones from "./Configuraciones";
 import { Routes, Route, useLocation, Navigate, useNavigate } from "react-router-dom";
-import Promedios from "./Promedios";
 import Admin from "./Admin";
 
 function App() {

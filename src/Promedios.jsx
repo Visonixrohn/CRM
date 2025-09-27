@@ -76,10 +76,13 @@ const Promedios = () => {
   const [ingresos, setIngresos] = useState([]);
   const [nuevoIngreso, setNuevoIngreso] = useState("");
 
+  const [cuotaUtilizada, setCuotaUtilizada] = useState("");
   // Calcular promedio: suma total de ingresos entre los meses
   const sumaIngresos = ingresos.reduce((acc, val) => acc + parseFloat(val || 0), 0);
   const promedio = meses > 0 ? sumaIngresos / meses : 0;
   const cuotaCalculada = promedio * (porcentaje / 100);
+  const cuotaUtilizadaNum = parseFloat(cuotaUtilizada) || 0;
+  const cuotaRestante = cuotaCalculada - cuotaUtilizadaNum;
 
   // Formateador de miles con comas
   const formatNumber = (num) => {
@@ -129,8 +132,12 @@ const Promedios = () => {
             <div style={{ fontWeight: "bold", fontSize: 26, color: "#2196f3", marginTop: 2 }}>{formatNumber(promedio)}</div>
           </div>
           <div style={{ ...cardStyle, background: "#fff3e0" }}>
-            <div style={{ fontSize: 15, color: "#ff9800", fontWeight: 500 }}>Cuota calculada</div>
-            <div style={{ fontWeight: "bold", fontSize: 26, color: "#ff9800", marginTop: 2 }}>{formatNumber(cuotaCalculada)}</div>
+             <div style={{ fontSize: 15, color: "#ff9800", fontWeight: 500 }}>Cuota calculada</div>
+             <div style={{ fontWeight: "bold", fontSize: 26, color: "#ff9800", marginTop: 2 }}>{formatNumber(cuotaCalculada)}</div>
+           </div>
+           <div style={{ ...cardStyle, background: "#e8f5e9" }}>
+             <div style={{ fontSize: 15, color: "#388e3c", fontWeight: 500 }}>Cuota restante</div>
+             <div style={{ fontWeight: "bold", fontSize: 26, color: "#388e3c", marginTop: 2 }}>{formatNumber(cuotaRestante)}</div>
           </div>
         </div>
         <div style={{ display: "flex", gap: 18, marginBottom: 18, flexWrap: "wrap", justifyContent: "center" }}>
@@ -159,14 +166,25 @@ const Promedios = () => {
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+            <label htmlFor="cuota-utilizada" style={{ fontWeight: 600, color: "#1976d2", fontSize: 16, marginBottom: 2, letterSpacing: 0.5 }}>Cuota utilizada:</label>
+            <input
+              id="cuota-utilizada"
+              type="number"
+              value={cuotaUtilizada}
+              onChange={e => setCuotaUtilizada(e.target.value)}
+              style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid #ccc', fontSize: 16, minWidth: 120 }}
+              placeholder="Ingrese la cuota"
+            />
+          </div>
             <label style={{ fontWeight: 600, color: "#1976d2", fontSize: 16, marginBottom: 2, letterSpacing: 0.5 }}>Nuevo ingreso</label>
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
               <input
-                type="number"
-                placeholder="Nuevo ingreso"
-                value={nuevoIngreso}
-                onChange={e => setNuevoIngreso(e.target.value)}
-                style={{ ...inputStyle, width: 140 }}
+                 type="number"
+                 placeholder="Nuevo ingreso"
+                 value={nuevoIngreso}
+                 onChange={e => setNuevoIngreso(e.target.value)}
+                 style={{ ...inputStyle, width: 260 }}
               />
               <button onClick={agregarIngreso} style={buttonStyle}>Agregar</button>
             </div>
