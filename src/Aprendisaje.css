@@ -2,7 +2,7 @@
   max-width: 700px;
   margin: 0 auto;
   padding: 32px 16px 24px 16px;
-  background: linear-gradient(120deg, #6a1b9a 0%, #1976d2 100%);
+  background: linear-gradient(120deg, #ffffff 0%, #1976d2 100%);
   border-radius: 18px;
   box-shadow: 0 4px 24px rgba(60, 60, 120, 0.12);
   color: #fff;
@@ -29,13 +29,19 @@
   box-shadow: 0 2px 8px rgba(60, 60, 120, 0.08);
   overflow: hidden;
   transition: box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
 }
-.aprendisaje-card.open {
-  box-shadow: 0 4px 16px rgba(60, 60, 120, 0.18);
+
+.aprendisaje-card-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
 }
 
 .aprendisaje-card-header {
-  width: 100%;
+  min-width: 260px;
+  max-width: 320px;
   background: linear-gradient(90deg, #7c4dff 0%, #1976d2 100%);
   color: #fff;
   border: none;
@@ -48,45 +54,37 @@
   justify-content: space-between;
   cursor: pointer;
   transition: background 0.2s;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  border-right: 2px solid #e1bee7;
+  box-shadow: 0 2px 8px rgba(60, 60, 120, 0.06);
 }
 .aprendisaje-card-header:hover {
   background: linear-gradient(90deg, #512da8 0%, #1565c0 100%);
 }
 
-.aprendisaje-card-num {
-  background: #8e24aa;
-  color: #fff;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-right: 18px;
-}
-
-.aprendisaje-card-title {
+.aprendisaje-card-body-right {
   flex: 1;
-  text-align: left;
-}
-
-.aprendisaje-card-arrow {
-  font-size: 1.2rem;
-  margin-left: 18px;
-}
-
-.aprendisaje-card-body {
-  padding: 18px 24px 16px 24px;
   background: #f3e5f5;
   color: #222;
-  border-top: 1px solid #e1bee7;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  border-left: 2px solid #e1bee7;
+  padding: 24px 32px 18px 32px;
+  box-shadow: 0 2px 8px rgba(60, 60, 120, 0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .aprendisaje-explicacion {
   margin-bottom: 12px;
-  font-size: 1.05rem;
+  font-size: 1.08rem;
+  background: #e3f2fd;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #1976d2;
+  font-weight: 500;
 }
 
 .aprendisaje-consejos ul {
@@ -96,15 +94,17 @@
 
 .aprendisaje-consejos li {
   margin-bottom: 6px;
+  font-size: 1.01rem;
 }
 
 .aprendisaje-ejercicio {
   margin-top: 12px;
-  background: #e3f2fd;
+  background: #fffde7;
   padding: 10px 14px;
   border-radius: 8px;
-  color: #1976d2;
+  color: #8e24aa;
   font-weight: 500;
+  border: 1px solid #ffe082;
 }
 
 .aprendisaje-motivador {

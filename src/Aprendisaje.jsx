@@ -127,37 +127,39 @@ const Accordion = ({ pasos }) => {
 					}`}
 					key={idx}
 				>
-					<button
-						className="aprendisaje-card-header"
-						onClick={() =>
-							setOpenIndex(openIndex === idx ? null : idx)
-						}
-					>
-						<span className="aprendisaje-card-num">{idx + 1}</span>
-						<span className="aprendisaje-card-title">{paso.titulo}</span>
-						<span className="aprendisaje-card-arrow">
-							{openIndex === idx ? "▲" : "▼"}
-						</span>
-					</button>
-					{openIndex === idx && (
-						<div className="aprendisaje-card-body">
-							<div className="aprendisaje-explicacion">
-								{paso.explicacion}
+					<div className="aprendisaje-card-row">
+						<button
+							className="aprendisaje-card-header"
+							onClick={() =>
+								setOpenIndex(openIndex === idx ? null : idx)
+							}
+						>
+							<span className="aprendisaje-card-num">{idx + 1}</span>
+							<span className="aprendisaje-card-title">{paso.titulo}</span>
+							<span className="aprendisaje-card-arrow">
+								{openIndex === idx ? "▲" : "▼"}
+							</span>
+						</button>
+						{openIndex === idx && (
+							<div className="aprendisaje-card-body-right">
+								<div className="aprendisaje-explicacion">
+									<strong>Explicación:</strong> {paso.explicacion}
+								</div>
+								<div className="aprendisaje-consejos">
+									<strong>Consejos prácticos:</strong>
+									<ul>
+										{paso.consejos.map((c, i) => (
+											<li key={i}>{c}</li>
+										))}
+									</ul>
+								</div>
+								<div className="aprendisaje-ejercicio">
+									<strong>Ejercicio sugerido:</strong>
+									<div>{paso.ejercicio}</div>
+								</div>
 							</div>
-							<div className="aprendisaje-consejos">
-								<strong>Consejos prácticos:</strong>
-								<ul>
-									{paso.consejos.map((c, i) => (
-										<li key={i}>{c}</li>
-									))}
-								</ul>
-							</div>
-							<div className="aprendisaje-ejercicio">
-								<strong>Ejercicio sugerido:</strong>
-								<div>{paso.ejercicio}</div>
-							</div>
-						</div>
-					)}
+						)}
+					</div>
 				</div>
 			))}
 		</div>
