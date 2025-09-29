@@ -116,68 +116,55 @@ function getFraseMotivacional() {
 	];
 }
 
-const Accordion = ({ pasos }) => {
-	const [openIndex, setOpenIndex] = useState(null);
-	return (
-		<div className="aprendisaje-accordion">
-			{pasos.map((paso, idx) => (
-				<div
-					className={`aprendisaje-card${
-						openIndex === idx ? " open" : ""
-					}`}
-					key={idx}
-				>
-					<div className="aprendisaje-card-row">
-						<button
-							className="aprendisaje-card-header"
-							onClick={() =>
-								setOpenIndex(openIndex === idx ? null : idx)
-							}
-						>
-							<span className="aprendisaje-card-num">{idx + 1}</span>
-							<span className="aprendisaje-card-title">{paso.titulo}</span>
-							<span className="aprendisaje-card-arrow">
-								{openIndex === idx ? "▲" : "▼"}
-							</span>
-						</button>
-						{openIndex === idx && (
-							<div className="aprendisaje-card-body-right">
-								<div className="aprendisaje-explicacion">
-									<strong>Explicación:</strong> {paso.explicacion}
-								</div>
-								<div className="aprendisaje-consejos">
-									<strong>Consejos prácticos:</strong>
-									<ul>
-										{paso.consejos.map((c, i) => (
-											<li key={i}>{c}</li>
-										))}
-									</ul>
-								</div>
-								<div className="aprendisaje-ejercicio">
-									<strong>Ejercicio sugerido:</strong>
-									<div>{paso.ejercicio}</div>
-								</div>
-							</div>
-						)}
-					</div>
-				</div>
-			))}
-		</div>
-	);
-};
 
 const Aprendisaje = () => {
 	const [frase, setFrase] = useState(getFraseMotivacional());
+	const [temaSeleccionado, setTemaSeleccionado] = useState(0);
 	return (
-		<div className="aprendisaje-main">
+		<div className="aprendisaje-main split-view">
 			<h2 className="aprendisaje-title">Curso de Ventas Interactivo</h2>
-			<Accordion pasos={pasos} />
+			<div className="aprendisaje-split-container">
+				<div className="aprendisaje-temas-lista">
+					<h3 className="aprendisaje-temas-titulo">Temas</h3>
+					<ul>
+						{pasos.map((paso, idx) => (
+							<li
+								key={idx}
+								className={
+									"aprendisaje-tema-item" + (temaSeleccionado === idx ? " seleccionado" : "")
+								}
+								onClick={() => setTemaSeleccionado(idx)}
+							>
+								<span className="aprendisaje-tema-num">{idx + 1}</span>
+								<span className="aprendisaje-tema-titulo">{paso.titulo}</span>
+							</li>
+						))}
+					</ul>
+				</div>
+				<div className="aprendisaje-explicacion-panel">
+					<h3 className="aprendisaje-explicacion-titulo">{pasos[temaSeleccionado].titulo}</h3>
+					<div className="aprendisaje-explicacion">
+						<strong>Explicación:</strong> {pasos[temaSeleccionado].explicacion}
+					</div>
+					<div className="aprendisaje-consejos">
+						<strong>Consejos prácticos:</strong>
+						<ul>
+							{pasos[temaSeleccionado].consejos.map((c, i) => (
+								<li key={i}>{c}</li>
+							))}
+						</ul>
+					</div>
+					<div className="aprendisaje-ejercicio">
+						<strong>Ejercicio sugerido:</strong>
+						<div>{pasos[temaSeleccionado].ejercicio}</div>
+					</div>
+				</div>
+			</div>
 			<div className="aprendisaje-motivador">
 				<h3>Recuerda:</h3>
 				<p>
 					¡En ventas, lo que realmente vendes es{" "}
-					<span className="aprendisaje-confianza">confianza</span>, no solo
-					productos!
+					<span className="aprendisaje-confianza">confianza</span>, no solo productos!
 				</p>
 			</div>
 			<div className="aprendisaje-frase-motivacional">
@@ -192,5 +179,4 @@ const Aprendisaje = () => {
 		</div>
 	);
 };
-
 export default Aprendisaje;
