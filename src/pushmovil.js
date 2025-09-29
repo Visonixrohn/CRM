@@ -5,7 +5,10 @@ import { supabase } from "./supabaseClient";
 
 export default function PushMovil() {
   useEffect(() => {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isMobile =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
     if (!isMobile) return;
     let lastNotifiedHash = null;
     let intervalId;
@@ -36,23 +39,33 @@ export default function PushMovil() {
 
       const hoy = new Date();
       const yyyy = hoy.getFullYear();
-      const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-      const dd = String(hoy.getDate()).padStart(2, '0');
+      const mm = String(hoy.getMonth() + 1).padStart(2, "0");
+      const dd = String(hoy.getDate()).padStart(2, "0");
       const hoyStr = `${yyyy}-${mm}-${dd}`;
 
       // Agrupar entregas pendientes para hoy o atrasadas
-      const pendientes = entregas.filter(e => {
-        if (String(e.estatus).toLowerCase() === 'entregado') return false;
+      const pendientes = entregas.filter((e) => {
+        if (String(e.estatus).toLowerCase() === "entregado") return false;
         return e.fecha_entrega === hoyStr || e.fecha_entrega < hoyStr;
       });
       if (pendientes.length > 0) {
-        let body = pendientes.map(e => {
-          let estado = e.fecha_entrega === hoyStr ? 'para hoy' : 'atrasada';
-          return `${e.cliente} = ${estado}`;
-        }).join('\n');
-        const hash = pendientes.map(e => `${e.id}:${e.fecha_entrega}:${e.estatus}`).join('|');
+        let body = pendientes
+          .map((e) => {
+            let estado = e.fecha_entrega === hoyStr ? "para hoy" : "atrasada";
+            return `${e.cliente} = ${estado}`;
+          })
+          .join("\n");
+        const hash = pendientes
+          .map((e) => `${e.id}:${e.fecha_entrega}:${e.estatus}`)
+          .join("|");
         if (hash !== lastNotifiedHash && window.setNotif) {
-          window.setNotif({ open: true, title: 'Entregas pendientes', body: `Hola ${user.nombre || ''}!\nTienes estas entregas pendientes:\n${body}` });
+          window.setNotif({
+            open: true,
+            title: "Entregas pendientes",
+            body: `Hola ${
+              user.nombre || ""
+            }!\nTienes estas entregas pendientes:\n${body}`,
+          });
           lastNotifiedHash = hash;
         }
       } else {

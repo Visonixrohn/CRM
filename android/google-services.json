@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "818098683659",
+    "project_id": "crm-miguel",
+    "storage_bucket": "crm-miguel.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818098683659:android:ff708daf843c59bdb72c0e",
+        "android_client_info": {
+          "package_name": "com.miguel.crm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6ha5lr7bBpyP2WiCbw07Aip7UBfjp1cg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

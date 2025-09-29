@@ -1,154 +1,349 @@
-.aprendisaje-main {
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 32px 16px 24px 16px;
-  background: linear-gradient(120deg, #ffffff 0%, #1976d2 100%);
-  border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(60, 60, 120, 0.12);
+/* Main container with enhanced gradient and responsive padding */
+
+.aprendisaje-main.split-view {
+  max-width: 1100px;
+  margin: 32px auto;
+  padding: 32px 16px 32px 16px;
+  background: linear-gradient(135deg, #e3f2fd 0%, #1976d2 100%);
+  border-radius: 24px;
+  box-shadow: 0 6px 28px rgba(60, 60, 120, 0.15);
   color: #fff;
+  font-family: "Inter", sans-serif;
 }
 
+.aprendisaje-split-container {
+  display: flex;
+  gap: 32px;
+  min-height: 400px;
+}
+
+.aprendisaje-temas-lista {
+  flex: 0 0 280px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 24px 12px;
+  box-shadow: 0 2px 8px rgba(60, 60, 120, 0.08);
+  height: fit-content;
+}
+.aprendisaje-temas-titulo {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: #fff;
+  text-align: center;
+}
+.aprendisaje-temas-lista ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.aprendisaje-tema-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  transition: background 0.2s;
+}
+.aprendisaje-tema-item:hover,
+.aprendisaje-tema-item.seleccionado {
+  background: #1976d2;
+  color: #fff;
+}
+.aprendisaje-tema-num {
+  font-weight: 700;
+  background: #fff;
+  color: #1976d2;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+.aprendisaje-tema-titulo {
+  font-weight: 500;
+}
+
+.aprendisaje-explicacion-panel {
+  flex: 1;
+  background: #fff;
+  color: #222;
+  border-radius: 16px;
+  padding: 24px 32px;
+  box-shadow: 0 2px 8px rgba(60, 60, 120, 0.08);
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.aprendisaje-explicacion-titulo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #1976d2;
+}
+.aprendisaje-explicacion {
+  margin-bottom: 10px;
+}
+.aprendisaje-consejos ul {
+  margin: 8px 0 0 0;
+  padding-left: 18px;
+}
+.aprendisaje-ejercicio {
+  margin-top: 10px;
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+@media (max-width: 900px) {
+  .aprendisaje-split-container {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .aprendisaje-temas-lista {
+    flex: unset;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  .aprendisaje-explicacion-panel {
+    padding: 18px 10px;
+    min-height: unset;
+  }
+}
+
+/* Title with improved typography and animation */
 .aprendisaje-title {
   text-align: center;
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin-bottom: 32px;
-  letter-spacing: 1px;
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 40px;
+  letter-spacing: 0.5px;
   color: #fff;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+.aprendisaje-title:hover {
+  transform: scale(1.02);
 }
 
+/* Accordion container */
 .aprendisaje-accordion {
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
+/* Card with subtle animation on hover */
 .aprendisaje-card {
   background: #fff;
   color: #222;
-  border-radius: 12px;
-  margin-bottom: 18px;
-  box-shadow: 0 2px 8px rgba(60, 60, 120, 0.08);
+  border-radius: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(60, 60, 120, 0.1);
   overflow: hidden;
-  transition: box-shadow 0.2s;
-  display: flex;
-  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.aprendisaje-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(60, 60, 120, 0.15);
 }
 
+/* Card row for layout */
 .aprendisaje-card-row {
   display: flex;
   flex-direction: row;
   align-items: stretch;
 }
 
+/* Card header with refined gradient and number styling */
 .aprendisaje-card-header {
-  min-width: 260px;
-  max-width: 320px;
-  background: linear-gradient(90deg, #7c4dff 0%, #1976d2 100%);
+  min-width: 280px;
+  max-width: 340px;
+  background: linear-gradient(90deg, #7c4dff 0%, #0288d1 100%);
   color: #fff;
   border: none;
   outline: none;
-  padding: 18px 24px;
-  font-size: 1.15rem;
-  font-weight: 600;
+  padding: 20px 28px;
+  font-size: 1.2rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  transition: background 0.2s;
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
-  border-right: 2px solid #e1bee7;
-  box-shadow: 0 2px 8px rgba(60, 60, 120, 0.06);
+  transition: background 0.3s ease, transform 0.2s ease;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+  border-right: 3px solid #bbdefb;
 }
 .aprendisaje-card-header:hover {
-  background: linear-gradient(90deg, #512da8 0%, #1565c0 100%);
+  background: linear-gradient(90deg, #651fff 0%, #0277bd 100%);
+  transform: translateX(2px);
+}
+.aprendisaje-card-num {
+  background: #fff;
+  color: #1976d2;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-right: 12px;
+}
+.aprendisaje-card-title {
+  flex-grow: 1;
+}
+.aprendisaje-card-arrow {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+.aprendisaje-card.open .aprendisaje-card-arrow {
+  transform: rotate(180deg);
 }
 
+/* Card body with enhanced padding and subtle gradient */
 .aprendisaje-card-body-right {
   flex: 1;
-  background: #f3e5f5;
+  background: linear-gradient(180deg, #f5f5f5 0%, #eceff1 100%);
   color: #222;
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
-  border-left: 2px solid #e1bee7;
-  padding: 24px 32px 18px 32px;
-  box-shadow: 0 2px 8px rgba(60, 60, 120, 0.06);
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+  border-left: 3px solid #bbdefb;
+  padding: 28px 36px;
+  box-shadow: 0 4px 12px rgba(60, 60, 120, 0.08);
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
+/* Explicacion section with improved readability */
 .aprendisaje-explicacion {
-  margin-bottom: 12px;
-  font-size: 1.08rem;
+  margin-bottom: 16px;
+  font-size: 1.1rem;
   background: #e3f2fd;
-  padding: 10px 14px;
-  border-radius: 8px;
-  color: #1976d2;
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: #1565c0;
   font-weight: 500;
+  line-height: 1.6;
 }
 
+/* Consejos section with better spacing */
 .aprendisaje-consejos ul {
-  margin: 8px 0 0 0;
-  padding-left: 20px;
+  margin: 12px 0 0 0;
+  padding-left: 24px;
 }
-
 .aprendisaje-consejos li {
-  margin-bottom: 6px;
-  font-size: 1.01rem;
+  margin-bottom: 8px;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  position: relative;
+}
+.aprendisaje-consejos li::before {
+  content: "•";
+  color: #1976d2;
+  font-size: 1.2rem;
+  position: absolute;
+  left: -18px;
 }
 
+/* Ejercicio section with vibrant styling */
 .aprendisaje-ejercicio {
-  margin-top: 12px;
-  background: #fffde7;
-  padding: 10px 14px;
-  border-radius: 8px;
-  color: #8e24aa;
+  margin-top: 16px;
+  background: #fff8e1;
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: #7b1fa2;
   font-weight: 500;
-  border: 1px solid #ffe082;
+  border: 1px solid #ffca28;
+  line-height: 1.6;
 }
 
+/* Motivador section with bolder design */
 .aprendisaje-motivador {
-  background: #7c4dff;
+  background: linear-gradient(45deg, #7c4dff 0%, #ab47bc 100%);
   color: #fff;
-  border-radius: 12px;
-  padding: 18px 24px;
-  margin-bottom: 24px;
+  border-radius: 16px;
+  padding: 24px 32px;
+  margin-bottom: 32px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(60, 60, 120, 0.10);
+  box-shadow: 0 4px 16px rgba(60, 60, 120, 0.12);
+  transition: transform 0.3s ease;
+}
+.aprendisaje-motivador:hover {
+  transform: scale(1.01);
 }
 .aprendisaje-confianza {
-  color: #ffd600;
-  font-weight: bold;
-  font-size: 1.15em;
+  color: #ffeb3b;
+  font-weight: 800;
+  font-size: 1.25rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+/* Frase motivacional with improved layout */
 .aprendisaje-frase-motivacional {
   text-align: center;
-  margin-top: 18px;
-  font-size: 1.15rem;
+  margin-top: 24px;
+  font-size: 1.2rem;
   color: #fff;
-  background: #1976d2;
-  padding: 12px 18px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(60, 60, 120, 0.10);
+  background: linear-gradient(90deg, #0288d1 0%, #0277bd 100%);
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(60, 60, 120, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 18px;
+  gap: 24px;
+  flex-wrap: wrap;
 }
 
+/* Button with refined hover effects */
 .aprendisaje-frase-btn {
-  background: #8e24aa;
+  background: #ab47bc;
   color: #fff;
   border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 1rem;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 1.05rem;
   font-weight: 600;
   cursor: pointer;
-  margin-left: 12px;
-  transition: background 0.2s;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 .aprendisaje-frase-btn:hover {
-  background: #512da8;
+  background: #8e24aa;
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .aprendisaje-main {
+    padding: 24px 16px;
+  }
+  .aprendisaje-title {
+    font-size: 2rem;
+  }
+  .aprendisaje-card-row {
+    flex-direction: column;
+  }
+  .aprendisaje-card-header {
+    min-width: 100%;
+    border-radius: 12px 12px 0 0;
+    border-right: none;
+    border-bottom: 3px solid #bbdefb;
+  }
+  .aprendisaje-card-body-right {
+    border-radius: 0 0 12px 12px;
+    border-left: none;
+    border-top: 3px solid #bbdefb;
+  }
 }
