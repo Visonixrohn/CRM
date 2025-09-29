@@ -3,111 +3,162 @@ import "./Aprendisaje.css";
 
 const pasos = [
   {
-    titulo: "Freeman (rapport inicial)",
+    titulo: "Rapport inicial (acercamiento rápido)",
     explicacion:
-      "El primer contacto es clave para generar confianza y empatía. El rapport inicial consiste en conectar emocionalmente con el cliente, mostrando interés genuino y actitud positiva.",
+      "El primer contacto con el cliente debe generar confianza en segundos. Aquí defines si el cliente te escucha o te ignora.",
     consejos: [
-      "Sonríe y mantén contacto visual.",
-      "Haz preguntas abiertas para conocer al cliente.",
-      "Usa el nombre del cliente durante la conversación.",
-      "Aplica la técnica de espejo: adapta tu lenguaje corporal y tono de voz al del cliente.",
-      "Recuerda: la gente compra a quien le cae bien (Jürgen Klaric).",
+      "Acércate con energía positiva y una sonrisa auténtica.",
+      "Haz una observación ligera o pregunta corta para romper el hielo.",
+      "Mantén contacto visual, pero sin invadir.",
+      "Adapta tu tono de voz al del cliente (técnica espejo).",
+      "Sé breve y directo, la gente en piso no tiene mucho tiempo.",
+      "No te acerques como 'vendedor', acércate como 'asesor'.",
+      "No hables de inmediato del producto, primero genera interés.",
+    ],
+    estrategias: [
+      "Haz preguntas de curiosidad: '¿Ya conocía esta promoción?'.",
+      "Crea urgencia desde el inicio: 'Esta oferta es solo por hoy'.",
+      "Inicia con un cumplido genuino: 'Buen gusto en elegir este color'.",
     ],
     ejercicio:
-      "Practica iniciar conversaciones con desconocidos, buscando puntos en común y generando empatía rápidamente.",
+      "Practica frases cortas que generen interés, como: '¿Prefiere algo duradero o más económico?' o '¿Ya vio la novedad que acaba de llegar?'.",
   },
   {
-    titulo: "Prechequeo",
+    titulo: "Prechequeo (detectar interés rápido)",
     explicacion:
-      "Antes de avanzar, verifica que el cliente cumple con los requisitos básicos para tu producto o servicio. Esto ahorra tiempo y enfoca la energía en prospectos calificados.",
+      "Antes de invertir tu energía, valida si el cliente muestra interés real en lo que ofreces.",
     consejos: [
-      "Haz preguntas de filtro para identificar necesidades reales.",
-      "No temas descartar prospectos que no cumplen el perfil.",
-      "Valida presupuesto, interés y capacidad de decisión.",
-      "Recuerda: el tiempo es tu recurso más valioso.",
+      "Haz 1 o 2 preguntas rápidas para detectar necesidad.",
+      "Si el cliente no muestra interés, sonríe, agradece y busca otro prospecto.",
+      "Si detectas apertura, mantén la conversación activa.",
+      "Tu meta es separar curiosos de posibles compradores.",
+    ],
+    estrategias: [
+      "Pregunta filtro: '¿Está buscando para usted o para regalo?'.",
+      "Pregunta de necesidad: '¿Prefiere algo que dure más o que sea más económico?'.",
+      "Pregunta de tiempo: '¿Lo necesita de inmediato o para más adelante?'.",
     ],
     ejercicio:
-      "Crea una lista de preguntas de prechequeo y úsalas en tu próxima llamada o reunión de ventas.",
+      "Crea un guion con 3 preguntas de prechequeo y aplícalo durante un turno completo.",
   },
   {
-    titulo: "Apertura",
+    titulo: "Apertura de la venta (captar atención)",
     explicacion:
-      "La apertura prepara el terreno para la presentación. Aquí se establece el objetivo de la reunión y se genera expectativa positiva.",
+      "La apertura en piso debe enganchar en segundos. Aquí despiertas curiosidad y logras que el cliente se quede contigo.",
     consejos: [
-      "Explica brevemente el propósito de la reunión.",
-      "Haz una pregunta poderosa para captar atención.",
-      "Usa frases que generen curiosidad y apertura mental.",
-      "Recuerda: la apertura debe ser breve y energética.",
+      "Haz una pregunta poderosa que active el interés.",
+      "Muestra una característica llamativa del producto.",
+      "Usa frases que inviten a probar: 'Si gusta, véalo de cerca'.",
+      "Tu objetivo es que el cliente no se vaya, sino que te escuche.",
+    ],
+    estrategias: [
+      "Apertura con reto: 'Le apuesto que este modelo le sorprende'.",
+      "Apertura con comparación: 'Este es el que más buscan quienes saben de calidad'.",
+      "Apertura de experiencia: 'Tóquelo, siéntalo, pruébelo, va a notar la diferencia'.",
     ],
     ejercicio:
-      "Ensaya tu frase de apertura frente al espejo y mide el impacto en tu tono y lenguaje corporal.",
+      "Ensaya frases de apertura frente al espejo y mide cuál suena más natural.",
   },
   {
-    titulo: "Presentación del producto",
+    titulo: "Presentación del producto (mostrar valor rápido)",
     explicacion:
-      "Presenta tu producto enfocándote en los beneficios emocionales y funcionales. Utiliza historias y ejemplos para conectar con el cliente.",
+      "En piso, la presentación debe ser corta, clara y enfocada en beneficios inmediatos.",
     consejos: [
-      "Habla menos de características y más de beneficios.",
-      "Utiliza storytelling para ilustrar el valor.",
-      "Aplica neuroventas: activa emociones positivas y visualiza el resultado.",
-      "Haz preguntas que involucren al cliente en la experiencia.",
-      "Recuerda: la gente compra por emoción y justifica con lógica (Jürgen Klaric).",
+      "Muestra el producto físicamente si es posible.",
+      "Enfócate en el beneficio principal: ahorro, durabilidad, moda, etc.",
+      "Haz que el cliente lo toque, lo pruebe o lo visualice en uso.",
+      "Habla de cómo le soluciona la vida, no de características técnicas.",
+      "Cuenta historias cortas: 'Un cliente lo compró la semana pasada y quedó encantado'.",
+    ],
+    estrategias: [
+      "Usa storytelling: conecta el producto con una historia real.",
+      "Usa comparación: 'Este dura 3 veces más que el modelo anterior'.",
+      "Resalta exclusividad: 'Este modelo no lo tiene otra tienda en la zona'.",
     ],
     ejercicio:
-      "Redacta una historia breve que muestre cómo tu producto ha cambiado la vida de un cliente.",
+      "Crea un pitch de 30 segundos resaltando el beneficio clave de tu producto.",
   },
   {
-    titulo: "Manejo de objeciones",
+    titulo: "Manejo de objeciones (no huir del 'no')",
     explicacion:
-      "Las objeciones son oportunidades para profundizar y aclarar dudas. Escucha con atención, valida la preocupación y responde con seguridad.",
+      "En piso escucharás muchos 'no'. No significa rechazo personal, significa duda o falta de información.",
     consejos: [
-      "Escucha sin interrumpir y agradece la objeción.",
-      "Reformula la objeción para mostrar comprensión.",
-      "Responde con datos, testimonios o preguntas que desactiven el miedo.",
-      "Usa técnicas de cierre de Alex Day: pregunta '¿Qué te detiene para tomar la decisión hoy?'.",
+      "Escucha con calma y agradece la sinceridad.",
+      "Reformula la objeción: 'Entiendo que le parece caro, ¿le cuento por qué vale la pena?'.",
+      "Responde con un beneficio concreto, no con teoría.",
+      "Nunca discutas, siempre lleva la objeción hacia la solución.",
+    ],
+    estrategias: [
+      "Objeción de precio: responde con valor ('Le dura 2 años más, lo barato sale caro').",
+      "Objeción de tiempo: genera urgencia ('La promoción solo es hoy').",
+      "Objeción de indecisión: simplifica ('Si no le convence, siempre puede cambiarlo').",
     ],
     ejercicio:
-      "Haz una lista de las objeciones más comunes y escribe respuestas efectivas para cada una.",
+      "Haz una lista de los 5 'no' más comunes y prepara respuestas cortas para cada uno.",
   },
   {
-    titulo: "Cierre de la venta",
+    titulo: "Cierre de la venta (pedir decisión sin miedo)",
     explicacion:
-      "El cierre es el momento de pedir la decisión. Hazlo con seguridad y claridad, usando técnicas directas o alternativas.",
+      "El cierre en piso debe ser natural, directo y sin rodeos. Si el cliente ya mostró interés, pide la decisión.",
     consejos: [
-      "Utiliza preguntas de cierre: '¿Prefieres la opción A o B?'.",
-      "Haz un resumen de beneficios antes de pedir la decisión.",
-      "No temas al silencio: espera la respuesta con confianza.",
-      "Recuerda: el cierre es un servicio, no una presión (Alex Day).",
+      "Usa cierres de opción: '¿Lo llevamos en rojo o en negro?'.",
+      "Invita a la acción inmediata: 'Si gusta, le hago la nota ya'.",
+      "No le des demasiadas vueltas, el cliente puede perder interés.",
+      "El silencio también vende: pregunta y espera la respuesta.",
+    ],
+    estrategias: [
+      "Cierre por escasez: 'Quedan las últimas 2 piezas'.",
+      "Cierre por urgencia: 'La promoción termina hoy'.",
+      "Cierre alternativo: '¿Lo prefiere en efectivo o con tarjeta?'.",
+      "Cierre de prueba: '¿Lo empaco de una vez?'.",
+      "Cierre de compromiso: '¿Se lo separo mientras ve otros modelos?'.",
     ],
     ejercicio:
-      "Practica diferentes frases de cierre y mide la reacción de tus prospectos.",
+      "Practica al menos 5 frases de cierre distintas y úsalas con diferentes clientes en un día.",
   },
   {
-    titulo: "Post-venta",
+    titulo: "Post-venta rápida (crear fidelidad en piso)",
     explicacion:
-      "La relación no termina con la venta. El seguimiento post-venta genera fidelidad y recomendaciones. Asegúrate de que el cliente esté satisfecho y mantén el contacto.",
+      "Aunque sea venta rápida, deja al cliente con buena experiencia para que regrese o te recomiende.",
     consejos: [
-      "Envía un mensaje de agradecimiento personalizado.",
-      "Pregunta por la experiencia y ofrece soporte.",
-      "Solicita retroalimentación y testimonios.",
-      "Recuerda: la post-venta es el inicio de la próxima venta.",
+      "Agradece de forma genuina la compra.",
+      "Da una recomendación rápida de uso o cuidado.",
+      "Invita a volver: 'Cuando llegue la nueva colección, le aviso'.",
+      "Recuerda: cada cliente satisfecho es publicidad gratis.",
+    ],
+    estrategias: [
+      "Entrega un consejo extra: 'Si lo limpia con esto, le durará mucho más'.",
+      "Ofrece garantía verbal: 'Si tiene algún detalle, venga y lo resolvemos'.",
+      "Crea un vínculo personal: 'Me busca por mi nombre la próxima vez'.",
     ],
     ejercicio:
-      "Diseña un protocolo de seguimiento post-venta y aplícalo en tu próxima venta.",
+      "Diseña una frase de despedida que haga sentir especial al cliente y practícala con cada venta.",
   },
 ];
 
 const frasesMotivacion = [
-  "La confianza vende más que el producto.",
-  "El éxito en ventas es cuestión de actitud.",
-  "No vendas productos, vende soluciones.",
-  "El mejor vendedor es el que escucha más.",
-  "Cada no te acerca al siguiente sí.",
-  "La perseverancia vence la resistencia.",
-  "Vender es ayudar a decidir.",
-  "La pasión es el motor de la venta.",
-  "El miedo a vender se vence vendiendo.",
-  "La venta comienza cuando el cliente dice no.",
+  // Motivación personal
+  "Cada cliente es una nueva oportunidad.",
+  "El 'no' de hoy puede ser un 'sí' mañana.",
+  "El que más ofrece, más vende.",
+  "En piso de venta, la sonrisa es tu mejor herramienta.",
+  "El mejor vendedor convierte curiosos en compradores.",
+  "Si no preguntas, no vendes.",
+  "Cada contacto cuenta, no lo desperdicies.",
+  "La actitud vende más que el precio.",
+  "Nunca subestimes el poder de un '¿puedo ayudarle?'.",
+  "La perseverancia abre más puertas que el talento.",
+  // Estrategia de ventas
+  "El cliente no compra lo que vendes, compra cómo lo haces sentir.",
+  "Un buen cierre empieza con una buena apertura.",
+  "No vendas productos, vende beneficios.",
+  "El mejor argumento de venta es dejar hablar al cliente.",
+  "Un vendedor pasivo espera, un vendedor activo provoca.",
+  "No hay ventas difíciles, hay vendedores sin estrategia.",
+  "El silencio es una herramienta de cierre.",
+  "Una sonrisa abre más ventas que un descuento.",
+  "Vender es ayudar a decidir, no presionar.",
+  "El tiempo perdido con un cliente equivocado es una venta perdida con el correcto.",
 ];
 
 function getFraseMotivacional() {
@@ -119,10 +170,10 @@ const Aprendisaje = () => {
   const [temaSeleccionado, setTemaSeleccionado] = useState(0);
   return (
     <div className="aprendisaje-main split-view">
-      <h2 className="aprendisaje-title">Curso de Ventas Interactivo</h2>
+      <h2 className="aprendisaje-title">Guía de Ventas en Piso</h2>
       <div className="aprendisaje-split-container">
         <div className="aprendisaje-temas-lista">
-          <h3 className="aprendisaje-temas-titulo">Temas</h3>
+          <h3 className="aprendisaje-temas-titulo">Pasos y Estrategias</h3>
           <ul>
             {pasos.map((paso, idx) => (
               <li
@@ -154,6 +205,16 @@ const Aprendisaje = () => {
               ))}
             </ul>
           </div>
+          {pasos[temaSeleccionado].estrategias && (
+            <div className="aprendisaje-estrategias">
+              <strong>Estrategias de campo:</strong>
+              <ul>
+                {pasos[temaSeleccionado].estrategias.map((e, i) => (
+                  <li key={i}>{e}</li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="aprendisaje-ejercicio">
             <strong>Ejercicio sugerido:</strong>
             <div>{pasos[temaSeleccionado].ejercicio}</div>
@@ -163,9 +224,9 @@ const Aprendisaje = () => {
       <div className="aprendisaje-motivador">
         <h3>Recuerda:</h3>
         <p>
-          ¡En ventas, lo que realmente vendes es{" "}
-          <span className="aprendisaje-confianza">confianza</span>, no solo
-          productos!
+          En ventas en frío, lo que más vendes es{" "}
+          <span className="aprendisaje-confianza">actitud y confianza</span>, no
+          solo productos.
         </p>
       </div>
       <div className="aprendisaje-frase-motivacional">
@@ -180,4 +241,5 @@ const Aprendisaje = () => {
     </div>
   );
 };
+
 export default Aprendisaje;
