@@ -21,6 +21,7 @@ import "./components/OrdenesServicioFiltroMovil.css";
 import BotonFlotanteMovil from "./components/BotonFlotanteMovil";
 
 const OrdenesServicio = () => {
+  const [showActualizadoModal, setShowActualizadoModal] = useState(false);
   const [ordenes, setOrdenes] = useState([]);
   const [corOneData, setCorOneData] = useState({}); // { [numero_orden]: { brand, model, status } }
   const [loadingCorOne, setLoadingCorOne] = useState({}); // { [numero_orden]: boolean }
@@ -103,6 +104,26 @@ const OrdenesServicio = () => {
     try {
       const ext = await fetchOrdenCorOne(numero_orden);
       setCorOneData(prev => ({ ...prev, [numero_orden]: ext }));
+      // Guardar en Supabase los datos consultados
+      if (ext) {
+        await supabase
+          .from("ordenes_servicio")
+          .update({
+            modelo: ext.model || null,
+            marca: ext.brand || null,
+            falla: (ext.damage && ext.damage.trim()) ? ext.damage : (ext.reportedDamage && ext.reportedDamage.trim() ? ext.reportedDamage : null),
+            status: ext.status || null,
+          })
+          .eq("numero_orden", numero_orden);
+        // Refrescar órdenes para mostrar los datos actualizados
+        const { data: ordenesActualizadas } = await supabase
+          .from("ordenes_servicio")
+          .select("*");
+        setOrdenes(ordenesActualizadas);
+        // Mostrar modal de actualizado
+        setShowActualizadoModal(true);
+        setTimeout(() => setShowActualizadoModal(false), 1000);
+      }
     } catch (e) {
       setCorOneData(prev => ({ ...prev, [numero_orden]: null }));
     } finally {
@@ -285,8 +306,32 @@ const OrdenesServicio = () => {
 
   return (
   <div className="ordenes-container">
+      {showActualizadoModal && (
+        <div style={{
+          position: 'fixed',
+          top: '20%',
+          left: '50%',
+          transform: 'translate(-50%, 0)',
+          background: '#1976d2',
+          color: 'white',
+          padding: '16px 32px',
+          borderRadius: '12px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+          zIndex: 9999,
+          fontSize: '1.2em',
+          textAlign: 'center',
+        }}>
+          Actualizado
+        </div>
+      )}
       <header className="ordenes-header">
         <h1>Órdenes de Servicio</h1>
+        {/* Contador de órdenes activas */}
+        <div style={{ margin: '10px 0', fontWeight: 'bold', fontSize: '1.1em' }}>
+          Órdenes activas: {
+            filteredOrdenes.filter(o => o.estado !== 'ANULADA' && o.estado !== 'FINALIZADA').length
+          }
+        </div>
         <div className="osv-busqueda-barra-container">
           <input
             type="text"
@@ -357,7 +402,6 @@ const OrdenesServicio = () => {
               <th>MARCA</th>
               <th>FALLA</th>
               <th>STATUS</th>
-              <th>ESTADO</th>
               <th>DIAS</th>
               <th>GESTOR</th>
             </tr>
@@ -367,8 +411,6 @@ const OrdenesServicio = () => {
               const ext = corOneData.hasOwnProperty(orden.numero_orden)
                 ? corOneData[orden.numero_orden]
                 : undefined;
-              const estadosPermitidos = ["PENDIENTE DE VISITA", "PENDIENTE DE REPUESTO"];
-              const mostrarResuelto = !estadosPermitidos.includes(orden.estado);
               return (
                 <tr key={orden.id} onClick={() => handleRowClick(orden)}>
                   <td data-label="Fecha">{orden.fecha}</td>
@@ -419,50 +461,10 @@ const OrdenesServicio = () => {
                     </button>
                   </td>
                   {/* <td data-label="Artículo">{orden.articulo}</td> */}
-                  <td data-label="Modelo">
-                    {(() => {
-                      if (mostrarResuelto) return 'RESUELTO';
-                      if (loadingCorOne[orden.numero_orden]) return 'Cargando...';
-                      return ext === undefined ? '' : ext && ext.model ? ext.model : (ext === null ? 'Error' : '');
-                    })()}
-                  </td>
-                  <td data-label="Marca">
-                    {(() => {
-                      if (mostrarResuelto) return 'RESUELTO';
-                      if (loadingCorOne[orden.numero_orden]) return 'Cargando...';
-                      return ext === undefined ? '' : ext && ext.brand ? ext.brand : (ext === null ? 'Error' : '');
-                    })()}
-                  </td>
-                  <td data-label="Falla">
-                      {(() => {
-                        if (mostrarResuelto) return 'RESUELTO';
-                        if (loadingCorOne[orden.numero_orden]) return 'Cargando...';
-                        if (ext === undefined) return '';
-                        if (ext === null) return 'Error';
-                        const dmg = ext.damage && ext.damage.trim() ? ext.damage : (ext.reportedDamage && ext.reportedDamage.trim() ? ext.reportedDamage : 'Sin información');
-                        return dmg;
-                      })()}
-                  </td>
-                  <td data-label="Status">
-                    {(() => {
-                      if (mostrarResuelto) return 'RESUELTO';
-                      if (loadingCorOne[orden.numero_orden]) return 'Cargando...';
-                      return ext === undefined ? '' : ext && ext.status ? ext.status : (ext === null ? 'Error' : '');
-                    })()}
-                  </td>
-                  <td
-                    data-label="Estado"
-                    className={`estado-${(() => {
-                      let estado = orden.estado
-                        .toLowerCase()
-                        .replace(/\s+/g, "-")
-                        .replace(/[áéíóú]/g, m => ({ á: "a", é: "e", í: "i", ó: "o", ú: "u" }[m]));
-                      if (estado === "anulada") return "anuladas";
-                      return estado;
-                    })()}`}
-                  >
-                    {orden.estado}
-                  </td>
+                  <td data-label="Modelo">{ext && ext.model ? ext.model : ''}</td>
+                  <td data-label="Marca">{ext && ext.brand ? ext.brand : ''}</td>
+                  <td data-label="Falla">{ext && (ext.damage || ext.reportedDamage) ? (ext.damage ? ext.damage : ext.reportedDamage) : ''}</td>
+                  <td data-label="Status">{ext && ext.status ? ext.status : ''}</td>
                   <td data-label="Días">{calculateDaysElapsed(orden.fecha)}</td>
                   <td data-label="Gestor">{orden.gestor}</td>
                 </tr>
@@ -538,16 +540,6 @@ const OrdenesServicio = () => {
                 }
                 required
               />
-              <select
-                value={newOrder.estado || "PENDIENTE DE VISITA"}
-                onChange={(e) => handleInputChange("estado", e.target.value)}
-              >
-                {estados.map((estado) => (
-                  <option key={estado} value={estado}>
-                    {estado}
-                  </option>
-                ))}
-              </select>
               <input
                 type="text"
                 placeholder="URL del archivo (opcional)"
@@ -573,59 +565,7 @@ const OrdenesServicio = () => {
   {/* Modal de éxito eliminado por solicitud del usuario */}
 
       {isUpdateStateModalOpen && (
-        <div
-          className="modal-overlay"
-          onClick={e => {
-            if (e.target.classList.contains('modal-overlay')) {
-              setIsUpdateStateModalOpen(false);
-            }
-          }}
-        >
-          <div className="update-state-modal fade-in" onClick={e => e.stopPropagation()}>
-            <h3>Actualizar Estado</h3>
-            <div className="estado-buttons">
-              {estados.map((estado) => {
-                // Normalizar nombre para clase exclusiva
-                let clase = "otro";
-                if (
-                  estado.toLowerCase().includes("pendiente") &&
-                  estado.toLowerCase().includes("visita")
-                ) {
-                  clase = "pendiente-de-visita";
-                } else if (
-                  estado.toLowerCase().includes("pendiente") &&
-                  estado.toLowerCase().includes("repuesto")
-                ) {
-                  clase = "pendiente-de-repuesto";
-                } else if (estado.toLowerCase().includes("reparado")) {
-                  clase = "reparado";
-                } else if (estado.toLowerCase().includes("cambio")) {
-                  clase = "sugerencia-de-cambio";
-                }
-
-                return (
-                  <button
-                    key={estado}
-                    className={`estado-button ${clase}${
-                      selectedState === estado ? " active" : ""
-                    }`}
-                    onClick={() => {
-                      setSelectedState(estado);
-                    }}
-                  >
-                    {estado}
-                  </button>
-                );
-              })}
-            </div>
-            <div className="form-actions">
-              <button onClick={handleUpdateState}>Guardar</button>
-              <button onClick={() => setIsUpdateStateModalOpen(false)}>
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
+        {/* Modal de actualización de estado eliminado */}
       )}
     </div>
   );
