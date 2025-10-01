@@ -1,0 +1,99 @@
+.detalle-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+.detalle-contenido {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: none;
+  padding: 32px 24px 24px 24px;
+  min-width: 320px;
+  max-width: 1600px;
+  width: 100%;
+  position: relative;
+  animation: fadeInModal 0.7s;
+}
+@keyframes fadeInModal {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+.solicitud-modal-main {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 32px 120px 24px 120px;
+  box-shadow: none;
+}
+.solicitud-modal-title {
+  text-align: center;
+  font-weight: 800;
+  font-size: 30px;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+.solicitud-modal-table {
+  width: 98%;
+  min-width: 1200px;
+  border-collapse: collapse;
+  background: #fff;
+  margin-bottom: 16px;
+  table-layout: fixed;
+}
+.solicitud-modal-label {
+  font-weight: bold;
+  padding: 10px 8px;
+  color: #222;
+  width: 50%;
+  vertical-align: top;
+  background: #f3f4f6;
+}
+.solicitud-modal-value {
+  padding: 10px 8px;
+  font-size: 16px;
+  width: 50%;
+/* Mostrar dos filas por columna en la tabla */
+.solicitud-modal-table tbody {
+  display: flex;
+  flex-wrap: wrap;
+}
+.solicitud-modal-table tr {
+  display: flex;
+  width: 50%;
+  box-sizing: border-box;
+}
+.solicitud-modal-label, .solicitud-modal-value {
+  display: block;
+}
+}
+.solicitud-modal-maps {
+  margin-left: 8px;
+  vertical-align: middle;
+  color: #1976d2;
+  font-size: 18px;
+  display: inline-block;
+}
+.solicitud-modal-actions {
+  margin-top: 24px;
+  text-align: right;
+  font-size: 15px;
+  color: #555;
+  display: flex;
+  gap: 12px;
+}
+.solicitud-modal-actions button {
+  padding: 8px 18px;
+  border-radius: 8px;
+  background: #1a73e8;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+.solicitud-modal-actions .eliminar {
+  background: #e63946;
+}
