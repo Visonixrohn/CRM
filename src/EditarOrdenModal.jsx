@@ -37,6 +37,16 @@ const EditarOrdenModal = ({ isOpen, onClose, orden, onSave }) => {
           />
           <input
             type="text"
+            name="telefono"
+            placeholder="Teléfono"
+            value={form.telefono || ""}
+            onChange={handleChange}
+            pattern="[0-9+\-]*"
+            title="Solo números y signos (+, -)"
+            required
+          />
+          <input
+            type="text"
             name="numero_orden"
             placeholder="Número de Orden"
             value={form.numero_orden || ""}

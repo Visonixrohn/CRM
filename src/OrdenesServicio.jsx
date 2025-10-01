@@ -298,7 +298,8 @@ const OrdenesServicio = () => {
     const matchesSearch =
       orden.cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
       orden.numero_orden.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterState ? orden.estado === filterState : true;
+    // Filtrar por STATUS si hay filtro seleccionado
+    const matchesFilter = filterState ? (orden.status === filterState) : true;
     // Solo mostrar órdenes de la tienda del usuario
     const matchesTienda = miTienda ? orden.tienda_usuario === miTienda : true;
     return matchesSearch && matchesFilter && matchesTienda;
@@ -377,10 +378,10 @@ const OrdenesServicio = () => {
           />
           <span className="osv-busqueda-icono">🔍</span>
         </div>
-        <OrdenesServicioFiltroMovil estados={estados} filterState={filterState} setFilterState={setFilterState} />
+        {/* Filtros dinámicos por STATUS */}
         <div className="filter-buttons">
-          {estados.map((estado) => {
-            const estadoClass = estado
+          {[...new Set(filteredOrdenes.map(o => o.status).filter(Boolean))].map((status) => {
+            const statusClass = status
               .toLowerCase()
               .replace(/\s+/g, "-")
               .replace(
@@ -389,15 +390,15 @@ const OrdenesServicio = () => {
               );
             return (
               <button
-                key={estado}
-                className={`filter-button ${estadoClass} ${
-                  filterState === estado ? "active" : ""
+                key={status}
+                className={`filter-button ${statusClass} ${
+                  filterState === status ? "active" : ""
                 }`}
                 onClick={() =>
-                  setFilterState(filterState === estado ? "" : estado)
+                  setFilterState(filterState === status ? "" : status)
                 }
               >
-                {estado}
+                {status}
               </button>
             );
           })}
@@ -431,6 +432,7 @@ const OrdenesServicio = () => {
             <tr>
               <th>FECHA</th>
               <th>CLIENTE</th>
+              <th>TELÉFONO</th>
               <th>NÚMERO DE ORDEN</th>
               {/* <th>ARTÍCULO</th> */}
               <th>MODELO</th>
@@ -475,6 +477,7 @@ const OrdenesServicio = () => {
                 <tr key={orden.id} onClick={() => handleRowClick(orden)}>
                   <td data-label="Fecha">{orden.fecha}</td>
                   <td data-label="Cliente">{orden.cliente}</td>
+                  <td data-label="Teléfono">{orden.telefono || ''}</td>
                   <td data-label="Número de Orden" style={{whiteSpace: 'nowrap'}}>
                     {orden.numero_orden}
                     <button
@@ -602,6 +605,15 @@ const OrdenesServicio = () => {
                 placeholder="Cliente"
                 value={newOrder.cliente || ""}
                 onChange={(e) => handleInputChange("cliente", e.target.value)}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Teléfono"
+                value={newOrder.telefono || ""}
+                onChange={(e) => handleInputChange("telefono", e.target.value)}
+                pattern="[0-9+\-]*"
+                title="Solo números y signos (+, -)"
                 required
               />
               <input

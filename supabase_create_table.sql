@@ -1,3 +1,5 @@
+ALTER TABLE ordenes_servicio
+  ADD COLUMN telefono TEXT;
 CREATE TABLE comisiones (
   id SERIAL PRIMARY KEY,
   meta NUMERIC NOT NULL,
