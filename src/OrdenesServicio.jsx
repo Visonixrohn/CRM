@@ -322,8 +322,12 @@ const OrdenesServicio = () => {
           onClick={async () => {
             setIsLoading(true);
             for (const orden of filteredOrdenes) {
-              // Solo actualizar órdenes del usuario actual
-              if (orden.user_id === localStorage.getItem('userId')) {
+              // Solo actualizar órdenes del usuario actual y que no tengan status 'Tu orden ha finalizado'
+              const status = orden.status || '';
+              if (
+                orden.user_id === localStorage.getItem('userId') &&
+                status !== 'Tu orden ha finalizado'
+              ) {
                 await handleConsultarCorOne(orden.numero_orden);
               }
             }
@@ -465,8 +469,8 @@ const OrdenesServicio = () => {
               } else if (statusValue.includes('sugerencia')) {
                 statusColor = '#8e24aa'; statusTextColor = '#fff';
               }
-              // Mostrar -- en días si status es anulado, anulada, rechazada, finalizada
-              const diasOcultar = statusValue.includes('anulado') || statusValue.includes('anulada') || statusValue.includes('rechazada') || statusValue.includes('finalizada');
+              // Mostrar -- en días si status es anulado, anulada, rechazada, finalizada o 'Tu orden ha finalizado'
+              const diasOcultar = statusValue.includes('anulado') || statusValue.includes('anulada') || statusValue.includes('rechazada') || statusValue.includes('finalizada') || statusRaw === 'Tu orden ha finalizado';
               return (
                 <tr key={orden.id} onClick={() => handleRowClick(orden)}>
                   <td data-label="Fecha">{orden.fecha}</td>
