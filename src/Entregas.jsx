@@ -916,14 +916,28 @@ const Entregas = () => {
                       const hoyStr = `${yyyy}-${mm}-${dd}`;
                       const fechaEntrega = e.fecha_entrega;
                       const estatusLower = String(e.estatus).toLowerCase();
-                      if (fechaEntrega === hoyStr && estatusLower !== 'entregado') {
+                      if (estatusLower === 'rechazado') {
+                        return (
+                          <span style={{background:'#ef4444',color:'#fff',padding:'2px 8px',borderRadius:6,fontWeight:'bold'}}>
+                            Anulado
+                          </span>
+                        );
+                      }
+                      if (estatusLower === 'entregado') {
+                        return (
+                          <span style={{background:'#10b981',color:'#fff',padding:'2px 8px',borderRadius:6,fontWeight:'bold'}}>
+                            Terminado
+                          </span>
+                        );
+                      }
+                      if (fechaEntrega === hoyStr) {
                         return (
                           <span style={{background:'#fbbf24',color:'#b45309',padding:'2px 8px',borderRadius:6,fontWeight:'bold'}}>
                             ENTREGA PARA HOY
                           </span>
                         );
                       }
-                      if (fechaEntrega < hoyStr && estatusLower !== 'entregado') {
+                      if (fechaEntrega < hoyStr) {
                         return (
                           <span style={{background:'#ef4444',color:'#fff',padding:'2px 8px',borderRadius:6,fontWeight:'bold'}}>
                             ENTREGA ATRASADA

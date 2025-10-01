@@ -15,6 +15,17 @@ export default function NotificationToast({ open, title, body, onClose, onViewEn
     nombre = match ? match[1] : "";
     saludo = `Bienvenido${nombre ? ' ' + nombre : ''} ! -- Aquí tienes tu actualización sobre las entregas:`;
     entregas = lista.trim().split('\n').filter(Boolean);
+    // Filtrar entregas con estatus 'Rechazado' o 'Entregado'
+    entregas = entregas.filter(linea => {
+      let estatus = "";
+      if (linea.includes("=")) {
+        const partes = linea.split("=");
+        estatus = partes[1] ? partes[1].trim().toLowerCase() : "";
+      }
+      // Filtra ignorando mayúsculas/minúsculas y espacios
+      const estatusNormalizado = estatus.replace(/\s+/g, "").toLowerCase();
+      return estatusNormalizado !== "rechazado" && estatusNormalizado !== "entregado" && estatusNormalizado !== "atrasada";
+    });
   }
   return (
     <div className="notification-toast-overlay">
