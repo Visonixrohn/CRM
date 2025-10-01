@@ -26,12 +26,13 @@ export default function NotificationToast({ open, title, body, onClose, onViewEn
   let saludo = body;
   let entregas = [];
   let nombre = "";
+  let contadorEntregas = 0;
+  let mostrar = true;
   if (body.includes('Tienes estas entregas pendientes:')) {
     const [sal, lista] = body.split('Tienes estas entregas pendientes:');
     // Extraer nombre del saludo
     const match = sal.match(/Hola ([^!]+)!/);
     nombre = match ? match[1] : "";
-    saludo = `Bienvenido${nombre ? ' ' + nombre : ''} ! -- Aquí tienes tu actualización sobre las entregas:`;
     entregas = lista.trim().split('\n').filter(Boolean);
     // Filtrar entregas con estatus 'Rechazado' o 'Entregado'
     entregas = entregas.filter(linea => {
@@ -44,7 +45,11 @@ export default function NotificationToast({ open, title, body, onClose, onViewEn
       const estatusNormalizado = estatus.replace(/\s+/g, "").toLowerCase();
       return estatusNormalizado !== "rechazado" && estatusNormalizado !== "entregado" && estatusNormalizado !== "atrasada";
     });
+    contadorEntregas = entregas.length;
+    saludo = `Bienvenido${nombre ? ' ' + nombre : ''} ! -- Aquí tienes tu actualización sobre las entregas: (${contadorEntregas})`;
+    if (contadorEntregas === 0) mostrar = false;
   }
+  if (!mostrar) return null;
   return (
     <div className="notification-toast-overlay">
       <div className="notification-toast">
