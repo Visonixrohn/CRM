@@ -3,6 +3,24 @@ import React, { useEffect } from "react";
 import "./NotificationToast.css";
 
 export default function NotificationToast({ open, title, body, onClose, onViewEntregas }) {
+  // Sonido beep y autocierre
+  useEffect(() => {
+    if (open) {
+      // Beep simple usando Web Audio API
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = ctx.createOscillator();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, ctx.currentTime); // beep agudo
+        oscillator.connect(ctx.destination);
+        oscillator.start();
+        setTimeout(() => {
+          oscillator.stop();
+          ctx.close();
+        }, 120);
+      } catch (e) {}
+    }
+  }, [open]);
   if (!open) return null;
   // Separar líneas de entregas (después del saludo)
   let saludo = body;
