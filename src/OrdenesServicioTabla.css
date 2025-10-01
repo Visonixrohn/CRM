@@ -194,3 +194,7 @@
     border-bottom: none;
   }
 }
+  .ordenes-table tr:hover {
+    background-color: #f1f5f9;
+    transform: scale(1.02);
+  }

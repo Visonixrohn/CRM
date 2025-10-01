@@ -429,18 +429,18 @@ const OrdenesServicio = () => {
       <div className="ordenes-servicio-table-container">
         <table className="ordenes-table">
           <thead>
-            <tr>
-              <th>FECHA</th>
-              <th>CLIENTE</th>
-              <th>TELÉFONO</th>
-              <th>NÚMERO DE ORDEN</th>
+            <tr style={{ background: '#0d1a3a' }}>
+              <th style={{ color: '#fff', background: '#0d1a3a' }}>FECHA</th>
+              <th style={{ color: '#fff', background: '#0d1a3a' }}>CLIENTE</th>
+              <th style={{ color: '#fff', background: '#0d1a3a' }}>TELÉFONO</th>
+              <th style={{ color: '#fff', background: '#0d1a3a' }}>NÚMERO DE ORDEN</th>
               {/* <th>ARTÍCULO</th> */}
-              <th>MODELO</th>
-              <th>MARCA</th>
-              <th>FALLA</th>
-              <th>STATUS</th>
-              <th>DIAS</th>
-              <th>GESTOR</th>
+              <th style={{ color: '#fff', background: '#0d1a3a' }}>MODELO</th>
+              <th style={{ color: '#fff', background: '#0d1a3a' }}>MARCA</th>
+              <th style={{ color: '#fff', background: '#0d1a3a' }}>FALLA</th>
+              <th style={{ color: '#fff', background: '#0d1a3a' }}>STATUS</th>
+              <th style={{ color: '#fff', background: '#0d1a3a' }}>DIAS</th>
+              <th style={{ color: '#fff', background: '#0d1a3a' }}>GESTOR</th>
             </tr>
           </thead>
           <tbody>
