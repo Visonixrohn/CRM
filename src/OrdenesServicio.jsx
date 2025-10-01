@@ -279,8 +279,6 @@ const OrdenesServicio = () => {
         <button onClick={() => setIsUpdateStateModalOpen(true)}>
           Actualizar Estado
         </button>
-        {/* Botón flotante solo móvil para agregar orden */}
-        <BotonFlotanteMovil onClick={() => setIsAddOrderModalOpen(true)} icon={"+"} label="Agregar orden" />
       </div>
     );
   };
@@ -307,8 +305,8 @@ const OrdenesServicio = () => {
 
   return (
   <div className="ordenes-container">
-      {/* Botón para actualizar todas las órdenes propias */}
-      <div style={{margin: '10px 0'}}>
+      {/* Botones de acciones principales */}
+      <div style={{margin: '10px 0', display: 'flex', gap: '12px'}}>
         <button
           style={{
             background: '#1976d2',
@@ -338,6 +336,21 @@ const OrdenesServicio = () => {
         >
           {isLoading ? 'Actualizando...' : 'Actualizar todas mis órdenes'}
         </button>
+        <button
+          style={{
+            background: '#0d1a3a',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '8px 18px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+          }}
+          onClick={() => setIsAddOrderModalOpen(true)}
+        >
+          Agregar orden
+        </button>
       </div>
       {showActualizadoModal && (
         <div style={{
@@ -358,9 +371,9 @@ const OrdenesServicio = () => {
         </div>
       )}
       <header className="ordenes-header">
-        <h1>Órdenes de Servicio</h1>
+  <h1 style={{ textAlign: 'center', width: '100%', margin: '0 auto' }}>Órdenes de Servicio</h1>
         {/* Contador de órdenes activas */}
-        <div style={{ margin: '10px 0', fontWeight: 'bold', fontSize: '1.1em' }}>
+        <div  style={{ textAlign: 'center', width: '100%', margin: '0 auto' }}>
           Órdenes activas: {
             filteredOrdenes.filter(o => {
               const status = o.status || '';
@@ -550,13 +563,7 @@ const OrdenesServicio = () => {
         </table>
       </div>
 
-      {/* Botón flotante solo móvil */}
-      <BotonFlotanteMovil onClick={() => setIsAddOrderModalOpen(true)} icon={"+"} label="Agregar orden" />
-      {/* Botón fijo solo escritorio */}
-      <button
-        className="btn-agregar-orden-desktop"
-        onClick={() => setIsAddOrderModalOpen(true)}
-      >+</button>
+      {/* Botón fijo solo escritorio eliminado por solicitud del usuario */}
 
       {selectedOrden && (
         <div
