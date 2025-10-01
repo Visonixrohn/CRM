@@ -306,6 +306,34 @@ const OrdenesServicio = () => {
 
   return (
   <div className="ordenes-container">
+      {/* Botón para actualizar todas las órdenes propias */}
+      <div style={{margin: '10px 0'}}>
+        <button
+          style={{
+            background: '#1976d2',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '8px 18px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+          }}
+          onClick={async () => {
+            setIsLoading(true);
+            for (const orden of filteredOrdenes) {
+              // Solo actualizar órdenes del usuario actual
+              if (orden.user_id === localStorage.getItem('userId')) {
+                await handleConsultarCorOne(orden.numero_orden);
+              }
+            }
+            setIsLoading(false);
+          }}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Actualizando...' : 'Actualizar todas mis órdenes'}
+        </button>
+      </div>
       {showActualizadoModal && (
         <div style={{
           position: 'fixed',
@@ -329,7 +357,10 @@ const OrdenesServicio = () => {
         {/* Contador de órdenes activas */}
         <div style={{ margin: '10px 0', fontWeight: 'bold', fontSize: '1.1em' }}>
           Órdenes activas: {
-            filteredOrdenes.filter(o => o.estado !== 'ANULADA' && o.estado !== 'FINALIZADA').length
+            filteredOrdenes.filter(o => {
+              const status = o.status || '';
+              return status !== 'Tu orden ha finalizado';
+            }).length
           }
         </div>
         <div className="osv-busqueda-barra-container">
@@ -411,6 +442,31 @@ const OrdenesServicio = () => {
               const ext = corOneData.hasOwnProperty(orden.numero_orden)
                 ? corOneData[orden.numero_orden]
                 : undefined;
+              // Colores para status según texto específico
+              const statusRaw = ext && ext.status ? ext.status : (orden.status || '');
+              const statusValue = statusRaw.toLowerCase();
+              let statusColor = '#e0e0e0', statusTextColor = '#333';
+              if (statusRaw === 'Tu orden ha finalizado') {
+                statusColor = '#43a047'; statusTextColor = '#fff'; // verde
+              } else if (statusRaw === 'Tu artículo está en proceso de reparación') {
+                statusColor = '#1976d2'; statusTextColor = '#fff'; // azul
+              } else if (statusRaw === 'Tu artículo está en proceso de revisión') {
+                statusColor = '#ff9800'; statusTextColor = '#fff'; // naranja oscuro
+              } else if (statusRaw === 'Tu orden ha sido recibida') {
+                statusColor = '#ffe600'; statusTextColor = '#333'; // amarillo
+              } else if (statusValue.includes('anulado') || statusValue.includes('anulada') || statusValue.includes('rechazada')) {
+                statusColor = '#e57373'; statusTextColor = '#fff';
+              } else if (statusValue.includes('finalizada') || statusValue.includes('finalizado')) {
+                statusColor = '#1976d2'; statusTextColor = '#fff';
+              } else if (statusValue.includes('pendiente')) {
+                statusColor = '#ffb300'; statusTextColor = '#fff';
+              } else if (statusValue.includes('reparado')) {
+                statusColor = '#43a047'; statusTextColor = '#fff';
+              } else if (statusValue.includes('sugerencia')) {
+                statusColor = '#8e24aa'; statusTextColor = '#fff';
+              }
+              // Mostrar -- en días si status es anulado, anulada, rechazada, finalizada
+              const diasOcultar = statusValue.includes('anulado') || statusValue.includes('anulada') || statusValue.includes('rechazada') || statusValue.includes('finalizada');
               return (
                 <tr key={orden.id} onClick={() => handleRowClick(orden)}>
                   <td data-label="Fecha">{orden.fecha}</td>
@@ -461,11 +517,24 @@ const OrdenesServicio = () => {
                     </button>
                   </td>
                   {/* <td data-label="Artículo">{orden.articulo}</td> */}
-                  <td data-label="Modelo">{ext && ext.model ? ext.model : ''}</td>
-                  <td data-label="Marca">{ext && ext.brand ? ext.brand : ''}</td>
-                  <td data-label="Falla">{ext && (ext.damage || ext.reportedDamage) ? (ext.damage ? ext.damage : ext.reportedDamage) : ''}</td>
-                  <td data-label="Status">{ext && ext.status ? ext.status : ''}</td>
-                  <td data-label="Días">{calculateDaysElapsed(orden.fecha)}</td>
+                  <td data-label="Modelo">{ext && ext.model ? ext.model : (orden.modelo || '')}</td>
+                  <td data-label="Marca">{ext && ext.brand ? ext.brand : (orden.marca || '')}</td>
+                  <td data-label="Falla">{ext && (ext.damage || ext.reportedDamage) ? (ext.damage ? ext.damage : ext.reportedDamage) : (orden.falla || '')}</td>
+                  <td data-label="Status">
+                    <span style={{
+                      display: 'inline-block',
+                      background: statusColor,
+                      color: statusTextColor,
+                      borderRadius: '16px',
+                      padding: '2px 14px',
+                      fontWeight: 'bold',
+                      fontSize: '0.95em',
+                      minWidth: '80px',
+                      textAlign: 'center',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.08)'
+                    }}>{ext && ext.status ? ext.status : (orden.status || '')}</span>
+                  </td>
+                  <td data-label="Días">{diasOcultar ? '--' : calculateDaysElapsed(orden.fecha)}</td>
                   <td data-label="Gestor">{orden.gestor}</td>
                 </tr>
               );
