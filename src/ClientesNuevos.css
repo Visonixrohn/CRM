@@ -30,8 +30,8 @@
   justify-content: center;
   background: var(--background-white);
   border-radius: var(--border-radius);
-  box-shadow: var(--shadow-light);
-  padding: 1.5rem;
+  box-shadow: none;
+  padding: 0.5rem;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -174,7 +174,7 @@
   color: var(--text-dark);
   text-align: center;
   position: relative;
-  transition: var(--transition);
+  transition: none;
 }
 .clientes-nuevos-tabla th:last-child,
 .clientes-nuevos-tabla td:last-child {
@@ -189,7 +189,7 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(transparent, rgba(0, 183, 255, 0.05));
-  animation: glitch-line 4s infinite linear;
+  animation: none;
   pointer-events: none;
 }
 
@@ -207,10 +207,10 @@
 }
 
 .clientes-nuevos-tabla tbody tr:hover {
-  background: rgba(0, 183, 255, 0.1);
-  transform: scale(1.01);
-  box-shadow: var(--shadow-blue);
-  animation: glitch-row 0.4s;
+  background: #f1f1f1;
+  transform: none;
+  box-shadow: none;
+  animation: none;
 }
 
 @keyframes glitch-row {
@@ -282,7 +282,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  backdrop-filter: blur(4px);
+  backdrop-filter: none;
 }
 
 /* Contenido del modal */
@@ -293,29 +293,16 @@
   width: min(95vw, 1400px);
   max-height: 85vh;
   overflow-y: auto;
-  box-shadow: var(--shadow-blue), var(--shadow-light);
-  border: var(--border-blue);
+  box-shadow: none;
+  border: 1px solid #e5e7eb;
   position: relative;
   font-family: var(--font-family);
-  animation: glitch-modal 0.3s;
+  animation: fadeInModal 0.9s;
 }
 
-@keyframes glitch-modal {
-  0% {
-    transform: translate(0, 0);
-  }
-  20% {
-    transform: translate(3px, -3px);
-  }
-  40% {
-    transform: translate(-3px, 3px);
-  }
-  60% {
-    transform: translate(1px, -1px);
-  }
-  100% {
-    transform: translate(0, 0);
-  }
+@keyframes fadeInModal {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 /* Título del modal */
@@ -341,15 +328,15 @@
   padding: 1.25rem;
   border-radius: 8px;
   border: var(--border-blue);
-  box-shadow: var(--shadow-light);
-  transition: var(--transition);
+  box-shadow: none;
+  transition: none;
   overflow-wrap: break-word;
 }
 
 .detalle-item:hover {
-  transform: translateY(-0.3rem);
-  box-shadow: var(--shadow-blue);
-  animation: glitch-row 0.3s;
+  transform: none;
+  box-shadow: none;
+  animation: none;
 }
 
 .detalle-item strong {
@@ -382,13 +369,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: var(--transition);
+  transition: none;
 }
 
 .cerrar-detalle:hover {
  
   color: black;
- 
 }
 
 /* Filtros y barra de búsqueda */
@@ -409,8 +395,8 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: var(--transition);
-  box-shadow: var(--shadow-light);
+  transition: none;
+  box-shadow: none;
   position: relative;
   overflow: hidden;
 }
@@ -428,7 +414,7 @@
     rgba(0, 183, 255, 0.3),
     transparent
   );
-  animation: shine 2.5s infinite;
+  animation: none;
 }
 
 @keyframes shine {
@@ -445,12 +431,12 @@
 
 .filtros-busqueda button.activo {
   background: #1e40af;
-  transform: scale(1.05);
+  transform: none;
 }
 
 .filtros-busqueda button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 15px #2563eb;
+  transform: none;
+  box-shadow: none;
 }
 
 .barra-busqueda {
@@ -461,14 +447,14 @@
   background: rgba(255, 255, 255, 0.8);
   color: var(--text-dark);
   font-size: 1rem;
-  box-shadow: var(--shadow-light);
-  transition: var(--transition);
+  box-shadow: none;
+  transition: none;
 }
 
 .barra-busqueda:focus {
   outline: none;
   border-color: #1e40af;
-  box-shadow: 0 0 15px #2563eb;
+  box-shadow: none;
 }
 
 /* Estados */
@@ -500,8 +486,8 @@
 
 .status-tomado:hover,
 .status-sin-tomar:hover {
-  filter: brightness(1.2);
-  animation: glitch-row 0.3s;
+  filter: none;
+  animation: none;
 }
 
 /* Mejoras de accesibilidad */

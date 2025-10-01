@@ -1,3 +1,7 @@
+@keyframes fadeInModal {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
 .detalle-lineas {
   margin: 1.5rem 0;
 }
@@ -64,13 +68,13 @@
   font-size: 1rem;
   background-color: #ffffff;
   color: var(--text-primary);
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: none;
 }
 
 .search-bar:focus {
   outline: none;
   border-color: var(--primary-blue-hover);
-  box-shadow: 0 0 8px rgba(79, 70, 229, 0.3);
+  box-shadow: none;
 }
 
 .search-bar::placeholder {
@@ -83,8 +87,8 @@
   margin: 0 auto;
   background: var(--card-background);
   border-radius: 16px;
-  box-shadow: var(--card-shadow);
-  padding: 1.5rem;
+  box-shadow: none;
+  padding: 0.5rem;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   display: flex;
@@ -107,11 +111,11 @@
 }
 
 .actualizaciones-table tbody tr {
-  transition: background 0.2s ease;
+  transition: none;
 }
 
 .actualizaciones-table tbody tr:hover {
-  background: #f9fafb;
+  background: #f1f1f1;
   cursor: pointer;
 }
 
@@ -227,12 +231,12 @@
     background: var(--card-background);
     border-radius: 12px;
     padding: 1rem;
-    box-shadow: var(--card-shadow);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: none;
+    transition: none;
   }
   .actualizaciones-table tr:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    transform: none;
+    box-shadow: none;
   }
   .actualizaciones-table td {
     display: flex;

@@ -207,13 +207,13 @@ const Actualizaciones = () => {
           <div className="detalle-contenido" style={{
             background: '#fff',
             borderRadius: 16,
-            boxShadow: '0 4px 24px #0002',
+            boxShadow: 'none',
             padding: '32px 24px 24px 24px',
             minWidth: 320,
             maxWidth: 420,
             width: '100%',
             position: 'relative',
-            animation: 'fadeIn .3s'
+            animation: 'fadeInModal 0.7s'
           }}>
             <button className="cerrar-detalle" onClick={closeDetalle} style={{
               position: 'absolute',
