@@ -44,7 +44,7 @@ const OrdenesServicio = () => {
   fecha: new Date().toISOString().split("T")[0], // Fecha por defecto: hoy
   cliente: "",
   numero_orden: "",
-  estado: "PENDIENTE DE VISITA",
+  telefono: "",
   archivo: "",
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -133,18 +133,27 @@ const OrdenesServicio = () => {
 
   const handleAddOrder = async (e) => {
     e.preventDefault();
-
-
     setIsLoading(true);
+
+    // Validación de campos requeridos
+    const camposObligatorios = ["fecha", "cliente", "numero_orden", "telefono"];
+    for (const campo of camposObligatorios) {
+      if (!newOrder[campo] || newOrder[campo].toString().trim() === "") {
+        alert(`El campo '${campo}' es obligatorio.`);
+        setIsLoading(false);
+        return;
+      }
+    }
 
     // Ya no se sube archivo, solo se guarda la URL escrita
     const archivoUrl = newOrder.archivo || null;
-
     const userId = localStorage.getItem("userId");
     const { error } = await supabase.from("ordenes_servicio").insert([
       {
-        ...newOrder,
-        articulo: "articulo",
+        fecha: newOrder.fecha,
+        cliente: newOrder.cliente,
+        numero_orden: newOrder.numero_orden,
+        telefono: newOrder.telefono,
         archivo: archivoUrl,
         tienda_usuario: miTienda,
         user_id: userId,
@@ -154,6 +163,7 @@ const OrdenesServicio = () => {
 
     if (error) {
       console.error("Error al guardar la orden:", error);
+      alert("Error al guardar la orden. Verifica los datos e intenta de nuevo.");
       setIsAddOrderModalOpen(false);
     } else {
       setIsAddOrderModalOpen(false);
@@ -165,11 +175,12 @@ const OrdenesServicio = () => {
     setOrdenes(ordenesActualizadas);
     setIsLoading(false);
     setNewOrder({
-  fecha: new Date().toISOString().split("T")[0],
-  cliente: "",
-  numero_orden: "",
-  estado: "PENDIENTE DE VISITA",
-  archivo: "",
+      fecha: new Date().toISOString().split("T")[0],
+      cliente: "",
+      numero_orden: "",
+      telefono: "",
+      estado: "PENDIENTE DE VISITA",
+      archivo: "",
     });
   };
 
