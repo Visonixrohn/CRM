@@ -21,6 +21,7 @@ import "./components/OrdenesServicioFiltroMovil.css";
 import BotonFlotanteMovil from "./components/BotonFlotanteMovil";
 
 const OrdenesServicio = () => {
+  const [verTodasTienda, setVerTodasTienda] = useState(false);
   const [showActualizadoModal, setShowActualizadoModal] = useState(false);
   const [ordenes, setOrdenes] = useState([]);
   const [corOneData, setCorOneData] = useState({}); // { [numero_orden]: { brand, model, status } }
@@ -304,20 +305,75 @@ const OrdenesServicio = () => {
   };
 
   const filteredOrdenes = ordenes.filter((orden) => {
+    const userId = localStorage.getItem("userId");
     const matchesSearch =
       orden.cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
       orden.numero_orden.toLowerCase().includes(searchTerm.toLowerCase());
     // Filtrar por STATUS si hay filtro seleccionado
     const matchesFilter = filterState ? (orden.status === filterState) : true;
-    // Solo mostrar órdenes de la tienda del usuario
+    // Solo mostrar órdenes según interruptor
     const matchesTienda = miTienda ? orden.tienda_usuario === miTienda : true;
-    return matchesSearch && matchesFilter && matchesTienda;
+    const matchesUser = verTodasTienda ? true : orden.user_id === userId;
+    return matchesSearch && matchesFilter && matchesTienda && matchesUser;
   });
 
   return (
   <div className="ordenes-container">
       {/* Botones de acciones principales */}
       <div style={{margin: '10px 0', display: 'flex', gap: '12px'}}>
+        {/* Interruptor tipo switch moderno */}
+        <label style={{display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold'}}>
+          <span style={{fontSize: '1em'}}>Ver todas las órdenes de la tienda</span>
+          <span
+            style={{
+              position: 'relative',
+              display: 'inline-block',
+              width: '48px',
+              height: '24px',
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={verTodasTienda}
+              onChange={() => setVerTodasTienda(v => !v)}
+              style={{
+                opacity: 0,
+                width: '48px',
+                height: '24px',
+                margin: 0,
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                cursor: 'pointer',
+              }}
+            />
+            <span
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '48px',
+                height: '24px',
+                background: verTodasTienda ? '#1976d2' : '#ccc',
+                borderRadius: '24px',
+                transition: 'background 0.2s',
+              }}
+            ></span>
+            <span
+              style={{
+                position: 'absolute',
+                top: '2px',
+                left: verTodasTienda ? '26px' : '2px',
+                width: '20px',
+                height: '20px',
+                background: '#fff',
+                borderRadius: '50%',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.15)',
+                transition: 'left 0.2s',
+              }}
+            ></span>
+          </span>
+        </label>
         <button
           style={{
             background: '#1976d2',
