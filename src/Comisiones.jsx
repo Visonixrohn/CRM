@@ -86,7 +86,15 @@ const Comisiones = ({ setPage }) => {
         const mm = String(hoy.getMonth() + 1).padStart(2, '0');
         const dd = String(hoy.getDate()).padStart(2, '0');
         const hoyStr = `${yyyy}-${mm}-${dd}`;
-        setEntregasPendientesAtrasadas(data.filter(e => e.fecha_entrega < hoyStr && String(e.estatus).toLowerCase() !== 'entregado').length);
+          setEntregasPendientesAtrasadas(
+            data.filter(e => {
+              const estatus = String(e.estatus).toLowerCase();
+              return (
+                e.fecha_entrega < hoyStr &&
+                (estatus === 'pendiente' || estatus === 'reprogramada')
+              );
+            }).length
+          );
         setEntregasParaHoy(data.filter(e => e.fecha_entrega === hoyStr && String(e.estatus).toLowerCase() !== 'entregado').length);
         setEntregasNoGestionadas(data.filter(e => (e.gestionada || '').toLowerCase() === 'no gestionada' && String(e.estatus).toLowerCase() !== 'entregado').length);
       } catch (e) {}
@@ -129,9 +137,21 @@ const Comisiones = ({ setPage }) => {
             localStorage.setItem("nombre", profile.nombre);
           }
         }
+        // Obtener la suma de los gastos mensuales del usuario
+        const { data: gastos, error: errorGastos } = await supabase
+          .from("gastos_mensuales")
+          .select("valor")
+          .eq("usuario_id", userId);
+        let totalGastos = 0;
+        if (!errorGastos && Array.isArray(gastos)) {
+          totalGastos = gastos.reduce((sum, g) => sum + Number(g.valor), 0);
+        }
+        setGastoMensual(totalGastos);
+
+        // Mantener la lógica anterior para meta y comisión obtenida
         const { data, error } = await supabase
           .from("comisiones")
-          .select("meta, comision_obtenida, gasto_mensual")
+          .select("meta, comision_obtenida")
           .eq("usuario", userId)
           .single();
         if (error && error.code !== "PGRST116") {
@@ -142,7 +162,6 @@ const Comisiones = ({ setPage }) => {
         } else {
           setMeta(data.meta);
           setComisionObtenida(data.comision_obtenida);
-          setGastoMensual(data.gasto_mensual || 0);
           setNoData(false);
         }
       } catch (err) {
@@ -403,7 +422,7 @@ const Comisiones = ({ setPage }) => {
               icon="💵"
             />
             <ActionButton
-              onClick={() => openModal("gasto_mensual")}
+              onClick={() => navigate('/mis-gastos')}
               label="Mis gasto mensual"
               icon="💳"
               style={{ background: '#a21caf', color: '#fff' }}

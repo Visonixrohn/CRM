@@ -1,4 +1,5 @@
 import BottomBar from "./BottomBar";
+import MisGastos from "./MisGastos";
 import Seguimiento from "./Seguimiento";
 import "./App.css";
 import Push from "./push";
@@ -280,6 +281,7 @@ function App() {
                 handleUpdate={() => {}}
                 setPage={setPage}
               />} />
+                <Route path="/mis-gastos" element={<MisGastos />} />
               <Route path="/entregas" element={<Entregas />} />
               <Route path="/ordenes" element={<OrdenesServicio />} />
               <Route path="/calculadoras" element={<Calculadoras />} />

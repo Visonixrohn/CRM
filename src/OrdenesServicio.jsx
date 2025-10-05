@@ -520,7 +520,7 @@ const OrdenesServicio = () => {
               <th style={{ color: '#fff', background: '#0d1a3a' }}>FALLA</th>
               <th style={{ color: '#fff', background: '#0d1a3a' }}>STATUS</th>
               <th style={{ color: '#fff', background: '#0d1a3a' }}>DIAS</th>
-              <th style={{ color: '#fff', background: '#0d1a3a' }}>GESTOR</th>
+              <th style={{ color: '#fff', background: '#0d1a3a' }}>CREADOR</th>
             </tr>
           </thead>
           <tbody>
