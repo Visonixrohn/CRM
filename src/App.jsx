@@ -34,11 +34,20 @@ import ResetPassword from "./ResetPassword";
 import Configuraciones from "./Configuraciones";
 import { Routes, Route, useLocation, Navigate, useNavigate } from "react-router-dom";
 import Admin from "./Admin";
-import Aprendisaje from "./Aprendisaje";
+import CarteraClientes from "./Aprendisaje";
 
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Navegación para BottomBar
+  function handleBottomBarNavigate(key) {
+    if (key === "cartera") {
+      navigate("/aprendisaje");
+    } else {
+      navigate(key === "comisiones" ? "/" : `/${key}`);
+    }
+  }
   // Detectar si es móvil (debe ir antes de cualquier uso de isMobile)
   let isMobile = false;
   if (typeof window !== "undefined") {
@@ -302,7 +311,7 @@ function App() {
                 <Route path="/admin" element={<Admin />} />
               )}
               <Route path="/configuraciones" element={<Configuraciones />} />
-              <Route path="/aprendisaje" element={<Aprendisaje />} />
+              <Route path="/aprendisaje" element={<CarteraClientes />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>
@@ -326,10 +335,7 @@ function App() {
         {/* BottomBar solo en móviles */}
         {isMobile && (
           <BottomBar
-            onNavigate={(key) => {
-              setPage(key);
-              navigate(key === "comisiones" ? "/" : `/${key}`);
-            }}
+            onNavigate={handleBottomBarNavigate}
             active={page}
             expanded={bottomBarExpanded}
             onCloseExpand={() => setBottomBarExpanded(false)}

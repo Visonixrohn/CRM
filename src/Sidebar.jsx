@@ -191,12 +191,12 @@ const Sidebar = ({
         <Link
           to="/aprendisaje"
           className="sidebar-icon"
-          title="Aprendisaje"
+          title="Cartera"
           style={{ position: "relative" }}
           onClick={handleNavClick}
         >
           <FaBook className="icon-text" style={{ color: '#009688' }} />
-          <span className="sidebar-tooltip">Aprendisaje</span>
+          <span className="sidebar-tooltip">Cartera</span>
         </Link>
        
         {/* Icono de Admin solo para superadmin */}

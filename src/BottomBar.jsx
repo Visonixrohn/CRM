@@ -30,6 +30,7 @@ function getIconsWithAdmin() {
     { key: "comisiones", label: "Comisiones", icon: <FaDollarSign color="#2196f3" /> },
     { key: "entregas", label: "Entregas", icon: <FaTruck color="#2196f3" /> },
     { key: "ordenes", label: "Órdenes", icon: <FaBook color="#2196f3" /> },
+    { key: "cartera", label: "Cartera", icon: <FaCreditCard color="#a21caf" /> },
     { key: "calculadoras", label: "Calculadoras", icon: <FaCalculator color="#2196f3" /> },
     { key: "razones", label: "Razones", icon: <FaClipboardList color="#2196f3" /> },
     { key: "promedios", label: "Promedios", icon: <FaPercent color="#ff9800" /> },
