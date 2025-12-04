@@ -521,6 +521,9 @@ const Entregas = () => {
     fetchEntregas();
   }, [user]);
 
+  // Contador de entregas sin entregar (estatus distinto a 'Entregado')
+  const pendientesSinEntregar = entregas.filter(e => String(e.estatus || '').toLowerCase() !== 'entregado').length;
+
   // Filtrar entregas según estatus y búsqueda
   const entregasFiltradas = entregas
     .filter((e) => {
@@ -676,9 +679,12 @@ const Entregas = () => {
   return (
     <div className="entregas-modern-bg">
       {/* Mostrar datos del chofer arriba de la tabla */}
-      <h3 style={{margin: '1rem 0 0.5rem 0', color: '#374151', fontWeight: 600, fontSize: '1.1rem'}}>
-        Chofer: {chofer ? `${chofer.nombre || 'Sin nombre'} (${chofer.telefono || 'Sin número'})` : 'No registrado'}
-      </h3>
+      <div style={{display: 'flex', alignItems: 'center', gap: 12, margin: '1rem 0 0.5rem 0'}}>
+        <h3 style={{margin: 0, color: '#374151', fontWeight: 600, fontSize: '1.05rem'}}>
+          Chofer: {chofer ? `${chofer.nombre || 'Sin nombre'} (${chofer.telefono || 'Sin número'})` : 'No registrado'}
+        </h3>
+        <span className="chofer-pendientes" title="Entregas sin entregar">Sin entregar: {pendientesSinEntregar}</span>
+      </div>
   <div className="botones-bar-container">
         <div className="entregas-busqueda-barra-container">
           <input

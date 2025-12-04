@@ -112,6 +112,18 @@
   align-items: center;
 }
 
+/* Badge pequeño que muestra el número de entregas sin entregar junto al chofer */
+.chofer-pendientes {
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 0 6px 18px rgba(15,23,42,0.06);
+}
+
 .input-group-float .input-icon {
   position: absolute;
   left: 1rem;

@@ -52,6 +52,12 @@
 /* =============================
    FONDO OSCURO DEL MODAL
    ============================= */
+.root-theme-blue {
+  --brand-dark: #0b3d91; /* Azul oscuro principal */
+  --brand-dark-2: #08306b; /* Variante más oscura */
+  --brand-light: #e9f0ff; /* Azul muy claro para fondos */
+  --focus-glow: rgba(11,61,145,0.12);
+}
 .agregar-entrega-modal-bg {
   position: fixed;
   inset: 0;
@@ -84,6 +90,9 @@
   box-sizing: border-box;
   overflow-y: auto;
 }
+
+/* Aplicar tema azul al modal */
+.agregar-entrega-modal { --brand-dark: #0b3d91; }
 
 .agregar-entrega-form-grid {
   display: grid;
@@ -119,8 +128,8 @@
 .input-group-float input:focus,
 .input-group-float select:focus {
   outline: none;
-  border-color: #7c3aed;
-  box-shadow: 0 6px 18px rgba(124,58,237,0.08);
+  border-color: var(--brand-dark);
+  box-shadow: 0 6px 18px var(--focus-glow);
 }
 
 .input-group-float label {
@@ -144,14 +153,14 @@
 }
 
 .modern-agregar {
-  background: linear-gradient(90deg,#0ea5e9,#6366f1);
+  background: linear-gradient(90deg, var(--brand-dark), var(--brand-dark-2));
   color: #fff;
 }
 
 .modern-cerrar {
-  background: #eef2ff;
-  color: #0f172a;
-  border: 1px solid #e6edf3;
+  background: var(--brand-light);
+  color: var(--brand-dark);
+  border: 1px solid rgba(11,61,145,0.08);
 }
 
 @media (min-width: 700px) {
