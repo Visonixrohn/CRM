@@ -1,268 +1,166 @@
-@media (max-width: 700px) {
-  .tabla-entregas-wrapper {
-    display: none !important;
-  }
-}
-/* === Colores para columna Tipo de Entrega === */
-.modern-tipoentrega {
-  display: inline-block;
-  padding: 0.28rem 0.7rem;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.89rem;
-  letter-spacing: 0.01em;
-  text-transform: capitalize;
-  margin: 0 0.1rem;
-}
-.modern-tipoentrega-tienda {
-  background: #e3f2fd;
-  color: #1565c0;
-  border: 1.5px solid #90caf9;
-}
-.modern-tipoentrega-bodega-sps {
-  background: #fff3e0;
-  color: #ef6c00;
-  border: 1.5px solid #ffe0b2;
-}
-.modern-tipoentrega-bodega-tg {
-  background: #f3e5f5;
-  color: #6a1b9a;
-  border: 1.5px solid #ce93d8;
-}
-.modern-tipoentrega-domicilio {
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1.5px solid #a5d6a7;
-}
-
-/* === Colores para columna Gestionada === */
-.modern-gestionada {
-  display: inline-block;
-  padding: 0.28rem 0.7rem;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.89rem;
-  letter-spacing: 0.01em;
-  text-transform: capitalize;
-  margin: 0 0.1rem;
-}
-.modern-gestionada-gestionada {
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1.5px solid #a5d6a7;
-}
-.modern-gestionada-no-gestionada {
-  background: #ffebee;
-  color: #c62828;
-  border: 1.5px solid #ef9a9a;
-}
 /* =============================
-   TABLA / CARDS DE ENTREGAS RESPONSIVA
+   Tabla de Entregas - Estilo profesional
+   Reglas: header fijo suave, filas con separación, badges refinados.
    ============================= */
 
-/* Contenedor */
-.tabla-entregas-container {
-  width: 95%;
+:root{
+  --bg-card: #ffffff;
+  --muted: #6b7280;
+  --accent: #6366f1;
+  --accent-2: #0ea5e9;
+  --border: #e6e9ef;
+  --shadow-1: 0 6px 20px rgba(15, 23, 42, 0.06);
+}
+
+/* Contenedor externo (hace que la tabla respire) */
+.tabla-entregas-wrapper {
+  width: 100%;
+  display: block;
+  position: relative;
+  /* Altura máxima para que la tabla pueda hacer scroll dentro del layout */
+  max-height: 65vh;
+  overflow-y: auto;
   overflow-x: auto;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 1rem;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 8px;
+}
+
+.tabla-entregas-container {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--bg-card);
+  border-radius: 14px;
+  box-shadow: var(--shadow-1);
+  padding: 12px;
   margin: 1rem 0;
 }
 
-/* En móviles: ancho del 65% */
-@media (max-width: 700px) {
-  .tabla-entregas-container {
-    width: 65%;
-    margin: 1rem auto; /* Centrar horizontalmente */
-    padding: 1rem 0.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-  }
-}
-
-
-/* Tabla base para desktop */
+/* Tabla básica */
 .tabla-entregas {
   width: 100%;
-  min-width: 600px;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0 10px;
   font-size: 0.95rem;
-  background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  color: #0f172a;
+  min-width: 720px;
 }
 
-
-/* Encabezados */
-.tabla-entregas th {
-  padding: 0.8rem 0.5rem;
-  text-align: left;
-  background: #0370ff;
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 1rem;
-  
-}
-
-/* Filas */
-.tabla-entregas td {
-  padding: 0.7rem 0.5rem;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-/* Hover efecto */
-.tabla-entregas tr:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-/* Última fila */
-.tabla-entregas tr:last-child td {
-  border-bottom: none;
-}
-
-/* Estatus con colores */
-.estatus {
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.85rem;
+/* Encabezado con estilo moderno */
+.tabla-entregas thead th {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(90deg, rgba(99,102,241,0.98), rgba(37,99,235,0.95));
   color: #fff;
-}
-
-.estatus.pendiente {
-  background: #f59e0b;
-} /* Naranja */
-.estatus.entregado {
-  background: #10b981;
-} /* Verde */
-.estatus.rechazado {
-  background: #ef4444;
-} /* Rojo */
-.estatus.reprogramado {
-  background: #3b82f6;
-} /* Azul */
-
-/* Colores para cada estado */
-.modern-status {
-  display: inline-block;
-  padding: 0.35rem 0.8rem;
-  border-radius: 16px;
+  padding: 12px 14px;
+  text-align: left;
   font-weight: 700;
-  font-size: 0.97rem;
+  font-size: 0.95rem;
   letter-spacing: 0.02em;
-  text-transform: capitalize;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  border: none;
-  margin: 0 0.2rem;
-}
-.modern-pendiente {
-  background: #fff3cd;
-  color: #856404;
-  border: 1.5px solid #ffe082;
-}
-.modern-entregado {
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1.5px solid #a5d6a7;
-}
-.modern-rechazado {
-  background: #ffebee;
-  color: #c62828;
-  border: 1.5px solid #ef9a9a;
-}
-.modern-reprogramado {
-  background: #e3f2fd;
-  color: #1565c0;
-  border: 1.5px solid #90caf9;
+  border-radius: 8px;
+  z-index: 2;
 }
 
-/* Botones / iconos */
+/* Filas: cada fila es una 'card' visual gracias a border-spacing */
+.tabla-entregas tbody tr {
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(15,23,42,0.04);
+  border-radius: 10px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tabla-entregas tbody tr:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(15,23,42,0.08);
+}
+
+.tabla-entregas td {
+  padding: 12px 14px;
+  vertical-align: middle;
+  border: none;
+  color: #0f172a;
+}
+
+/* Alineaciones específicas */
+.tabla-entregas td[data-label="Editar"] { width: 56px; text-align: center; }
+.tabla-entregas td[data-label="Tiempo"] { width: 110px; }
+.tabla-entregas td[data-label="Estatus"] { width: 160px; }
+
+/* Badges refinados (mantiene compatibilidad con clases existentes) */
+.modern-tipoentrega, .modern-gestionada, .modern-status {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.87rem;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  box-shadow: 0 4px 10px rgba(2,6,23,0.04);
+}
+
+/* Ajuste de colores ya existentes, sólo suavizamos bordes y contrastes */
+.modern-tipoentrega-tienda { background:#eef6ff; color:#1e40af; border: 1px solid #cde6ff; }
+.modern-tipoentrega-bodega-sps { background:#fff7ed; color:#b45309; border:1px solid #ffe6c9; }
+.modern-tipoentrega-bodega-tg { background:#f8f0fb; color:#6b21a8; border:1px solid #ecd7f6; }
+.modern-tipoentrega-domicilio { background:#f0fbf4; color:#166534; border:1px solid #d7f4de; }
+
+.modern-gestionada-gestionada { background:#eefcf0; color:#166534; border:1px solid #c7f0d0; }
+.modern-gestionada-no-gestionada { background:#fff5f5; color:#9b1c1c; border:1px solid #ffd6d6; }
+
+.modern-pendiente, .modern-entregado, .modern-rechazado, .modern-reprogramado { padding:6px 10px; }
+
+/* Botones de acción (iconos) */
 .tabla-entregas td .btn-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.25rem 0.5rem;
+  padding: 8px 10px;
   border-radius: 8px;
-  background: #4f46e5;
-  color: #fff;
-  font-size: 0.85rem;
+  background: transparent;
+  color: var(--accent);
+  font-size: 1rem;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
+  transition: background 0.18s ease, transform 0.12s ease, color 0.12s ease;
+  border: 1px solid transparent;
+}
+.tabla-entregas td .btn-icon:hover {
+  background: rgba(99,102,241,0.06);
+  transform: translateY(-2px);
+  color: var(--accent-2);
 }
 
-.tabla-entregas td .btn-icon:hover {
-  background: #06b6d4;
-  transform: translateY(-2px);
-}
+/* Indicadores de estado con más contraste */
+.estatus { padding:6px 10px; border-radius: 10px; font-weight:700; color:#fff; }
+.estatus.pendiente { background:#f59e0b; }
+.estatus.entregado { background:#10b981; }
+.estatus.rechazado { background:#ef4444; }
+.estatus.reprogramado { background:#3b82f6; }
 
 /* =============================
-   RESPONSIVE PARA MÓVILES
+   Responsive: convertir a cards en móvil
    ============================= */
-@media (max-width: 700px) {
-  .tabla-entregas {
-    display: block;
-    width: 100%;
-  }
-  .tabla-entregas thead {
-    display: none;
-  }
-  .tabla-entregas tr {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1.2rem;
-    background: #f9fafb;
-    border-radius: 16px;
-    box-shadow: 0 4px 18px rgba(99,102,241,0.10);
-    padding: 1.1rem 1rem 1.2rem 1rem;
-    border: 1.5px solid #e0e7ff;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .tabla-entregas tr:hover {
-    transform: scale(1.01) translateY(-2px);
-    box-shadow: 0 8px 24px rgba(99,102,241,0.13);
-  }
-  .tabla-entregas td {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 0.5rem;
-    padding: 0.45rem 0;
-    border-bottom: 1px solid #e5e7eb;
-    background: none;
-    font-size: 1.01rem;
-  }
-  .tabla-entregas td::before {
-    content: attr(data-label);
-    font-weight: 700;
-    color: #6366f1;
-    width: 48%;
-    flex-shrink: 0;
-    font-size: 0.98rem;
-    letter-spacing: 0.01em;
-  }
-  .tabla-entregas td:last-child {
-    border-bottom: none;
-  }
-  /* Mejorar badges en móvil */
-  .modern-status, .modern-tipoentrega, .modern-gestionada {
-    font-size: 0.97rem !important;
-    padding: 0.22rem 0.7rem !important;
-    border-radius: 10px !important;
-    margin: 0 0.1rem !important;
-    min-width: 90px;
-    text-align: center;
-    display: inline-block;
-  }
-  /* Botones/iconos mejor alineados */
-  .tabla-entregas td .btn-icon {
-    font-size: 1.1rem;
-    padding: 0.35rem 0.7rem;
-    border-radius: 10px;
-    margin-left: 0.2rem;
-  }
+@media (max-width: 900px) {
+  .tabla-entregas { min-width: 0; display:block; }
+  .tabla-entregas thead { display:none; }
+  .tabla-entregas tbody { display:flex; flex-direction:column; gap:12px; }
+  .tabla-entregas tbody tr { display:flex; flex-direction:column; padding:12px; }
+  .tabla-entregas td { display:flex; justify-content:space-between; padding:8px 6px; border-bottom:1px dashed var(--border); }
+  .tabla-entregas td::before { content: attr(data-label); color: var(--muted); font-weight:700; margin-right:8px; }
+  .tabla-entregas td[data-label="Editar"] { text-align:left; }
 }
+
+@media (max-width: 520px) {
+  .tabla-entregas td { font-size: 0.98rem; }
+  .modern-tipoentrega, .modern-status, .modern-gestionada { font-size:0.9rem; padding:6px 8px; }
+}
+
+/* Pequeño ajuste para no esconder la tabla en móviles, pero usar cards (compatible con App) */
+@media (max-width: 700px) {
+  .tabla-entregas-wrapper { display: block; }
+}
+
+/* Scrollbar discretos */
+.tabla-entregas-wrapper::-webkit-scrollbar { width: 10px; height: 10px; }
+.tabla-entregas-wrapper::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.22); border-radius: 8px; }
+.tabla-entregas-wrapper::-webkit-scrollbar-track { background: transparent; }
+
