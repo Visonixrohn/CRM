@@ -22,13 +22,7 @@ const Header = ({ onMenuClick, actions, user }) => {
   const goToActualizaciones = () => navigate('/actualizaciones');
   return (
     <header className="header" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-      <button className="menu-btn modern" aria-label="Menú" onClick={onMenuClick}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="cursor-pointer hover:scale-110 transition-transform duration-200">
-          <line x1="4" y1="6" x2="20" y2="6" />
-          <line x1="4" y1="12" x2="20" y2="12" />
-          <line x1="4" y1="18" x2="20" y2="18" />
-        </svg>
-      </button>
+        {/* Botón de menú eliminado para mantener el sidebar siempre abierto */}
       <span className="header-title">
         CRM{user && user.nombre ? ` - ${user.nombre}` : ""}
       </span>

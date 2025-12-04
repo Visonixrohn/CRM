@@ -1,7 +1,7 @@
 import ModalEstatus from "./components/ModalEstatus";
 import "./EntregasBusqueda.css";
 import React, { useState, useEffect } from "react";
-import { useGoogleMap } from "./useGoogleMap";
+// Eliminado uso de mapa en el formulario de agregar entregas
 import EditFieldModal from "./EditFieldModal";
 import EditUbicacionModal from "./EditUbicacionModal";
 import EntregaCard from "./components/EntregaCard";
@@ -269,43 +269,14 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
     estatus: "Pendiente",
     fecha: todayStr,
     fecha_entrega: tomorrowStr,
-    ubicacion: "",
-    lat: 16.3832884,
-    lng: -86.4460626,
     tipo_entrega: "TIENDA",
     gestionada: "NO GESTIONADA",
   });
-  // Eliminado: mapCenter, mapLoaded, marker
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [step, setStep] = useState(0);
-  // Eliminado: mapRef
-
-  // --- MAPA GOOGLE ---
-  const [mapType, setMapType] = useState("satellite");
-  const [zoom, setZoom] = useState(13);
-  const apiKey = "AIzaSyDwQ_-OBFVwLjlzvj95k0NSJweSApAGZbo";
-  const { isLoaded, selectedCoords, MapComponent } = useGoogleMap(
-    apiKey,
-    { lat: form.lat, lng: form.lng },
-    mapType,
-    zoom,
-    (coords, newZoom) => {
-      setForm(f => ({
-        ...f,
-        lat: coords.lat,
-        lng: coords.lng,
-        ubicacion: `https://www.google.com/maps/@${coords.lat},${coords.lng},18z`,
-      }));
-      if (typeof newZoom === 'number') setZoom(newZoom);
-    }
-  );
-  const handleMapTypeChange = (e) => setMapType(e.target.value);
-  const handleZoomChange = (e) => setZoom(Number(e.target.value));
 
   useEffect(() => {
     if (!open) {
-      // Calcular fecha actual y día siguiente
       const today = new Date();
       const yyyy = today.getFullYear();
       const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -325,14 +296,10 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
         estatus: "Pendiente",
         fecha: todayStr,
         fecha_entrega: tomorrowStr,
-        ubicacion: "",
-        lat: 16.3832884,
-        lng: -86.4460626,
         tipo_entrega: "TIENDA",
         gestionada: "NO GESTIONADA",
       });
       setTouched({});
-      setStep(0);
     }
   }, [open]);
 
@@ -345,8 +312,6 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
       "articulo",
       "fecha",
       "fecha_entrega",
-      "lat",
-      "lng",
     ];
     const vacios = camposObligatorios.filter((c) => !form[c]);
     if (vacios.length > 0) {
@@ -354,7 +319,7 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
         ...prev,
         ...Object.fromEntries(vacios.map((c) => [c, true])),
       }));
-      setError("Todos los campos son obligatorios y debes seleccionar ubicación en el mapa.");
+      setError("Todos los campos obligatorios deben completarse.");
       return;
     }
     setLoading(true);
@@ -367,132 +332,80 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
           cel: "",
           articulo: "",
           estatus: "Pendiente",
-          fecha: "",
-          fecha_entrega: "",
-          ubicacion: "",
-          lat: 16.3832884,
-          lng: -86.4460626,
+          fecha: todayStr,
+          fecha_entrega: tomorrowStr,
           tipo_entrega: "TIENDA",
           gestionada: "NO GESTIONADA",
         });
         setTouched({});
-        setStep(0);
         onClose();
       } else {
         setError("No se pudo guardar la entrega. Intenta de nuevo.");
       }
     } catch (e) {
-      setError("Error inesperado: " + e.message);
+      setError("Error inesperado: " + (e.message || e));
     }
     setLoading(false);
   };
 
   if (!open) return null;
-  // Pasos: 0 = datos básicos, 1 = fechas y tipo, 2 = ubicación
   return (
     <div className="agregar-entrega-modal-bg">
-      <div className="agregar-entrega-modal" style={{ maxWidth: 400, minWidth: 0 }}>
-        <div className="agregar-entrega-multistep">
-          <div className="agregar-entrega-steps">
-            {["1", "2", "3"].map((n, i) => (
-              <div key={i} className={`agregar-entrega-step${step === i ? " active" : step > i ? " done" : ""}`}>{n}</div>
-            ))}
+      <div className="agregar-entrega-modal" style={{ maxWidth: 1000, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <h3 style={{ margin: 0, fontSize: 18, color: '#0f172a' }}>Agregar entrega</h3>
+          <button className="modern-cerrar" onClick={onClose} disabled={loading} style={{ background: '#ef4444' }}>Cerrar</button>
+        </div>
+        <div className="agregar-entrega-form-grid" style={{ gap: 16 }}>
+          <div className="agregar-entrega-form-col">
+            <div className="input-group-float">
+              <input type="text" value={form.cliente} onChange={e => setForm({ ...form, cliente: e.target.value })} onBlur={() => setTouched(t => ({ ...t, cliente: true }))} required style={touched.cliente && !form.cliente ? { borderColor: '#ef4444' } : {}} />
+              <label className={form.cliente ? 'active' : ''}>Nombre del cliente *</label>
+            </div>
+            <div className="input-group-float">
+              <input type="text" value={form.factura} onChange={e => setForm({ ...form, factura: e.target.value })} onBlur={() => setTouched(t => ({ ...t, factura: true }))} required style={touched.factura && !form.factura ? { borderColor: '#ef4444' } : {}} />
+              <label className={form.factura ? 'active' : ''}>No. Documento *</label>
+            </div>
+            <div className="input-group-float">
+              <input type="tel" value={form.cel} onChange={e => setForm({ ...form, cel: e.target.value })} onBlur={() => setTouched(t => ({ ...t, cel: true }))} required style={touched.cel && !form.cel ? { borderColor: '#ef4444' } : {}} pattern="[0-9]{8,15}" maxLength={15} />
+              <label className={form.cel ? 'active' : ''}>Celular *</label>
+            </div>
           </div>
-          <div className="agregar-entrega-multistep-content">
-            {step === 0 && (
-              <>
-                <div className="input-group-float">
-                  <input type="text" value={form.cliente} onChange={e => setForm({ ...form, cliente: e.target.value })} onBlur={() => setTouched(t => ({ ...t, cliente: true }))} required style={touched.cliente && !form.cliente ? { borderColor: "#ef4444" } : {}} />
-                  <label className={form.cliente ? "active" : ""}>Nombre del cliente *</label>
-                </div>
-                <div className="input-group-float">
-                  <input type="number" value={form.factura} onChange={e => setForm({ ...form, factura: e.target.value })} onBlur={() => setTouched(t => ({ ...t, factura: true }))} required style={touched.factura && !form.factura ? { borderColor: "#ef4444" } : {}} />
-                  <label className={form.factura ? "active" : ""}>No. Documento *</label>
-                </div>
-                <div className="input-group-float">
-                  <input type="tel" value={form.cel} onChange={e => setForm({ ...form, cel: e.target.value })} onBlur={() => setTouched(t => ({ ...t, cel: true }))} required style={touched.cel && !form.cel ? { borderColor: "#ef4444" } : {}} pattern="[0-9]{8,15}" maxLength={15} />
-                  <label className={form.cel ? "active" : ""}>Celular *</label>
-                </div>
-                <div className="input-group-float">
-                  <input type="text" value={form.articulo} onChange={e => setForm({ ...form, articulo: e.target.value })} onBlur={() => setTouched(t => ({ ...t, articulo: true }))} required style={touched.articulo && !form.articulo ? { borderColor: "#ef4444" } : {}} />
-                  <label className={form.articulo ? "active" : ""}>Artículo</label>
-                </div>
-              </>
-            )}
-            {step === 1 && (
-              <>
-                <div className="input-group-float">
-                  <input type="date" value={form.fecha} onChange={e => setForm({ ...form, fecha: e.target.value })} onBlur={() => setTouched(t => ({ ...t, fecha: true }))} required style={touched.fecha && !form.fecha ? { borderColor: "#ef4444" } : {}} />
-                  <label className={form.fecha ? "active" : ""}>Fecha</label>
-                </div>
-                <div className="input-group-float">
-                  <input type="date" value={form.fecha_entrega} onChange={e => setForm({ ...form, fecha_entrega: e.target.value })} onBlur={() => setTouched(t => ({ ...t, fecha_entrega: true }))} required style={touched.fecha_entrega && !form.fecha_entrega ? { borderColor: "#ef4444" } : {}} />
-                  <label className={form.fecha_entrega ? "active" : ""}>Fecha de entrega</label>
-                </div>
-                <div className="input-group-float">
-                  <label style={{ fontWeight: 600, marginBottom: 4, display: 'block' }}>Tipo de entrega</label>
-                  <select value={form.tipo_entrega} onChange={e => setForm({ ...form, tipo_entrega: e.target.value })} style={{ width: '100%', marginTop: 4, borderRadius: 8, padding: '0.5rem' }}>
-                    <option value="TIENDA">Tienda</option>
-                    <option value="BODEGA SPS">Bodega SPS</option>
-                    <option value="BODEGA TG">Bodega TG</option>
-                    <option value="DOMICILIO">Domicilio</option>
-                  </select>
-                </div>
-              </>
-            )}
-            {step === 2 && (
-              <>
-                <div className="input-group-float">
-                  <input type="text" value={form.ubicacion} readOnly required style={touched.lat && touched.lng && (!form.lat || !form.lng) ? { borderColor: "#ef4444" } : {}} />
-                  <label className={form.ubicacion ? "active" : ""}>Ubicación (se selecciona en el mapa)</label>
-                </div>
-                <div style={{ display: 'flex', gap: 12, marginBottom: 8, alignItems: 'center' }}>
-                  <label>Tipo de mapa:
-                    <select value={mapType} onChange={handleMapTypeChange} style={{ marginLeft: 8 }}>
-                      <option value="roadmap">Normal</option>
-                      <option value="satellite">Satélite</option>
-                    </select>
-                  </label>
-                  <label style={{ marginLeft: 16 }}>
-                    Zoom:
-                    <input type="range" min={8} max={20} value={zoom} onChange={handleZoomChange} style={{ marginLeft: 8 }} />
-                    <span style={{ marginLeft: 4 }}>{zoom}</span>
-                  </label>
-                </div>
-                <div className="mapa-entrega" style={{ width: '100%', maxWidth: 350, height: 300, borderRadius: 10, border: '1.5px solid #a5b4fc', background: '#e0e7ff', boxShadow: '0 1px 4px #6366f11a', marginBottom: 18 }}>
-                  {isLoaded ? <MapComponent mapType={mapType} zoom={zoom} /> : <div>Cargando mapa...</div>}
-                </div>
-                <div style={{ fontSize: 12, color: "#6366f1", marginTop: 4, textAlign: "center" }}>
-                  Haz click en el mapa para seleccionar ubicación
-                </div>
-              </>
-            )}
-            {error && <div style={{ color: "#ef4444", marginTop: 8 }}>{error}</div>}
+          <div className="agregar-entrega-form-col">
+            <div className="input-group-float">
+              <input type="text" value={form.articulo} onChange={e => setForm({ ...form, articulo: e.target.value })} onBlur={() => setTouched(t => ({ ...t, articulo: true }))} required style={touched.articulo && !form.articulo ? { borderColor: '#ef4444' } : {}} />
+              <label className={form.articulo ? 'active' : ''}>Artículo *</label>
+            </div>
+            <div style={{ display: 'block', gap: 12 }}>
+              <div className="input-group-float">
+                <input type="date" value={form.fecha_entrega} onChange={e => setForm({ ...form, fecha_entrega: e.target.value })} onBlur={() => setTouched(t => ({ ...t, fecha_entrega: true }))} required style={touched.fecha_entrega && !form.fecha_entrega ? { borderColor: '#ef4444' } : {}} />
+                <label className={form.fecha_entrega ? 'active' : ''}>Fecha de entrega</label>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 12, marginTop: 6 }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontWeight: 600, display: 'block', marginBottom: 6, color: '#374151' }}>Tipo de entrega</label>
+                <select value={form.tipo_entrega} onChange={e => setForm({ ...form, tipo_entrega: e.target.value })} style={{ width: '100%', borderRadius: 8, padding: '0.6rem', border: '1px solid #c7d2fe' }}>
+                  <option value="TIENDA">Tienda</option>
+                  <option value="BODEGA SPS">Bodega SPS</option>
+                  <option value="BODEGA TG">Bodega TG</option>
+                  <option value="DOMICILIO">Domicilio</option>
+                </select>
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontWeight: 600, display: 'block', marginBottom: 6, color: '#374151' }}>Gestionada</label>
+                <select value={form.gestionada} onChange={e => setForm({ ...form, gestionada: e.target.value })} style={{ width: '100%', borderRadius: 8, padding: '0.6rem', border: '1px solid #c7d2fe' }}>
+                  <option value="NO GESTIONADA">NO GESTIONADA</option>
+                  <option value="GESTIONADA">GESTIONADA</option>
+                </select>
+              </div>
+            </div>
           </div>
-          <div className="agregar-entrega-multistep-nav">
-            <button className="modern-cerrar" type="button" onClick={onClose} disabled={loading}>Cancelar</button>
-            {step > 0 && <button className="modern-agregar" type="button" onClick={() => setStep(step - 1)} disabled={loading}>Atrás</button>}
-            {step < 2 && (
-              <button
-                className="modern-agregar"
-                type="button"
-                onClick={() => {
-                  // Validar antes de avanzar
-                  if (step === 0) {
-                    const campos = ["cliente", "factura", "cel"];
-                    const vacios = campos.filter((c) => !form[c]);
-                    setTouched((prev) => ({ ...prev, ...Object.fromEntries(campos.map((c) => [c, true])) }));
-                    if (vacios.length > 0) return;
-                  }
-                  setStep(step + 1);
-                }}
-                disabled={loading}
-              >
-                Siguiente
-              </button>
-            )}
-            {step === 2 && <button className="modern-agregar" type="button" onClick={handleAgregar} disabled={loading || !form.lat || !form.lng}>{loading ? "Guardando..." : "Agregar"}</button>}
-          </div>
+        </div>
+        {error && <div style={{ color: '#ef4444', marginTop: 12 }}>{error}</div>}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 16 }}>
+          <button className="modern-cerrar" type="button" onClick={onClose} disabled={loading}>Cancelar</button>
+          <button className="modern-agregar" type="button" onClick={handleAgregar} disabled={loading} style={{ background: '#0369a1' }}>{loading ? 'Guardando...' : 'Agregar entrega'}</button>
         </div>
       </div>
     </div>

@@ -57,17 +57,7 @@ const Sidebar = ({
 
   return (
     <aside className={`sidebar${open ? " open" : ""}`}>
-  <nav className="sidebar-icons">
-        <Link
-          to="/"
-          className="sidebar-icon"
-          title="Comisiones"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
-          <FaDollarSign className="icon-text" />
-          <span className="sidebar-tooltip">Comisiones</span>
-        </Link>
+      <nav className="sidebar-icons">
         <Link
           to="/entregas"
           className="sidebar-icon"

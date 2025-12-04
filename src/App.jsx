@@ -55,7 +55,7 @@ function App() {
   }
 
   // HOOKS SIEMPRE AL INICIO
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [user, setUser] = useState(null);
   const [meta, setMeta] = useState(35000);
   const [comisionObtenida, setComisionObtenida] = useState(0);
@@ -192,9 +192,14 @@ function App() {
   }
 
   // Handlers y helpers para navegación y sidebar
-  const toggleSidebar = () => setSidebarOpen((open) => !open);
-  const closeSidebar = () => setSidebarOpen(false);
-  const handleOverlayClick = () => closeSidebar();
+  // Mantener el sidebar siempre abierto en versión desktop.
+  const toggleSidebar = () => setSidebarOpen(true);
+  const closeSidebar = () => {
+    // no-op para evitar que se cierre el sidebar
+  };
+  const handleOverlayClick = () => {
+    // no-op para mantener el sidebar abierto
+  };
   const handleComisionesClick = () => {
     setPage("comisiones");
     if (!isMobile) closeSidebar();

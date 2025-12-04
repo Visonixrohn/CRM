@@ -27,7 +27,6 @@ function getIconsWithAdmin() {
     user = JSON.parse(localStorage.getItem("user"));
   } catch {}
   const icons = [
-    { key: "comisiones", label: "Comisiones", icon: <FaDollarSign color="#2196f3" /> },
     { key: "entregas", label: "Entregas", icon: <FaTruck color="#2196f3" /> },
     { key: "ordenes", label: "Órdenes", icon: <FaBook color="#2196f3" /> },
     { key: "cartera", label: "Cartera", icon: <FaCreditCard color="#a21caf" /> },
