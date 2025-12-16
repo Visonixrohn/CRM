@@ -17,13 +17,8 @@ import ActualizarFechaEntregaModal from "./components/ActualizarFechaEntregaModa
 // ...existing code...
 
 
-import "./BotonesBar.css";
-import "./FiltrosBar.css";
-import "./AgregarEntregaForm.css";
-import "./AgregarEntregaMultiStep.css";
-import "./TablaEntregas.css";
-import "./ActualizarEstatusModal.css";
-import "./DetalleEntregaModal.css";
+import "./EntregasNew.css";
+import "./ModalesNew.css";
 
 const estados = ["Pendiente", "Entregado", "Rechazado", "Reprogramado"];
 
@@ -350,62 +345,122 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
 
   if (!open) return null;
   return (
-    <div className="agregar-entrega-modal-bg">
-      <div className="agregar-entrega-modal" style={{ maxWidth: 1000, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-          <h3 style={{ margin: 0, fontSize: 18, color: '#0f172a' }}>Agregar entrega</h3>
-          <button className="modern-cerrar" onClick={onClose} disabled={loading} style={{ background: '#ef4444' }}>Cerrar</button>
-        </div>
-        <div className="agregar-entrega-form-grid" style={{ gap: 16 }}>
-          <div className="agregar-entrega-form-col">
-            <div className="input-group-float">
-              <input type="text" value={form.cliente} onChange={e => setForm({ ...form, cliente: e.target.value })} onBlur={() => setTouched(t => ({ ...t, cliente: true }))} required style={touched.cliente && !form.cliente ? { borderColor: '#ef4444' } : {}} />
-              <label className={form.cliente ? 'active' : ''}>Nombre del cliente *</label>
+    <div className="modal-overlay">
+      <div className="modal-container modal-agregar">
+        <button className="modal-close-btn" onClick={onClose} disabled={loading}>×</button>
+        <h2 className="modal-title">📦 Agregar Nueva Entrega</h2>
+        
+        <div className="modal-form">
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">Nombre del cliente *</label>
+              <input 
+                type="text" 
+                className={`form-input ${touched.cliente && !form.cliente ? 'error' : ''}`}
+                value={form.cliente} 
+                onChange={e => setForm({ ...form, cliente: e.target.value })} 
+                onBlur={() => setTouched(t => ({ ...t, cliente: true }))}
+                placeholder="Ingrese el nombre del cliente"
+              />
             </div>
-            <div className="input-group-float">
-              <input type="text" value={form.factura} onChange={e => setForm({ ...form, factura: e.target.value })} onBlur={() => setTouched(t => ({ ...t, factura: true }))} required style={touched.factura && !form.factura ? { borderColor: '#ef4444' } : {}} />
-              <label className={form.factura ? 'active' : ''}>No. Documento *</label>
-            </div>
-            <div className="input-group-float">
-              <input type="tel" value={form.cel} onChange={e => setForm({ ...form, cel: e.target.value })} onBlur={() => setTouched(t => ({ ...t, cel: true }))} required style={touched.cel && !form.cel ? { borderColor: '#ef4444' } : {}} pattern="[0-9]{8,15}" maxLength={15} />
-              <label className={form.cel ? 'active' : ''}>Celular *</label>
-            </div>
-          </div>
-          <div className="agregar-entrega-form-col">
-            <div className="input-group-float">
-              <input type="text" value={form.articulo} onChange={e => setForm({ ...form, articulo: e.target.value })} onBlur={() => setTouched(t => ({ ...t, articulo: true }))} required style={touched.articulo && !form.articulo ? { borderColor: '#ef4444' } : {}} />
-              <label className={form.articulo ? 'active' : ''}>Artículo *</label>
-            </div>
-            <div style={{ display: 'block', gap: 12 }}>
-              <div className="input-group-float">
-                <input type="date" value={form.fecha_entrega} onChange={e => setForm({ ...form, fecha_entrega: e.target.value })} onBlur={() => setTouched(t => ({ ...t, fecha_entrega: true }))} required style={touched.fecha_entrega && !form.fecha_entrega ? { borderColor: '#ef4444' } : {}} />
-                <label className={form.fecha_entrega ? 'active' : ''}>Fecha de entrega</label>
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: 12, marginTop: 6 }}>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontWeight: 600, display: 'block', marginBottom: 6, color: '#374151' }}>Tipo de entrega</label>
-                <select value={form.tipo_entrega} onChange={e => setForm({ ...form, tipo_entrega: e.target.value })} style={{ width: '100%', borderRadius: 8, padding: '0.6rem', border: '1px solid #c7d2fe' }}>
-                  <option value="TIENDA">Tienda</option>
-                  <option value="BODEGA SPS">Bodega SPS</option>
-                  <option value="BODEGA TG">Bodega TG</option>
-                  <option value="DOMICILIO">Domicilio</option>
-                </select>
-              </div>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontWeight: 600, display: 'block', marginBottom: 6, color: '#374151' }}>Gestionada</label>
-                <select value={form.gestionada} onChange={e => setForm({ ...form, gestionada: e.target.value })} style={{ width: '100%', borderRadius: 8, padding: '0.6rem', border: '1px solid #c7d2fe' }}>
-                  <option value="NO GESTIONADA">NO GESTIONADA</option>
-                  <option value="GESTIONADA">GESTIONADA</option>
-                </select>
-              </div>
+            <div className="form-group">
+              <label className="form-label">No. Documento *</label>
+              <input 
+                type="text" 
+                className={`form-input ${touched.factura && !form.factura ? 'error' : ''}`}
+                value={form.factura} 
+                onChange={e => setForm({ ...form, factura: e.target.value })} 
+                onBlur={() => setTouched(t => ({ ...t, factura: true }))}
+                placeholder="Número de factura"
+              />
             </div>
           </div>
-        </div>
-        {error && <div style={{ color: '#ef4444', marginTop: 12 }}>{error}</div>}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 16 }}>
-          <button className="modern-cerrar" type="button" onClick={onClose} disabled={loading}>Cancelar</button>
-          <button className="modern-agregar" type="button" onClick={handleAgregar} disabled={loading} style={{ background: '#0369a1' }}>{loading ? 'Guardando...' : 'Agregar entrega'}</button>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">Celular *</label>
+              <input 
+                type="tel" 
+                className={`form-input ${touched.cel && !form.cel ? 'error' : ''}`}
+                value={form.cel} 
+                onChange={e => setForm({ ...form, cel: e.target.value })} 
+                onBlur={() => setTouched(t => ({ ...t, cel: true }))}
+                pattern="[0-9]{8,15}" 
+                maxLength={15}
+                placeholder="Ej: 98765432"
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Artículo *</label>
+              <input 
+                type="text" 
+                className={`form-input ${touched.articulo && !form.articulo ? 'error' : ''}`}
+                value={form.articulo} 
+                onChange={e => setForm({ ...form, articulo: e.target.value })} 
+                onBlur={() => setTouched(t => ({ ...t, articulo: true }))}
+                placeholder="Descripción del artículo"
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">Fecha de entrega *</label>
+              <input 
+                type="date" 
+                className={`form-input ${touched.fecha_entrega && !form.fecha_entrega ? 'error' : ''}`}
+                value={form.fecha_entrega} 
+                onChange={e => setForm({ ...form, fecha_entrega: e.target.value })} 
+                onBlur={() => setTouched(t => ({ ...t, fecha_entrega: true }))}
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Tipo de entrega</label>
+              <select 
+                className="form-select"
+                value={form.tipo_entrega} 
+                onChange={e => setForm({ ...form, tipo_entrega: e.target.value })}
+              >
+                <option value="TIENDA">🏪 Tienda</option>
+                <option value="BODEGA SPS">📦 Bodega SPS</option>
+                <option value="BODEGA TG">📦 Bodega TG</option>
+                <option value="DOMICILIO">🏠 Domicilio</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Estado de gestión</label>
+            <select 
+              className="form-select"
+              value={form.gestionada} 
+              onChange={e => setForm({ ...form, gestionada: e.target.value })}
+            >
+              <option value="NO GESTIONADA">⏳ No gestionada</option>
+              <option value="GESTIONADA">✅ Gestionada</option>
+            </select>
+          </div>
+
+          {error && <div className="modal-error">{error}</div>}
+
+          <div className="modal-actions">
+            <button 
+              className="btn-secondary" 
+              type="button" 
+              onClick={onClose} 
+              disabled={loading}
+            >
+              Cancelar
+            </button>
+            <button 
+              className="btn-primary" 
+              type="button" 
+              onClick={handleAgregar} 
+              disabled={loading}
+            >
+              {loading ? '⏳ Guardando...' : '✅ Agregar entrega'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -440,6 +495,7 @@ const Entregas = () => {
   const [user, setUser] = useState(null);
   const [filtroEstatus, setFiltroEstatus] = useState("");
   const [filtroNoGestionados, setFiltroNoGestionados] = useState(false);
+  const [filtroTipoEntrega, setFiltroTipoEntrega] = useState(""); // Nuevo filtro para tipo de entrega
   const [busqueda, setBusqueda] = useState("");
   const [entregaTipoModal, setEntregaTipoModal] = useState({open:false, entrega:null});
   const [gestionadaModal, setGestionadaModal] = useState({open:false, entrega:null});
@@ -524,18 +580,28 @@ const Entregas = () => {
   // Contador de entregas sin entregar (estatus distinto a 'Entregado')
   const pendientesSinEntregar = entregas.filter(e => String(e.estatus || '').toLowerCase() !== 'entregado').length;
 
-  // Filtrar entregas según estatus y búsqueda
+  // Calcular conteos por tipo de entrega
+  const conteoTipos = {
+    'TODOS': entregas.filter(e => String(e.estatus || '').toLowerCase() !== 'entregado' && String(e.estatus || '').toLowerCase() !== 'rechazado').length,
+    'TIENDA': entregas.filter(e => e.tipo_entrega === 'TIENDA' && String(e.estatus || '').toLowerCase() !== 'entregado' && String(e.estatus || '').toLowerCase() !== 'rechazado').length,
+    'DOMICILIO': entregas.filter(e => e.tipo_entrega === 'DOMICILIO' && String(e.estatus || '').toLowerCase() !== 'entregado' && String(e.estatus || '').toLowerCase() !== 'rechazado').length,
+    'BODEGA SPS': entregas.filter(e => e.tipo_entrega === 'BODEGA SPS' && String(e.estatus || '').toLowerCase() !== 'entregado' && String(e.estatus || '').toLowerCase() !== 'rechazado').length,
+    'BODEGA TG': entregas.filter(e => e.tipo_entrega === 'BODEGA TG' && String(e.estatus || '').toLowerCase() !== 'entregado' && String(e.estatus || '').toLowerCase() !== 'rechazado').length,
+  };
+
+  // Filtrar entregas según estatus, búsqueda y tipo de entrega
   const entregasFiltradas = entregas
     .filter((e) => {
       // Ocultar entregados y rechazados salvo que el filtro sea 'Entregado' o 'Rechazado'
       if ((!filtroEstatus || filtroEstatus === "") && (e.estatus === "Entregado" || e.estatus === "Rechazado")) return false;
       const matchesEstatus = filtroEstatus ? e.estatus === filtroEstatus : true;
+      const matchesTipoEntrega = filtroTipoEntrega ? e.tipo_entrega === filtroTipoEntrega : true;
       const matchesBusqueda = busqueda
         ? e.cliente.toLowerCase().includes(busqueda.toLowerCase()) ||
           e.factura.toLowerCase().includes(busqueda.toLowerCase())
         : true;
       const matchesNoGestionados = filtroNoGestionados ? (e.gestionada || '').toLowerCase() === 'no gestionada' : true;
-      return matchesEstatus && matchesBusqueda && matchesNoGestionados;
+      return matchesEstatus && matchesTipoEntrega && matchesBusqueda && matchesNoGestionados;
     })
     .sort((a, b) => {
       // 1. Entregas atrasadas (fecha_entrega < hoy y no entregado) primero
@@ -678,15 +744,32 @@ const Entregas = () => {
   // Return principal del componente
   return (
     <div className="entregas-modern-bg">
-      {/* Mostrar datos del chofer arriba de la tabla */}
-      <div style={{display: 'flex', alignItems: 'center', gap: 12, margin: '1rem 0 0.5rem 0'}}>
-        <h3 style={{margin: 0, color: '#374151', fontWeight: 600, fontSize: '1.05rem'}}>
-          Chofer: {chofer ? `${chofer.nombre || 'Sin nombre'} (${chofer.telefono || 'Sin número'})` : 'No registrado'}
-        </h3>
-        <span className="chofer-pendientes" title="Entregas sin entregar">Sin entregar: {pendientesSinEntregar}</span>
+      {/* HEADER CON INFORMACIÓN DEL CHOFER */}
+      <div className="entregas-header">
+        <div className="entregas-header-info">
+          <div className="chofer-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="7" r="4" />
+              <path d="M5.5 21a7.5 7.5 0 0 1 13 0" />
+            </svg>
+          </div>
+          <div className="chofer-details">
+            <h3>
+              {chofer ? `${chofer.nombre || 'Sin nombre'}` : 'Sin chofer registrado'}
+            </h3>
+            <p>{chofer ? `Tel: ${chofer.telefono || 'Sin número'}` : 'Configura tu chofer para entregas'}</p>
+          </div>
+        </div>
+        <span className="chofer-pendientes">
+          📦 {pendientesSinEntregar} sin entregar
+        </span>
       </div>
-  <div className="botones-bar-container">
+
+      {/* BARRA DE ACCIONES Y BÚSQUEDA */}
+      <div className="botones-bar-container">
+        {/* Búsqueda */}
         <div className="entregas-busqueda-barra-container">
+          <span className="entregas-busqueda-icono">🔍</span>
           <input
             type="text"
             placeholder="Buscar por cliente o factura..."
@@ -694,39 +777,37 @@ const Entregas = () => {
             onChange={(e) => setBusqueda(e.target.value)}
             className="entregas-busqueda-barra"
           />
-          <span className="entregas-busqueda-icono">🔍</span>
         </div>
-        <button className="btn-agregar" onClick={() => setShowAgregar(true)}>
-          Agregar entrega
-        </button>
-        <button className="btn-chofer" title="Chofer" onClick={handleChoferButtonClick}>
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#fff"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ verticalAlign: "middle", marginRight: 6 }}
-          >
-            <circle cx="12" cy="7" r="4" />
-            <path d="M5.5 21a7.5 7.5 0 0 1 13 0" />
-          </svg>
-          Chofer
-        </button>
-        <button
-          className={`btn-filtro${filtroNoGestionados ? " selected" : ""}`}
-          style={{ marginLeft: 8 }}
-          onClick={() => {
-            setFiltroEstatus("");
-            setFiltroNoGestionados((prev) => !prev);
-          }}
-        >
-          No gestionados
-        </button>
+
+        {/* Botones de acción principal */}
+        <div className="actions-buttons">
+          <button className="btn-agregar" onClick={() => setShowAgregar(true)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Agregar entrega
+          </button>
+          <button className="btn-chofer" onClick={handleChoferButtonClick}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="7" r="4" />
+              <path d="M5.5 21a7.5 7.5 0 0 1 13 0" />
+            </svg>
+            Chofer
+          </button>
+        </div>
+
+        {/* Filtros */}
         <div className="filtros-bar">
+          <button
+            className={`btn-filtro${filtroNoGestionados ? " selected" : ""}`}
+            onClick={() => {
+              setFiltroEstatus("");
+              setFiltroNoGestionados((prev) => !prev);
+            }}
+          >
+            📋 No gestionados
+          </button>
           {estados.map((e) => (
             <button
               key={e}
@@ -746,217 +827,417 @@ const Entregas = () => {
             Todos
           </button>
         </div>
-        
       </div>
 
-      {/* Cards solo en móvil */}
+      {/* CONTENEDOR CON SIDEBAR Y TABLA */}
+      <div className="entregas-content-wrapper">
+        {/* BARRA LATERAL CON FILTROS DE TIPO */}
+        <aside className="entregas-sidebar">
+          <h3 className="sidebar-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 6h18M3 12h18M3 18h18"/>
+            </svg>
+            Tipo de Entrega
+          </h3>
+          <div className="sidebar-filters">
+            <div 
+              className={`sidebar-filter-item ${filtroTipoEntrega === "" ? "active" : ""}`}
+              onClick={() => setFiltroTipoEntrega("")}
+            >
+              <span className="filter-label">
+                📦 Todas
+              </span>
+              <span className="filter-count">{conteoTipos['TODOS']}</span>
+            </div>
+            <div 
+              className={`sidebar-filter-item ${filtroTipoEntrega === "TIENDA" ? "active" : ""}`}
+              onClick={() => setFiltroTipoEntrega(filtroTipoEntrega === "TIENDA" ? "" : "TIENDA")}
+            >
+              <span className="filter-label">
+                🏪 Tienda
+              </span>
+              <span className="filter-count">{conteoTipos['TIENDA']}</span>
+            </div>
+            <div 
+              className={`sidebar-filter-item ${filtroTipoEntrega === "DOMICILIO" ? "active" : ""}`}
+              onClick={() => setFiltroTipoEntrega(filtroTipoEntrega === "DOMICILIO" ? "" : "DOMICILIO")}
+            >
+              <span className="filter-label">
+                🏠 Domicilio
+              </span>
+              <span className="filter-count">{conteoTipos['DOMICILIO']}</span>
+            </div>
+            <div 
+              className={`sidebar-filter-item ${filtroTipoEntrega === "BODEGA SPS" ? "active" : ""}`}
+              onClick={() => setFiltroTipoEntrega(filtroTipoEntrega === "BODEGA SPS" ? "" : "BODEGA SPS")}
+            >
+              <span className="filter-label">
+                📦 Bodega SPS
+              </span>
+              <span className="filter-count">{conteoTipos['BODEGA SPS']}</span>
+            </div>
+            <div 
+              className={`sidebar-filter-item ${filtroTipoEntrega === "BODEGA TG" ? "active" : ""}`}
+              onClick={() => setFiltroTipoEntrega(filtroTipoEntrega === "BODEGA TG" ? "" : "BODEGA TG")}
+            >
+              <span className="filter-label">
+                📦 Bodega TG
+              </span>
+              <span className="filter-count">{conteoTipos['BODEGA TG']}</span>
+            </div>
+          </div>
+        </aside>
+
+        {/* TABLA DESKTOP CON SCROLL */}
+        <div className="tabla-entregas-wrapper">
+          <div className="tabla-entregas-scroll">
+            <table className="tabla-entregas">
+              <thead>
+                <tr>
+                  <th style={{width: '40px', textAlign: 'center'}}>✏️</th>
+                  <th>Cliente</th>
+                  <th>Documento</th>
+                  <th>Teléfono</th>
+                  <th>Artículo</th>
+                  <th>Fecha entrega</th>
+                  <th>Tipo</th>
+                  <th>Gestión</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {entregasFiltradas.map((e) => {
+                  // Determinar clase de fila según fecha
+                  const hoy = new Date();
+                  const yyyy = hoy.getFullYear();
+                  const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+                  const dd = String(hoy.getDate()).padStart(2, '0');
+                  const hoyStr = `${yyyy}-${mm}-${dd}`;
+                  const fechaEntrega = e.fecha_entrega;
+                  const estatusLower = String(e.estatus).toLowerCase();
+                  
+                  let rowClass = '';
+                  if (estatusLower !== 'entregado' && estatusLower !== 'rechazado') {
+                    if (fechaEntrega < hoyStr) {
+                      rowClass = 'atrasada';
+                    } else if (fechaEntrega === hoyStr) {
+                      rowClass = 'hoy';
+                    }
+                  }
+
+                  return (
+                    <tr key={e.id} className={rowClass}>
+                      <td style={{textAlign:'center'}}>
+                        <span 
+                          title="Ver detalles" 
+                          style={{cursor:'pointer',fontSize:'1.2em',color:'#6366f1'}} 
+                          onClick={() => setDetalle(e)}
+                        >
+                          ✏️
+                        </span>
+                      </td>
+                      <td>
+                        <strong>{e.cliente}</strong>
+                        <div style={{fontSize:'0.8em',color:'#64748b',marginTop:'0.25rem'}}>
+                          Registrado: {e.fecha}
+                        </div>
+                      </td>
+                      <td>
+                        <div style={{display:'flex',alignItems:'center',gap:'0.5rem'}}>
+                          <span>{e.factura}</span>
+                          <button
+                            title="Copiar factura"
+                            style={{ 
+                              background: 'none', 
+                              border: 'none', 
+                              cursor: 'pointer', 
+                              color: '#6366f1', 
+                              fontSize: '1.1em',
+                              padding: '0.25rem'
+                            }}
+                            onClick={(ev) => {
+                              ev.stopPropagation();
+                              if (navigator.clipboard) {
+                                navigator.clipboard.writeText(e.factura);
+                                ev.target.innerHTML = '✔️';
+                                setTimeout(() => { if (ev.target) ev.target.innerHTML = '📋'; }, 1200);
+                              }
+                            }}
+                          >
+                            📋
+                          </button>
+                        </div>
+                      </td>
+                      <td>
+                        <div style={{display:'flex',alignItems:'center',gap:'0.5rem'}}>
+                          {e.cel && (
+                            <a
+                              href={`https://web.whatsapp.com/send?phone=504${e.cel.replace(/[^\d]/g, "")}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title="WhatsApp"
+                              style={{ 
+                                color: '#25D366', 
+                                fontSize: '1.3em',
+                                textDecoration: 'none'
+                              }}
+                              onClick={ev => ev.stopPropagation()}
+                            >
+                              <svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor">
+                                <path d="M16 3C9.373 3 4 8.373 4 15c0 2.385.832 4.584 2.236 6.393L4 29l7.824-2.05C13.41 27.633 14.686 28 16 28c6.627 0 12-5.373 12-12S22.627 3 16 3zm0 22c-1.13 0-2.238-.188-3.287-.558l-.235-.08-4.646 1.217 1.24-4.527-.153-.236C7.188 19.238 7 18.13 7 17c0-4.963 4.037-9 9-9s9 4.037 9 9-4.037 9-9 9zm5.29-6.709c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.67.85-.82 1.02-.15.17-.3.19-.56.06-.26-.13-1.09-.4-2.08-1.28-.77-.68-1.29-1.52-1.44-1.78-.15-.26-.02-.4.11-.53.11-.11.26-.29.39-.44.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.58-1.4-.8-1.92-.21-.51-.43-.44-.58-.45-.15-.01-.32-.01-.5-.01-.17 0-.45.06-.68.28-.23.22-.9.88-.9 2.15s.92 2.49 1.05 2.66c.13.17 1.81 2.77 4.39 3.78.61.21 1.09.33 1.46.42.61.13 1.16.11 1.6.07.49-.05 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.24-.17-.5-.3z"/>
+                              </svg>
+                            </a>
+                          )}
+                          <span>{e.cel}</span>
+                        </div>
+                      </td>
+                      <td>{e.articulo}</td>
+                      <td>
+                        <div style={{display:'flex',alignItems:'center',gap:'0.5rem',flexWrap:'wrap'}}>
+                          {(() => {
+                            if (estatusLower === 'rechazado') {
+                              return (
+                                <span className="badge-status badge-rechazado">
+                                  ❌ ANULADO
+                                </span>
+                              );
+                            }
+                            if (estatusLower === 'entregado') {
+                              return (
+                                <span className="badge-status badge-entregado">
+                                  ✅ TERMINADO
+                                </span>
+                              );
+                            }
+                            if (fechaEntrega === hoyStr) {
+                              return (
+                                <span className="badge-status badge-hoy">
+                                  🔔 HOY
+                                </span>
+                              );
+                            }
+                            if (fechaEntrega < hoyStr) {
+                              return (
+                                <span className="badge-status badge-atrasada">
+                                  ⚠️ ATRASADA
+                                </span>
+                              );
+                            }
+                            return <span style={{fontSize:'0.9rem'}}>{fechaEntrega}</span>;
+                          })()}
+                          <button
+                            title="Cambiar fecha"
+                            style={{
+                              background:'none',
+                              border:'none',
+                              cursor:'pointer',
+                              padding:'0.25rem',
+                              color:'#6366f1'
+                            }}
+                            onClick={(ev) => {
+                              ev.stopPropagation();
+                              setFechaEntregaModal({open:true, entrega:e});
+                            }}
+                          >
+                            📅
+                          </button>
+                        </div>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          className={`btn-table-action ${
+                            e.tipo_entrega === 'TIENDA' ? 'btn-tienda' :
+                            e.tipo_entrega === 'DOMICILIO' ? 'btn-domicilio' :
+                            e.tipo_entrega === 'BODEGA SPS' ? 'btn-bodega-sps' :
+                            e.tipo_entrega === 'BODEGA TG' ? 'btn-bodega-tg' : ''
+                          }`}
+                          onClick={(ev) => {
+                            ev.stopPropagation();
+                            setEntregaTipoModal({open:true, entrega:e});
+                          }}
+                        >
+                          {e.tipo_entrega || 'Seleccionar'}
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          className={`btn-table-action ${
+                            String(e.gestionada).toUpperCase() === 'GESTIONADA' ? 'btn-gestionada' : 'btn-no-gestionada'
+                          }`}
+                          onClick={(ev) => {
+                            ev.stopPropagation();
+                            setGestionadaModal({open:true, entrega:e});
+                          }}
+                        >
+                          {String(e.gestionada).toUpperCase() === 'GESTIONADA' ? '✅ Gestionada' : '⏳ No gestionada'}
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          className={`badge-status ${
+                            e.estatus === 'Entregado' ? 'badge-entregado' :
+                            e.estatus === 'Pendiente' ? 'badge-pendiente' :
+                            e.estatus === 'Rechazado' ? 'badge-rechazado' :
+                            e.estatus === 'Reprogramado' ? 'badge-reprogramado' : 'badge-pendiente'
+                          }`}
+                          onClick={(ev) => {
+                            ev.stopPropagation();
+                            setEstatusModal({open:true, entrega:e});
+                          }}
+                          style={{cursor:'pointer'}}
+                        >
+                          {e.estatus || 'Pendiente'}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* CARDS MÓVILES */}
       <div className="entregas-cards-mobile">
-        {entregasFiltradas.map((entrega) => (
-          <EntregaCard
-            key={entrega.id}
-            entrega={entrega}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        ))}
-      </div>
+        {entregasFiltradas.map((e) => {
+          // Determinar estado de fecha
+          const hoy = new Date();
+          const yyyy = hoy.getFullYear();
+          const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+          const dd = String(hoy.getDate()).padStart(2, '0');
+          const hoyStr = `${yyyy}-${mm}-${dd}`;
+          const fechaEntrega = e.fecha_entrega;
+          const estatusLower = String(e.estatus).toLowerCase();
 
-      {/* Tabla solo en escritorio */}
-      <div className="tabla-entregas-wrapper">
-        <table className="tabla-entregas">
-          <thead>
-            <tr>
-              <th>Edit</th>
-              <th>Fecha</th>
-              <th>Cliente</th>
-              <th>Documento</th>
-              <th>Cel</th>
-              <th>Artículo</th>
-              <th>Fecha de entrega</th>
-              <th>Tipo de entrega</th>
-              <th>Gestionada</th>
-              <th>Tiempo</th>
-              <th>Estatus</th>
-            </tr>
-          </thead>
-          <tbody>
-            {entregasFiltradas.map((e) => (
-              <tr key={e.id}>
-                <td data-label="Editar" style={{textAlign:'center'}}>
-                  <span title="Editar" style={{cursor:'pointer',fontSize:'1.2em',color:'#6366f1',verticalAlign:'middle'}} onClick={ev => {ev.stopPropagation(); setDetalle(e);}}>
-                    ✏️
-                  </span>
-                </td>
-                <td data-label="Fecha">{e.fecha}</td>
-                <td data-label="Cliente">{e.cliente}</td>
-                <td data-label="Factura">
-                  
-                  <button
-                    title="Copiar factura"
-                    style={{ marginLeft: 8, background: 'none', border: 'none', cursor: 'pointer', color: '#6366f1', fontSize: '1.1em', verticalAlign: 'middle' }}
-                    onClick={ev => {
-                      ev.stopPropagation();
-                      if (navigator.clipboard) {
-                        navigator.clipboard.writeText(e.factura);
-                        ev.target.innerHTML = '✔️';
-                        setTimeout(() => { if (ev.target) ev.target.innerHTML = '☰'; }, 1200);
-                      }
-                    }}
-                  >
-                    ☰
-                  </button>{e.factura}
-                </td>
-                <td data-label="Cel">
-                  
-                  {e.cel && (
+          return (
+            <div key={e.id} className="entrega-card-mobile" onClick={() => setDetalle(e)}>
+              <div className="entrega-card-header">
+                <div>
+                  <div className="entrega-card-title">{e.cliente}</div>
+                  <div className="entrega-card-factura">Doc: {e.factura}</div>
+                </div>
+                <button
+                  className={`badge-status ${
+                    e.estatus === 'Entregado' ? 'badge-entregado' :
+                    e.estatus === 'Pendiente' ? 'badge-pendiente' :
+                    e.estatus === 'Rechazado' ? 'badge-rechazado' :
+                    e.estatus === 'Reprogramado' ? 'badge-reprogramado' : 'badge-pendiente'
+                  }`}
+                  onClick={(ev) => {
+                    ev.stopPropagation();
+                    setEstatusModal({open:true, entrega:e});
+                  }}
+                  style={{cursor:'pointer'}}
+                >
+                  {e.estatus || 'Pendiente'}
+                </button>
+              </div>
+
+              <div className="entrega-card-body">
+                <div className="entrega-card-row">
+                  <span className="entrega-card-label">📱 Teléfono:</span>
+                  <span className="entrega-card-value">
                     <a
-                      href={`https://web.whatsapp.com/send?phone=504${e.cel.replace(/[^\d]/g, "")}`}
+                      href={`https://wa.me/504${e.cel?.replace(/[^\d]/g, "")}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      title="Chatear por WhatsApp"
-                      style={{ marginLeft: 8, color: '#25D366', fontSize: '1.3em', verticalAlign: 'middle', textDecoration: 'none' }}
+                      style={{color:'#25D366',textDecoration:'none'}}
                       onClick={ev => ev.stopPropagation()}
                     >
-                      <svg width="22" height="22" viewBox="0 0 32 32" fill="currentColor" style={{verticalAlign:'middle'}}>
-                        <path d="M16 3C9.373 3 4 8.373 4 15c0 2.385.832 4.584 2.236 6.393L4 29l7.824-2.05C13.41 27.633 14.686 28 16 28c6.627 0 12-5.373 12-12S22.627 3 16 3zm0 22c-1.13 0-2.238-.188-3.287-.558l-.235-.08-4.646 1.217 1.24-4.527-.153-.236C7.188 19.238 7 18.13 7 17c0-4.963 4.037-9 9-9s9 4.037 9 9-4.037 9-9 9zm5.29-6.709c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.67.85-.82 1.02-.15.17-.3.19-.56.06-.26-.13-1.09-.4-2.08-1.28-.77-.68-1.29-1.52-1.44-1.78-.15-.26-.02-.4.11-.53.11-.11.26-.29.39-.44.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.58-1.4-.8-1.92-.21-.51-.43-.44-.58-.45-.15-.01-.32-.01-.5-.01-.17 0-.45.06-.68.28-.23.22-.9.88-.9 2.15s.92 2.49 1.05 2.66c.13.17 1.81 2.77 4.39 3.78.61.21 1.09.33 1.46.42.61.13 1.16.11 1.6.07.49-.05 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.24-.17-.5-.3z"/>
-                      </svg>
+                      {e.cel}
                     </a>
-                  )}{e.cel}
-                </td>
-                <td data-label="Artículo">{e.articulo}</td>
-                
-                <td data-label="Fecha entrega">
-                  <span style={{display:'flex',alignItems:'center',gap:8}}>
+                  </span>
+                </div>
+                <div className="entrega-card-row">
+                  <span className="entrega-card-label">📦 Artículo:</span>
+                  <span className="entrega-card-value">{e.articulo}</span>
+                </div>
+                <div className="entrega-card-row">
+                  <span className="entrega-card-label">📅 Fecha entrega:</span>
+                  <span className="entrega-card-value">
                     {(() => {
-                      const hoy = new Date();
-                      const yyyy = hoy.getFullYear();
-                      const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-                      const dd = String(hoy.getDate()).padStart(2, '0');
-                      const hoyStr = `${yyyy}-${mm}-${dd}`;
-                      const fechaEntrega = e.fecha_entrega;
-                      const estatusLower = String(e.estatus).toLowerCase();
                       if (estatusLower === 'rechazado') {
-                        return (
-                          <span style={{background:'#ef4444',color:'#fff',padding:'2px 8px',borderRadius:6,fontWeight:'bold'}}>
-                            Anulado
-                          </span>
-                        );
+                        return <span className="badge-status badge-rechazado" style={{fontSize:'0.75rem',padding:'0.25rem 0.5rem'}}>ANULADO</span>;
                       }
                       if (estatusLower === 'entregado') {
-                        return (
-                          <span style={{background:'#10b981',color:'#fff',padding:'2px 8px',borderRadius:6,fontWeight:'bold'}}>
-                            Terminado
-                          </span>
-                        );
+                        return <span className="badge-status badge-entregado" style={{fontSize:'0.75rem',padding:'0.25rem 0.5rem'}}>TERMINADO</span>;
                       }
                       if (fechaEntrega === hoyStr) {
-                        return (
-                          <span style={{background:'#fbbf24',color:'#b45309',padding:'2px 8px',borderRadius:6,fontWeight:'bold'}}>
-                            ENTREGA PARA HOY
-                          </span>
-                        );
+                        return <span className="badge-status badge-hoy" style={{fontSize:'0.75rem',padding:'0.25rem 0.5rem'}}>HOY</span>;
                       }
                       if (fechaEntrega < hoyStr) {
-                        return (
-                          <span style={{background:'#ef4444',color:'#fff',padding:'2px 8px',borderRadius:6,fontWeight:'bold'}}>
-                            ENTREGA ATRASADA
-                          </span>
-                        );
+                        return <span className="badge-status badge-atrasada" style={{fontSize:'0.75rem',padding:'0.25rem 0.5rem'}}>ATRASADA</span>;
                       }
                       return fechaEntrega;
                     })()}
+                  </span>
+                </div>
+                <div className="entrega-card-row">
+                  <span className="entrega-card-label">🚚 Tipo:</span>
+                  <span className="entrega-card-value">
                     <button
-                      title="Actualizar fecha de entrega"
-                      style={{background:'none',border:'none',cursor:'pointer',padding:0,margin:0,verticalAlign:'middle'}}
-                      onClick={ev => {
+                      className={`btn-table-action ${
+                        e.tipo_entrega === 'TIENDA' ? 'btn-tienda' :
+                        e.tipo_entrega === 'DOMICILIO' ? 'btn-domicilio' :
+                        e.tipo_entrega === 'BODEGA SPS' ? 'btn-bodega-sps' :
+                        e.tipo_entrega === 'BODEGA TG' ? 'btn-bodega-tg' : ''
+                      }`}
+                      style={{fontSize:'0.75rem',padding:'0.35rem 0.65rem'}}
+                      onClick={(ev) => {
                         ev.stopPropagation();
-                        setFechaEntregaModal({open:true, entrega:e});
+                        setEntregaTipoModal({open:true, entrega:e});
                       }}
                     >
-                      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{color:'#6366f1'}}>
-                        <rect x="3" y="4" width="18" height="18" rx="4" strokeWidth="2" stroke="currentColor" fill="#fff"/>
-                        <path d="M16 2v4M8 2v4M3 10h18" strokeWidth="2" stroke="currentColor"/>
-                      </svg>
+                      {e.tipo_entrega || 'Seleccionar'}
                     </button>
                   </span>
-                </td>
-                <td data-label="Tipo de entrega">
-                  <button
-                    type="button"
-                    style={{
-                      background: e.tipo_entrega ? 'linear-gradient(90deg,#6366f1 60%,#2563eb 100%)' : '#e0e7ff',
-                      color: e.tipo_entrega ? '#fff' : '#1976d2',
-                      border: 'none',
-                      borderRadius: 8,
-                      padding: '6px 14px',
-                      fontWeight: 'bold',
-                      cursor: 'pointer',
-                      fontSize: '1em',
-                      boxShadow: e.tipo_entrega ? '0 2px 8px #6366f122' : 'none',
-                      transition: 'all .2s',
-                      outline: e.tipo_entrega ? '2px solid #6366f1' : 'none',
-                    }}
-                    onClick={ev => {
-                      ev.stopPropagation();
-                      setEntregaTipoModal({open:true, entrega:e});
-                    }}
-                  >
-                    {e.tipo_entrega || 'Seleccionar'}
-                  </button>
-                </td>
-                <td data-label="Gestionada">
-                  <button
-                    type="button"
-                    style={{
-                      background: e.gestionada === 'Gestionada' ? 'linear-gradient(90deg,#22c55e 60%,#16a34a 100%)' : (e.gestionada === 'No gestionada' ? 'linear-gradient(90deg,#fbbf24 60%,#f59e42 100%)' : '#e0e7ff'),
-                      color: e.gestionada === 'Gestionada' ? '#fff' : (e.gestionada === 'No gestionada' ? '#fff' : '#1976d2'),
-                      border: 'none',
-                      borderRadius: 8,
-                      padding: '6px 14px',
-                      fontWeight: 'bold',
-                      cursor: 'pointer',
-                      fontSize: '1em',
-                      boxShadow: e.gestionada ? '0 2px 8px #22c55e22' : 'none',
-                      transition: 'all .2s',
-                      outline: e.gestionada ? '2px solid #22c55e' : 'none',
-                    }}
-                    onClick={ev => {
-                      ev.stopPropagation();
-                      setGestionadaModal({open:true, entrega:e});
-                    }}
-                  >
-                    {e.gestionada || 'Seleccionar'}
-                  </button>
-                </td>
-                <td data-label="Tiempo">{tiempoTranscurrido(e.fecha, e.estatus)}</td>
-                <td data-label="Estatus">
-                  <button
-                    type="button"
-                    style={{
-                      background: e.estatus === 'Entregado' ? 'linear-gradient(90deg,#38bdf8 60%,#0ea5e9 100%)' : (e.estatus === 'Pendiente' ? 'linear-gradient(90deg,#fbbf24 60%,#f59e42 100%)' : (e.estatus ? 'linear-gradient(90deg,#f472b6 60%,#be185d 100%)' : '#e0e7ff')),
-                      color: e.estatus ? '#fff' : '#1976d2',
-                      border: 'none',
-                      borderRadius: 8,
-                      padding: '6px 14px',
-                      fontWeight: 'bold',
-                      cursor: 'pointer',
-                      fontSize: '1em',
-                      boxShadow: e.estatus ? '0 2px 8px #0ea5e922' : 'none',
-                      transition: 'all .2s',
-                      outline: e.estatus ? '2px solid #0ea5e9' : 'none',
-                    }}
-                    onClick={ev => {
-                      ev.stopPropagation();
-                      setEstatusModal({open:true, entrega:e});
-                    }}
-                  >
-                    {e.estatus || 'Seleccionar'}
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </div>
+                <div className="entrega-card-row">
+                  <span className="entrega-card-label">📋 Gestión:</span>
+                  <span className="entrega-card-value">
+                    <button
+                      className={`btn-table-action ${
+                        String(e.gestionada).toUpperCase() === 'GESTIONADA' ? 'btn-gestionada' : 'btn-no-gestionada'
+                      }`}
+                      style={{fontSize:'0.75rem',padding:'0.35rem 0.65rem'}}
+                      onClick={(ev) => {
+                        ev.stopPropagation();
+                        setGestionadaModal({open:true, entrega:e});
+                      }}
+                    >
+                      {String(e.gestionada).toUpperCase() === 'GESTIONADA' ? 'Gestionada' : 'No gestionada'}
+                    </button>
+                  </span>
+                </div>
+              </div>
+
+              <div className="entrega-card-actions">
+                <button
+                  style={{
+                    flex: 1,
+                    padding: '0.6rem',
+                    border: 'none',
+                    borderRadius: '8px',
+                    background: '#6366f1',
+                    color: 'white',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                  onClick={(ev) => {
+                    ev.stopPropagation();
+                    setDetalle(e);
+                  }}
+                >
+                  Ver detalles
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       <ModalDetalle

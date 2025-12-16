@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { supabase } from "../supabaseClient";
+import "../ModalesNew.css";
 
 const opcionesEstatus = [
   "Pendiente",
@@ -34,23 +35,35 @@ const ActualizarEstatusModal = ({ open, entrega, onClose, onUpdated }) => {
   };
 
   return (
-    <div style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',background:'rgba(30,41,59,0.45)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:3000,backdropFilter:'blur(2px)'}}>
-      <div style={{background:'linear-gradient(135deg,#f8fafc 60%,#e0e7ff 100%)',borderRadius:18,padding:'32px 28px 24px 28px',minWidth:320,maxWidth:380,boxShadow:'0 8px 32px #0002',position:'relative',border:'1.5px solid #c7d2fe'}}>
-        <button onClick={onClose} style={{position:'absolute',top:12,right:16,fontSize:'1.7rem',background:'none',border:'none',color:'#64748b',cursor:'pointer',transition:'color .2s'}} onMouseOver={e=>e.target.style.color='#ef4444'} onMouseOut={e=>e.target.style.color='#64748b'}>×</button>
-        <h2 style={{margin:'0 0 18px 0',color:'#1e293b',fontWeight:700,fontSize:'1.25rem',letterSpacing:'.01em',textAlign:'center'}}>Actualizar Estatus</h2>
-        <div style={{marginBottom:18}}>
-          <label style={{display:'block',marginBottom:6,color:'#334155',fontWeight:500,fontSize:'.98em'}}>Estatus</label>
-          <select value={estatus} onChange={e => setEstatus(e.target.value)} style={{width:'100%',padding:'10px 12px',borderRadius:8,border:'1.5px solid #cbd5e1',background:'#fff',fontSize:'1em',color:'#334155',outline:'none',transition:'border .2s',boxShadow:'0 1px 4px #64748b11'}}>
-            <option value="">Selecciona estatus</option>
-            {opcionesEstatus.map(opt => (
-              <option key={opt} value={opt}>{opt}</option>
-            ))}
+    <div className="modal-overlay">
+      <div className="modal-container modal-small">
+        <button className="modal-close-btn" onClick={onClose}>×</button>
+        <h2 className="modal-title">🔄 Actualizar Estado de Entrega</h2>
+        <div className="form-group">
+          <label className="form-label">Selecciona el nuevo estado</label>
+          <select 
+            className="form-select"
+            value={estatus} 
+            onChange={e => setEstatus(e.target.value)}
+          >
+            <option value="">-- Seleccionar --</option>
+            <option value="Pendiente">⏳ Pendiente</option>
+            <option value="Entregado">✅ Entregado</option>
+            <option value="Rechazado">❌ Rechazado</option>
+            <option value="Reprogramado">🔄 Reprogramado</option>
           </select>
         </div>
-        <button onClick={handleSave} disabled={loading || !estatus} style={{background:'linear-gradient(90deg,#6366f1 60%,#2563eb 100%)',color:'#fff',border:'none',borderRadius:8,padding:'10px 0',fontWeight:'bold',width:'100%',fontSize:'1.08em',boxShadow:'0 2px 8px #6366f122',letterSpacing:'.01em',transition:'background .2s',cursor:loading||!estatus?'not-allowed':'pointer',opacity:loading||!estatus?0.7:1}}>
-          {loading ? 'Guardando...' : 'Guardar'}
-        </button>
-        {error && <div style={{color:'#ef4444',marginTop:12,textAlign:'center',fontWeight:500}}>{error}</div>}
+        {error && <div className="modal-error">{error}</div>}
+        <div className="modal-actions">
+          <button className="btn-secondary" onClick={onClose}>Cancelar</button>
+          <button 
+            className="btn-primary" 
+            onClick={handleSave} 
+            disabled={loading || !estatus}
+          >
+            {loading ? '⏳ Guardando...' : '✅ Guardar cambios'}
+          </button>
+        </div>
       </div>
     </div>
   );

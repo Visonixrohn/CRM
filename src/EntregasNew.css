@@ -1,0 +1,712 @@
+/* ========================================
+   ENTREGAS - DISEÑO PROFESIONAL Y LIMPIO
+   ======================================== */
+
+:root {
+  --primary-blue: #4f46e5;
+  --primary-blue-hover: #4338ca;
+  --success-green: #10b981;
+  --warning-yellow: #fbbf24;
+  --danger-red: #ef4444;
+  --info-cyan: #06b6d4;
+  --bg-gray: #f8fafc;
+  --bg-white: #ffffff;
+  --text-dark: #1e293b;
+  --text-gray: #64748b;
+  --border-light: #e2e8f0;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ========================================
+   CONTENEDOR PRINCIPAL
+   ======================================== */
+.entregas-modern-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+  padding: 1.5rem;
+  width: 100%;
+}
+
+/* ========================================
+   HEADER CON INFORMACIÓN DEL CHOFER
+   ======================================== */
+.entregas-header {
+  max-width: 1400px;
+  margin: 0 auto 1.5rem;
+  background: var(--bg-white);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.entregas-header-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.chofer-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--primary-blue), var(--info-cyan));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.chofer-details h3 {
+  font-size: 1.1rem;
+  color: var(--text-dark);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.chofer-details p {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+}
+
+.chofer-pendientes {
+  background: var(--warning-yellow);
+  color: #78350f;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+/* ========================================
+   BARRA DE ACCIONES Y BÚSQUEDA
+   ======================================== */
+.botones-bar-container {
+  max-width: 1400px;
+  margin: 0 auto 1.5rem;
+  background: var(--bg-white);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.entregas-busqueda-barra-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.entregas-busqueda-barra {
+  width: 100%;
+  padding: 0.85rem 1rem 0.85rem 2.75rem;
+  border: 2px solid var(--border-light);
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: var(--bg-white);
+  color: var(--text-dark);
+  transition: all 0.3s ease;
+}
+
+.entregas-busqueda-barra:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.entregas-busqueda-icono {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: var(--text-gray);
+}
+
+/* Botones de acción principal */
+.actions-buttons {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-agregar,
+.btn-chofer {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-agregar {
+  background: linear-gradient(135deg, var(--primary-blue), var(--info-cyan));
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-agregar:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-chofer {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-chofer:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ========================================
+   FILTROS
+   ======================================== */
+.filtros-bar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-filtro {
+  padding: 0.6rem 1rem;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-white);
+  color: var(--text-gray);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-filtro:hover {
+  border-color: var(--primary-blue);
+  background: #eef2ff;
+  color: var(--primary-blue);
+}
+
+.btn-filtro.selected {
+  border-color: var(--primary-blue);
+  background: var(--primary-blue);
+  color: white;
+}
+
+/* ========================================
+   CONTENEDOR PRINCIPAL CON SIDEBAR
+   ======================================== */
+.entregas-content-wrapper {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+/* ========================================
+   SIDEBAR LATERAL CON FILTROS
+   ======================================== */
+.entregas-sidebar {
+  width: 280px;
+  background: var(--bg-white);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 1.5rem;
+  flex-shrink: 0;
+}
+
+.sidebar-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sidebar-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-filter-item {
+  padding: 0.85rem 1rem;
+  border: 2px solid var(--border-light);
+  border-radius: 10px;
+  background: var(--bg-white);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-filter-item:hover {
+  border-color: var(--primary-blue);
+  background: #f8fafc;
+  transform: translateX(3px);
+}
+
+.sidebar-filter-item.active {
+  border-color: var(--primary-blue);
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.15);
+}
+
+.filter-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sidebar-filter-item.active .filter-label {
+  color: var(--primary-blue);
+}
+
+.filter-count {
+  background: var(--border-light);
+  color: var(--text-gray);
+  padding: 0.25rem 0.65rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  min-width: 28px;
+  text-align: center;
+}
+
+.sidebar-filter-item.active .filter-count {
+  background: var(--primary-blue);
+  color: white;
+}
+
+/* ========================================
+   TABLA PRINCIPAL - DESKTOP
+   ======================================== */
+.tabla-entregas-wrapper {
+  flex: 1;
+  background: var(--bg-white);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 280px);
+}
+
+.tabla-entregas-scroll {
+  overflow-x: auto;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.tabla-entregas {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  min-width: 1000px;
+}
+
+.tabla-entregas thead {
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+
+.tabla-entregas th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 700;
+  color: var(--text-dark);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--border-light);
+}
+
+.tabla-entregas tbody tr {
+  border-bottom: 1px solid var(--border-light);
+  transition: all 0.2s ease;
+}
+
+.tabla-entregas tbody tr:hover {
+  background: #f8fafc;
+}
+
+.tabla-entregas td {
+  padding: 1rem;
+  color: var(--text-dark);
+  vertical-align: middle;
+}
+
+/* Estilo especial para filas con entregas atrasadas */
+.tabla-entregas tbody tr.atrasada {
+  background: #fef2f2;
+}
+
+.tabla-entregas tbody tr.atrasada:hover {
+  background: #fee2e2;
+}
+
+/* Estilo para entregas de hoy */
+.tabla-entregas tbody tr.hoy {
+  background: #fffbeb;
+}
+
+.tabla-entregas tbody tr.hoy:hover {
+  background: #fef3c7;
+}
+
+/* ========================================
+   BADGES Y ESTADOS
+   ======================================== */
+.badge-status {
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.badge-entregado {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-pendiente {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-rechazado {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.badge-reprogramado {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.badge-atrasada {
+  background: var(--danger-red);
+  color: white;
+  animation: pulse 2s infinite;
+}
+
+.badge-hoy {
+  background: var(--warning-yellow);
+  color: #78350f;
+  font-weight: 800;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* ========================================
+   BOTONES DE ACCIÓN EN TABLA
+   ======================================== */
+.btn-table-action {
+  padding: 0.5rem 0.85rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn-table-action:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-tienda {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.btn-domicilio {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.btn-bodega-sps {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.btn-bodega-tg {
+  background: #fce7f3;
+  color: #9f1239;
+}
+
+.btn-gestionada {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.btn-no-gestionada {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* ========================================
+   CARDS MÓVILES
+   ======================================== */
+.entregas-cards-mobile {
+  display: none;
+  max-width: 1400px;
+  margin: 0 auto;
+  gap: 1rem;
+}
+
+.entrega-card-mobile {
+  background: var(--bg-white);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.entrega-card-mobile:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.entrega-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border-light);
+}
+
+.entrega-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.25rem;
+}
+
+.entrega-card-factura {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+}
+
+.entrega-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.entrega-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.entrega-card-label {
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  font-weight: 600;
+}
+
+.entrega-card-value {
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  font-weight: 500;
+  text-align: right;
+}
+
+.entrega-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Scrollbar personalizado para tabla */
+.tabla-entregas-scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.tabla-entregas-scroll::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.tabla-entregas-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.tabla-entregas-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.tabla-entregas-scroll::-webkit-scrollbar-corner {
+  background: #f1f5f9;
+}
+
+/* ========================================
+   RESPONSIVE - MÓVIL
+   ======================================== */
+@media (max-width: 1024px) {
+  .entregas-content-wrapper {
+    flex-direction: column;
+  }
+
+  .entregas-sidebar {
+    width: 100%;
+    position: static;
+  }
+
+  .sidebar-filters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .tabla-entregas-wrapper {
+    max-height: 600px;
+  }
+}
+
+@media (max-width: 768px) {
+  .entregas-modern-bg {
+    padding: 1rem;
+  }
+
+  .entregas-header {
+    padding: 1rem;
+  }
+
+  .entregas-header-info {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .chofer-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .chofer-details h3 {
+    font-size: 1rem;
+  }
+
+  .chofer-pendientes {
+    align-self: flex-start;
+  }
+
+  .botones-bar-container {
+    padding: 1rem;
+  }
+
+  .actions-buttons {
+    flex-direction: column;
+  }
+
+  .btn-agregar,
+  .btn-chofer {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .filtros-bar {
+    justify-content: center;
+  }
+
+  .sidebar-filters {
+    grid-template-columns: 1fr;
+  }
+
+  /* Ocultar tabla en móvil */
+  .entregas-content-wrapper,
+  .tabla-entregas-wrapper,
+  .entregas-sidebar {
+    display: none;
+  }
+
+  /* Mostrar cards en móvil */
+  .entregas-cards-mobile {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* ========================================
+   TABLET
+   ======================================== */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .entregas-modern-bg {
+    padding: 1.25rem;
+  }
+
+  .tabla-entregas {
+    font-size: 0.9rem;
+  }
+
+  .tabla-entregas th,
+  .tabla-entregas td {
+    padding: 0.85rem;
+  }
+}
+
+/* ========================================
+   DESKTOP GRANDE
+   ======================================== */
+@media (min-width: 1400px) {
+  .entregas-header,
+  .botones-bar-container,
+  .tabla-entregas-wrapper,
+  .entregas-cards-mobile {
+    max-width: 1600px;
+  }
+}
