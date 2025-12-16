@@ -7,11 +7,6 @@ const TiendasCard = ({ tienda, onEditar }) => (
       <div className="tienda-card-number">{tienda.numero_tienda}</div>
       <div className="tienda-card-header">{tienda.nombre}</div>
     </div>
-    <div className="tienda-card-body">
-      {tienda.direccion ? <div className="tienda-card-info">{tienda.direccion}</div> : null}
-      <div className="tienda-card-info">Tel: {tienda.telefono || "-"}</div>
-      <div className="tienda-card-info">Encargado: {tienda.encargado || "-"}</div>
-    </div>
     <div className="tienda-card-actions">
       <button className="btn btn-outline small">Ver</button>
       <button className="btn btn-primary small" onClick={onEditar}>

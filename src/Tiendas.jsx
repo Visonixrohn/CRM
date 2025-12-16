@@ -56,10 +56,6 @@ const Tiendas = () => {
   // Conteos para la barra lateral
   const conteoTipos = {
     Todos: tiendas.length,
-    "Con teléfono": tiendas.filter((t) => t.telefono && t.telefono.trim() !== "").length,
-    "Sin teléfono": tiendas.filter((t) => !t.telefono || t.telefono.trim() === "").length,
-    "Con encargado": tiendas.filter((t) => t.encargado && t.encargado.trim() !== "").length,
-    "Sin dirección": tiendas.filter((t) => !t.direccion || t.direccion.trim() === "").length,
   };
 
   const [filtroSidebar, setFiltroSidebar] = useState("Todos");
@@ -85,16 +81,8 @@ const Tiendas = () => {
         tienda.tienda && tienda.tienda.toLowerCase().includes(nombreTerm)
       );
     }
-    // aplicar filtro lateral
-    if (filtroSidebar === "Con teléfono") {
-      result = result.filter((t) => t.telefono && t.telefono.trim() !== "");
-    } else if (filtroSidebar === "Sin teléfono") {
-      result = result.filter((t) => !t.telefono || t.telefono.trim() === "");
-    } else if (filtroSidebar === "Con encargado") {
-      result = result.filter((t) => t.encargado && t.encargado.trim() !== "");
-    } else if (filtroSidebar === "Sin dirección") {
-      result = result.filter((t) => !t.direccion || t.direccion.trim() === "");
-    }
+    // aplicar filtro lateral (actualmente solo "Todos")
+    // Aquí se pueden agregar más filtros cuando haya más datos disponibles
 
     setFilteredTiendas(result);
   }, [search, searchNombre, tiendas, filtroSidebar]);
@@ -171,16 +159,12 @@ const Tiendas = () => {
 
         <div className="tiendas-summary">
           <div className="summary-card">
-            <div className="summary-title">Total</div>
+            <div className="summary-title">Total de Tiendas</div>
             <div className="summary-value">{conteoTipos.Todos}</div>
           </div>
           <div className="summary-card">
-            <div className="summary-title">Con teléfono</div>
-            <div className="summary-value">{conteoTipos["Con teléfono"]}</div>
-          </div>
-          <div className="summary-card">
-            <div className="summary-title">Con encargado</div>
-            <div className="summary-value">{conteoTipos["Con encargado"]}</div>
+            <div className="summary-title">Mostrando</div>
+            <div className="summary-value">{filteredTiendas.length}</div>
           </div>
         </div>
 
@@ -190,9 +174,6 @@ const Tiendas = () => {
               <tr>
                 <th>Nº Tienda</th>
                 <th>Nombre</th>
-                <th>Dirección</th>
-                <th>Teléfono</th>
-                <th>Encargado</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -201,9 +182,6 @@ const Tiendas = () => {
                 <tr key={tienda.id}>
                   <td data-label="Nº">{tienda.numero_tienda}</td>
                   <td data-label="Nombre">{tienda.tienda}</td>
-                  <td data-label="Dirección">{tienda.direccion || "-"}</td>
-                  <td data-label="Teléfono">{tienda.telefono || "-"}</td>
-                  <td data-label="Encargado">{tienda.encargado || "-"}</td>
                   <td data-label="Acciones">
                     <button className="btn btn-outline">Ver</button>
                     <button
@@ -228,9 +206,6 @@ const Tiendas = () => {
                 id: tienda.id,
                 nombre: tienda.tienda,
                 numero_tienda: tienda.numero_tienda,
-                direccion: tienda.direccion || "",
-                telefono: tienda.telefono || "",
-                encargado: tienda.encargado || "",
               }}
               onEditar={() => handleEditar(tienda)}
             />
