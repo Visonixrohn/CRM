@@ -1,0 +1,83 @@
+/* Layout base */
+.tiendas-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 20px;
+  padding: 20px 24px;
+  align-items: start;
+  min-height: 80vh;
+  background: #f6f7fb;
+}
+
+/* Sidebar */
+.tiendas-sidebar {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(11, 20, 35, 0.06);
+  position: sticky;
+  top: 20px;
+  height: fit-content;
+}
+.sidebar-header {
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #20232a;
+}
+.sidebar-list { list-style: none; padding: 0; margin: 0; }
+.sidebar-item {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 12px; border-radius:8px; cursor:pointer; color:#4b5563;
+}
+.sidebar-item:hover { background:#f1f5f9; }
+.sidebar-item.active { background: linear-gradient(90deg,#eef2ff,#f8fafc); border-left:3px solid #2563eb; }
+.item-label { font-weight:600 }
+.item-count { background:#eef2ff; color:#1e3a8a; padding:4px 8px; border-radius:999px; font-size:0.9rem }
+
+/* Main area */
+.tiendas-main { display:flex; flex-direction:column; gap:16px }
+.tiendas-header { display:flex; justify-content:space-between; align-items:center }
+.tiendas-header h1 { margin:0; font-size:1.6rem; color:#0f172a }
+.tiendas-actions { display:flex; gap:12px; align-items:center }
+.search-group { display:flex; gap:10px; align-items:center }
+.input-search { padding:8px 12px; border-radius:10px; border:1px solid #e6eef8; background:#fff; min-width:220px }
+.input-search.nombre { min-width:320px }
+
+/* Summary cards */
+.tiendas-summary { display:flex; gap:12px }
+.summary-card { background:#fff; padding:12px 16px; border-radius:10px; box-shadow:0 6px 16px rgba(12,20,40,0.04); display:flex; flex-direction:column }
+.summary-title { font-size:0.85rem; color:#475569 }
+.summary-value { font-size:1.3rem; font-weight:700; color:#0b5fff }
+
+/* Table */
+.tabla-entregas-scroll { overflow:auto; background:transparent; border-radius:8px }
+.styled-table { width:100%; min-width:960px; border-collapse:collapse; background:#fff; border-radius:8px; overflow:hidden }
+.styled-table thead th { position:sticky; top:0; background:#0b1020; color:#fff; padding:12px 14px; text-align:left; font-weight:700 }
+.styled-table th, .styled-table td { padding:12px 14px; border-bottom:1px solid #f1f5f9 }
+.styled-table tbody tr:hover { background:#fafbff }
+.btn { padding:6px 10px; border-radius:8px; border:1px solid transparent; cursor:pointer; margin-right:6px }
+.btn.small { padding:5px 8px; font-size:0.85rem }
+.btn-outline { background:transparent; border-color:#cbd5e1; color:#0f172a }
+.btn-primary { background:#2563eb; color:#fff }
+
+/* Mobile cards container */
+.tiendas-cards-mobile { display:none }
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .tiendas-layout { grid-template-columns: 1fr; padding:16px }
+  .tiendas-sidebar { position:relative; top:auto; display:flex; gap:12px; overflow:auto }
+  .sidebar-list { display:flex; gap:8px }
+  .tiendas-cards-mobile { display:block }
+  .tabla-entregas-scroll { display:none }
+  .input-search.nombre { min-width:160px }
+}
+
+@media (max-width:480px){
+  .input-search { min-width:120px; padding:8px }
+}
+
+/* Minor overrides for existing tienda card css */
+.tienda-card-number { font-weight:700; color:#2563eb; margin-bottom:6px }
+.tienda-card-top { display:flex; gap:12px; align-items:center }
+.tienda-card-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:10px }
