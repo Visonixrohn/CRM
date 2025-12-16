@@ -1,24 +1,11 @@
-import "./EstadoButtons.css";
+import "./OrdenesServicioNew.css";
+import "./ModalesNew.css";
 import React, { useState, useEffect } from "react";
 import EditarOrdenModal from "./EditarOrdenModal";
 import { fetchOrdenCorOne } from "./utils/fetchOrdenCorOne";
 import { supabase } from "./supabaseClient";
-import Modal from "react-modal";
-import { CSVLink } from "react-csv";
-import "./OrdenesServicioTabla.css";
-import "./botonordenmovil.css";
-import "./ordendeskopagregar.css";
-import "./OrdenesServicioFiltroBtn.css";
-import "./OrdenesServicioForm.css";
-import "./OrdenesServicioDetalle.css";
-import "./OrdenesServicioActualizarEstado.css";
-import "./OrdenesServicioBusqueda.css";
-import OrdenesServicioCard from "./components/OrdenesServicioCard";
 import OrdenesServicioCardMovil from "./components/OrdenesServicioCardMovil";
 import "./components/OrdenesServicioCard.css";
-import OrdenesServicioFiltroMovil from "./components/OrdenesServicioFiltroMovil";
-import "./components/OrdenesServicioFiltroMovil.css";
-import BotonFlotanteMovil from "./components/BotonFlotanteMovil";
 
 const OrdenesServicio = () => {
   const [verTodasTienda, setVerTodasTienda] = useState(false);
@@ -49,11 +36,11 @@ const OrdenesServicio = () => {
   archivo: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  // Eliminado isSuccessModalOpen
   const [isUpdateStateModalOpen, setIsUpdateStateModalOpen] = useState(false);
   const [selectedState, setSelectedState] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterState, setFilterState] = useState("");
+  const [filtroSidebar, setFiltroSidebar] = useState("Todas");
 
   const estados = [
     "PENDIENTE DE VISITA",
@@ -314,324 +301,291 @@ const OrdenesServicio = () => {
     // Solo mostrar órdenes según interruptor
     const matchesTienda = miTienda ? orden.tienda_usuario === miTienda : true;
     const matchesUser = verTodasTienda ? true : orden.user_id === userId;
-    return matchesSearch && matchesFilter && matchesTienda && matchesUser;
+    
+    // Filtro sidebar por status
+    let matchesSidebar = true;
+    const status = orden.status || '';
+    if (filtroSidebar === "Activas") {
+      matchesSidebar = status !== 'Tu orden ha finalizado';
+    } else if (filtroSidebar === "Finalizadas") {
+      matchesSidebar = status === 'Tu orden ha finalizado';
+    } else if (filtroSidebar === "En Reparación") {
+      matchesSidebar = status === 'Tu artículo está en proceso de reparación';
+    } else if (filtroSidebar === "En Revisión") {
+      matchesSidebar = status === 'Tu artículo está en proceso de revisión';
+    } else if (filtroSidebar === "Recibidas") {
+      matchesSidebar = status === 'Tu orden ha sido recibida';
+    }
+    
+    return matchesSearch && matchesFilter && matchesTienda && matchesUser && matchesSidebar;
   });
 
+  // Métricas para las tarjetas
+  const metricas = {
+    total: ordenes.length,
+    activas: ordenes.filter(o => (o.status || '') !== 'Tu orden ha finalizado').length,
+    finalizadas: ordenes.filter(o => o.status === 'Tu orden ha finalizado').length,
+    enReparacion: ordenes.filter(o => o.status === 'Tu artículo está en proceso de reparación').length,
+    enRevision: ordenes.filter(o => o.status === 'Tu artículo está en proceso de revisión').length,
+    recibidas: ordenes.filter(o => o.status === 'Tu orden ha sido recibida').length,
+  };
+
   return (
-  <div className="ordenes-container">
-      {/* Botones de acciones principales */}
-      <div style={{margin: '10px 0', display: 'flex', gap: '12px'}}>
-        {/* Interruptor tipo switch moderno */}
-        <label style={{display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold'}}>
-          <span style={{fontSize: '1em'}}>Ver todas las órdenes de la tienda</span>
-          <span
-            style={{
-              position: 'relative',
-              display: 'inline-block',
-              width: '48px',
-              height: '24px',
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={verTodasTienda}
-              onChange={() => setVerTodasTienda(v => !v)}
-              style={{
-                opacity: 0,
-                width: '48px',
-                height: '24px',
-                margin: 0,
-                position: 'absolute',
-                left: 0,
-                top: 0,
-                cursor: 'pointer',
-              }}
-            />
-            <span
-              style={{
-                position: 'absolute',
-                left: 0,
-                top: 0,
-                width: '48px',
-                height: '24px',
-                background: verTodasTienda ? '#1976d2' : '#ccc',
-                borderRadius: '24px',
-                transition: 'background 0.2s',
-              }}
-            ></span>
-            <span
-              style={{
-                position: 'absolute',
-                top: '2px',
-                left: verTodasTienda ? '26px' : '2px',
-                width: '20px',
-                height: '20px',
-                background: '#fff',
-                borderRadius: '50%',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.15)',
-                transition: 'left 0.2s',
-              }}
-            ></span>
-          </span>
-        </label>
-        <button
-          style={{
-            background: '#1976d2',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            padding: '8px 18px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-          }}
-          onClick={async () => {
-            setIsLoading(true);
-            for (const orden of filteredOrdenes) {
-              // Solo actualizar órdenes del usuario actual y que no tengan status 'Tu orden ha finalizado'
-              const status = orden.status || '';
-              if (
-                orden.user_id === localStorage.getItem('userId') &&
-                status !== 'Tu orden ha finalizado'
-              ) {
-                await handleConsultarCorOne(orden.numero_orden);
-              }
-            }
-            setIsLoading(false);
-          }}
-          disabled={isLoading}
-        >
-          {isLoading ? 'Actualizando...' : 'Actualizar todas mis órdenes'}
-        </button>
-        <button
-          style={{
-            background: '#0d1a3a',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            padding: '8px 18px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-          }}
-          onClick={() => setIsAddOrderModalOpen(true)}
-        >
-          Agregar orden
-        </button>
-      </div>
-      {showActualizadoModal && (
-        <div style={{
-          position: 'fixed',
-          top: '20%',
-          left: '50%',
-          transform: 'translate(-50%, 0)',
-          background: '#1976d2',
-          color: 'white',
-          padding: '16px 32px',
-          borderRadius: '12px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-          zIndex: 9999,
-          fontSize: '1.2em',
-          textAlign: 'center',
-        }}>
-          Actualizado
+    <div className="ordenes-layout">
+      {/* Sidebar de filtros */}
+      <aside className="ordenes-sidebar">
+        <div className="sidebar-section">
+          <div className="sidebar-title">Filtros</div>
+          <div className="sidebar-filters">
+            {["Todas", "Activas", "Finalizadas", "En Reparación", "En Revisión", "Recibidas"].map((filtro) => {
+              let count = 0;
+              if (filtro === "Todas") count = metricas.total;
+              else if (filtro === "Activas") count = metricas.activas;
+              else if (filtro === "Finalizadas") count = metricas.finalizadas;
+              else if (filtro === "En Reparación") count = metricas.enReparacion;
+              else if (filtro === "En Revisión") count = metricas.enRevision;
+              else if (filtro === "Recibidas") count = metricas.recibidas;
+              
+              return (
+                <div
+                  key={filtro}
+                  className={`filter-item ${filtroSidebar === filtro ? "active" : ""}`}
+                  onClick={() => setFiltroSidebar(filtro)}
+                >
+                  <span>{filtro}</span>
+                  <span className="filter-badge">{count}</span>
+                </div>
+              );
+            })}
+          </div>
         </div>
-      )}
-      <header className="ordenes-header">
-  <h1 style={{ textAlign: 'center', width: '100%', margin: '0 auto' }}>Órdenes de Servicio</h1>
-        {/* Contador de órdenes activas */}
-        <div  style={{ textAlign: 'center', width: '100%', margin: '0 auto' }}>
-          Órdenes activas: {
-            filteredOrdenes.filter(o => {
-              const status = o.status || '';
-              return status !== 'Tu orden ha finalizado';
-            }).length
-          }
+
+        <div className="sidebar-section">
+          <div className="switch-container">
+            <span className="switch-label">Ver todas de la tienda</span>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={verTodasTienda}
+                onChange={() => setVerTodasTienda(v => !v)}
+              />
+              <span className="slider"></span>
+            </label>
+          </div>
         </div>
-        <div className="osv-busqueda-barra-container">
+      </aside>
+
+      {/* Contenido principal */}
+      <main className="ordenes-main">
+        {/* Header con título y acciones */}
+        <div className="ordenes-header-new">
+          <div className="header-title-section">
+            <h1>Órdenes de Servicio</h1>
+            <p className="header-subtitle">
+              {filteredOrdenes.length} órdenes • {metricas.activas} activas
+            </p>
+          </div>
+          <div className="header-actions-new">
+            <button
+              className="btn-action btn-secondary-new"
+              onClick={async () => {
+                setIsLoading(true);
+                for (const orden of filteredOrdenes) {
+                  const status = orden.status || '';
+                  if (
+                    orden.user_id === localStorage.getItem('userId') &&
+                    status !== 'Tu orden ha finalizado'
+                  ) {
+                    await handleConsultarCorOne(orden.numero_orden);
+                  }
+                }
+                setIsLoading(false);
+              }}
+              disabled={isLoading}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0119.5-3M22 12.5a10 10 0 01-19.5 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              {isLoading ? 'Actualizando...' : 'Actualizar Mis Órdenes'}
+            </button>
+            <button
+              className="btn-action btn-primary-new"
+              onClick={() => setIsAddOrderModalOpen(true)}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+              Nueva Orden
+            </button>
+          </div>
+        </div>
+
+        {/* Barra de búsqueda */}
+        <div className="search-bar-new">
+          <svg className="search-icon-new" width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2"/>
+            <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
           <input
             type="text"
-            placeholder="Buscar por cliente o número de orden"
+            placeholder="Buscar por cliente o número de orden..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="osv-busqueda-barra"
+            className="search-input-new"
           />
-          <span className="osv-busqueda-icono">🔍</span>
         </div>
-        {/* Filtros dinámicos por STATUS */}
-        <div className="filter-buttons">
-          {[...new Set(filteredOrdenes.map(o => o.status).filter(Boolean))].map((status) => {
-            const statusClass = status
-              .toLowerCase()
-              .replace(/\s+/g, "-")
-              .replace(
-                /[áéíóú]/g,
-                (m) => ({ á: "a", é: "e", í: "i", ó: "o", ú: "u" }[m])
-              );
+
+        {/* Métricas */}
+        <div className="metrics-grid">
+          <div className="metric-card active">
+            <div className="metric-label">Total Órdenes</div>
+            <div className="metric-value">{metricas.total}</div>
+          </div>
+          <div className="metric-card pending">
+            <div className="metric-label">Activas</div>
+            <div className="metric-value">{metricas.activas}</div>
+          </div>
+          <div className="metric-card finished">
+            <div className="metric-label">Finalizadas</div>
+            <div className="metric-value">{metricas.finalizadas}</div>
+          </div>
+          <div className="metric-card repair">
+            <div className="metric-label">En Reparación</div>
+            <div className="metric-value">{metricas.enReparacion}</div>
+          </div>
+        </div>
+
+        {showActualizadoModal && (
+          <div style={{
+            position: 'fixed',
+            top: '20%',
+            left: '50%',
+            transform: 'translate(-50%, 0)',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white',
+            padding: '16px 32px',
+            borderRadius: '12px',
+            boxShadow: '0 8px 32px rgba(102, 126, 234, 0.4)',
+            zIndex: 9999,
+            fontSize: '1.1em',
+            textAlign: 'center',
+            fontWeight: '600',
+          }}>
+            ✓ Actualizado
+          </div>
+        )}
+
+        {/* Tabla Desktop */}
+        <div className="tabla-ordenes-scroll">
+          <div className="tabla-ordenes-inner">
+            <table className="ordenes-table-new">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Cliente</th>
+                  <th>Teléfono</th>
+                  <th>Nº Orden</th>
+                  <th>Modelo</th>
+                  <th>Marca</th>
+                  <th>Falla</th>
+                  <th>Status</th>
+                  <th>Días</th>
+                  <th>Creador</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredOrdenes.map((orden) => {
+                  const ext = corOneData.hasOwnProperty(orden.numero_orden)
+                    ? corOneData[orden.numero_orden]
+                    : undefined;
+                  const statusRaw = ext && ext.status ? ext.status : (orden.status || '');
+                  const statusValue = statusRaw.toLowerCase();
+                  
+                  let statusClass = '';
+                  if (statusRaw === 'Tu orden ha finalizado') statusClass = 'status-finalizado';
+                  else if (statusRaw === 'Tu artículo está en proceso de reparación') statusClass = 'status-proceso';
+                  else if (statusRaw === 'Tu artículo está en proceso de revisión') statusClass = 'status-revision';
+                  else if (statusRaw === 'Tu orden ha sido recibida') statusClass = 'status-recibida';
+                  else if (statusValue.includes('anulado') || statusValue.includes('anulada')) statusClass = 'status-anulada';
+                  
+                  const diasOcultar = statusValue.includes('anulado') || statusValue.includes('anulada') || statusValue.includes('rechazada') || statusValue.includes('finalizada') || statusRaw === 'Tu orden ha finalizado';
+                  
+                  return (
+                    <tr key={orden.id} onClick={() => handleRowClick(orden)}>
+                      <td>{orden.fecha}</td>
+                      <td>{orden.cliente}</td>
+                      <td>{orden.telefono || '-'}</td>
+                      <td style={{whiteSpace: 'nowrap'}}>
+                        {orden.numero_orden}
+                        <button
+                          className="icon-button"
+                          onClick={e => {
+                            e.stopPropagation();
+                            navigator.clipboard.writeText(orden.numero_orden);
+                          }}
+                          title="Copiar número de orden"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <rect x="9" y="9" width="13" height="13" rx="2" stroke="#667eea" strokeWidth="2"/>
+                            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="#667eea" strokeWidth="2"/>
+                          </svg>
+                        </button>
+                        <button
+                          className="icon-button"
+                          onClick={e => {
+                            e.stopPropagation();
+                            handleConsultarCorOne(orden.numero_orden);
+                          }}
+                          title="Actualizar datos"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <circle cx="11" cy="11" r="8" stroke="#667eea" strokeWidth="2"/>
+                            <path d="M21 21l-4.35-4.35" stroke="#667eea" strokeWidth="2" strokeLinecap="round"/>
+                          </svg>
+                          {loadingCorOne[orden.numero_orden] && <span style={{marginLeft:2}}>...</span>}
+                        </button>
+                      </td>
+                      <td>{ext && ext.model ? ext.model : (orden.modelo || '-')}</td>
+                      <td>{ext && ext.brand ? ext.brand : (orden.marca || '-')}</td>
+                      <td>{ext && (ext.damage || ext.reportedDamage) ? (ext.damage || ext.reportedDamage) : (orden.falla || '-')}</td>
+                      <td>
+                        <span className={`status-badge ${statusClass}`}>
+                          {statusRaw || 'Sin estado'}
+                        </span>
+                      </td>
+                      <td>{diasOcultar ? '--' : calculateDaysElapsed(orden.fecha)}</td>
+                      <td>{orden.gestor || '-'}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Cards móviles */}
+        <div className="ordenes-cards-mobile">
+          {filteredOrdenes.map((orden) => {
+            const ext = corOneData.hasOwnProperty(orden.numero_orden)
+              ? corOneData[orden.numero_orden]
+              : undefined;
+            const estadosPermitidos = ["PENDIENTE DE VISITA", "PENDIENTE DE REPUESTO"];
+            const mostrarResuelto = !estadosPermitidos.includes(orden.estado);
             return (
-              <button
-                key={status}
-                className={`filter-button ${statusClass} ${
-                  filterState === status ? "active" : ""
-                }`}
-                onClick={() =>
-                  setFilterState(filterState === status ? "" : status)
-                }
-              >
-                {status}
-              </button>
+              <OrdenesServicioCardMovil
+                key={orden.id}
+                orden={orden}
+                onVerDetalle={handleRowClick}
+                ext={mostrarResuelto ? { model: 'RESUELTO', brand: 'RESUELTO', status: 'RESUELTO' } : ext}
+                onConsultarCorOne={() => handleConsultarCorOne(orden.numero_orden)}
+                loadingCorOne={!!loadingCorOne[orden.numero_orden]}
+              />
             );
           })}
         </div>
-      </header>
+      </main>
 
-      {/* Cards móviles */}
-      <div className="solo-movil">
-        {filteredOrdenes.map((orden) => {
-          const ext = corOneData.hasOwnProperty(orden.numero_orden)
-            ? corOneData[orden.numero_orden]
-            : undefined;
-          const estadosPermitidos = ["PENDIENTE DE VISITA", "PENDIENTE DE REPUESTO"];
-          const mostrarResuelto = !estadosPermitidos.includes(orden.estado);
-          return (
-            <OrdenesServicioCardMovil
-              key={orden.id}
-              orden={orden}
-              onVerDetalle={handleRowClick}
-              ext={mostrarResuelto ? { model: 'RESUELTO', brand: 'RESUELTO', status: 'RESUELTO' } : ext}
-              onConsultarCorOne={() => handleConsultarCorOne(orden.numero_orden)}
-              loadingCorOne={!!loadingCorOne[orden.numero_orden]}
-            />
-          );
-        })}
-      </div>
-      {/* Tabla solo visible en desktop por CSS */}
-      <div className="ordenes-servicio-table-container">
-        <table className="ordenes-table">
-          <thead>
-            <tr style={{ background: '#0d1a3a' }}>
-              <th style={{ color: '#fff', background: '#0d1a3a' }}>FECHA</th>
-              <th style={{ color: '#fff', background: '#0d1a3a' }}>CLIENTE</th>
-              <th style={{ color: '#fff', background: '#0d1a3a' }}>TELÉFONO</th>
-              <th style={{ color: '#fff', background: '#0d1a3a' }}>NÚMERO DE ORDEN</th>
-              {/* <th>ARTÍCULO</th> */}
-              <th style={{ color: '#fff', background: '#0d1a3a' }}>MODELO</th>
-              <th style={{ color: '#fff', background: '#0d1a3a' }}>MARCA</th>
-              <th style={{ color: '#fff', background: '#0d1a3a' }}>FALLA</th>
-              <th style={{ color: '#fff', background: '#0d1a3a' }}>STATUS</th>
-              <th style={{ color: '#fff', background: '#0d1a3a' }}>DIAS</th>
-              <th style={{ color: '#fff', background: '#0d1a3a' }}>CREADOR</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredOrdenes.map((orden) => {
-              const ext = corOneData.hasOwnProperty(orden.numero_orden)
-                ? corOneData[orden.numero_orden]
-                : undefined;
-              // Colores para status según texto específico
-              const statusRaw = ext && ext.status ? ext.status : (orden.status || '');
-              const statusValue = statusRaw.toLowerCase();
-              let statusColor = '#e0e0e0', statusTextColor = '#333';
-              if (statusRaw === 'Tu orden ha finalizado') {
-                statusColor = '#43a047'; statusTextColor = '#fff'; // verde
-              } else if (statusRaw === 'Tu artículo está en proceso de reparación') {
-                statusColor = '#1976d2'; statusTextColor = '#fff'; // azul
-              } else if (statusRaw === 'Tu artículo está en proceso de revisión') {
-                statusColor = '#ff9800'; statusTextColor = '#fff'; // naranja oscuro
-              } else if (statusRaw === 'Tu orden ha sido recibida') {
-                statusColor = '#ffe600'; statusTextColor = '#333'; // amarillo
-              } else if (statusValue.includes('anulado') || statusValue.includes('anulada') || statusValue.includes('rechazada')) {
-                statusColor = '#e57373'; statusTextColor = '#fff';
-              } else if (statusValue.includes('finalizada') || statusValue.includes('finalizado')) {
-                statusColor = '#1976d2'; statusTextColor = '#fff';
-              } else if (statusValue.includes('pendiente')) {
-                statusColor = '#ffb300'; statusTextColor = '#fff';
-              } else if (statusValue.includes('reparado')) {
-                statusColor = '#43a047'; statusTextColor = '#fff';
-              } else if (statusValue.includes('sugerencia')) {
-                statusColor = '#8e24aa'; statusTextColor = '#fff';
-              }
-              // Mostrar -- en días si status es anulado, anulada, rechazada, finalizada o 'Tu orden ha finalizado'
-              const diasOcultar = statusValue.includes('anulado') || statusValue.includes('anulada') || statusValue.includes('rechazada') || statusValue.includes('finalizada') || statusRaw === 'Tu orden ha finalizado';
-              return (
-                <tr key={orden.id} onClick={() => handleRowClick(orden)}>
-                  <td data-label="Fecha">{orden.fecha}</td>
-                  <td data-label="Cliente">{orden.cliente}</td>
-                  <td data-label="Teléfono">{orden.telefono || ''}</td>
-                  <td data-label="Número de Orden" style={{whiteSpace: 'nowrap'}}>
-                    {orden.numero_orden}
-                    <button
-                      onClick={e => {
-                        e.stopPropagation();
-                        navigator.clipboard.writeText(orden.numero_orden);
-                      }}
-                      title="Copiar número de orden"
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        marginLeft: 8,
-                        padding: 0,
-                        verticalAlign: 'middle',
-                      }}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{verticalAlign: 'middle'}}>
-                        <rect x="9" y="9" width="13" height="13" rx="2" stroke="#1976d2" strokeWidth="2" fill="#fff"/>
-                        <rect x="3" y="3" width="13" height="13" rx="2" stroke="#1976d2" strokeWidth="2" fill="#e3f2fd"/>
-                      </svg>
-                    </button>
-                    <button
-                      onClick={e => {
-                        e.stopPropagation();
-                        handleConsultarCorOne(orden.numero_orden);
-                      }}
-                      title="Consultar modelo, marca y status"
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        marginLeft: 4,
-                        padding: 0,
-                        verticalAlign: 'middle',
-                      }}
-                    >
-                      {/* Icono lupa */}
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{verticalAlign: 'middle'}}>
-                        <circle cx="11" cy="11" r="7" stroke="#6366f1" strokeWidth="2" fill="#fff"/>
-                        <line x1="16" y1="16" x2="21" y2="21" stroke="#6366f1" strokeWidth="2"/>
-                      </svg>
-                      {loadingCorOne[orden.numero_orden] && <span style={{marginLeft:4, fontSize:10}}>...</span>}
-                    </button>
-                  </td>
-                  {/* <td data-label="Artículo">{orden.articulo}</td> */}
-                  <td data-label="Modelo">{ext && ext.model ? ext.model : (orden.modelo || '')}</td>
-                  <td data-label="Marca">{ext && ext.brand ? ext.brand : (orden.marca || '')}</td>
-                  <td data-label="Falla">{ext && (ext.damage || ext.reportedDamage) ? (ext.damage ? ext.damage : ext.reportedDamage) : (orden.falla || '')}</td>
-                  <td data-label="Status">
-                    <span style={{
-                      display: 'inline-block',
-                      background: statusColor,
-                      color: statusTextColor,
-                      borderRadius: '16px',
-                      padding: '2px 14px',
-                      fontWeight: 'bold',
-                      fontSize: '0.95em',
-                      minWidth: '80px',
-                      textAlign: 'center',
-                      boxShadow: '0 1px 4px rgba(0,0,0,0.08)'
-                    }}>{ext && ext.status ? ext.status : (orden.status || '')}</span>
-                  </td>
-                  <td data-label="Días">{diasOcultar ? '--' : calculateDaysElapsed(orden.fecha)}</td>
-                  <td data-label="Gestor">{orden.gestor}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Botón fijo solo escritorio eliminado por solicitud del usuario */}
-
+      {/* Modal de detalles de orden */}
       {selectedOrden && (
         <div
           className="modal-overlay"
@@ -641,9 +595,9 @@ const OrdenesServicio = () => {
             }
           }}
         >
-          <div className="order-details-modal fade-in" onClick={e => e.stopPropagation()}>
+          <div className="modal-container" onClick={e => e.stopPropagation()}>
             {renderOrderDetails(selectedOrden)}
-            <button onClick={() => setSelectedOrden(null)}>Cerrar</button>
+            <button className="btn-cancel" onClick={() => setSelectedOrden(null)}>Cerrar</button>
           </div>
           {/* Modal de edición */}
           <EditarOrdenModal
@@ -655,65 +609,83 @@ const OrdenesServicio = () => {
         </div>
       )}
 
-  {isAddOrderModalOpen && (
+      {/* Modal agregar orden */}
+      {isAddOrderModalOpen && (
         <div
           className="modal-overlay"
           onClick={e => {
-            // Solo cerrar si el click es en el fondo, no en el modal
             if (e.target.classList.contains('modal-overlay')) {
               setIsAddOrderModalOpen(false);
             }
           }}
         >
-          <div className="AddOrderForm fade-in" onClick={e => e.stopPropagation()}>
-            <h2>Agregar Orden de Servicio</h2>
-            <form onSubmit={handleAddOrder}>
-              <input
-                type="date"
-                value={newOrder.fecha || ""}
-                onChange={(e) => handleInputChange("fecha", e.target.value)}
-                required
-              />
-              <input
-                type="text"
-                placeholder="Cliente"
-                value={newOrder.cliente || ""}
-                onChange={(e) => handleInputChange("cliente", e.target.value)}
-                required
-              />
-              <input
-                type="text"
-                placeholder="Teléfono"
-                value={newOrder.telefono || ""}
-                onChange={(e) => handleInputChange("telefono", e.target.value)}
-                pattern="[0-9+\-]*"
-                title="Solo números y signos (+, -)"
-                required
-              />
-              <input
-                type="text"
-                placeholder="Número de Orden"
-                value={newOrder.numero_orden || ""}
-                onChange={(e) =>
-                  handleInputChange("numero_orden", e.target.value)
-                }
-                required
-              />
-              <input
-                type="text"
-                placeholder="URL del archivo (opcional)"
-                value={newOrder.archivo || ""}
-                onChange={(e) => handleInputChange("archivo", e.target.value)}
-              />
-              <div className="form-actions">
-                <button type="submit" disabled={isLoading}>
-                  {isLoading ? "Guardando..." : "Guardar"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsAddOrderModalOpen(false)}
-                >
+          <div className="modal-container" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Agregar Orden de Servicio</h2>
+              <button className="modal-close" onClick={() => setIsAddOrderModalOpen(false)}>×</button>
+            </div>
+            <form className="modal-body" onSubmit={handleAddOrder}>
+              <div className="form-group">
+                <label className="form-label">Fecha</label>
+                <input
+                  type="date"
+                  className="form-input"
+                  value={newOrder.fecha || ""}
+                  onChange={(e) => handleInputChange("fecha", e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Cliente</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Nombre del cliente"
+                  value={newOrder.cliente || ""}
+                  onChange={(e) => handleInputChange("cliente", e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Teléfono</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="0000-0000"
+                  value={newOrder.telefono || ""}
+                  onChange={(e) => handleInputChange("telefono", e.target.value)}
+                  pattern="[0-9+\-]*"
+                  title="Solo números y signos (+, -)"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Número de Orden</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Número de orden"
+                  value={newOrder.numero_orden || ""}
+                  onChange={(e) => handleInputChange("numero_orden", e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">URL del archivo (opcional)</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="https://..."
+                  value={newOrder.archivo || ""}
+                  onChange={(e) => handleInputChange("archivo", e.target.value)}
+                />
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn-cancel" onClick={() => setIsAddOrderModalOpen(false)}>
                   Cancelar
+                </button>
+                <button type="submit" className="btn-confirm" disabled={isLoading}>
+                  {isLoading ? "Guardando..." : "Guardar Orden"}
                 </button>
               </div>
             </form>
@@ -721,10 +693,41 @@ const OrdenesServicio = () => {
         </div>
       )}
 
-  {/* Modal de éxito eliminado por solicitud del usuario */}
-
-      {isUpdateStateModalOpen && (
-        {/* Modal de actualización de estado eliminado */}
+      {/* Modal actualizar estado */}
+      {isUpdateStateModalOpen && selectedOrden && (
+        <div className="modal-overlay" onClick={() => setIsUpdateStateModalOpen(false)}>
+          <div className="modal-container" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Actualizar Estado</h2>
+              <button className="modal-close" onClick={() => setIsUpdateStateModalOpen(false)}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">Selecciona el nuevo estado</label>
+                <select
+                  className="form-input"
+                  value={selectedState}
+                  onChange={(e) => setSelectedState(e.target.value)}
+                >
+                  <option value="">-- Seleccionar --</option>
+                  {estados.map((estado) => (
+                    <option key={estado} value={estado}>
+                      {estado}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={() => setIsUpdateStateModalOpen(false)}>
+                Cancelar
+              </button>
+              <button className="btn-confirm" onClick={handleUpdateState}>
+                Actualizar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
