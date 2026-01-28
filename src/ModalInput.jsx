@@ -1,5 +1,5 @@
 import React from "react";
-import "./ModalInput.css";
+import { Dialog, DialogOverlay, DialogContent, DialogTitle, Button, Flex, Input, Label } from './designSystem';
 
 const ModalInput = ({ open, label, value, onClose, onSave, isMoney }) => {
   const [inputValue, setInputValue] = React.useState(value);
@@ -11,25 +11,31 @@ const ModalInput = ({ open, label, value, onClose, onSave, isMoney }) => {
   if (!open) return null;
 
   return (
-    <div className="modal-bg">
-      <div className="modal-input">
-        <h3>{label}</h3>
-        <input
-          type="number"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          autoFocus
-        />
-        <div className="modal-actions">
-          <button onClick={onClose}>Cancelar</button>
-          <button
-            onClick={() => onSave(isMoney ? Number(inputValue) : inputValue)}
-          >
-            Guardar
-          </button>
-        </div>
-      </div>
-    </div>
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogOverlay />
+      <DialogContent>
+        <DialogTitle>{label}</DialogTitle>
+        <Flex direction="column" gap="4" css={{ mt: '$4' }}>
+          <Input
+            type="number"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            autoFocus
+          />
+          <Flex gap="3" justify="end">
+            <Button variant="ghost" onClick={onClose}>
+              Cancelar
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => onSave(isMoney ? Number(inputValue) : inputValue)}
+            >
+              Guardar
+            </Button>
+          </Flex>
+        </Flex>
+      </DialogContent>
+    </Dialog>
   );
 };
 

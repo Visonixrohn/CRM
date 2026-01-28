@@ -34,64 +34,29 @@
   display: none; /* Chrome, Edge, Safari */
 }
 
-/* Sidebar */
-.sidebar {
-  flex-shrink: 0;
-  width: 80px; /* Sidebar cerrado */
-  height: 100%;
-  overflow: hidden; /* Evitar scroll dentro del sidebar */
-  transition: width 0.3s ease;
-}
-
-.sidebar.open {
-  width: 240px; /* Sidebar abierto */
-}
-
-/* Sidebar ajustable */
-.sidebar {
-  flex-shrink: 0;
-  width: 0px; /* Ancho inicial del Sidebar */
-  transition: width 0.3s ease;
-  box-sizing: border-box; /* Asegura que el padding no afecte el tamaño */
-}
-
-.sidebar.open {
-  width: 40px; /* Ancho del Sidebar cuando está abierto */
-}
-
 /* Contenedor de vistas dinámico */
 #main-content {
   flex: 1;
   overflow-y: auto;
-  height: 100vh; /* Asegurar que las vistas ocupen toda la pantalla */
+  height: auto; /* Ajustable según contenido y layout */
   margin: 0;
-  padding: 0;
-  position: relative; /* Asegurar que no herede posiciones absolutas */
-  top: 0; /* Corregir cualquier desplazamiento vertical */
-  margin: 0 auto; /* Centrar el contenido */
-  background-color: transparent; /* Asegurar que no haya fondo oscuro */
-  max-width: 100%; /* Asegurar que ocupe todo el ancho */
+  padding: 1.5rem; /* Espacio por defecto dentro del contenido */
+  position: relative;
+  background-color: transparent;
+  max-width: 100%;
   box-sizing: border-box;
 }
 
-#app-layout.sidebar-open #main-content {
-  margin-left: 21px; /* Ajustar margen cuando el Sidebar está abierto */
-}
-
-#app-layout:not(.sidebar-open) #main-content {
-  margin-left: 21px; /* Ajustar margen cuando el Sidebar está cerrado */
-}
-
-/* Asegurar que .layout-container no ocupe espacio innecesario y mantenga un diseño en fila */
+/* Asegurar que .layout-container no ocupe espacio innecesario y apile navbar + contenido */
 .layout-container {
   display: flex;
-  flex-direction: row; /* Mantener los contenedores en fila */
+  flex-direction: column; /* Apilar la Navbar arriba y el main-content debajo */
   flex: 1; /* Asegurar que ocupen el espacio restante debajo del header */
   width: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  overflow: hidden; /* Asegurar que no haya scroll en el contenedor principal */
+  overflow: hidden;
 }
 
 /* Ocultar la barra de desplazamiento en toda la aplicación */

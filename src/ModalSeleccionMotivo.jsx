@@ -1,73 +1,55 @@
-
 import React, { useState } from "react";
+import { Dialog, DialogOverlay, DialogContent, DialogTitle, Button, Flex, Box } from './designSystem';
 
 const motivos = [
-  { key: "no_contestan", label: "No contesta", color: "#fbbf24", bg: "#fef3c7" },
-  { key: "no_quiere", label: "No quiere", color: "#ef4444", bg: "#fee2e2" },
-  { key: "si_quiere", label: "Sí quiere", color: "#22c55e", bg: "#bbf7d0" },
+  { key: "no_contestan", label: "No contesta", color: "amber" },
+  { key: "no_quiere", label: "No quiere", color: "red" },
+  { key: "si_quiere", label: "Sí quiere", color: "green" },
 ];
 
 export default function ModalSeleccionMotivo({ open, onClose, onSave, loading }) {
   const [motivo, setMotivo] = useState(null);
+  
   if (!open) return null;
+
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100vw',
-      height: '100vh',
-      background: 'rgba(0,0,0,0.25)',
-      zIndex: 2000,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    }}>
-      <div style={{
-        background: '#fff',
-        borderRadius: 16,
-        padding: 36,
-        minWidth: 320,
-        boxShadow: '0 8px 32px #0003',
-        textAlign: 'center',
-        position: 'relative',
-        maxWidth: '90vw',
-      }}>
-        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 18, background: 'none', border: 'none', fontSize: 26, cursor: 'pointer', color: '#64748b' }}>&times;</button>
-        <h3 style={{ marginBottom: 28, color: '#1e293b', fontWeight: 700 }}>Selecciona el motivo</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 18, marginBottom: 24 }}>
-          {motivos.map(m => (
-            <button
-              key={m.key}
-              onClick={() => setMotivo(m.key)}
-              style={{
-                padding: '14px 0',
-                borderRadius: 10,
-                border: `1.5px solid ${m.color}`,
-                background: motivo === m.key ? m.color : m.bg,
-                color: motivo === m.key ? '#fff' : m.color,
-                fontWeight: 600,
-                fontSize: 17,
-                cursor: 'pointer',
-                transition: 'background 0.2s, color 0.2s',
-                outline: motivo === m.key ? '2px solid #6366f1' : 'none',
-              }}
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogOverlay />
+      <DialogContent>
+        <DialogTitle>Selecciona el motivo</DialogTitle>
+        <Flex direction="column" gap="4" css={{ mt: '$4' }}>
+          <Flex direction="column" gap="3">
+            {motivos.map(m => (
+              <Button
+                key={m.key}
+                variant={motivo === m.key ? m.color : "ghost"}
+                onClick={() => setMotivo(m.key)}
+                css={{
+                  height: 'auto',
+                  py: '$3',
+                  fontSize: '$4',
+                  border: motivo === m.key ? '2px solid currentColor' : '1px solid $colors$slate7'
+                }}
+              >
+                {m.label}
+              </Button>
+            ))}
+          </Flex>
+
+          <Flex gap="3" justify="end">
+            <Button variant="ghost" onClick={onClose}>
+              Cancelar
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => motivo && onSave(motivo)}
+              disabled={!motivo || loading}
             >
-              {m.label}
-            </button>
-          ))}
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 18 }}>
-          <button onClick={onClose} style={{ padding: '10px 24px', borderRadius: 8, border: 'none', background: '#e5e7eb', color: '#334155', fontWeight: 600, fontSize: 16 }}>Cancelar</button>
-          <button
-            onClick={() => motivo && onSave(motivo)}
-            disabled={!motivo || loading}
-            style={{ padding: '10px 24px', borderRadius: 8, border: 'none', background: motivo ? '#6366f1' : '#cbd5e1', color: '#fff', fontWeight: 600, fontSize: 16, opacity: loading ? 0.7 : 1, cursor: motivo && !loading ? 'pointer' : 'not-allowed' }}
-          >
-            {loading ? 'Guardando...' : 'Guardar'}
-          </button>
-        </div>
-      </div>
-    </div>
+              {loading ? 'Guardando...' : 'Guardar'}
+            </Button>
+          </Flex>
+        </Flex>
+      </DialogContent>
+    </Dialog>
   );
 }

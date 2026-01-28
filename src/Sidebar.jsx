@@ -20,6 +20,8 @@ import {
 } from "react-icons/fa";
 import "./Sidebar.css";
 import { supabase } from "./supabaseClient";
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { FaBars } from 'react-icons/fa';
 
 const Sidebar = ({
   open,
@@ -56,153 +58,100 @@ const Sidebar = ({
   };
 
   return (
-    <aside className={`sidebar${open ? " open" : ""}`}>
-      <nav className="sidebar-icons">
-        <Link
-          to="/entregas"
-          className="sidebar-icon"
-          title="Entregas"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
+    <aside className={`sidebar menu-bar${open ? " open" : ""}`}>
+      <nav className="menu-items">
+        <Link to="/entregas" className="menu-item" title="Entregas" onClick={handleNavClick}>
           <FaTruck className="icon-text" />
-          <span className="sidebar-tooltip">Entregas</span>
+          <span className="menu-label">Entregas</span>
         </Link>
-        <Link
-          to="/ordenes"
-          className="sidebar-icon"
-          title="Órdenes de Servicio"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
+        <Link to="/ordenes" className="menu-item" title="Órdenes de Servicio" onClick={handleNavClick}>
           <FaBook className="icon-text" />
-          <span className="sidebar-tooltip">Órdenes de Servicio</span>
+          <span className="menu-label">Órdenes</span>
         </Link>
-        <Link
-          to="/calculadoras"
-          className="sidebar-icon"
-          title="Calculadora"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
+        <Link to="/calculadoras" className="menu-item" title="Calculadora" onClick={handleNavClick}>
           <FaCalculator className="icon-text" />
-          <span className="sidebar-tooltip">Calculadora</span>
+          <span className="menu-label">Calculadora</span>
         </Link>
-        <Link
-          to="/razones"
-          className="sidebar-icon"
-          title="Razones"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
+        <Link to="/razones" className="menu-item" title="Razones" onClick={handleNavClick}>
           <FaClipboardList className="icon-text" />
-          <span className="sidebar-tooltip">Razones</span>
+          <span className="menu-label">Razones</span>
         </Link>
-        <Link
-          to="/tiendas"
-          className="sidebar-icon"
-          title="Tiendas"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
+        <Link to="/tiendas" className="menu-item" title="Tiendas" onClick={handleNavClick}>
           <FaStore className="icon-text" />
-          <span className="sidebar-tooltip">Tiendas</span>
+          <span className="menu-label">Tiendas</span>
         </Link>
-        <Link
-          to="/documentos"
-          className="sidebar-icon"
-          title="Documentos"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
+        <Link to="/documentos" className="menu-item" title="Documentos" onClick={handleNavClick}>
           <FaFileAlt className="icon-text" />
-          <span className="sidebar-tooltip">Documentos</span>
+          <span className="menu-label">Documentos</span>
         </Link>
-        <Link
-          to="/gestion"
-          className="sidebar-icon"
-          title="Gestión"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
+        <Link to="/gestion" className="menu-item" title="Gestión" onClick={handleNavClick}>
           <FaPhone className="icon-text" style={{ color: '#2196f3' }} />
-          <span className="sidebar-tooltip">Gestión</span>
+          <span className="menu-label">Gestión</span>
         </Link>
-         <Link
-          to="/seguimiento"
-          className="sidebar-icon"
-          title="Seguimiento"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
+        <Link to="/seguimiento" className="menu-item" title="Seguimiento" onClick={handleNavClick}>
           <FaSearch className="icon-text" style={{ color: '#2196f3' }} />
-          <span className="sidebar-tooltip">Seguimiento</span>
+          <span className="menu-label">Seguimiento</span>
         </Link>
-        <Link
-          to="/cotizaciones"
-          className="sidebar-icon"
-          title="Cotizaciones"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
+        <Link to="/cotizaciones" className="menu-item" title="Cotizaciones" onClick={handleNavClick}>
           <FaCreditCard className="icon-text" style={{ color: '#4caf50' }} />
-          <span className="sidebar-tooltip">Cotizaciones</span>
+          <span className="menu-label">Cotizaciones</span>
         </Link>
-        <Link
-          to="/clientes-nuevos"
-          className="sidebar-icon"
-          title="Clientes Nuevos"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
+        <Link to="/clientes-nuevos" className="menu-item" title="Clientes Nuevos" onClick={handleNavClick}>
           <FaUserPlus className="icon-text" />
-          <span className="sidebar-tooltip">Clientes Nuevos</span>
+          <span className="menu-label">Clientes</span>
         </Link>
-        <Link
-          to="/actualizaciones"
-          className="sidebar-icon"
-          title="Actualizaciones"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
+        <Link to="/actualizaciones" className="menu-item" title="Actualizaciones" onClick={handleNavClick}>
           <FaUsers className="icon-text" />
-          <span className="sidebar-tooltip">Actualizaciones</span>
+          <span className="menu-label">Actualizaciones</span>
         </Link>
-        <Link
-          to="/promedios"
-          className="sidebar-icon"
-          title="Promedios"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
+        <Link to="/promedios" className="menu-item" title="Promedios" onClick={handleNavClick}>
           <FaPercent className="icon-text" style={{ color: '#ff9800' }} />
-          <span className="sidebar-tooltip">Promedios</span>
+          <span className="menu-label">Promedios</span>
         </Link>
-        <Link
-          to="/aprendisaje"
-          className="sidebar-icon"
-          title="Cartera"
-          style={{ position: "relative" }}
-          onClick={handleNavClick}
-        >
+        <Link to="/aprendisaje" className="menu-item" title="Cartera" onClick={handleNavClick}>
           <FaBook className="icon-text" style={{ color: '#009688' }} />
-          <span className="sidebar-tooltip">Cartera</span>
+          <span className="menu-label">Cartera</span>
         </Link>
        
         {/* Icono de Admin solo para superadmin */}
         {user && user.rol === "superadmin" && (
-          <Link
-            to="/admin"
-            className="sidebar-icon"
-            title="Admin"
-            style={{ position: "relative" }}
-            onClick={handleNavClick}
-          >
+          <Link to="/admin" className="menu-item" title="Admin" onClick={handleNavClick}>
             <FaUserShield className="icon-text" style={{ color: '#8e24aa' }} />
-            <span className="sidebar-tooltip">Admin</span>
+            <span className="menu-label">Admin</span>
           </Link>
         )}
       </nav>
+
+      {/* Mobile dropdown using Radix */}
+      <div className="menu-mobile">
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger className="hamburger-btn" aria-label="Abrir menú">
+            <FaBars />
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content className="dropdown-content">
+            <DropdownMenu.Item asChild>
+              <Link to="/entregas" onClick={handleNavClick}>Entregas</Link>
+            </DropdownMenu.Item>
+            <DropdownMenu.Item asChild>
+              <Link to="/ordenes" onClick={handleNavClick}>Órdenes</Link>
+            </DropdownMenu.Item>
+            <DropdownMenu.Item asChild>
+              <Link to="/calculadoras" onClick={handleNavClick}>Calculadora</Link>
+            </DropdownMenu.Item>
+            <DropdownMenu.Item asChild>
+              <Link to="/tiendas" onClick={handleNavClick}>Tiendas</Link>
+            </DropdownMenu.Item>
+            <DropdownMenu.Item asChild>
+              <Link to="/documentos" onClick={handleNavClick}>Documentos</Link>
+            </DropdownMenu.Item>
+            {user && user.rol === "superadmin" && (
+              <DropdownMenu.Item asChild>
+                <Link to="/admin" onClick={handleNavClick}>Admin</Link>
+              </DropdownMenu.Item>
+            )}
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
+      </div>
       {showLogoutModal && (
         <div
           className="modal-logout-overlay"

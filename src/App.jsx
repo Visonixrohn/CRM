@@ -1,6 +1,6 @@
 import BottomBar from "./BottomBar";
 import MisGastos from "./MisGastos";
-import Seguimiento from "./Seguimiento";
+import Seguimiento from "./SeguimientoNew";
 import "./App.css";
 import Push from "./push";
 import PushMovil from "./pushmovil";
@@ -15,17 +15,17 @@ import ModalInput from "./ModalInput";
 import Header from "./Header";
 import HeaderMovil from "./HeaderMovil";
 import ChoferModal from "./ChoferModal";
-import Sidebar from "./Sidebar";
-import Comisiones from "./Comisiones";
-import Entregas from "./Entregas";
+import Navbar from "./Navbar";
+import Comisiones from "./ComisionesNew";
+import Entregas from "./EntregasNew";
 import OrdenesServicio from "./OrdenesServicio";
 import Calculadoras from "./Calculadoras";
 import Razones from "./Razones";
 import Tiendas from "./Tiendas";
-import Documentos from "./Documentos";
-import ClientesNuevos from "./ClientesNuevos";
-import Actualizaciones from "./Actualizaciones";
-import Promedios from "./Promedios";
+import Documentos from "./DocumentosNew";
+import ClientesNuevos from "./ClientesNuevosNew";
+import Actualizaciones from "./ActualizacionesNew";
+import Promedios from "./PromediosNew";
 import LoadingScreen from "./LoadingScreen";
 import Gestion from "./Gestion";
 import TablaFiltradaPorEstado from "./TablaFiltradaPorEstado";
@@ -274,12 +274,8 @@ function App() {
           />
         )}
         <div className="layout-container">
-          <Sidebar
-            open={sidebarOpen}
-            setUser={setUser}
-            closeSidebar={closeSidebar}
-          />
-          <div id="main-content">
+          <Navbar user={user} setUser={setUser} />
+          <div id="main-content" style={{ paddingTop: 8 }}>
             <Routes>
               <Route path="/" element={<Comisiones
                 meta={meta}

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
-import "./Razones.css";
-import RazonesCard from "./components/RazonesCard";
-import "./components/RazonesCard.css";
+import { Container, Card, Grid, Flex, Heading, Text, Input, IconWrapper, Box, Badge } from './designSystem';
+import { FaBook, FaSearch } from 'react-icons/fa';
 
 const Razones = () => {
   const [razones, setRazones] = useState([]);
@@ -42,39 +41,47 @@ const Razones = () => {
   }, [search, razones]); // Filtrar automáticamente cuando cambia la búsqueda o los datos
 
   return (
-    <div className="razones-container">
-      <h1>Razones</h1>
-      <input
-        type="text"
-        placeholder="Buscar razón..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="search-bar"
-      />
-      {/* Cards móviles */}
-      {filteredRazones.map((razon) => (
-        <RazonesCard key={razon.id} razon={razon} />
-      ))}
-      {/* Tabla solo visible en desktop por CSS */}
-      <div className="razones-table-container">
-        <table className="styled-table">
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Descripción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredRazones.map((razon) => (
-              <tr key={razon.id}>
-                <td>{razon.codigo}</td>
-                <td>{razon.descripcion}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <Container>
+      <Flex direction="column" gap={4} css={{ marginBottom: '$6' }}>
+        <Flex align="center" gap={3}>
+          <IconWrapper color="primary" size="lg"><FaBook /></IconWrapper>
+          <Heading size={2}>Razones de Servicio</Heading>
+        </Flex>
+        <Text color="subtle">Códigos y descripciones de razones</Text>
+      </Flex>
+
+      <Box css={{ marginBottom: '$6', position: 'relative', maxWidth: '500px' }}>
+        <Input
+          type="text"
+          placeholder="Buscar por código..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          css={{ paddingLeft: '$10' }}
+        />
+        <FaSearch style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+      </Box>
+
+      <Grid columns="auto" gap={4}>
+        {filteredRazones.map((razon) => (
+          <Card key={razon.id}>
+            <Flex justify="between" align="center">
+              <Flex direction="column" gap={2}>
+                <Flex align="center" gap={2}>
+                  <Badge variant="primary">{razon.codigo}</Badge>
+                </Flex>
+                <Text>{razon.descripcion}</Text>
+              </Flex>
+            </Flex>
+          </Card>
+        ))}
+      </Grid>
+
+      {filteredRazones.length === 0 && (
+        <Box css={{ textAlign: 'center', padding: '$10' }}>
+          <Text color="subtle">No se encontraron razones</Text>
+        </Box>
+      )}
+    </Container>
   );
 };
 

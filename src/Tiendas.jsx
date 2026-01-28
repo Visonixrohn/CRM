@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
-import "./Razones.css";
-import "./TiendasNew.css";
-import TiendasCard from "./components/TiendasCard";
-import "./components/TiendasCard.css";
-import EditarTiendaModal from "./components/EditarTiendaModal";
+import { Container, Card, Grid, Flex, Heading, Text, Input, Button, IconWrapper, Box, Badge } from './designSystem';
+import { FaStore, FaSearch, FaEdit } from 'react-icons/fa';
+import * as Dialog from '@radix-ui/react-dialog';
+import { DialogOverlay, DialogContent, DialogTitle, Label } from './designSystem';
 
 const Tiendas = () => {
   const [tiendas, setTiendas] = useState([]);
@@ -117,110 +116,106 @@ const Tiendas = () => {
   };
 
   return (
-    <div className="tiendas-layout">
-      <aside className="tiendas-sidebar">
-        <div className="sidebar-header">Filtros</div>
-        <ul className="sidebar-list">
-          {Object.keys(conteoTipos).map((key) => (
-            <li
-              key={key}
-              className={`sidebar-item ${filtroSidebar === key ? "active" : ""}`}
-              onClick={() => setFiltroSidebar(key)}
-            >
-              <span className="item-label">{key}</span>
-              <span className="item-count">{conteoTipos[key]}</span>
-            </li>
-          ))}
-        </ul>
-      </aside>
+    <Container>
+      <Flex direction="column" gap={4} css={{ marginBottom: '$6' }}>
+        <Flex align="center" gap={3}>
+          <IconWrapper color="primary" size="lg"><FaStore /></IconWrapper>
+          <Heading size={2}>Tiendas</Heading>
+        </Flex>
+        <Text color="subtle">Gestión de tiendas del sistema</Text>
+      </Flex>
 
-      <main className="tiendas-main">
-        <div className="tiendas-header">
-          <h1>Tiendas</h1>
-          <div className="tiendas-actions">
-            <div className="search-group">
-              <input
-                className="input-search"
-                type="text"
-                placeholder="Buscar Nº tienda (espacios para múltiples)"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <input
-                className="input-search nombre"
-                type="text"
-                placeholder="Buscar por nombre"
-                value={searchNombre}
-                onChange={(e) => setSearchNombre(e.target.value)}
-              />
-            </div>
-          </div>
-        </div>
+      <Flex gap={4} css={{ marginBottom: '$6', flexWrap: 'wrap' }}>
+        <Card css={{ flex: 1, minWidth: '200px' }}>
+          <Text color="subtle" css={{ marginBottom: '$2' }}>Total de Tiendas</Text>
+          <Text size={6} weight="bold">{conteoTipos.Todos}</Text>
+        </Card>
+        <Card css={{ flex: 1, minWidth: '200px' }}>
+          <Text color="subtle" css={{ marginBottom: '$2' }}>Mostrando</Text>
+          <Text size={6} weight="bold">{filteredTiendas.length}</Text>
+        </Card>
+      </Flex>
 
-        <div className="tiendas-summary">
-          <div className="summary-card">
-            <div className="summary-title">Total de Tiendas</div>
-            <div className="summary-value">{conteoTipos.Todos}</div>
-          </div>
-          <div className="summary-card">
-            <div className="summary-title">Mostrando</div>
-            <div className="summary-value">{filteredTiendas.length}</div>
-          </div>
-        </div>
+      <Flex gap={3} css={{ marginBottom: '$6', flexWrap: 'wrap' }}>
+        <Box css={{ position: 'relative', flex: 1, minWidth: '250px' }}>
+          <Input
+            type="text"
+            placeholder="Buscar Nº tienda..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            css={{ paddingLeft: '$10' }}
+          />
+          <FaSearch style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+        </Box>
+        <Box css={{ position: 'relative', flex: 1, minWidth: '250px' }}>
+          <Input
+            type="text"
+            placeholder="Buscar por nombre..."
+            value={searchNombre}
+            onChange={(e) => setSearchNombre(e.target.value)}
+            css={{ paddingLeft: '$10' }}
+          />
+          <FaSearch style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+        </Box>
+      </Flex>
 
-        <section className="tabla-entregas-scroll">
-          <table className="styled-table">
-            <thead>
-              <tr>
-                <th>Nº Tienda</th>
-                <th>Nombre</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredTiendas.map((tienda) => (
-                <tr key={tienda.id}>
-                  <td data-label="Nº">{tienda.numero_tienda}</td>
-                  <td data-label="Nombre">{tienda.tienda}</td>
-                  <td data-label="Acciones">
-                    <button className="btn btn-outline">Ver</button>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => handleEditar(tienda)}
-                    >
-                      Editar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+      <Grid columns="auto" gap={4}>
+        {filteredTiendas.map((tienda) => (
+          <Card key={tienda.id}>
+            <Flex justify="between" align="center">
+              <Flex direction="column" gap={2}>
+                <Flex align="center" gap={2}>
+                  <Badge variant="primary">{tienda.numero_tienda}</Badge>
+                  <Text weight="semibold">{tienda.tienda}</Text>
+                </Flex>
+              </Flex>
+              <Button variant="primary" size="sm" onClick={() => handleEditar(tienda)}>
+                <FaEdit /> Editar
+              </Button>
+            </Flex>
+          </Card>
+        ))}
+      </Grid>
 
-        {/* Mobile cards */}
-        <div className="tiendas-cards-mobile">
-          {filteredTiendas.map((tienda) => (
-            <TiendasCard
-              key={tienda.id}
-              tienda={{
-                id: tienda.id,
-                nombre: tienda.tienda,
-                numero_tienda: tienda.numero_tienda,
-              }}
-              onEditar={() => handleEditar(tienda)}
-            />
-          ))}
-        </div>
-      </main>
-
-      {tiendaEditando && (
-        <EditarTiendaModal
-          tienda={tiendaEditando}
-          onClose={() => setTiendaEditando(null)}
-          onSave={handleGuardarEdicion}
-        />
+      {filteredTiendas.length === 0 && (
+        <Box css={{ textAlign: 'center', padding: '$10' }}>
+          <Text color="subtle">No se encontraron tiendas</Text>
+        </Box>
       )}
-    </div>
+
+      <Dialog.Root open={!!tiendaEditando} onOpenChange={(open) => !open && setTiendaEditando(null)}>
+        <Dialog.Portal>
+          <DialogOverlay />
+          <DialogContent>
+            <DialogTitle>Editar Tienda</DialogTitle>
+            {tiendaEditando && (
+              <Flex direction="column" gap={4}>
+                <Box>
+                  <Label>Número de Tienda</Label>
+                  <Input
+                    type="text"
+                    value={tiendaEditando.numero_tienda}
+                    onChange={(e) => setTiendaEditando({ ...tiendaEditando, numero_tienda: e.target.value })}
+                  />
+                </Box>
+                <Box>
+                  <Label>Nombre de Tienda</Label>
+                  <Input
+                    type="text"
+                    value={tiendaEditando.tienda || ''}
+                    onChange={(e) => setTiendaEditando({ ...tiendaEditando, tienda: e.target.value })}
+                  />
+                </Box>
+                <Flex gap={3} justify="end">
+                  <Button variant="secondary" onClick={() => setTiendaEditando(null)}>Cancelar</Button>
+                  <Button variant="primary" onClick={() => handleGuardarEdicion(tiendaEditando.id, { numero_tienda: tiendaEditando.numero_tienda, tienda: tiendaEditando.tienda })}>Guardar</Button>
+                </Flex>
+              </Flex>
+            )}
+          </DialogContent>
+        </Dialog.Portal>
+      </Dialog.Root>
+    </Container>
   );
 };
 

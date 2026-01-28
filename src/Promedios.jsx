@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaChartBar, FaCalculator, FaCoins, FaTrashAlt, FaPlus } from "react-icons/fa";
+import { Container, Card, Grid, Flex, Heading, Text, Input, Button, IconWrapper, Box, Label } from './designSystem';
 
 const cardStyle = {
   borderRadius: 18,

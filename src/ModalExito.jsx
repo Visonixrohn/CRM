@@ -1,16 +1,23 @@
 import React from "react";
-import "./ModalExito.css";
+import { Dialog, DialogOverlay, DialogContent, DialogTitle, Button, Flex, IconWrapper } from './designSystem';
+import { FaCheckCircle } from "react-icons/fa";
 
 const ModalExito = ({ mensaje = "Actualización exitosa", onClose }) => {
   return (
-    <div className="modal-exito-overlay" onClick={onClose}>
-      <div className="modal-exito-contenido" onClick={e => e.stopPropagation()}>
-        <h3>{mensaje}</h3>
-        <button className="modal-exito-cerrar" onClick={onClose}>
-          Cerrar
-        </button>
-      </div>
-    </div>
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogOverlay />
+      <DialogContent css={{ maxWidth: '400px' }}>
+        <Flex direction="column" align="center" gap="4" css={{ py: '$4' }}>
+          <IconWrapper color="green" size="large">
+            <FaCheckCircle size={48} />
+          </IconWrapper>
+          <DialogTitle css={{ textAlign: 'center' }}>{mensaje}</DialogTitle>
+          <Button variant="success" onClick={onClose} css={{ width: '100%' }}>
+            Cerrar
+          </Button>
+        </Flex>
+      </DialogContent>
+    </Dialog>
   );
 };
 
