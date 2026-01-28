@@ -39,6 +39,8 @@ export default defineConfig({
       'react', 
       'react-dom',
       'react/jsx-runtime',
+      'use-sidecar',
+      'react-remove-scroll',
       '@radix-ui/react-dialog',
       '@radix-ui/react-dropdown-menu',
       '@radix-ui/react-popover',
@@ -60,13 +62,13 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            // Separar React y ReactDOM en su propio chunk
-            if (id.includes('react') || id.includes('react-dom')) {
+            // Agrupar React, ReactDOM, Radix UI y sus dependencias (use-sidecar, react-remove-scroll) juntos
+            if (id.includes('react') || 
+                id.includes('react-dom') || 
+                id.includes('@radix-ui') ||
+                id.includes('use-sidecar') ||
+                id.includes('react-remove-scroll')) {
               return 'vendor-react';
-            }
-            // Separar todas las librerías de Radix UI en su propio chunk
-            if (id.includes('@radix-ui')) {
-              return 'vendor-radix';
             }
             if (id.includes('supabase')) {
               return 'vendor-supabase';
