@@ -59,28 +59,12 @@ export default defineConfig({
     dedupe: ['react', 'react-dom', 'react/jsx-runtime'],
   },
   build: {
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            // Agrupar React, ReactDOM, Radix UI y sus dependencias (use-sidecar, react-remove-scroll) juntos
-            if (id.includes('react') || 
-                id.includes('react-dom') || 
-                id.includes('@radix-ui') ||
-                id.includes('use-sidecar') ||
-                id.includes('react-remove-scroll')) {
-              return 'vendor-react';
-            }
-            if (id.includes('supabase')) {
-              return 'vendor-supabase';
-            }
-            if (id.includes('chart.js')) {
-              return 'vendor-chartjs';
-            }
-            // Todo lo demás en vendor general
-            return 'vendor';
-          }
-        },
+        manualChunks: undefined, // Deshabilitar chunking manual, dejar que Vite optimice
       },
     },
   },
