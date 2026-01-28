@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
-import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -35,21 +34,47 @@ export default defineConfig({
       },
     }),
   ],
+  optimizeDeps: {
+    include: [
+      'react', 
+      'react-dom',
+      'react/jsx-runtime',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-popover',
+      '@radix-ui/react-progress',
+      '@radix-ui/react-select',
+      '@radix-ui/react-separator',
+      '@radix-ui/react-tabs',
+      '@radix-ui/react-tooltip',
+    ],
+    esbuildOptions: {
+      mainFields: ['module', 'main'],
+    }
+  },
   resolve: {
-    alias: {
-      'react': path.resolve('./node_modules/react'),
-      'react-dom': path.resolve('./node_modules/react-dom'),
-    },
-    dedupe: ['react', 'react-dom'],
+    dedupe: ['react', 'react-dom', 'react/jsx-runtime'],
   },
   build: {
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('react')) return 'vendor-react';
-            if (id.includes('supabase')) return 'vendor-supabase';
-            if (id.includes('chart.js')) return 'vendor-chartjs';
+            // Separar React y ReactDOM en su propio chunk
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'vendor-react';
+            }
+            // Separar todas las librerías de Radix UI en su propio chunk
+            if (id.includes('@radix-ui')) {
+              return 'vendor-radix';
+            }
+            if (id.includes('supabase')) {
+              return 'vendor-supabase';
+            }
+            if (id.includes('chart.js')) {
+              return 'vendor-chartjs';
+            }
+            // Todo lo demás en vendor general
             return 'vendor';
           }
         },
