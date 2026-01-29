@@ -244,7 +244,6 @@ const ModalDetalle = ({ open, entrega, onClose, onUpdateEstatus, chofer, fetchEn
 };
 
 const ModalAgregar = ({ open, onClose, onAdd }) => {
-  const [touched, setTouched] = useState({});
   const today = new Date();
   const yyyy = today.getFullYear();
   const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -256,6 +255,7 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
   const mm2 = String(tomorrow.getMonth() + 1).padStart(2, '0');
   const dd2 = String(tomorrow.getDate()).padStart(2, '0');
   const tomorrowStr = `${yyyy2}-${mm2}-${dd2}`;
+
   const [form, setForm] = useState({
     cliente: "",
     factura: "",
@@ -267,9 +267,11 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
     tipo_entrega: "TIENDA",
     gestionada: "NO GESTIONADA",
   });
+  const [touched, setTouched] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Resetear formulario cuando se cierra
   useEffect(() => {
     if (!open) {
       const today = new Date();
@@ -283,6 +285,7 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
       const mm2 = String(tomorrow.getMonth() + 1).padStart(2, '0');
       const dd2 = String(tomorrow.getDate()).padStart(2, '0');
       const tomorrowStr = `${yyyy2}-${mm2}-${dd2}`;
+      
       setForm({
         cliente: "",
         factura: "",
@@ -295,6 +298,7 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
         gestionada: "NO GESTIONADA",
       });
       setTouched({});
+      setError("");
     }
   }, [open]);
 
@@ -321,32 +325,46 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
     try {
       const ok = await onAdd(form);
       if (ok) {
-        setForm({
-          cliente: "",
-          factura: "",
-          cel: "",
-          articulo: "",
-          estatus: "Pendiente",
-          fecha: todayStr,
-          fecha_entrega: tomorrowStr,
-          tipo_entrega: "TIENDA",
-          gestionada: "NO GESTIONADA",
-        });
-        setTouched({});
         onClose();
       } else {
         setError("No se pudo guardar la entrega. Intenta de nuevo.");
       }
     } catch (e) {
       setError("Error inesperado: " + (e.message || e));
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  if (!open) return null;
-  return (
-    <div className="modal-overlay">
-      <div className="modal-container modal-agregar">
+  if (!open) {
+    console.log("ModalAgregar NO renderiza - open:", open);
+    return null;
+  }
+  
+  console.log("✅ ModalAgregar SÍ renderiza - open:", open);
+  
+  const modalContent = (
+    <div 
+      className="modal-overlay" 
+      onClick={onClose}
+      style={{ 
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 9999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'rgba(15, 23, 42, 0.75)',
+        backdropFilter: 'blur(4px)'
+      }}
+    >
+      <div 
+        className="modal-container modal-agregar" 
+        onClick={(e) => e.stopPropagation()}
+      >
         <button className="modal-close-btn" onClick={onClose} disabled={loading}>×</button>
         <h2 className="modal-title">📦 Agregar Nueva Entrega</h2>
         
@@ -465,6 +483,9 @@ const ModalAgregar = ({ open, onClose, onAdd }) => {
       </div>
     </div>
   );
+  
+  // Usar createPortal para renderizar el modal en el body
+  return createPortal(modalContent, document.body);
 };
 
 const Entregas = () => {
@@ -741,6 +762,9 @@ const Entregas = () => {
     }
   }
 
+  // Log del estado actual
+  console.log("🟢 Render Entregas - showAgregar:", showAgregar);
+
   // Return principal del componente
   return (
     <div className="entregas-modern-bg">
@@ -781,7 +805,22 @@ const Entregas = () => {
 
         {/* Botones de acción principal */}
         <div className="actions-buttons">
-          <button className="btn-agregar" onClick={() => setShowAgregar(true)}>
+          <button 
+            className="btn-agregar" 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log("🔴 CLICK EN BOTÓN AGREGAR ENTREGA");
+              console.log("🔴 Estado actual showAgregar:", showAgregar);
+              setShowAgregar(true);
+              console.log("🔴 Llamado setShowAgregar(true)");
+              setTimeout(() => {
+                console.log("🔴 Estado después de 100ms:", showAgregar);
+              }, 100);
+            }}
+            type="button"
+            style={{ cursor: 'pointer', pointerEvents: 'auto' }}
+          >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="12" y1="5" x2="12" y2="19"/>
               <line x1="5" y1="12" x2="19" y2="12"/>
@@ -1288,9 +1327,13 @@ const Entregas = () => {
           }}
         />
       )}
+      {console.log("Estado showAgregar:", showAgregar)}
       <ModalAgregar
         open={showAgregar}
-        onClose={() => setShowAgregar(false)}
+        onClose={() => {
+          console.log("Cerrando modal agregar");
+          setShowAgregar(false);
+        }}
         onAdd={handleAdd}
       />
   {/* Botón flotante chofer-fab eliminado por solicitud del usuario */}

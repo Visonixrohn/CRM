@@ -477,6 +477,7 @@ const EntregasNew = () => {
       {/* Modales */}
       {showAgregar && (
         <AgregarEntregaForm
+          open={showAgregar}
           onClose={() => setShowAgregar(false)}
           onAdd={async (nueva) => {
             const success = await handleAdd(nueva);
