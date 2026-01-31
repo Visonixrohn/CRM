@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import { createStitches } from '@stitches/react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
@@ -51,9 +51,33 @@ const Item = styled(Link, {
   borderRadius: 8,
   color: '$text',
   textDecoration: 'none',
+  fontWeight: 500,
+  transition: 'all 0.2s ease-in-out',
+  position: 'relative',
   '&:hover': {
     background: '$primaryLight',
     color: '$primary',
+  },
+  variants: {
+    active: {
+      true: {
+        background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
+        color: 'white',
+        fontWeight: 600,
+        boxShadow: '0 2px 8px rgba(30, 64, 175, 0.3)',
+        '&::after': {
+          content: '""',
+          position: 'absolute',
+          bottom: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '60%',
+          height: 2,
+          background: 'linear-gradient(90deg, #60a5fa, #3b82f6)',
+          borderRadius: '2px 2px 0 0',
+        },
+      },
+    },
   },
 });
 
@@ -96,6 +120,13 @@ const DesktopOnly = styled('div', {
 
 export default function Navbar({ user, setUser }) {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path) => {
+    if (path === '/' && location.pathname === '/') return true;
+    if (path !== '/' && location.pathname.startsWith(path)) return true;
+    return false;
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -111,23 +142,23 @@ export default function Navbar({ user, setUser }) {
       <Brand to="/">CRM</Brand>
       <DesktopOnly>
         <Items>
-          <Item to="/">Comisiones</Item>
-          <Item to="/mis-gastos">Mis Gastos</Item>
-          <Item to="/entregas">Entregas</Item>
-          <Item to="/ordenes">Órdenes</Item>
-          <Item to="/calculadoras">Calculadora</Item>
-          <Item to="/razones">Razones</Item>
-          <Item to="/tiendas">Tiendas</Item>
-          <Item to="/documentos">Documentos</Item>
-          <Item to="/clientes-nuevos">Clientes</Item>
-          <Item to="/cotizaciones">Cotizaciones</Item>
-          <Item to="/actualizaciones">Actualizaciones</Item>
-          <Item to="/promedios">Promedios</Item>
-          <Item to="/gestion">Gestión</Item>
-          <Item to="/seguimiento">Seguimiento</Item>
-          <Item to="/configuraciones">Configuraciones</Item>
-          <Item to="/aprendisaje">Cartera</Item>
-          {user && user.rol === 'superadmin' && <Item to="/admin">Admin</Item>}
+          <Item to="/" active={isActive('/')}>Comisiones</Item>
+          <Item to="/mis-gastos" active={isActive('/mis-gastos')}>Mis Gastos</Item>
+          <Item to="/entregas" active={isActive('/entregas')}>Entregas</Item>
+          <Item to="/ordenes" active={isActive('/ordenes')}>Órdenes</Item>
+          <Item to="/calculadoras" active={isActive('/calculadoras')}>Calculadora</Item>
+          <Item to="/razones" active={isActive('/razones')}>Razones</Item>
+          <Item to="/tiendas" active={isActive('/tiendas')}>Tiendas</Item>
+          <Item to="/documentos" active={isActive('/documentos')}>Documentos</Item>
+          <Item to="/clientes-nuevos" active={isActive('/clientes-nuevos')}>Clientes</Item>
+          <Item to="/cotizaciones" active={isActive('/cotizaciones')}>Cotizaciones</Item>
+          <Item to="/actualizaciones" active={isActive('/actualizaciones')}>Actualizaciones</Item>
+          <Item to="/promedios" active={isActive('/promedios')}>Promedios</Item>
+          <Item to="/gestion" active={isActive('/gestion')}>Gestión</Item>
+          <Item to="/seguimiento" active={isActive('/seguimiento')}>Seguimiento</Item>
+          <Item to="/configuraciones" active={isActive('/configuraciones')}>Configuraciones</Item>
+          <Item to="/aprendisaje" active={isActive('/aprendisaje')}>Cartera</Item>
+          {user && user.rol === 'superadmin' && <Item to="/admin" active={isActive('/admin')}>Admin</Item>}
         </Items>
       </DesktopOnly>
       <Spacer />
@@ -195,10 +226,7 @@ export default function Navbar({ user, setUser }) {
         </DropdownMenu.Root>
       </MobileMenu>
 
-      <UserButton onClick={() => {}} aria-label="usuario">
-        <FaUserCircle size={20} />
-        <span style={{ display: 'none' }}>{user?.nombre}</span>
-      </UserButton>
+    
       <div style={{ marginLeft: 8 }}>
         <LogoutButton onClick={handleLogout}>Cerrar sesión</LogoutButton>
       </div>

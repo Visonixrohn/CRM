@@ -2,15 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Container, Card, Grid, Flex, Box, Heading, Text, Input, Button, IconWrapper, Badge } from './designSystem';
 import { FaTruck, FaPlus, FaUser, FaSearch, FaFilter, FaMapMarkerAlt, FaWhatsapp, FaPhone, FaClock } from "react-icons/fa";
 import { supabase } from "./supabaseClient";
-import ModalEstatus from "./components/ModalEstatus";
 import ChoferModal from "./ChoferModal";
 import ChoferDetalleModal from "./ChoferDetalleModal";
-import ActualizarTipoEntregaModal from "./components/ActualizarTipoEntregaModal";
-import ActualizarGestionadaModal from "./components/ActualizarGestionadaModal";
 import ActualizarEstatusModal from "./components/ActualizarEstatusModal";
-import ActualizarFechaEntregaModal from "./components/ActualizarFechaEntregaModal";
-import EditFieldModal from "./EditFieldModal";
-import EditUbicacionModal from "./EditUbicacionModal";
+import ActualizarDatosModal from "./components/ActualizarDatosModal";
+import DetalleEntregaModal from "./components/DetalleEntregaModal";
 import AgregarEntregaForm from "./AgregarEntregaForm";
 
 const estados = ["Pendiente", "Entregado", "Rechazado", "Reprogramado"];
@@ -44,12 +40,9 @@ const EntregasNew = () => {
   const [filtroNoGestionados, setFiltroNoGestionados] = useState(false);
   const [filtroTipoEntrega, setFiltroTipoEntrega] = useState("");
   const [busqueda, setBusqueda] = useState("");
-  const [entregaTipoModal, setEntregaTipoModal] = useState({ open: false, entrega: null });
-  const [gestionadaModal, setGestionadaModal] = useState({ open: false, entrega: null });
+  const [detalleModal, setDetalleModal] = useState({ open: false, entrega: null });
   const [estatusModal, setEstatusModal] = useState({ open: false, entrega: null });
-  const [fechaEntregaModal, setFechaEntregaModal] = useState({ open: false, entrega: null });
-  const [editField, setEditField] = useState({ open: false, field: null, value: "", entrega: null });
-  const [editUbicacion, setEditUbicacion] = useState({ open: false, entrega: null });
+  const [datosModal, setDatosModal] = useState({ open: false, entrega: null });
 
   // Obtener usuario autenticado
   useEffect(() => {
@@ -177,23 +170,6 @@ const EntregasNew = () => {
       return (getFecha(b) > getFecha(a)) ? 1 : -1;
     });
 
-  // Actualizar estatus
-  const handleUpdateEstatus = async (nuevo, tipoEntrega, gestionada) => {
-    if (!detalle) return;
-    try {
-      const { error } = await supabase
-        .from("entregas_pendientes")
-        .update({ estatus: nuevo, tipo_entrega: tipoEntrega, gestionada })
-        .eq("id", detalle.id)
-        .eq("usuario_id", user.id);
-      if (error) throw error;
-      await fetchEntregas();
-      setDetalle(null);
-    } catch (e) {
-      alert("Error al actualizar estatus: " + (e.message || e));
-    }
-  };
-
   // Agregar entrega
   const handleAdd = async (nuevo) => {
     if (!user) return false;
@@ -227,54 +203,6 @@ const EntregasNew = () => {
       setChoferModalType("detalle");
     } catch (e) {
       alert("Error al guardar chofer: " + (e.message || e));
-    }
-  };
-
-  // Actualizar fecha de entrega
-  const handleActualizarFechaEntrega = async (nuevaFecha) => {
-    if (!fechaEntregaModal.entrega) return;
-    try {
-      const { error } = await supabase
-        .from("entregas_pendientes")
-        .update({ fecha_entrega: nuevaFecha })
-        .eq("id", fechaEntregaModal.entrega.id);
-      if (error) throw error;
-      await fetchEntregas();
-    } catch (e) {
-      alert("Error al actualizar la fecha de entrega: " + (e.message || e));
-    }
-    setFechaEntregaModal({ open: false, entrega: null });
-  };
-
-  // Actualizar campo editado
-  const handleSaveEdit = async () => {
-    if (!editField.field || !editField.entrega) return;
-    try {
-      const { error } = await supabase
-        .from("entregas_pendientes")
-        .update({ [editField.field]: editField.value })
-        .eq("id", editField.entrega.id);
-      if (error) throw error;
-      await fetchEntregas();
-      setEditField({ open: false, field: null, value: "", entrega: null });
-    } catch (e) {
-      alert("Error al actualizar: " + (e.message || e));
-    }
-  };
-
-  // Guardar ubicación
-  const handleSaveUbicacion = async (nuevaUbicacion) => {
-    if (!editUbicacion.entrega) return;
-    try {
-      const { error } = await supabase
-        .from("entregas_pendientes")
-        .update({ ubicacion: nuevaUbicacion })
-        .eq("id", editUbicacion.entrega.id);
-      if (error) throw error;
-      await fetchEntregas();
-      setEditUbicacion({ open: false, entrega: null });
-    } catch (e) {
-      alert("Error al actualizar ubicación: " + (e.message || e));
     }
   };
 
@@ -417,7 +345,7 @@ const EntregasNew = () => {
                     borderLeft: esAtrasada ? '4px solid $red9' : '4px solid $blue9',
                     cursor: 'pointer'
                   }}
-                  onClick={() => setDetalle(entrega)}
+                  onClick={() => setDetalleModal({ open: true, entrega })}
                 >
                   <Flex direction="column" gap="3">
                     <Flex align="center" justify="space-between">
@@ -509,77 +437,52 @@ const EntregasNew = () => {
         />
       )}
 
-      {detalle && (
-        <ModalEstatus
-          open={!!detalle}
-          entrega={detalle}
-          onClose={() => setDetalle(null)}
-          onUpdateEstatus={handleUpdateEstatus}
-          chofer={chofer}
-          fetchEntregas={fetchEntregas}
-          onEditField={(field, value) => setEditField({ open: true, field, value, entrega: detalle })}
-          onEditUbicacion={() => setEditUbicacion({ open: true, entrega: detalle })}
-          onUpdateTipo={() => setEntregaTipoModal({ open: true, entrega: detalle })}
-          onUpdateGestionada={() => setGestionadaModal({ open: true, entrega: detalle })}
-          onUpdateFecha={() => setFechaEntregaModal({ open: true, entrega: detalle })}
-        />
-      )}
-
-      {entregaTipoModal.open && (
-        <ActualizarTipoEntregaModal
-          open={entregaTipoModal.open}
-          entrega={entregaTipoModal.entrega}
-          onClose={() => setEntregaTipoModal({ open: false, entrega: null })}
-          onUpdate={fetchEntregas}
-        />
-      )}
-
-      {gestionadaModal.open && (
-        <ActualizarGestionadaModal
-          open={gestionadaModal.open}
-          entrega={gestionadaModal.entrega}
-          onClose={() => setGestionadaModal({ open: false, entrega: null })}
-          onUpdate={fetchEntregas}
-        />
-      )}
-
-      {estatusModal.open && (
-        <ActualizarEstatusModal
-          open={estatusModal.open}
-          entrega={estatusModal.entrega}
-          onClose={() => setEstatusModal({ open: false, entrega: null })}
-          onUpdate={fetchEntregas}
-        />
-      )}
-
-      {fechaEntregaModal.open && (
-        <ActualizarFechaEntregaModal
-          open={fechaEntregaModal.open}
-          entrega={fechaEntregaModal.entrega}
-          onClose={() => setFechaEntregaModal({ open: false, entrega: null })}
-          onSave={handleActualizarFechaEntrega}
-        />
-      )}
-
-      {editField.open && (
-        <EditFieldModal
-          open={editField.open}
-          label={editField.field}
-          value={editField.value}
-          onClose={() => setEditField({ open: false, field: null, value: "", entrega: null })}
-          onSave={(newValue) => {
-            setEditField(prev => ({ ...prev, value: newValue }));
-            handleSaveEdit();
+      {/* Modal de detalle */}
+      {detalleModal.open && (
+        <DetalleEntregaModal
+          open={detalleModal.open}
+          entrega={detalleModal.entrega}
+          onClose={() => setDetalleModal({ open: false, entrega: null })}
+          onActualizarEstatus={() => {
+            setEstatusModal({ open: true, entrega: detalleModal.entrega });
+            setDetalleModal({ open: false, entrega: null });
+          }}
+          onActualizarDatos={() => {
+            setDatosModal({ open: true, entrega: detalleModal.entrega });
+            setDetalleModal({ open: false, entrega: null });
           }}
         />
       )}
 
-      {editUbicacion.open && (
-        <EditUbicacionModal
-          open={editUbicacion.open}
-          ubicacionActual={editUbicacion.entrega?.ubicacion}
-          onClose={() => setEditUbicacion({ open: false, entrega: null })}
-          onSave={handleSaveUbicacion}
+      {/* Modal de actualizar estatus */}
+      {estatusModal.open && (
+        <ActualizarEstatusModal
+          open={estatusModal.open}
+          entrega={estatusModal.entrega}
+          onClose={() => {
+            setEstatusModal({ open: false, entrega: null });
+            setDetalleModal({ open: true, entrega: estatusModal.entrega });
+          }}
+          onUpdated={async () => {
+            await fetchEntregas();
+            setEstatusModal({ open: false, entrega: null });
+          }}
+        />
+      )}
+
+      {/* Modal de actualizar datos */}
+      {datosModal.open && (
+        <ActualizarDatosModal
+          open={datosModal.open}
+          entrega={datosModal.entrega}
+          onClose={() => {
+            setDatosModal({ open: false, entrega: null });
+            setDetalleModal({ open: true, entrega: datosModal.entrega });
+          }}
+          onUpdated={async () => {
+            await fetchEntregas();
+            setDatosModal({ open: false, entrega: null });
+          }}
         />
       )}
     </Container>

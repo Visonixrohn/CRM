@@ -120,9 +120,10 @@
 
 .bottom-bar-expand-menu button.active {
   color: #ffffff;
-  background: #1e40af;
-  box-shadow: 0 4px 16px rgba(30, 64, 175, 0.3);
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  box-shadow: 0 4px 16px rgba(30, 64, 175, 0.4);
   transform: translateY(-2px);
+  border: 2px solid #60a5fa;
 }
 
 .bottom-bar-close-expand,
@@ -180,10 +181,6 @@
    BOTTOM BAR FIJA
    ============================= */
 .bottom-bar {
-  display: none;
-}
-
-.bottom-bar.show {
   display: flex;
   position: fixed;
   bottom: 0;
@@ -197,6 +194,8 @@
   justify-content: space-around;
   align-items: center;
   padding: 0 8px;
+  gap: 8px;
+}
   gap: 8px;
 }
 
@@ -227,8 +226,21 @@
 
 .bottom-bar button.active {
   color: #ffffff;
-  background: #1e40af;
-  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.4);
+  position: relative;
+}
+
+.bottom-bar button.active::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 3px;
+  background: linear-gradient(90deg, #60a5fa, #3b82f6);
+  border-radius: 0 0 3px 3px;
 }
 
 .bottom-bar-label {
@@ -240,7 +252,7 @@
 
 /* Media Queries para Responsividad */
 @media (max-width: 700px) {
-  .bottom-bar.show {
+  .bottom-bar {
     height: 64px; /* Altura ajustada para pantallas pequeñas */
     padding: 0 4px;
     gap: 4px;

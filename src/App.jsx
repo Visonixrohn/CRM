@@ -124,6 +124,32 @@ function App() {
   // Pantalla de carga inicial
   const [showSplash, setShowSplash] = useState(true);
 
+  // Sincronizar el estado 'page' con la ruta actual
+  useEffect(() => {
+    const path = location.pathname;
+    let currentPage = "comisiones";
+    
+    if (path === "/") currentPage = "comisiones";
+    else if (path === "/mis-gastos") currentPage = "mis-gastos";
+    else if (path === "/entregas") currentPage = "entregas";
+    else if (path === "/ordenes") currentPage = "ordenes";
+    else if (path === "/calculadoras") currentPage = "calculadoras";
+    else if (path === "/razones") currentPage = "razones";
+    else if (path === "/tiendas") currentPage = "tiendas";
+    else if (path === "/documentos") currentPage = "documentos";
+    else if (path === "/clientes-nuevos") currentPage = "clientes-nuevos";
+    else if (path === "/cotizaciones") currentPage = "cotizaciones";
+    else if (path === "/actualizaciones") currentPage = "actualizaciones";
+    else if (path === "/promedios") currentPage = "promedios";
+    else if (path.startsWith("/gestion")) currentPage = "gestion";
+    else if (path === "/seguimiento") currentPage = "seguimiento";
+    else if (path === "/configuraciones") currentPage = "configuraciones";
+    else if (path === "/aprendisaje") currentPage = "cartera";
+    else if (path === "/admin") currentPage = "admin";
+    
+    setPage(currentPage);
+  }, [location.pathname]);
+
 
   // Recuperar usuario autenticado al cargar la app
   useEffect(() => {

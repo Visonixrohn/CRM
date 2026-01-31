@@ -86,40 +86,109 @@ const PromediosNew = () => {
           <Heading size="8">Promedios</Heading>
         </Flex>
 
-        {/* Cards de métricas */}
-        <Grid columns={{ '@initial': '1', '@tablet': '3' }} gap="4">
-          <Card variant="elevated" css={{ background: '$blue3', p: '$5' }}>
+        {/* Cards de métricas - 3 en una fila */}
+        <Grid columns="3" gap="4" css={{ 
+          '@initial': { gridTemplateColumns: '1fr' },
+          '@mobile': { gridTemplateColumns: 'repeat(3, 1fr)' }
+        }}>
+          <Card variant="elevated" css={{ 
+            background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+            p: '$5',
+            borderLeft: '4px solid $blue9',
+            transition: 'all 0.3s',
+            '&:hover': {
+              transform: 'translateY(-4px)',
+              boxShadow: '0 12px 24px rgba(59, 130, 246, 0.2)'
+            }
+          }}>
             <Flex direction="column" align="center" gap="3">
-              <IconWrapper color="blue" size="large">
-                <FaCalculator size={32} />
-              </IconWrapper>
+              <Box css={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '$round',
+                background: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.15)'
+              }}>
+                <FaCalculator size={28} color="#3b82f6" />
+              </Box>
               <Flex direction="column" align="center" gap="1">
-                <Text size="3" weight="medium" css={{ color: '$blue11', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Promedio</Text>
-                <Heading size="8" css={{ color: '$blue12' }}>{formatNumber(promedio)}</Heading>
+                <Text size="2" weight="bold" css={{ color: '$blue11', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  Promedio
+                </Text>
+                <Heading size="7" css={{ color: '$blue12', fontWeight: '900' }}>
+                  L {formatNumber(promedio)}
+                </Heading>
               </Flex>
             </Flex>
           </Card>
 
-          <Card variant="elevated" css={{ background: '$amber3', p: '$5' }}>
+          <Card variant="elevated" css={{ 
+            background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+            p: '$5',
+            borderLeft: '4px solid $amber9',
+            transition: 'all 0.3s',
+            '&:hover': {
+              transform: 'translateY(-4px)',
+              boxShadow: '0 12px 24px rgba(245, 158, 11, 0.2)'
+            }
+          }}>
             <Flex direction="column" align="center" gap="3">
-              <IconWrapper color="amber" size="large">
-                <FaCoins size={32} />
-              </IconWrapper>
+              <Box css={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '$round',
+                background: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(245, 158, 11, 0.15)'
+              }}>
+                <FaCoins size={28} color="#f59e0b" />
+              </Box>
               <Flex direction="column" align="center" gap="1">
-                <Text size="3" weight="medium" css={{ color: '$amber11', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Cuota calculada</Text>
-                <Heading size="8" css={{ color: '$amber12' }}>{formatNumber(cuotaCalculada)}</Heading>
+                <Text size="2" weight="bold" css={{ color: '$amber11', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  Cuota calculada
+                </Text>
+                <Heading size="7" css={{ color: '$amber12', fontWeight: '900' }}>
+                  L {formatNumber(cuotaCalculada)}
+                </Heading>
               </Flex>
             </Flex>
           </Card>
 
-          <Card variant="elevated" css={{ background: '$green3', p: '$5' }}>
+          <Card variant="elevated" css={{ 
+            background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
+            p: '$5',
+            borderLeft: '4px solid $green9',
+            transition: 'all 0.3s',
+            '&:hover': {
+              transform: 'translateY(-4px)',
+              boxShadow: '0 12px 24px rgba(34, 197, 94, 0.2)'
+            }
+          }}>
             <Flex direction="column" align="center" gap="3">
-              <IconWrapper color="green" size="large">
-                <FaCoins size={32} />
-              </IconWrapper>
+              <Box css={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '$round',
+                background: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(34, 197, 94, 0.15)'
+              }}>
+                <FaCoins size={28} color="#22c55e" />
+              </Box>
               <Flex direction="column" align="center" gap="1">
-                <Text size="3" weight="medium" css={{ color: '$green11', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Cuota restante</Text>
-                <Heading size="8" css={{ color: '$green12' }}>{formatNumber(cuotaRestante)}</Heading>
+                <Text size="2" weight="bold" css={{ color: '$green11', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  Cuota restante
+                </Text>
+                <Heading size="7" css={{ color: '$green12', fontWeight: '900' }}>
+                  L {formatNumber(cuotaRestante)}
+                </Heading>
               </Flex>
             </Flex>
           </Card>

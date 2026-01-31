@@ -6,6 +6,7 @@ import "./Gestion.css";
 import "./GestionCard.css";
 import GestionLinkModal from "./GestionLinkModal";
 import GestionLinkModalMobile from "./GestionLinkModalMobile";
+import GestionDetalleModal from "./components/GestionDetalleModal";
 import useGestion from "./useGestion";
 import useTablaGestion from "./useTablaGestion";
 
@@ -96,6 +97,8 @@ const Gestion = () => {
   const [userId, setUserId] = useState(null);
   const [modalLinkOpen, setModalLinkOpen] = useState(false);
   const [linkCliente, setLinkCliente] = useState(null);
+  const [detalleModalOpen, setDetalleModalOpen] = useState(false);
+  const [clienteDetalle, setClienteDetalle] = useState(null);
   const { datos, loading, error: errorGestion, total, gestionadosHoy, pendientes } = useGestion(update);
   const [modalMotivoSaving, setModalMotivoSaving] = useState(false);
   const { clientes: clientesTabla, loading: loadingTabla, error: errorTabla } = useTablaGestion(update);
@@ -347,7 +350,14 @@ const Gestion = () => {
           </thead>
           <tbody>
             {clientesFiltrados.map((cliente) => (
-              <tr key={cliente.ID || cliente.id}>
+              <tr 
+                key={cliente.ID || cliente.id}
+                onClick={() => {
+                  setClienteDetalle(cliente);
+                  setDetalleModalOpen(true);
+                }}
+                style={{ cursor: 'pointer' }}
+              >
                 <td>
                   {String(cliente.ID || cliente.id).length === 12
                     ? '0' + String(cliente.ID || cliente.id)
@@ -369,7 +379,7 @@ const Gestion = () => {
                 <td>{cliente.APELLIDOS || cliente.apellido}</td>
                 <td>{cliente.TELEFONO || cliente.tel}</td>
                 <td>{cliente.TIENDA || cliente.tienda}</td>
-                <td>
+                <td onClick={(e) => e.stopPropagation()}>
                   <button onClick={() => enviarWhatsApp(cliente)}>
                     Enviar
                   </button>
@@ -388,6 +398,24 @@ const Gestion = () => {
           </tbody>
         </table>
       </div>
+      {/* Modal de detalle del cliente */}
+      <GestionDetalleModal
+        open={detalleModalOpen}
+        cliente={clienteDetalle}
+        allClientes={clientesFiltrados}
+        onClose={() => setDetalleModalOpen(false)}
+        onWhatsApp={enviarWhatsApp}
+        onMarcarGestion={(cliente) => {
+          setClienteGestionar(cliente);
+          setModalMotivoOpen(true);
+          setDetalleModalOpen(false);
+        }}
+        onLink={(cliente) => {
+          setLinkCliente(cliente);
+          setModalLinkOpen(true);
+          setDetalleModalOpen(false);
+        }}
+      />
       {/* Modal para mensaje */}
       {modalOpen && (
         <div className="modal" style={{ display: "flex" }}>

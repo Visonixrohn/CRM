@@ -145,7 +145,7 @@ const DocumentosNew = () => {
           )}
         </Flex>
 
-        {/* Grid de documentos */}
+        {/* Grid de documentos - 3 por fila */}
         {documentos.length === 0 ? (
           <Card variant="elevated">
             <Flex direction="column" align="center" justify="center" gap="3" css={{ py: '$8' }}>
@@ -163,19 +163,45 @@ const DocumentosNew = () => {
             </Flex>
           </Card>
         ) : (
-          <Grid columns={{ '@initial': '1', '@mobile': '2', '@tablet': '3', '@laptop': '4' }} gap="4">
+          <Grid columns="3" gap="4" css={{ 
+            '@initial': { gridTemplateColumns: '1fr' },
+            '@mobile': { gridTemplateColumns: 'repeat(2, 1fr)' },
+            '@tablet': { gridTemplateColumns: 'repeat(3, 1fr)' }
+          }}>
             {documentos.map((doc) => (
-              <Card key={doc.id} variant="interactive">
+              <Card key={doc.id} variant="interactive" css={{
+                transition: 'all 0.3s',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 12px 24px rgba(0, 0, 0, 0.1)'
+                }
+              }}>
                 <Flex direction="column" gap="3">
-                  <Flex align="center" justify="center" css={{ py: '$4' }}>
-                    <IconWrapper color="blue" size="large">
-                      <FaFileAlt size={40} />
-                    </IconWrapper>
-                  </Flex>
-                  <Box>
+                  <Box css={{ 
+                    background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+                    borderRadius: '$3',
+                    py: '$5',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Box css={{
+                      width: '72px',
+                      height: '72px',
+                      borderRadius: '$3',
+                      background: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 4px 12px rgba(59, 130, 246, 0.15)'
+                    }}>
+                      <FaFileAlt size={36} color="#3b82f6" />
+                    </Box>
+                  </Box>
+                  <Box css={{ px: '$3' }}>
                     <Text 
                       size="3" 
-                      weight="medium" 
+                      weight="bold" 
                       css={{ 
                         color: '$slate12', 
                         textAlign: 'center',
@@ -183,16 +209,20 @@ const DocumentosNew = () => {
                         textOverflow: 'ellipsis',
                         display: '-webkit-box',
                         WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical'
+                        WebkitBoxOrient: 'vertical',
+                        minHeight: '48px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
                       }}
                     >
                       {doc.nombre}
                     </Text>
                   </Box>
                   <Button
-                    variant="secondary"
+                    variant="primary"
                     onClick={() => handleOpenPdfModal(doc.id)}
-                    css={{ width: '100%' }}
+                    css={{ width: '100%', mt: '$2' }}
                   >
                     <FaEye />
                     Ver Documento
