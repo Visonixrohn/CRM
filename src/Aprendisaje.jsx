@@ -10,6 +10,7 @@ function CarteraClientes() {
   const [editTipoCliente, setEditTipoCliente] = useState("");
   const [editCelular, setEditCelular] = useState("");
   const [editFechaCompra, setEditFechaCompra] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const userId = localStorage.getItem("userId");
   const handleEdit = (cliente) => {
     setEditId(cliente.id);
@@ -72,8 +73,6 @@ function CarteraClientes() {
   const [tipo, setTipo] = useState("Crédito");
   const [nombre, setNombre] = useState("");
   const [celular, setCelular] = useState("");
-  const [fechaCompra, setFechaCompra] = useState("");
-  const [tipoCliente, setTipoCliente] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
           usuario: userId
@@ -94,18 +93,22 @@ function CarteraClientes() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    if (!nombre || !tipoCliente || !celular || !fechaCompra) {
+    if (!nombre || !celular) {
       setError("Completa todos los campos.");
       setLoading(false);
       return;
     }
+    
+    // Obtener la fecha actual en formato YYYY-MM-DD
+    const fechaActual = new Date().toISOString().split('T')[0];
+    
     const { error } = await supabase
       .from("cartera_clientes")
       .insert({
         nombre,
-        tipo_cliente: tipoCliente,
+        tipo_cliente: "Cliente", // Valor por defecto
         celular,
-        fecha_compra: fechaCompra,
+        fecha_compra: fechaActual,
         tipo,
         usuario: userId
       });
@@ -113,9 +116,8 @@ function CarteraClientes() {
       setError("Error al guardar el cliente.");
     } else {
       setNombre("");
-      setTipoCliente("");
       setCelular("");
-      setFechaCompra("");
+      setShowModal(false);
       fetchClientes();
     }
     setLoading(false);
@@ -124,21 +126,92 @@ function CarteraClientes() {
   return (
     <div style={{ padding: 24 }}>
       <h2 style={{ textAlign: "center", marginBottom: 32 }}>Cartera de Clientes</h2>
-  {/* Formulario único para agregar/editar clientes */}
-      <form onSubmit={editId ? handleUpdateCliente : handleAddCliente} style={{ display: "flex", gap: 12, marginBottom: 24, flexWrap: "wrap", alignItems: "flex-end", justifyContent: "center" }}>
-        <select value={editId ? editTipo : tipo} onChange={e => editId ? setEditTipo(e.target.value) : setTipo(e.target.value)} style={{ padding: 8, borderRadius: 4 }}>
-          {tipos.map(t => <option key={t} value={t}>{t}</option>)}
-        </select>
-        <input type="text" value={editId ? editNombre : nombre} onChange={e => editId ? setEditNombre(e.target.value) : setNombre(e.target.value)} placeholder="Nombre" style={{ padding: 8, borderRadius: 4, width: 140 }} required />
-        <input type="text" value={editId ? editTipoCliente : tipoCliente} onChange={e => editId ? setEditTipoCliente(e.target.value) : setTipoCliente(e.target.value)} placeholder="Tipo de cliente" style={{ padding: 8, borderRadius: 4, width: 140 }} required />
-        <input type="text" value={editId ? editCelular : celular} onChange={e => editId ? setEditCelular(e.target.value) : setCelular(e.target.value)} placeholder="Celular" style={{ padding: 8, borderRadius: 4, width: 120 }} required />
-        <input type="date" value={editId ? editFechaCompra : fechaCompra} onChange={e => editId ? setEditFechaCompra(e.target.value) : setFechaCompra(e.target.value)} style={{ padding: 8, borderRadius: 4 }} required />
-        <button type="submit" disabled={loading} style={{ background: '#a21caf', color: '#fff', padding: '8px 16px', borderRadius: 4, border: 'none', fontWeight: 'bold' }}>{loading ? (editId ? "Actualizando..." : "Guardando...") : (editId ? "Actualizar" : "Agregar")}</button>
-        {editId && (
+      
+      {/* Botón para abrir modal */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
+        <button 
+          onClick={() => setShowModal(true)} 
+          style={{ background: '#a21caf', color: '#fff', padding: '12px 24px', borderRadius: 4, border: 'none', fontWeight: 'bold', fontSize: 16, cursor: 'pointer' }}
+        >
+          Agregar Cliente
+        </button>
+      </div>
+
+      {/* Modal para agregar cliente */}
+      {showModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: '#fff', padding: 32, borderRadius: 8, maxWidth: 500, width: '90%', boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}>
+            <h3 style={{ marginTop: 0, marginBottom: 24, textAlign: 'center' }}>Agregar Nuevo Cliente</h3>
+            <form onSubmit={handleAddCliente}>
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold' }}>Tipo de Cartera</label>
+                <select 
+                  value={tipo} 
+                  onChange={e => setTipo(e.target.value)} 
+                  style={{ padding: 10, borderRadius: 4, width: '100%', border: '1px solid #ddd', fontSize: 14 }}
+                >
+                  {tipos.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold' }}>Nombre</label>
+                <input 
+                  type="text" 
+                  value={nombre} 
+                  onChange={e => setNombre(e.target.value)} 
+                  placeholder="Nombre del cliente" 
+                  style={{ padding: 10, borderRadius: 4, width: '100%', border: '1px solid #ddd', fontSize: 14, boxSizing: 'border-box' }} 
+                  required 
+                />
+              </div>
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold' }}>Celular</label>
+                <input 
+                  type="text" 
+                  value={celular} 
+                  onChange={e => setCelular(e.target.value)} 
+                  placeholder="Número de celular" 
+                  style={{ padding: 10, borderRadius: 4, width: '100%', border: '1px solid #ddd', fontSize: 14, boxSizing: 'border-box' }} 
+                  required 
+                />
+              </div>
+              {error && <div style={{ color: 'red', marginBottom: 16, textAlign: 'center' }}>{error}</div>}
+              <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+                <button 
+                  type="submit" 
+                  disabled={loading} 
+                  style={{ background: '#a21caf', color: '#fff', padding: '10px 24px', borderRadius: 4, border: 'none', fontWeight: 'bold', cursor: 'pointer', fontSize: 14 }}
+                >
+                  {loading ? "Guardando..." : "Guardar"}
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => { setShowModal(false); setNombre(""); setCelular(""); setError(null); }} 
+                  style={{ background: '#888', color: '#fff', padding: '10px 24px', borderRadius: 4, border: 'none', fontWeight: 'bold', cursor: 'pointer', fontSize: 14 }}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Formulario de edición (se muestra cuando editId existe) */}
+      {editId && (
+        <form onSubmit={handleUpdateCliente} style={{ display: "flex", gap: 12, marginBottom: 24, flexWrap: "wrap", alignItems: "flex-end", justifyContent: "center", background: '#f0f9ff', padding: 16, borderRadius: 8 }}>
+          <select value={editTipo} onChange={e => setEditTipo(e.target.value)} style={{ padding: 8, borderRadius: 4 }}>
+            {tipos.map(t => <option key={t} value={t}>{t}</option>)}
+          </select>
+          <input type="text" value={editNombre} onChange={e => setEditNombre(e.target.value)} placeholder="Nombre" style={{ padding: 8, borderRadius: 4, width: 140 }} required />
+          <input type="text" value={editTipoCliente} onChange={e => setEditTipoCliente(e.target.value)} placeholder="Tipo de cliente" style={{ padding: 8, borderRadius: 4, width: 140 }} required />
+          <input type="text" value={editCelular} onChange={e => setEditCelular(e.target.value)} placeholder="Celular" style={{ padding: 8, borderRadius: 4, width: 120 }} required />
+          <input type="date" value={editFechaCompra} onChange={e => setEditFechaCompra(e.target.value)} style={{ padding: 8, borderRadius: 4 }} required />
+          <button type="submit" disabled={loading} style={{ background: '#a21caf', color: '#fff', padding: '8px 16px', borderRadius: 4, border: 'none', fontWeight: 'bold' }}>{loading ? "Actualizando..." : "Actualizar"}</button>
           <button type="button" onClick={() => { setEditId(null); setEditTipo(""); setEditNombre(""); setEditTipoCliente(""); setEditCelular(""); setEditFechaCompra(""); }} style={{ background: '#888', color: '#fff', padding: '8px 16px', borderRadius: 4, border: 'none', fontWeight: 'bold' }}>Cancelar</button>
-        )}
-      </form>
-      {error && <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>}
+        </form>
+      )}
+      
       <div style={{ display: "flex", gap: 32, flexWrap: "wrap", justifyContent: "center" }}>
         <div style={{ flex: 1, minWidth: 320 }}>
           <h3 style={{ textAlign: "center", marginBottom: 12 }}>Cartera de Crédito</h3>
