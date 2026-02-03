@@ -1,46 +1,230 @@
-/* Card móvil de orden de servicio (solo móvil) */
-.orden-servicio-card-movil-analisis {
-  display: block;
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 2px 12px 0 #a5b4fc22;
-  margin-bottom: 12px;
-  padding: 1.1rem 1.2rem;
-  border: 1.5px solid #a5b4fc;
-  transition: box-shadow 0.2s, background 0.2s;
-  position: relative;
+/* ===================================
+   CARDS MÓVILES MODERNAS - ÓRDENES
+   =================================== */
+
+.orden-card-movil-modern {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
+  overflow: hidden;
+  border: 2px solid rgba(102, 126, 234, 0.1);
+  transition: all 0.3s;
 }
-@media (min-width: 700px) {
-  .orden-servicio-card-movil-analisis {
+
+.orden-card-movil-modern:active {
+  transform: scale(0.98);
+}
+
+.card-header-movil {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.orden-numero-movil {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.orden-icon {
+  font-size: 1.5rem;
+}
+
+.orden-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.estado-badge-movil {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+}
+
+.estado-pendiente {
+  background: rgba(99, 102, 241, 0.2) !important;
+  color: #3730a3 !important;
+  border: 1px solid rgba(99, 102, 241, 0.5);
+}
+
+.estado-finalizado {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #065f46 !important;
+  border: 1px solid rgba(16, 185, 129, 0.5);
+}
+
+.estado-anulada {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #991b1b !important;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.estado-repuesto {
+  background: rgba(236, 72, 153, 0.2) !important;
+  color: #831843 !important;
+  border: 1px solid rgba(236, 72, 153, 0.5);
+}
+
+.card-body-movil {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-row-movil {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.info-row-movil.compact {
+  padding: 4px 0;
+}
+
+.info-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.info-icon-small {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.info-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.info-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.info-label-small {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.info-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.info-value-small {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #475569;
+}
+
+.info-extra-movil {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.status-row-movil {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.status-label-movil {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #667eea;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-value-movil {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.card-actions-movil {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-top: 2px solid #e2e8f0;
+}
+
+.btn-consultar-movil,
+.btn-detalle-movil {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: inherit;
+}
+
+.btn-consultar-movil {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.btn-consultar-movil:active {
+  background: #e2e8f0;
+  transform: scale(0.95);
+}
+
+.btn-consultar-movil:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-detalle-movil {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-detalle-movil:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+/* Responsive */
+@media (min-width: 1200px) {
+  .orden-card-movil-modern {
     display: none !important;
   }
-}
-.orden-servicio-card-movil-analisis .analisis-card-title {
-  font-size: 1.08rem;
-  font-weight: 600;
-  color: #3730a3;
-  margin-bottom: 2px;
-}
-.orden-servicio-card-movil-analisis .analisis-card-value {
-  font-size: 1.08rem;
-  color: #64748b;
-  margin-bottom: 4px;
-  font-weight: 500;
-}
-.orden-servicio-card-movil-analisis .analisis-card-value:last-child {
-  margin-bottom: 8px;
-}
-.orden-servicio-card-movil-analisis button {
-  background: #2563eb;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.orden-servicio-card-movil-analisis button:hover {
-  background: #1e40af;
 }

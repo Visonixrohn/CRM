@@ -40,13 +40,14 @@ const OrdenesServicio = () => {
   const [selectedState, setSelectedState] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterState, setFilterState] = useState("");
-  const [filtroSidebar, setFiltroSidebar] = useState("Todas");
+  const [filtroSidebar, setFiltroSidebar] = useState("Pendientes"); // Filtro por defecto: Pendientes
 
   const estados = [
     "PENDIENTE DE VISITA",
     "PENDIENTE DE REPUESTO",
     "REPARADO",
     "SUGERENCIA DE CAMBIO",
+    "FINALIZADO",
     "ANULADA",
   ];
 
@@ -234,50 +235,144 @@ const OrdenesServicio = () => {
     const ext = corOneData && order.numero_orden ? corOneData[order.numero_orden] : undefined;
     const estadosPermitidos = ["PENDIENTE DE VISITA", "PENDIENTE DE REPUESTO"];
     const mostrarResuelto = !estadosPermitidos.includes(order.estado);
+    const estado = order.estado || '';
+    const statusRaw = ext && ext.status ? ext.status : (order.status || '');
+    const esPendiente = !(statusRaw === 'Tu orden ha finalizado' || estado === 'FINALIZADO' || estado === 'ANULADA' || estado === 'REPARADO');
     return (
-      <div className="order-details">
-        <h3>Detalles de la Orden</h3>
-        <p>
-          <strong>Fecha:</strong> {order.fecha}
-        </p>
-        <p>
-          <strong>Cliente:</strong> {order.cliente}
-        </p>
-        <p>
-          <strong>Número de Orden:</strong> {order.numero_orden}
-        </p>
-        <p>
-          <strong>Modelo:</strong> {mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.model ? ext.model : (ext === null ? 'Error' : ''))}
-        </p>
-        <p>
-          <strong>Marca:</strong> {mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.brand ? ext.brand : (ext === null ? 'Error' : ''))}
-        </p>
-        <p>
-          <strong>Falla:</strong> {mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext === null ? 'Error' : ((ext.damage && ext.damage.trim()) ? ext.damage : (ext.reportedDamage && ext.reportedDamage.trim() ? ext.reportedDamage : 'Sin información')))}
-        </p>
-        <p>
-          <strong>Status:</strong> {mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.status ? ext.status : (ext === null ? 'Error' : ''))}
-        </p>
-        <p>
-          <strong>Días Transcurridos:</strong> {calculateDaysElapsed(order.fecha)}
-        </p>
-        <p>
-          <strong>Estado:</strong> {order.estado}
-        </p>
+      <div className="order-details-modern">
+        <h2 className="detail-title">📋 Detalles de la Orden</h2>
+        
+        <div className="detail-grid">
+          <div className="detail-item">
+            <span className="detail-icon">📅</span>
+            <div className="detail-content">
+              <span className="detail-label">Fecha</span>
+              <span className="detail-value">{order.fecha}</span>
+            </div>
+          </div>
+          
+          <div className="detail-item">
+            <span className="detail-icon">👤</span>
+            <div className="detail-content">
+              <span className="detail-label">Cliente</span>
+              <span className="detail-value">{order.cliente}</span>
+            </div>
+          </div>
+          
+          <div className="detail-item">
+            <span className="detail-icon">📞</span>
+            <div className="detail-content">
+              <span className="detail-label">Teléfono</span>
+              <span className="detail-value">{order.telefono || 'No especificado'}</span>
+            </div>
+          </div>
+          
+          <div className="detail-item">
+            <span className="detail-icon">🔢</span>
+            <div className="detail-content">
+              <span className="detail-label">Número de Orden</span>
+              <span className="detail-value">{order.numero_orden}</span>
+            </div>
+          </div>
+          
+          <div className="detail-item">
+            <span className="detail-icon">📱</span>
+            <div className="detail-content">
+              <span className="detail-label">Modelo</span>
+              <span className="detail-value">{mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.model ? ext.model : (ext === null ? 'Error' : 'N/A'))}</span>
+            </div>
+          </div>
+          
+          <div className="detail-item">
+            <span className="detail-icon">🏷️</span>
+            <div className="detail-content">
+              <span className="detail-label">Marca</span>
+              <span className="detail-value">{mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.brand ? ext.brand : (ext === null ? 'Error' : 'N/A'))}</span>
+            </div>
+          </div>
+          
+          <div className="detail-item full-width">
+            <span className="detail-icon">🔧</span>
+            <div className="detail-content">
+              <span className="detail-label">Falla</span>
+              <span className="detail-value">{mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext === null ? 'Error' : ((ext.damage && ext.damage.trim()) ? ext.damage : (ext.reportedDamage && ext.reportedDamage.trim() ? ext.reportedDamage : 'Sin información')))}</span>
+            </div>
+          </div>
+          
+          <div className="detail-item">
+            <span className="detail-icon">📊</span>
+            <div className="detail-content">
+              <span className="detail-label">Status</span>
+              <span className="detail-value">{mostrarResuelto ? 'RESUELTO' : (ext === undefined ? 'Cargando...' : ext && ext.status ? ext.status : (ext === null ? 'Error' : order.status || 'N/A'))}</span>
+            </div>
+          </div>
+          
+          <div className="detail-item">
+            <span className="detail-icon">⏱️</span>
+            <div className="detail-content">
+              <span className="detail-label">Días Transcurridos</span>
+              <span className="detail-value">{calculateDaysElapsed(order.fecha)}</span>
+            </div>
+          </div>
+          
+          <div className="detail-item">
+            <span className="detail-icon">🎯</span>
+            <div className="detail-content">
+              <span className="detail-label">Estado</span>
+              <span className="detail-value">{order.estado}</span>
+            </div>
+          </div>
+          
+          <div className="detail-item">
+            <span className="detail-icon">👨‍💼</span>
+            <div className="detail-content">
+              <span className="detail-label">Gestor</span>
+              <span className="detail-value">{order.gestor || 'No asignado'}</span>
+            </div>
+          </div>
+        </div>
+        
         {order.archivo && (
-          <div style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}>
-            {/* Si es una URL http(s), mostrar link, si no, mostrar como antes */}
-            {order.archivo.startsWith("http") ? (
-              <a href={order.archivo} target="_blank" rel="noopener noreferrer">Ver archivo</a>
-            ) : (
-              <iframe src={`https://caqukltkvvsfairqphjf.supabase.co/storage/v1/object/public/archivos/${order.archivo}`} />
-            )}
+          <div className="detail-archivo">
+            <span className="detail-icon">📎</span>
+            <div className="detail-content">
+              <span className="detail-label">Archivo Adjunto</span>
+              {order.archivo.startsWith("http") ? (
+                <a href={order.archivo} target="_blank" rel="noopener noreferrer" className="archivo-link">
+                  Ver archivo
+                </a>
+              ) : (
+                <a href={`https://caqukltkvvsfairqphjf.supabase.co/storage/v1/object/public/archivos/${order.archivo}`} target="_blank" rel="noopener noreferrer" className="archivo-link">
+                  Ver archivo
+                </a>
+              )}
+            </div>
           </div>
         )}
-        <button onClick={() => { setIsEditOrderModalOpen(true); setOrdenAEditar(order); }}>Editar</button>
-        <button onClick={() => setIsUpdateStateModalOpen(true)}>
-          Actualizar Estado
-        </button>
+        
+        <div className="detail-actions">
+          <button className="btn-detail-edit" onClick={() => { setIsEditOrderModalOpen(true); setOrdenAEditar(order); }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Editar Orden
+          </button>
+          <button className="btn-detail-update" onClick={() => setIsUpdateStateModalOpen(true)}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0119.5-3M22 12.5a10 10 0 01-19.5 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Actualizar Estado
+          </button>
+          {esPendiente && (
+            <button className="btn-detail-finalize" onClick={(e) => handleQuickFinalize(order, e)}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{marginRight: '8px'}}>
+                <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Finalizar Orden
+            </button>
+          )}
+        </div>
       </div>
     );
   };
@@ -291,6 +386,40 @@ const OrdenesServicio = () => {
     setNewOrder({ ...newOrder, [field]: value });
   };
 
+  // Nueva función para marcar como finalizado con un click
+  const handleQuickFinalize = async (orden, e) => {
+    e.stopPropagation();
+    
+    const confirmar = window.confirm(
+      `¿Deseas marcar la orden ${orden.numero_orden} como FINALIZADA?`
+    );
+    
+    if (!confirmar) return;
+
+    const { error } = await supabase
+      .from("ordenes_servicio")
+      .update({ 
+        estado: "FINALIZADO",
+        status: "Tu orden ha finalizado"
+      })
+      .eq("id", orden.id);
+
+    if (!error) {
+      setShowActualizadoModal(true);
+      setTimeout(() => setShowActualizadoModal(false), 1500);
+      
+      // Refrescar todas las órdenes
+      const { data: ordenesActualizadas } = await supabase
+        .from("ordenes_servicio")
+        .select("*")
+        .eq("tienda_usuario", miTienda);
+      setOrdenes(ordenesActualizadas || []);
+    } else {
+      console.error("Error al actualizar:", error);
+      alert("Error al actualizar la orden: " + (error.message || "Desconocido"));
+    }
+  };
+
   const filteredOrdenes = ordenes.filter((orden) => {
     const userId = localStorage.getItem("userId");
     const matchesSearch =
@@ -302,33 +431,66 @@ const OrdenesServicio = () => {
     const matchesTienda = miTienda ? orden.tienda_usuario === miTienda : true;
     const matchesUser = verTodasTienda ? true : orden.user_id === userId;
     
-    // Filtro sidebar por status
+    // Filtro sidebar mejorado con soporte dinámico
     let matchesSidebar = true;
     const status = orden.status || '';
-    if (filtroSidebar === "Activas") {
-      matchesSidebar = status !== 'Tu orden ha finalizado';
+    const estado = orden.estado || '';
+    
+    if (filtroSidebar === "Pendientes") {
+      // Mostrar órdenes que NO estén finalizadas, resueltas ni rechazadas
+      matchesSidebar = 
+        status !== 'Tu orden ha finalizado' && 
+        !estado.includes('FINALIZADO') && 
+        !estado.includes('ANULADA') &&
+        !estado.includes('RECHAZADA') &&
+        estado !== 'REPARADO';
+    } else if (filtroSidebar === "Todas") {
+      matchesSidebar = true;
     } else if (filtroSidebar === "Finalizadas") {
-      matchesSidebar = status === 'Tu orden ha finalizado';
-    } else if (filtroSidebar === "En Reparación") {
-      matchesSidebar = status === 'Tu artículo está en proceso de reparación';
-    } else if (filtroSidebar === "En Revisión") {
-      matchesSidebar = status === 'Tu artículo está en proceso de revisión';
-    } else if (filtroSidebar === "Recibidas") {
-      matchesSidebar = status === 'Tu orden ha sido recibida';
+      matchesSidebar = status === 'Tu orden ha finalizado' || estado === 'FINALIZADO' || estado === 'REPARADO';
+    } else if (filtroSidebar === "Anuladas") {
+      matchesSidebar = estado === 'ANULADA';
+    } else {
+      // Para cualquier otro filtro, buscar por Status
+      matchesSidebar = status === filtroSidebar;
     }
     
     return matchesSearch && matchesFilter && matchesTienda && matchesUser && matchesSidebar;
   });
 
+  // Obtener todos los status únicos de las órdenes
+  const todosLosStatus = [...new Set(ordenes.map(o => o.status).filter(Boolean))];
+  
   // Métricas para las tarjetas
   const metricas = {
     total: ordenes.length,
-    activas: ordenes.filter(o => (o.status || '') !== 'Tu orden ha finalizado').length,
-    finalizadas: ordenes.filter(o => o.status === 'Tu orden ha finalizado').length,
+    pendientes: ordenes.filter(o => {
+      const status = o.status || '';
+      const estado = o.estado || '';
+      return status !== 'Tu orden ha finalizado' && 
+             !estado.includes('FINALIZADO') && 
+             !estado.includes('ANULADA') &&
+             !estado.includes('RECHAZADA') &&
+             estado !== 'REPARADO';
+    }).length,
+    finalizadas: ordenes.filter(o => o.status === 'Tu orden ha finalizado' || o.estado === 'FINALIZADO' || o.estado === 'REPARADO').length,
     enReparacion: ordenes.filter(o => o.status === 'Tu artículo está en proceso de reparación').length,
     enRevision: ordenes.filter(o => o.status === 'Tu artículo está en proceso de revisión').length,
     recibidas: ordenes.filter(o => o.status === 'Tu orden ha sido recibida').length,
+    anuladas: ordenes.filter(o => o.estado === 'ANULADA').length,
   };
+  
+  // Crear filtros dinámicos basados en Status
+  const filtrosDinamicos = [
+    { nombre: 'Pendientes', count: metricas.pendientes },
+    { nombre: 'Todas', count: metricas.total },
+    { nombre: 'Finalizadas', count: metricas.finalizadas },
+    ...todosLosStatus.map(status => ({
+      nombre: status,
+      count: ordenes.filter(o => o.status === status).length
+    })),
+    { nombre: 'Anuladas', count: metricas.anuladas },
+  ];
 
   return (
     <div className="ordenes-layout">
@@ -337,23 +499,15 @@ const OrdenesServicio = () => {
         <div className="sidebar-section">
           <div className="sidebar-title">Filtros</div>
           <div className="sidebar-filters">
-            {["Todas", "Activas", "Finalizadas", "En Reparación", "En Revisión", "Recibidas"].map((filtro) => {
-              let count = 0;
-              if (filtro === "Todas") count = metricas.total;
-              else if (filtro === "Activas") count = metricas.activas;
-              else if (filtro === "Finalizadas") count = metricas.finalizadas;
-              else if (filtro === "En Reparación") count = metricas.enReparacion;
-              else if (filtro === "En Revisión") count = metricas.enRevision;
-              else if (filtro === "Recibidas") count = metricas.recibidas;
-              
+            {filtrosDinamicos.map((filtro) => {
               return (
                 <div
-                  key={filtro}
-                  className={`filter-item ${filtroSidebar === filtro ? "active" : ""}`}
-                  onClick={() => setFiltroSidebar(filtro)}
+                  key={filtro.nombre}
+                  className={`filter-item ${filtroSidebar === filtro.nombre ? "active" : ""}`}
+                  onClick={() => setFiltroSidebar(filtro.nombre)}
                 >
-                  <span>{filtro}</span>
-                  <span className="filter-badge">{count}</span>
+                  <span>{filtro.nombre}</span>
+                  <span className="filter-badge">{filtro.count}</span>
                 </div>
               );
             })}
@@ -382,7 +536,7 @@ const OrdenesServicio = () => {
           <div className="header-title-section">
             <h1>Órdenes de Servicio</h1>
             <p className="header-subtitle">
-              {filteredOrdenes.length} órdenes • {metricas.activas} activas
+              {filteredOrdenes.length} órdenes • {metricas.pendientes} pendientes
             </p>
           </div>
           <div className="header-actions-new">
@@ -437,21 +591,33 @@ const OrdenesServicio = () => {
 
         {/* Métricas */}
         <div className="metrics-grid">
-          <div className="metric-card active">
-            <div className="metric-label">Total Órdenes</div>
-            <div className="metric-value">{metricas.total}</div>
+          <div className="metric-card total">
+            <div className="metric-icon">📊</div>
+            <div className="metric-info">
+              <div className="metric-label">Total Órdenes</div>
+              <div className="metric-value">{metricas.total}</div>
+            </div>
           </div>
           <div className="metric-card pending">
-            <div className="metric-label">Activas</div>
-            <div className="metric-value">{metricas.activas}</div>
+            <div className="metric-icon">⏳</div>
+            <div className="metric-info">
+              <div className="metric-label">Pendientes</div>
+              <div className="metric-value">{metricas.pendientes}</div>
+            </div>
           </div>
           <div className="metric-card finished">
-            <div className="metric-label">Finalizadas</div>
-            <div className="metric-value">{metricas.finalizadas}</div>
+            <div className="metric-icon">✅</div>
+            <div className="metric-info">
+              <div className="metric-label">Finalizadas</div>
+              <div className="metric-value">{metricas.finalizadas}</div>
+            </div>
           </div>
           <div className="metric-card repair">
-            <div className="metric-label">En Reparación</div>
-            <div className="metric-value">{metricas.enReparacion}</div>
+            <div className="metric-icon">🔧</div>
+            <div className="metric-info">
+              <div className="metric-label">En Reparación</div>
+              <div className="metric-value">{metricas.enReparacion}</div>
+            </div>
           </div>
         </div>
 
@@ -481,16 +647,104 @@ const OrdenesServicio = () => {
             <table className="ordenes-table-new">
               <thead>
                 <tr>
-                  <th>Fecha</th>
-                  <th>Cliente</th>
-                  <th>Teléfono</th>
-                  <th>Nº Orden</th>
-                  <th>Modelo</th>
-                  <th>Marca</th>
-                  <th>Falla</th>
-                  <th>Status</th>
-                  <th>Días</th>
-                  <th>Creador</th>
+                  <th className="th-fecha">
+                    <div className="th-content">
+                      <svg className="th-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/>
+                        <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" strokeWidth="2"/>
+                      </svg>
+                      <span>Fecha</span>
+                    </div>
+                  </th>
+                  <th className="th-cliente">
+                    <div className="th-content">
+                      <svg className="th-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="8" r="5" stroke="currentColor" strokeWidth="2"/>
+                        <path d="M20 21a8 8 0 10-16 0" stroke="currentColor" strokeWidth="2"/>
+                      </svg>
+                      <span>Cliente</span>
+                    </div>
+                  </th>
+                  <th className="th-telefono">
+                    <div className="th-content">
+                      <svg className="th-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="currentColor" strokeWidth="2"/>
+                      </svg>
+                      <span>Teléfono</span>
+                    </div>
+                  </th>
+                  <th className="th-orden">
+                    <div className="th-content">
+                      <svg className="th-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" strokeWidth="2"/>
+                        <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" strokeWidth="2"/>
+                      </svg>
+                      <span>Nº Orden</span>
+                    </div>
+                  </th>
+                  <th className="th-modelo">
+                    <div className="th-content">
+                      <svg className="th-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <rect x="5" y="2" width="14" height="20" rx="2" stroke="currentColor" strokeWidth="2"/>
+                        <path d="M12 18h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                      <span>Modelo</span>
+                    </div>
+                  </th>
+                  <th className="th-marca">
+                    <div className="th-content">
+                      <svg className="th-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" stroke="currentColor" strokeWidth="2"/>
+                        <circle cx="7" cy="7" r="1" fill="currentColor"/>
+                      </svg>
+                      <span>Marca</span>
+                    </div>
+                  </th>
+                  <th className="th-falla">
+                    <div className="th-content">
+                      <svg className="th-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" strokeWidth="2"/>
+                        <path d="M12 9v4M12 17h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                      <span>Falla</span>
+                    </div>
+                  </th>
+                  <th className="th-status">
+                    <div className="th-content">
+                      <svg className="th-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                        <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                      <span>Status</span>
+                    </div>
+                  </th>
+                  <th className="th-dias">
+                    <div className="th-content">
+                      <svg className="th-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                        <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                      <span>Días</span>
+                    </div>
+                  </th>
+                  <th className="th-gestor">
+                    <div className="th-content">
+                      <svg className="th-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="currentColor" strokeWidth="2"/>
+                        <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2"/>
+                      </svg>
+                      <span>Gestor</span>
+                    </div>
+                  </th>
+                  <th className="th-estado">
+                    <div className="th-content">
+                      <svg className="th-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="currentColor" strokeWidth="2"/>
+                        <path d="M22 4L12 14.01l-3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                      <span>Estado</span>
+                    </div>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -499,62 +753,84 @@ const OrdenesServicio = () => {
                     ? corOneData[orden.numero_orden]
                     : undefined;
                   const statusRaw = ext && ext.status ? ext.status : (orden.status || '');
+                  const estado = orden.estado || '';
                   const statusValue = statusRaw.toLowerCase();
                   
                   let statusClass = '';
-                  if (statusRaw === 'Tu orden ha finalizado') statusClass = 'status-finalizado';
+                  if (statusRaw === 'Tu orden ha finalizado' || estado === 'FINALIZADO' || estado === 'REPARADO') statusClass = 'status-finalizado';
                   else if (statusRaw === 'Tu artículo está en proceso de reparación') statusClass = 'status-proceso';
                   else if (statusRaw === 'Tu artículo está en proceso de revisión') statusClass = 'status-revision';
                   else if (statusRaw === 'Tu orden ha sido recibida') statusClass = 'status-recibida';
-                  else if (statusValue.includes('anulado') || statusValue.includes('anulada')) statusClass = 'status-anulada';
+                  else if (statusValue.includes('anulado') || statusValue.includes('anulada') || estado === 'ANULADA') statusClass = 'status-anulada';
+                  else if (estado === 'PENDIENTE DE VISITA') statusClass = 'status-pendiente';
+                  else if (estado === 'PENDIENTE DE REPUESTO') statusClass = 'status-pendiente-repuesto';
                   
-                  const diasOcultar = statusValue.includes('anulado') || statusValue.includes('anulada') || statusValue.includes('rechazada') || statusValue.includes('finalizada') || statusRaw === 'Tu orden ha finalizado';
+                  const diasOcultar = statusValue.includes('anulado') || statusValue.includes('anulada') || statusValue.includes('rechazada') || statusValue.includes('finalizada') || statusRaw === 'Tu orden ha finalizado' || estado === 'FINALIZADO' || estado === 'ANULADA';
+                  
+                  const esPendiente = estado !== 'FINALIZADO' && estado !== 'ANULADA' && estado !== 'REPARADO' && statusRaw !== 'Tu orden ha finalizado';
                   
                   return (
-                    <tr key={orden.id} onClick={() => handleRowClick(orden)}>
-                      <td>{orden.fecha}</td>
-                      <td>{orden.cliente}</td>
-                      <td>{orden.telefono || '-'}</td>
-                      <td style={{whiteSpace: 'nowrap'}}>
-                        {orden.numero_orden}
-                        <button
-                          className="icon-button"
-                          onClick={e => {
-                            e.stopPropagation();
-                            navigator.clipboard.writeText(orden.numero_orden);
-                          }}
-                          title="Copiar número de orden"
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                            <rect x="9" y="9" width="13" height="13" rx="2" stroke="#667eea" strokeWidth="2"/>
-                            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="#667eea" strokeWidth="2"/>
-                          </svg>
-                        </button>
-                        <button
-                          className="icon-button"
-                          onClick={e => {
-                            e.stopPropagation();
-                            handleConsultarCorOne(orden.numero_orden);
-                          }}
-                          title="Actualizar datos"
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                            <circle cx="11" cy="11" r="8" stroke="#667eea" strokeWidth="2"/>
-                            <path d="M21 21l-4.35-4.35" stroke="#667eea" strokeWidth="2" strokeLinecap="round"/>
-                          </svg>
-                          {loadingCorOne[orden.numero_orden] && <span style={{marginLeft:2}}>...</span>}
-                        </button>
+                    <tr key={orden.id} onClick={() => handleRowClick(orden)} className="table-row-hover">
+                      <td className="td-fecha">{orden.fecha}</td>
+                      <td className="td-cliente">{orden.cliente}</td>
+                      <td className="td-telefono">{orden.telefono || '-'}</td>
+                      <td className="td-orden">
+                        <div className="orden-numero-cell">
+                          <span className="orden-numero-text">{orden.numero_orden}</span>
+                          <div className="orden-numero-actions">
+                            <button
+                              className="icon-button"
+                              onClick={e => {
+                                e.stopPropagation();
+                                navigator.clipboard.writeText(orden.numero_orden);
+                              }}
+                              title="Copiar número de orden"
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <rect x="9" y="9" width="13" height="13" rx="2" stroke="#667eea" strokeWidth="2"/>
+                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="#667eea" strokeWidth="2"/>
+                              </svg>
+                            </button>
+                            <button
+                              className="icon-button"
+                              onClick={e => {
+                                e.stopPropagation();
+                                handleConsultarCorOne(orden.numero_orden);
+                              }}
+                              title="Actualizar datos"
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <circle cx="11" cy="11" r="8" stroke="#667eea" strokeWidth="2"/>
+                                <path d="M21 21l-4.35-4.35" stroke="#667eea" strokeWidth="2" strokeLinecap="round"/>
+                              </svg>
+                              {loadingCorOne[orden.numero_orden] && <span style={{marginLeft:2}}>...</span>}
+                            </button>
+                          </div>
+                        </div>
                       </td>
-                      <td>{ext && ext.model ? ext.model : (orden.modelo || '-')}</td>
-                      <td>{ext && ext.brand ? ext.brand : (orden.marca || '-')}</td>
-                      <td>{ext && (ext.damage || ext.reportedDamage) ? (ext.damage || ext.reportedDamage) : (orden.falla || '-')}</td>
-                      <td>
+                      <td className="td-modelo">{ext && ext.model ? ext.model : (orden.modelo || '-')}</td>
+                      <td className="td-marca">{ext && ext.brand ? ext.brand : (orden.marca || '-')}</td>
+                      <td className="td-falla">
+                        <div className="falla-content" title={ext && (ext.damage || ext.reportedDamage) ? (ext.damage || ext.reportedDamage) : (orden.falla || '-')}>
+                          {ext && (ext.damage || ext.reportedDamage) ? (ext.damage || ext.reportedDamage) : (orden.falla || '-')}
+                        </div>
+                      </td>
+                      <td className="td-status">
                         <span className={`status-badge ${statusClass}`}>
-                          {statusRaw || 'Sin estado'}
+                          {statusRaw || estado || 'Sin estado'}
                         </span>
                       </td>
-                      <td>{diasOcultar ? '--' : calculateDaysElapsed(orden.fecha)}</td>
-                      <td>{orden.gestor || '-'}</td>
+                      <td className="td-dias">
+                        <span className="dias-badge">{diasOcultar ? '--' : calculateDaysElapsed(orden.fecha)}</span>
+                      </td>
+                      <td className="td-gestor">{orden.gestor || '-'}</td>
+                      <td className="td-estado">
+                        {esPendiente ? (
+                          <span className="pending-text">Pendiente</span>
+                        ) : (
+                          <span className="finalized-text">✓ Completada</span>
+                        )}
+                      </td>
                     </tr>
                   );
                 })}
@@ -619,72 +895,99 @@ const OrdenesServicio = () => {
             }
           }}
         >
-          <div className="modal-container" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Agregar Orden de Servicio</h2>
-              <button className="modal-close" onClick={() => setIsAddOrderModalOpen(false)}>×</button>
-            </div>
-            <form className="modal-body" onSubmit={handleAddOrder}>
-              <div className="form-group">
-                <label className="form-label">Fecha</label>
-                <input
-                  type="date"
-                  className="form-input"
-                  value={newOrder.fecha || ""}
-                  onChange={(e) => handleInputChange("fecha", e.target.value)}
-                  required
-                />
+          <div className="modal-container modal-agregar" onClick={e => e.stopPropagation()}>
+            <button className="modal-close-btn" onClick={() => setIsAddOrderModalOpen(false)}>×</button>
+            
+            <h2 className="modal-title">➕ Agregar Orden de Servicio</h2>
+            
+            <form onSubmit={handleAddOrder} className="modal-form">
+              <div className="form-grid-two">
+                <div className="form-group-modern">
+                  <label className="form-label-modern">
+                    <span className="label-icon">📅</span>
+                    Fecha
+                  </label>
+                  <input
+                    type="date"
+                    className="form-input-modern"
+                    value={newOrder.fecha || ""}
+                    onChange={(e) => handleInputChange("fecha", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="form-group-modern">
+                  <label className="form-label-modern">
+                    <span className="label-icon">👤</span>
+                    Cliente
+                  </label>
+                  <input
+                    type="text"
+                    className="form-input-modern"
+                    placeholder="Nombre del cliente"
+                    value={newOrder.cliente || ""}
+                    onChange={(e) => handleInputChange("cliente", e.target.value)}
+                    required
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label className="form-label">Cliente</label>
+
+              <div className="form-grid-two">
+                <div className="form-group-modern">
+                  <label className="form-label-modern">
+                    <span className="label-icon">📞</span>
+                    Teléfono
+                  </label>
+                  <input
+                    type="text"
+                    className="form-input-modern"
+                    placeholder="0000-0000"
+                    value={newOrder.telefono || ""}
+                    onChange={(e) => handleInputChange("telefono", e.target.value)}
+                    pattern="[0-9+\-]*"
+                    title="Solo números y signos (+, -)"
+                    required
+                  />
+                </div>
+
+                <div className="form-group-modern">
+                  <label className="form-label-modern">
+                    <span className="label-icon">🔢</span>
+                    Número de Orden
+                  </label>
+                  <input
+                    type="text"
+                    className="form-input-modern"
+                    placeholder="Número de orden"
+                    value={newOrder.numero_orden || ""}
+                    onChange={(e) => handleInputChange("numero_orden", e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-group-modern">
+                <label className="form-label-modern">
+                  <span className="label-icon">📎</span>
+                  URL del archivo (opcional)
+                </label>
                 <input
                   type="text"
-                  className="form-input"
-                  placeholder="Nombre del cliente"
-                  value={newOrder.cliente || ""}
-                  onChange={(e) => handleInputChange("cliente", e.target.value)}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Teléfono</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="0000-0000"
-                  value={newOrder.telefono || ""}
-                  onChange={(e) => handleInputChange("telefono", e.target.value)}
-                  pattern="[0-9+\-]*"
-                  title="Solo números y signos (+, -)"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Número de Orden</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="Número de orden"
-                  value={newOrder.numero_orden || ""}
-                  onChange={(e) => handleInputChange("numero_orden", e.target.value)}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">URL del archivo (opcional)</label>
-                <input
-                  type="text"
-                  className="form-input"
+                  className="form-input-modern"
                   placeholder="https://..."
                   value={newOrder.archivo || ""}
                   onChange={(e) => handleInputChange("archivo", e.target.value)}
                 />
               </div>
-              <div className="modal-footer">
-                <button type="button" className="btn-cancel" onClick={() => setIsAddOrderModalOpen(false)}>
+
+              <div className="modal-actions-modern">
+                <button type="button" className="btn-modal-cancel" onClick={() => setIsAddOrderModalOpen(false)}>
                   Cancelar
                 </button>
-                <button type="submit" className="btn-confirm" disabled={isLoading}>
+                <button type="submit" className="btn-modal-confirm" disabled={isLoading}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{marginRight: '6px'}}>
+                    <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                   {isLoading ? "Guardando..." : "Guardar Orden"}
                 </button>
               </div>
